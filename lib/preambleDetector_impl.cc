@@ -115,7 +115,7 @@ namespace gr {
       
       for(size_t i = 1; i < blocks.size(); i++) {
       	connect(blocks[i - 1], 0, blocks[i], 0);
-	connect(blocks[i - 1], 1, blocks[i], 1);
+      	connect(blocks[i - 1], 1, blocks[i], 1);
       }
       
       connect(blocks.back(), 0, self(), 0);
