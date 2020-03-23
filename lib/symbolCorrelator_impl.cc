@@ -81,12 +81,11 @@ namespace gr {
       float sumSq = 0;
       float sum = 0;
       
-      constexpr float corrMin = 0.7;
+      constexpr float corrMin = 0.4;//disable for test
       //THIS IS NOT WORKING!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       size_t kFirst;
       for(kFirst = 0; kFirst < noutput_items; kFirst++)
       	if(corr_in[kFirst] > corrMin) {
-      	  previousIsGreater = true;
       	  break;
       	} else
       	  corr_out[kFirst] = 0;
@@ -102,26 +101,27 @@ namespace gr {
       	float mean = sum/symbol.size();
 	
       	corr_out[kFirst] = corr/sqrt(sumSq - sum*mean);
-      }
-	
-      for(size_t k = kFirst + 1; k < noutput_items; k++, samples++) {
-      	sumSq -= samples[0]*samples[0];
-      	sum -= samples[0];
+      
+	for(size_t k = kFirst + 1; k < noutput_items; k++) {
+	  sumSq -= samples[0]*samples[0];
+	  sum -= samples[0];
 	  
-      	samples++;
+	  samples++;
 
-      	sumSq += samples[symbol.size() - 1]*samples[symbol.size() - 1];
-      	sum += samples[symbol.size() - 1];
+	  sumSq += samples[symbol.size() - 1]*samples[symbol.size() - 1];
+	  sum += samples[symbol.size() - 1];
 
-      	float mean = sum/symbol.size();
+	  float mean = sum/symbol.size();
 	  
-      	corr = 0;
-      	for(size_t j = 0; j < symbol.size(); j++)
-      	  corr += (symbol[j] - mean)*samples[j];
-
-      	corr_out[k] = corr/sqrt(sumSq - sum*mean);
-      }
+	  corr = 0;
+	  for(size_t j = 0; j < symbol.size(); j++)
+	    corr += symbol[j]*samples[j];
 	
+	  corr -= mean*sum;
+
+	  corr_out[k] = corr/sqrt(sumSq - mean*sum);
+	}
+      }
       // Do <+signal processing+>
       // Tell runtime system how many input items we consumed on
       // each input stream.

@@ -30,7 +30,7 @@ namespace gr {
     class symbolCorrelator_impl : public symbolCorrelator
     {
      private:
-      std::vector<float> symbol;
+      const std::vector<float> symbol;
 
      public:
       symbolCorrelator_impl(std::vector<float> symbol);
