@@ -12,6 +12,7 @@
 #include "LibreLoRa/symbolCorrelator.h"
 #include "LibreLoRa/hier_test2.h"
 #include "LibreLoRa/preambleDetector.h"
+#include "LibreLoRa/normalizeCorrelation.h"
 %}
 
 %include "LibreLoRa/frequencyTracker.h"
@@ -22,3 +23,5 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, symbolCorrelator);
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, hier_test2);
 %include "LibreLoRa/preambleDetector.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, preambleDetector);
+%include "LibreLoRa/normalizeCorrelation.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, normalizeCorrelation);

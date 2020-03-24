@@ -27,5 +27,5 @@ install(FILES
     symbolCorrelator.h
     hier_test2.h
     preambleDetector.h
-    DESTINATION include/LibreLoRa
+    normalizeCorrelation.h DESTINATION include/LibreLoRa
 )

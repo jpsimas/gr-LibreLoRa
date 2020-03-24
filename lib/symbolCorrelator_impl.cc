@@ -81,7 +81,7 @@ namespace gr {
       float sumSq = 0;
       float sum = 0;
       
-      constexpr float corrMin = 0.4;//disable for test
+      constexpr float corrMin = 0;//disable for test
       //THIS IS NOT WORKING!!!!!!!!!!!!!!!!!!!!!!!!!!!!
       size_t kFirst;
       for(kFirst = 0; kFirst < noutput_items; kFirst++)

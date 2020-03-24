@@ -25,15 +25,19 @@
 #include <gnuradio/io_signature.h>
 #include "preambleDetector_impl.h"
 
-//#include <gnuradio/blocks/vector_source.h>
 #include <gnuradio/filter/fir_filter_blk.h>
 #include <gnuradio/blocks/add_blk.h>
 #include <gnuradio/blocks/delay.h>
 #include <gnuradio/blocks/multiply.h>
 #include <gnuradio/blocks/multiply_const.h>
 #include <gnuradio/blocks/divide.h>
+
+#include <LibreLoRa/normalizeCorrelation.h>
+
+// #include <gnuradio/blocks/vector_source.h>
+// #include <LibreLoRa/symbolCorrelator.h>
+
 #include "getSymbol.cc"
-//#include <LibreLoRa/symbolCorrelator.h>
 #include <vector>
 
 namespace gr {
@@ -59,10 +63,10 @@ namespace gr {
       std::cout << "BENIS3" << std::endl;
       std::vector<std::vector<float>> preamble;
       
-      //upchirps
+      //upchirps - ONLY ONE IS NOT WORKING FOR SOME FUCKING REASON
       auto upchirp = getSymbol(0, SF, OSF);
       for(size_t i = 0; i < nUpchirps; i++)
-	preamble.push_back(getSymbol(0, SF, OSF));
+	preamble.push_back(upchirp);
 
       //calculate sync word symbols from sync word number
       preamble.push_back(getSymbol((1 << (SF - 5))*(syncWordNumber >> 4), SF, OSF));
@@ -79,9 +83,9 @@ namespace gr {
       std::vector<float> fractionOfDownchirp;
       fractionOfDownchirp.insert(fractionOfDownchirp.begin(), downchirp.begin(), downchirp.begin() + (((1 << (SF - 2)) - 1)*OSF - 1));
       preamble.push_back(fractionOfDownchirp);
-      
+
       //normalize and make preamble zero-mean
-      float preambleSize = 0;
+      size_t preambleSize = 0;
       float mean = 0;
   
       //normalize and make preamble zero-mean
@@ -114,30 +118,17 @@ namespace gr {
 
 
       //invert order of all symbols because of the way fir_filter block works
-      for(size_t i = 0; i < preamble.size(); i++) {
-	auto symTmp = preamble[i];
-	for(size_t j = 0; j < preamble[i].size(); j++)
-	  preamble[i][j] = symTmp[preamble[i].size() - 1 - j];
-      }
+      // for(auto& sym : preamble) {
+      // 	std::vector<float> symTmp = sym;
+      //  	for(size_t j = 0; j < sym.size(); j++)
+      // 	  sym.at(j) = symTmp.at(symTmp.size() - 1 - j);
+      // }
 
       // std::vector<boost::shared_ptr<symbolCorrelator>> blocks;
       // for(auto& sym : preamble)
-      // 	blocks.push_back(symbolCorrelator::make(sym));
-      std::vector<gr::filter::fir_filter_fff::sptr> blocksCorr;
-      std::vector<gr::blocks::delay::sptr> blocksDelay;
-      std::vector<gr::blocks::delay::sptr> blocksDelaySq;
-      std::vector<gr::filter::fir_filter_fff::sptr> blocksSum;
-      std::vector<gr::filter::fir_filter_fff::sptr> blocksSumSq;
-      
-      for(auto& sym : preamble) {
-	blocksCorr.push_back(gr::filter::fir_filter_fff::make(1, sym));
-	blocksDelay.push_back(gr::blocks::delay::make(sizeof(float), sym.size()));
-	blocksSum.push_back(gr::filter::fir_filter_fff::make(1, std::vector<float>(sym.size(), 1)));
+      //  	blocks.push_back(symbolCorrelator::make(sym));
 
-	blocksSumSq.push_back(gr::filter::fir_filter_fff::make(1, std::vector<float>(sym.size(), 1)));
-      }
-
-      //auto oneblock = gr::blocks::vector_source<float>::make(std::vector<float>({1}), true);
+      // auto oneblock = gr::blocks::vector_source<float>::make(std::vector<float>({1}), true);
       
       // connect(self(), 0, blocks[0], 0);
       // connect(oneblock, 0, blocks[0], 1);
@@ -149,55 +140,93 @@ namespace gr {
       
       // connect(blocks.back(), 0, self(), 0);
       // connect(blocks.back(), 1, self(), 1);
+      
+      std::vector<gr::filter::fir_filter_fff::sptr> blocksCorr;
+      std::vector<gr::blocks::delay::sptr> blocksDelay;
+      std::vector<gr::blocks::delay::sptr> blocksDelaySq;
+      std::vector<gr::filter::fir_filter_fff::sptr> blocksSum;
+      std::vector<gr::filter::fir_filter_fff::sptr> blocksSumSq;
+      
+      for(auto& sym : preamble) {
+      	blocksCorr.push_back(gr::filter::fir_filter_fff::make(1, sym));
+      	blocksDelay.push_back(gr::blocks::delay::make(sizeof(float), sym.size()));
+	
+	std::vector<float> onesVect(sym.size(), 1.0);
+      	blocksSum.push_back(gr::filter::fir_filter_fff::make(1, onesVect));
+      	blocksSumSq.push_back(gr::filter::fir_filter_fff::make(1, onesVect));
+      }
 
+      for(size_t i = 0; i + 1 < preamble.size(); i++)
+	blocksDelaySq.push_back(gr::blocks::delay::make(sizeof(float), preamble[i].size()));
+      	
       auto adder = gr::blocks::add_ff::make();
       auto adderSum = gr::blocks::add_ff::make();
       auto adderSumSq = gr::blocks::add_ff::make();
       auto multiplier = gr::blocks::multiply_ff::make();
       
-      connect(self(), 0, blocksCorr[0], 0);
-      connect(self(), 0, blocksDelay[0], 0);
+      connect(self(), 0, blocksCorr.at(0), 0);
+      connect(self(), 0, blocksDelay.at(0), 0);
 
-      connect(self(), 0, blocksSum[0], 0);
+      connect(self(), 0, blocksSum.at(0), 0);
       
       connect(self(), 0, multiplier, 0);
       connect(self(), 0, multiplier, 1);
-      connect(multiplier, 0, blocksDelaySq[0], 0);
-      connect(multiplier, 0, blocksSumSq[0], 0);
+      connect(multiplier, 0, blocksSumSq.at(0), 0);
+      if(blocksDelaySq.size() > 0)
+	connect(multiplier, 0, blocksDelaySq.at(0), 0);
       
       for(size_t i = 0; i < blocksCorr.size(); i++){
-       	connect(blocksCorr[i], 0, adder, i);
-	connect(blocksSum[i], 0, adderSum, i);
-	connect(blocksSumSq[i], 0, adderSumSq, i);
+       	connect(blocksCorr.at(i), 0, adder, i);
+	connect(blocksSum.at(i), 0, adderSum, i);
+	connect(blocksSumSq.at(i), 0, adderSumSq, i);
       }
-
-      for(size_t i = 0; i < blocksDelay.size() - 1; i++) {
-	connect(blocksDelay[i], 0, blocksDelay[i + 1], 0);
-	connect(blocksDelay[i], 0, blocksCorr[i + 1], 0);
-
-	connect(blocksDelay[i], 0, blocksSum[i + 1], 0);
-
-	connect(blocksDelaySq[i], 0, blocksDelaySq[i + 1], 0);
-	connect(blocksDelaySq[i], 0, blocksSumSq[i + 1], 0);
+      
+      for(size_t i = 0; i + 1 < blocksDelay.size(); i++)
+      	connect(blocksDelay.at(i), 0, blocksDelay.at(i + 1), 0);
+      
+      for(size_t i = 0; i + 1 < blocksDelaySq.size(); i++)
+	connect(blocksDelaySq.at(i), 0, blocksDelaySq.at(i + 1), 0);
+      
+      for(size_t i = 0; i + 1 < blocksDelay.size(); i++) {	
+      	connect(blocksDelay.at(i), 0, blocksCorr.at(i + 1), 0);
+	connect(blocksDelay.at(i), 0, blocksSum.at(i + 1), 0);
+	connect(blocksDelaySq.at(i), 0, blocksSumSq.at(i + 1), 0);
       }
       
       connect(blocksDelay.back(), 0, self(), 0);
-      //connect(adder, 0, self(), 1);
+      ////      connect(adder, 0, self(), 1);
+      
+      auto normalizer = normalizeCorrelation::make(preambleSize);
+      connect(adder, 0, normalizer, 0);
+      connect(adderSum, 0, normalizer, 1);
+      connect(adderSumSq, 0, normalizer, 2);
+      connect(normalizer, 0, self(), 1);
+      
+      // auto divider = gr::blocks::divide_ff::make();
+      // auto multiplyByMinus2 = gr::blocks::multiply_const_ff::make(-2);
+      // auto multiplyByConst = gr::blocks::multiply_const_ff::make(1/preambleSize);
+      // auto multiplier1 = gr::blocks::multiply_ff::make();
+      // auto multiplier2 = gr::blocks::multiply_ff::make();
+      // auto adder1 = gr::blocks::add_ff::make();
+      // auto adder2 = gr::blocks::add_ff::make();
+      
+      // connect(adder, 0, divider, 0);
+      // connect(adder1, 0, divider, 1);
 
-      auto divider = gr::blocks::divide_ff::make();
-      auto multiplyByMinus2 = gr::blocks::multiply_const_ff::make(-2);
-      auto multiplyByConst = gr::blocks::multiply_const_ff::make(1/preambleSize);
-      auto multiplier1 = gr::blocks::multiply_ff::make();
-      auto adder1 = gr::blocks::add_ff::make();
-      auto adder2 = gr::blocks::add_ff::make();
-      connect(adder, 0, divider, 0);
-      connect(adder1, 0, divider, 1);
-      connect(adderSum, 0, multiplyByMinus2, 0);
-      connect(multiplyByMinus2, 0, adder2, 0);
-      connect(adderSumSq, 0, multiplyByConst, 0);
-      connect(multiplyByConst, 0, adder2, 1);
-      connect(adder2, 0, adder1, 1);
-      connect(divider, 0, self(), 1);
+      // connect(adderSumSq, 0, adder1, 0);
+      
+      // connect(adderSum, 0, multiplyByMinus2, 0);
+      // connect(multiplyByMinus2, 0, adder2, 0);
+      
+      // connect(adderSum, 0, multiplier2, 0);
+      // connect(adderSum, 0, multiplier2, 1);
+
+      // connect(multiplier2, 0, multiplyByConst, 0);
+      
+      // connect(multiplyByConst, 0, adder2, 1);
+      
+      // connect(adder2, 0, adder1, 1);
+      // connect(divider, 0, self(), 1);
     }
 
     /*
