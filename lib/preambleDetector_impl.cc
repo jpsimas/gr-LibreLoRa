@@ -63,7 +63,6 @@ namespace gr {
       std::cout << "BENIS3" << std::endl;
       std::vector<std::vector<float>> preamble;
       
-      //upchirps - ONLY ONE IS NOT WORKING FOR SOME FUCKING REASON
       auto upchirp = getSymbol(0, SF, OSF);
       for(size_t i = 0; i < nUpchirps; i++)
 	preamble.push_back(upchirp);
@@ -194,7 +193,6 @@ namespace gr {
       }
       
       connect(blocksDelay.back(), 0, self(), 0);
-      ////      connect(adder, 0, self(), 1);
       
       auto normalizer = normalizeCorrelation::make(preambleSize);
       connect(adder, 0, normalizer, 0);
@@ -202,31 +200,11 @@ namespace gr {
       connect(adderSumSq, 0, normalizer, 2);
       connect(normalizer, 0, self(), 1);
       
-      // auto divider = gr::blocks::divide_ff::make();
-      // auto multiplyByMinus2 = gr::blocks::multiply_const_ff::make(-2);
-      // auto multiplyByConst = gr::blocks::multiply_const_ff::make(1/preambleSize);
-      // auto multiplier1 = gr::blocks::multiply_ff::make();
-      // auto multiplier2 = gr::blocks::multiply_ff::make();
-      // auto adder1 = gr::blocks::add_ff::make();
-      // auto adder2 = gr::blocks::add_ff::make();
-      
-      // connect(adder, 0, divider, 0);
-      // connect(adder1, 0, divider, 1);
-
-      // connect(adderSumSq, 0, adder1, 0);
-      
-      // connect(adderSum, 0, multiplyByMinus2, 0);
-      // connect(multiplyByMinus2, 0, adder2, 0);
-      
-      // connect(adderSum, 0, multiplier2, 0);
-      // connect(adderSum, 0, multiplier2, 1);
-
-      // connect(multiplier2, 0, multiplyByConst, 0);
-      
-      // connect(multiplyByConst, 0, adder2, 1);
-      
-      // connect(adder2, 0, adder1, 1);
-      // connect(divider, 0, self(), 1);
+      // auto synchronizer = correlationSync::make(minCorr, corrStop, preambleSize());
+      // connect(blocksDelay.back(), 0, syncronizer, 0);
+      // connect(normalizer, 0, synchronizer, 1);
+      // connect(synchronizer, 0, self(), 0);
+      // connect(synchronizer, 1, self(), 1);
     }
 
     /*
