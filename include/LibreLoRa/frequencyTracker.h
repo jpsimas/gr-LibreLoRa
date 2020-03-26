@@ -45,7 +45,7 @@ namespace gr {
        * class. LibreLoRa::frequencyTracker::make is the public interface for
        * creating new instances.
        */
-      static sptr make(float mu);
+      static sptr make(float mu, size_t SF, size_t OSF);
     };
 
   } // namespace LibreLoRa

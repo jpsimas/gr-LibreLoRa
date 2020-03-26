@@ -31,8 +31,9 @@ namespace gr {
       // Nothing to declare in this block.
       float mu;
       gr_complex w;
+      const gr_complex wStep;
      public:
-      frequencyTracker_impl(float mu);
+      frequencyTracker_impl(float mu, size_t SF, size_t OSF);
       ~frequencyTracker_impl();
 
       // Where all the action really happens

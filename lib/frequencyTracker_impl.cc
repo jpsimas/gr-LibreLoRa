@@ -31,21 +31,21 @@ namespace gr {
   namespace LibreLoRa {
 
     frequencyTracker::sptr
-    frequencyTracker::make(float mu)
+    frequencyTracker::make(float mu, size_t SF, size_t OSF)
     {
       return gnuradio::get_initial_sptr
-        (new frequencyTracker_impl(mu));
+        (new frequencyTracker_impl(mu, SF, OSF));
     }
 
 
     /*
      * The private constructor
      */
-    frequencyTracker_impl::frequencyTracker_impl(float mu)
+    frequencyTracker_impl::frequencyTracker_impl(float mu, size_t SF, size_t OSF)
       : gr::block("frequencyTracker",
 		  gr::io_signature::make(1, 1, sizeof(gr_complex)),
 		  gr::io_signature::make(1, 1, sizeof(float))),
-	mu(mu), w(1, 0){
+	mu(mu), w(1, 0), wStep(std::polar<float>(1, -2*M_PI*1.0/((1 << SF)*OSF*OSF))){
     }
 
     /*
@@ -72,8 +72,8 @@ namespace gr {
 
       // Do <+signal processing+>
 
-      
       for(int i = 0; i < noutput_items; i++) {
+	w *= wStep;
 	if(in[i] != gr_complex(0, 0))
 	  w = (1 - mu)*w + mu*std::conj(in[i + 1]/in[i]);
 	out[i] = -std::arg(w)/(2*M_PI);
