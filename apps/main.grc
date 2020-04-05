@@ -36,7 +36,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 125e3
+    value: 250e3
   states:
     bus_sink: false
     bus_source: false
@@ -72,7 +72,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 0.25e6
+    value: 1e6
   states:
     bus_sink: false
     bus_source: false
@@ -98,32 +98,66 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
+    corrMin: '0.8'
     corrStop: '0.7'
-    maxDelay: '10240'
+    maxDelay: symbolSize
     maxoutbuf: '0'
-    minCorr: '0.8'
     minoutbuf: '0'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [744, 324.0]
+    coordinate: [760, 196.0]
     rotation: 0
-    state: true
-- name: LibreLoRa_frequencyTracker_0
-  id: LibreLoRa_frequencyTracker
+    state: enabled
+- name: LibreLoRa_deinterleave_0
+  id: LibreLoRa_deinterleave
   parameters:
+    SF: '7'
     affinity: ''
     alias: ''
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    mu: '0.1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1200, 316.0]
+    rotation: 0
+    state: true
+- name: LibreLoRa_frequencyTracker_0
+  id: LibreLoRa_frequencyTracker
+  parameters:
+    OSF: OSF
+    SF: SF
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mu: '0.2'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
     coordinate: [304, 340.0]
+    rotation: 0
+    state: true
+- name: LibreLoRa_grayEncode_0
+  id: LibreLoRa_grayEncode
+  parameters:
+    SF: SF
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1048, 308.0]
     rotation: 0
     state: true
 - name: LibreLoRa_preambleDetector_0
@@ -144,45 +178,28 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [544, 300.0]
+    coordinate: [528, 300.0]
     rotation: 0
     state: true
-- name: blocks_argmax_xx_0
-  id: blocks_argmax_xx
+- name: LibreLoRa_symbolDemod_0
+  id: LibreLoRa_symbolDemod
   parameters:
+    OSF: OSF
+    SF: SF
     affinity: ''
     alias: ''
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    num_inputs: '1'
-    type: float
-    vlen: symbolSize
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1512, 536.0]
+    coordinate: [904, 236.0]
     rotation: 0
-    state: true
-- name: blocks_complex_to_mag_squared_0
-  id: blocks_complex_to_mag_squared
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    vlen: symbolSize
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1304, 560.0]
-    rotation: 0
-    state: true
-- name: blocks_int_to_float_0
-  id: blocks_int_to_float
+    state: enabled
+- name: blocks_char_to_float_0
+  id: blocks_char_to_float
   parameters:
     affinity: ''
     alias: ''
@@ -195,63 +212,11 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [920, 196.0]
+    coordinate: [1320, 436.0]
     rotation: 0
     state: true
-- name: blocks_multiply_const_vxx_0
-  id: blocks_multiply_const_vxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    const: UPCHIRP
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: float
-    vlen: symbolSize
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [800, 548.0]
-    rotation: 0
-    state: true
-- name: blocks_null_sink_0
-  id: blocks_null_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    bus_structure_sink: '[[0,],]'
-    comment: ''
-    num_inputs: '1'
-    type: short
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1720, 632.0]
-    rotation: 0
-    state: true
-- name: blocks_short_to_float_0
-  id: blocks_short_to_float
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    scale: '1'
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1672, 528.0]
-    rotation: 0
-    state: true
-- name: blocks_stream_to_vector_0
-  id: blocks_stream_to_vector
+- name: blocks_vector_to_stream_0
+  id: blocks_vector_to_stream
   parameters:
     affinity: ''
     alias: ''
@@ -265,28 +230,25 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [568, 560.0]
+    coordinate: [952, 120.0]
     rotation: 0
-    state: true
-- name: fft_vxx_0
-  id: fft_vxx
+    state: disabled
+- name: blocks_vector_to_stream_1
+  id: blocks_vector_to_stream
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    fft_size: symbolSize
-    forward: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
-    nthreads: '1'
-    shift: 'True'
-    type: float
-    window: window.blackmanharris(symbolSize)
+    num_items: SF
+    type: byte
+    vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1048, 536.0]
+    coordinate: [1136, 448.0]
     rotation: 0
     state: true
 - name: qtgui_time_sink_x_0
@@ -344,7 +306,7 @@ blocks:
     marker9: '-1'
     name: '"frequencyTracker output"'
     nconnections: '1'
-    size: '100000'
+    size: 10*symbolSize
     srate: samp_rate
     stemplot: 'False'
     style1: '1'
@@ -376,14 +338,14 @@ blocks:
     width8: '1'
     width9: '1'
     ylabel: Frequency
-    ymax: '0.2'
-    ymin: '-0.2'
+    ymax: BW/samp_rate
+    ymin: -BW/samp_rate
     yunit: '""'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [568, 116.0]
+    coordinate: [552, 92.0]
     rotation: 0
     state: true
 - name: qtgui_time_sink_x_0_0
@@ -441,7 +403,7 @@ blocks:
     marker9: '-1'
     name: '"preambleDetector Data Out"'
     nconnections: '1'
-    size: '100000'
+    size: 10*symbolSize
     srate: samp_rate
     stemplot: 'False'
     style1: '1'
@@ -473,16 +435,16 @@ blocks:
     width8: '1'
     width9: '1'
     ylabel: Frequency
-    ymax: '0.2'
-    ymin: '-0.2'
+    ymax: BW/samp_rate
+    ymin: -BW/samp_rate
     yunit: '""'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1232, 312.0]
+    coordinate: [1128, 28.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: qtgui_time_sink_x_0_0_0
   id: qtgui_time_sink_x
   parameters:
@@ -571,16 +533,16 @@ blocks:
     width9: '1'
     ylabel: Correlation
     ymax: '1'
-    ymin: '-1'
+    ymin: '0'
     yunit: '""'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [352, 420.0]
+    coordinate: [728, 436.0]
     rotation: 0
     state: true
-- name: qtgui_time_sink_x_0_0_1
+- name: qtgui_time_sink_x_0_1
   id: qtgui_time_sink_x
   parameters:
     affinity: ''
@@ -633,9 +595,9 @@ blocks:
     marker7: '-1'
     marker8: '-1'
     marker9: '-1'
-    name: '"syncd"'
+    name: '"sync output"'
     nconnections: '1'
-    size: '100000'
+    size: 10*symbolSize
     srate: samp_rate
     stemplot: 'False'
     style1: '1'
@@ -666,18 +628,18 @@ blocks:
     width7: '1'
     width8: '1'
     width9: '1'
-    ylabel: syncd?
-    ymax: '0.2'
-    ymin: '-0.2'
+    ylabel: Frequency
+    ymax: BW/samp_rate
+    ymin: -BW/samp_rate
     yunit: '""'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1128, 100.0]
+    coordinate: [1216, 132.0]
     rotation: 0
-    state: true
-- name: qtgui_time_sink_x_0_0_2
+    state: disabled
+- name: qtgui_time_sink_x_1
   id: qtgui_time_sink_x
   parameters:
     affinity: ''
@@ -730,9 +692,9 @@ blocks:
     marker7: '-1'
     marker8: '-1'
     marker9: '-1'
-    name: '"symbs"'
+    name: '"Symbols"'
     nconnections: '1'
-    size: '100000'
+    size: '1024'
     srate: samp_rate
     stemplot: 'False'
     style1: '1'
@@ -763,15 +725,15 @@ blocks:
     width7: '1'
     width8: '1'
     width9: '1'
-    ylabel: symnum
-    ymax: '0.2'
-    ymin: '-0.2'
+    ylabel: Symbol Number
+    ymax: 2**SF - 1
+    ymin: '0'
     yunit: '""'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1832, 488.0]
+    coordinate: [1376, 252.0]
     rotation: 0
     state: true
 - name: qtgui_waterfall_sink_x_0_0
@@ -832,7 +794,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [336, 96.0]
+    coordinate: [344, 104.0]
     rotation: 0
     state: true
 - name: rtlsdr_source_0
@@ -1194,22 +1156,19 @@ blocks:
     state: true
 
 connections:
-- [LibreLoRa_correlationSync_0, '0', blocks_int_to_float_0, '0']
-- [LibreLoRa_correlationSync_0, '1', blocks_stream_to_vector_0, '0']
-- [LibreLoRa_correlationSync_0, '1', qtgui_time_sink_x_0_0, '0']
+- [LibreLoRa_correlationSync_0, '0', LibreLoRa_symbolDemod_0, '0']
+- [LibreLoRa_correlationSync_0, '0', blocks_vector_to_stream_0, '0']
+- [LibreLoRa_deinterleave_0, '0', blocks_vector_to_stream_1, '0']
 - [LibreLoRa_frequencyTracker_0, '0', LibreLoRa_preambleDetector_0, '0']
 - [LibreLoRa_frequencyTracker_0, '0', qtgui_time_sink_x_0, '0']
+- [LibreLoRa_grayEncode_0, '0', LibreLoRa_deinterleave_0, '0']
 - [LibreLoRa_preambleDetector_0, '0', LibreLoRa_correlationSync_0, '0']
 - [LibreLoRa_preambleDetector_0, '1', LibreLoRa_correlationSync_0, '1']
 - [LibreLoRa_preambleDetector_0, '1', qtgui_time_sink_x_0_0_0, '0']
-- [blocks_argmax_xx_0, '0', blocks_short_to_float_0, '0']
-- [blocks_argmax_xx_0, '1', blocks_null_sink_0, '0']
-- [blocks_complex_to_mag_squared_0, '0', blocks_argmax_xx_0, '0']
-- [blocks_int_to_float_0, '0', qtgui_time_sink_x_0_0_1, '0']
-- [blocks_multiply_const_vxx_0, '0', fft_vxx_0, '0']
-- [blocks_short_to_float_0, '0', qtgui_time_sink_x_0_0_2, '0']
-- [blocks_stream_to_vector_0, '0', blocks_multiply_const_vxx_0, '0']
-- [fft_vxx_0, '0', blocks_complex_to_mag_squared_0, '0']
+- [LibreLoRa_symbolDemod_0, '0', LibreLoRa_grayEncode_0, '0']
+- [blocks_char_to_float_0, '0', qtgui_time_sink_x_1, '0']
+- [blocks_vector_to_stream_0, '0', qtgui_time_sink_x_0_1, '0']
+- [blocks_vector_to_stream_1, '0', blocks_char_to_float_0, '0']
 - [rtlsdr_source_0, '0', LibreLoRa_frequencyTracker_0, '0']
 - [rtlsdr_source_0, '0', qtgui_waterfall_sink_x_0_0, '0']
 

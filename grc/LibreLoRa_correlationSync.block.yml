@@ -1,0 +1,27 @@
+id: LibreLoRa_correlationSync
+label: correlationSync
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.correlationSync(${corrMin}, ${corrStop}, ${maxDelay})
+parameters:
+- id: corrMin
+  label: Corrmin
+  dtype: float
+- id: corrStop
+  label: Corrstop
+  dtype: float
+- id: maxDelay
+  label: Maxdelay
+  dtype: raw
+inputs:
+- label: in
+  domain: stream
+  dtype: float
+  multiplicity: '2'
+outputs:
+- label: out
+  domain: stream
+  dtype: float
+  vlen: ${ maxDelay }
+file_format: 1

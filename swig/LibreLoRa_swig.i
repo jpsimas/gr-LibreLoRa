@@ -14,6 +14,10 @@
 #include "LibreLoRa/preambleDetector.h"
 #include "LibreLoRa/normalizeCorrelation.h"
 #include "LibreLoRa/correlationSync.h"
+#include "LibreLoRa/symbolDemod.h"
+#include "LibreLoRa/grayEncode.h"
+#include "LibreLoRa/deinterleave.h"
+#include "LibreLoRa/decode.h"
 %}
 
 %include "LibreLoRa/frequencyTracker.h"
@@ -28,3 +32,11 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, preambleDetector);
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, normalizeCorrelation);
 %include "LibreLoRa/correlationSync.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, correlationSync);
+%include "LibreLoRa/symbolDemod.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, symbolDemod);
+%include "LibreLoRa/grayEncode.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, grayEncode);
+%include "LibreLoRa/deinterleave.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, deinterleave);
+%include "LibreLoRa/decode.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, decode);

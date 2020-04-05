@@ -1,0 +1,38 @@
+id: LibreLoRa_preambleDetector
+label: preambleDetector
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.preambleDetector(${SF}, ${OSF}, ${nUpchirps}, ${syncWordNumber},
+    ${minCorr}, ${corrStop})
+parameters:
+- id: SF
+  label: Sf
+  dtype: raw
+- id: OSF
+  label: Osf
+  dtype: raw
+- id: nUpchirps
+  label: Nupchirps
+  dtype: raw
+- id: syncWordNumber
+  label: Syncwordnumber
+  dtype: raw
+- id: minCorr
+  label: Mincorr
+  dtype: float
+- id: corrStop
+  label: Corrstop
+  dtype: float
+inputs:
+- label: in
+  domain: stream
+  dtype: float
+outputs:
+- label: data_out
+  domain: stream
+  dtype: float
+- label: corr
+  domain: stream
+  dtype: float
+file_format: 1

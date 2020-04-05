@@ -18,11 +18,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_CORRELATIONSYNC_H
-#define INCLUDED_LIBRELORA_CORRELATIONSYNC_H
+#ifndef INCLUDED_LIBRELORA_DEINTERLEAVE_H
+#define INCLUDED_LIBRELORA_DEINTERLEAVE_H
 
 #include <LibreLoRa/api.h>
-#include <gnuradio/sync_decimator.h>
+#include <gnuradio/block.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -32,24 +32,24 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
-    class LIBRELORA_API correlationSync : virtual public gr::sync_decimator
+    class LIBRELORA_API deinterleave : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<correlationSync> sptr;
+      typedef boost::shared_ptr<deinterleave> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of LibreLoRa::correlationSync.
+       * \brief Return a shared_ptr to a new instance of LibreLoRa::deinterleave.
        *
-       * To avoid accidental use of raw pointers, LibreLoRa::correlationSync's
+       * To avoid accidental use of raw pointers, LibreLoRa::deinterleave's
        * constructor is in a private implementation
-       * class. LibreLoRa::correlationSync::make is the public interface for
+       * class. LibreLoRa::deinterleave::make is the public interface for
        * creating new instances.
        */
-      static sptr make(float corrMin, float corrStop, size_t maxDelay);
+      static sptr make(size_t SF);
     };
 
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_CORRELATIONSYNC_H */
+#endif /* INCLUDED_LIBRELORA_DEINTERLEAVE_H */
 

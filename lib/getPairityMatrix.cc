@@ -18,19 +18,37 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <LibreLoRa/getSymbol.h>
+#include <LibreLoRa/getPairityMatrix.h>
 
 namespace gr {
   namespace LibreLoRa {
 
-    std::vector<float> getSymbol(size_t symbolNum, size_t SF, size_t OSF) {
-      const size_t symbolSize = (1 << SF)*OSF;
-      std::vector<float> symbol(symbolSize);
-      for(size_t i = 0; i < symbolSize; i++) {
-	auto k = (symbolNum*OSF + i)%symbolSize;
-	symbol[i] = (k - (symbolSize - 1)/2.0)/(OSF*(symbolSize - 1));
+    constexpr std::array<uint8_t, 4> getPairityMatrix(size_t CR) {
+      switch(CR){
+      case 4:
+	return {0x07, 0x0e, 0x0b, 0x0d};
+      case 3:
+	return {0x07, 0x0e, 0x0b, 0x00};
+      case 2:
+	return {0x07, 0x0e, 0x00, 0x00};
+      case 1:
+	return {0x0f, 0x00, 0x00, 0x00};
+      default:
+	return {0x00, 0x00, 0x00, 0x00};
       }
-      return symbol;
+    }
+
+    uint8_t calcPairityBit(const uint8_t nibble, const uint8_t pairityMask) {
+      uint8_t masked = nibble^pairityMask;
+      for(size_t i = 1; i < 4; i++)
+	masked ^= (masked >> i);
+      return masked & 0x01;
+    }
+    
+    uint8_t calcPairity(const uint8_t nibble, const std::array<uint8_t, 4> pairityMatrix) {
+      uint8_t dataWithPairity = nibble;
+      for(int i = 0; i < 4; i++)
+	dataWithPairity &= (calcPairityBit(nibble, pairityMatrix[i]) << (i + 4)); 
     }
     
   } /* namespace LibreLoRa */

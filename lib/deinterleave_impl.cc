@@ -23,67 +23,64 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include "frequencyTracker_impl.h"
-#include <cmath>
-#include <complex>
+#include "deinterleave_impl.h"
 
 namespace gr {
   namespace LibreLoRa {
 
-    frequencyTracker::sptr
-    frequencyTracker::make(float mu, size_t SF, size_t OSF)
+    deinterleave::sptr
+    deinterleave::make(size_t SF)
     {
       return gnuradio::get_initial_sptr
-        (new frequencyTracker_impl(mu, SF, OSF));
+        (new deinterleave_impl(SF));
     }
 
 
     /*
      * The private constructor
      */
-    frequencyTracker_impl::frequencyTracker_impl(float mu, size_t SF, size_t OSF)
-      : gr::block("frequencyTracker",
-		  gr::io_signature::make(1, 1, sizeof(gr_complex)),
-		  gr::io_signature::make(1, 1, sizeof(float))),
-	mu(mu),
-	w(1, 0),
-	wStep(std::polar<float>(1, -2*M_PI*1.0/((1 << SF)*OSF*OSF))){
+    deinterleave_impl::deinterleave_impl(size_t SF)
+      : SF(SF),
+	codeLength(8),
+	gr::block("deinterleave",
+		  gr::io_signature::make(1, 1, sizeof(uint16_t)),
+		  gr::io_signature::make(1, 1, SF*sizeof(uint8_t)))
+    {
+      set_relative_rate(1.0/codeLength);
     }
 
     /*
      * Our virtual destructor.
      */
-    frequencyTracker_impl::~frequencyTracker_impl()
+    deinterleave_impl::~deinterleave_impl()
     {
     }
 
     void
-    frequencyTracker_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
+    deinterleave_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      ninput_items_required[0] = noutput_items + 1;
+      ninput_items_required[0] = codeLength;
     }
 
     int
-    frequencyTracker_impl::general_work (int noutput_items,
-					 gr_vector_int &ninput_items,
-					 gr_vector_const_void_star &input_items,
-					 gr_vector_void_star &output_items)
+    deinterleave_impl::general_work (int noutput_items,
+				     gr_vector_int &ninput_items,
+                       gr_vector_const_void_star &input_items,
+                       gr_vector_void_star &output_items)
     {
-      const gr_complex *in = (const gr_complex *) input_items[0];
-      float *out = (float *) output_items[0];
+      const uint16_t *in = (const uint16_t *) input_items[0];
+      uint8_t *out = (uint8_t *) output_items[0];
 
       // Do <+signal processing+>
 
-      for(int i = 0; i < noutput_items; i++) {
-	w *= wStep;
-
-	if(in[i] != gr_complex(0, 0))
-	  w = (1 - mu)*w + mu*std::conj(in[i + 1]/in[i]);
-
-	out[i] = -std::arg(w)/(2*M_PI);
-      }
-
+      for(size_t i = 0; i < SF*codeLength; i++)
+	out[i] = 0;
       
+      for(size_t i = 0; i < noutput_items; i++)
+	for(size_t j = 0; j < codeLength; j++)
+	  for(size_t k = 0; k < SF; k++)
+	    out[i*SF + (j + k)%SF] |= in[i*codeLength + k] << k;
+
       // Tell runtime system how many input items we consumed on
       // each input stream.
       consume_each (noutput_items);

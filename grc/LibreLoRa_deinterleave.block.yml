@@ -1,0 +1,20 @@
+id: LibreLoRa_deinterleave
+label: deinterleave
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.deinterleave(${SF})
+parameters:
+- id: SF
+  label: Sf
+  dtype: raw
+inputs:
+- label: in
+  domain: stream
+  dtype: short
+outputs:
+- label: out
+  domain: stream
+  dtype: byte
+  vlen: ${ SF }
+file_format: 1

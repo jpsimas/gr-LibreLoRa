@@ -18,20 +18,18 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <LibreLoRa/getSymbol.h>
+#ifndef GETPAIRITYMATRIX_H
+#define GETPAIRITYMATRIX_H
+
+#include <array>
+#include <cstdint>
 
 namespace gr {
   namespace LibreLoRa {
-
-    std::vector<float> getSymbol(size_t symbolNum, size_t SF, size_t OSF) {
-      const size_t symbolSize = (1 << SF)*OSF;
-      std::vector<float> symbol(symbolSize);
-      for(size_t i = 0; i < symbolSize; i++) {
-	auto k = (symbolNum*OSF + i)%symbolSize;
-	symbol[i] = (k - (symbolSize - 1)/2.0)/(OSF*(symbolSize - 1));
-      }
-      return symbol;
-    }
-    
+    constexpr std::array<uint8_t, 4> getPairityMatrix(size_t CR);
+    uint8_t calcPairityBit(const uint8_t nibble, const uint8_t pairityMask);
+    uint8_t calcPairity(const uint8_t nibble, const std::array<uint8_t, 4> pairityMatrix);
   } /* namespace LibreLoRa */
 } /* namespace gr */
+
+#endif

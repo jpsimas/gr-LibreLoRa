@@ -18,38 +18,36 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_CORRELATIONSYNC_H
-#define INCLUDED_LIBRELORA_CORRELATIONSYNC_H
+#ifndef INCLUDED_LIBRELORA_GRAYENCODE_IMPL_H
+#define INCLUDED_LIBRELORA_GRAYENCODE_IMPL_H
 
-#include <LibreLoRa/api.h>
-#include <gnuradio/sync_decimator.h>
+#include <LibreLoRa/grayEncode.h>
 
 namespace gr {
   namespace LibreLoRa {
 
-    /*!
-     * \brief <+description of block+>
-     * \ingroup LibreLoRa
-     *
-     */
-    class LIBRELORA_API correlationSync : virtual public gr::sync_decimator
+    class grayEncode_impl : public grayEncode
     {
-     public:
-      typedef boost::shared_ptr<correlationSync> sptr;
+     private:
+      const size_t SF;
+      // Nothing to declare in this block.
 
-      /*!
-       * \brief Return a shared_ptr to a new instance of LibreLoRa::correlationSync.
-       *
-       * To avoid accidental use of raw pointers, LibreLoRa::correlationSync's
-       * constructor is in a private implementation
-       * class. LibreLoRa::correlationSync::make is the public interface for
-       * creating new instances.
-       */
-      static sptr make(float corrMin, float corrStop, size_t maxDelay);
+     public:
+      grayEncode_impl(size_t SF);
+      ~grayEncode_impl();
+
+      // Where all the action really happens
+      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+
+      int general_work(int noutput_items,
+           gr_vector_int &ninput_items,
+           gr_vector_const_void_star &input_items,
+           gr_vector_void_star &output_items);
+
     };
 
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_CORRELATIONSYNC_H */
+#endif /* INCLUDED_LIBRELORA_GRAYENCODE_IMPL_H */
 

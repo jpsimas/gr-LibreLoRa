@@ -18,20 +18,15 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#include <LibreLoRa/getSymbol.h>
+#ifndef GETSYMBOL_H
+#define GETSYMBOL_H
+
+#include <vector>
 
 namespace gr {
   namespace LibreLoRa {
-
-    std::vector<float> getSymbol(size_t symbolNum, size_t SF, size_t OSF) {
-      const size_t symbolSize = (1 << SF)*OSF;
-      std::vector<float> symbol(symbolSize);
-      for(size_t i = 0; i < symbolSize; i++) {
-	auto k = (symbolNum*OSF + i)%symbolSize;
-	symbol[i] = (k - (symbolSize - 1)/2.0)/(OSF*(symbolSize - 1));
-      }
-      return symbol;
-    }
-    
+    std::vector<float> getSymbol(size_t symbolNum, size_t SF, size_t OSF);
   } /* namespace LibreLoRa */
 } /* namespace gr */
+
+#endif

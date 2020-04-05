@@ -37,7 +37,7 @@
 // #include <gnuradio/blocks/vector_source.h>
 // #include <LibreLoRa/symbolCorrelator.h>
 
-#include "getSymbol.cc"
+#include <LibreLoRa/getSymbol.h>
 #include <vector>
 
 namespace gr {
@@ -57,7 +57,9 @@ namespace gr {
     preambleDetector_impl::preambleDetector_impl(size_t SF, size_t OSF, size_t nUpchirps, uint8_t syncWordNumber, float minCorr, float corrStop)
       : gr::hier_block2("preambleDetector",
 			gr::io_signature::make(1, 1, sizeof(float)),
-			gr::io_signature::make(2, 2, sizeof(float)))
+			gr::io_signature::make(2, 2, sizeof(float)))//replace by vector of symbols
+			// gr::io_signature::make2(2, 2, sizeof(float), ((1 << SF)*OSF)*sizeof(float)))
+	
     {
 
       std::cout << "BENIS3" << std::endl;

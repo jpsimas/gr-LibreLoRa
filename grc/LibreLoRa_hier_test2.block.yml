@@ -1,0 +1,36 @@
+id: LibreLoRa_hier_test2
+label: hier test2
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.hier_test2(${SF}, ${OSF}, ${nUpchirps}, ${syncWordNumber}, ${minCorr},
+    ${corrStop})
+parameters:
+- id: SF
+  label: Sf
+  dtype: raw
+- id: OSF
+  label: Osf
+  dtype: raw
+- id: nUpchirps
+  label: Nupchirps
+  dtype: raw
+- id: syncWordNumber
+  label: Syncwordnumber
+  dtype: raw
+- id: minCorr
+  label: Mincorr
+  dtype: float
+- id: corrStop
+  label: Corrstop
+  dtype: float
+inputs:
+- label: in
+  domain: stream
+  dtype: float
+outputs:
+- label: out
+  domain: stream
+  dtype: float
+  multiplicity: '2'
+file_format: 1
