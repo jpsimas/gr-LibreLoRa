@@ -9,17 +9,29 @@ parameters:
   label: Symbol
   dtype: real_vector
 inputs:
-- label: data in
+- label: dataIn
   domain: stream
   dtype: float
-- label: corr in
+- label: corrIn
+  domain: stream
+  dtype: float
+- label: sumIn
+  domain: stream
+  dtype: float
+- label: sumSqIn
   domain: stream
   dtype: float
 outputs:
-- label: data out
+- label: dataOut
   domain: stream
   dtype: float
-- label: corr
+- label: corrOut
+  domain: stream
+  dtype: float
+- label: sumOut
+  domain: stream
+  dtype: float
+- label: sumSqOut
   domain: stream
   dtype: float
 file_format: 1

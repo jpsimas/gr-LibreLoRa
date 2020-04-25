@@ -45,7 +45,9 @@ namespace gr {
        * class. LibreLoRa::deinterleave::make is the public interface for
        * creating new instances.
        */
-      static sptr make(size_t SF);
+      static sptr make(size_t SF, size_t CR);
+      virtual void setSF(size_t SF) = 0;
+      virtual void setCR(size_t CR) = 0;
     };
 
   } // namespace LibreLoRa

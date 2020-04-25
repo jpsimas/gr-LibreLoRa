@@ -4,6 +4,8 @@ category: '[Librelora]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.grayEncode(${SF})
+  callbacks:
+  - setSF(${SF})
 parameters:
 - id: SF
   label: Sf

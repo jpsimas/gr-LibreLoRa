@@ -22,7 +22,7 @@
 #define INCLUDED_LIBRELORA_SYMBOLCORRELATOR_H
 
 #include <LibreLoRa/api.h>
-#include <gnuradio/block.h>
+#include <gnuradio/sync_block.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -32,7 +32,7 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
-    class LIBRELORA_API symbolCorrelator : virtual public gr::block
+    class LIBRELORA_API symbolCorrelator : virtual public gr::sync_block
     {
      public:
       typedef boost::shared_ptr<symbolCorrelator> sptr;
@@ -45,7 +45,7 @@ namespace gr {
        * class. LibreLoRa::symbolCorrelator::make is the public interface for
        * creating new instances.
        */
-      static sptr make(std::vector<float> symbol);
+      static sptr make(const std::vector<float>& symbol);
     };
 
   } // namespace LibreLoRa

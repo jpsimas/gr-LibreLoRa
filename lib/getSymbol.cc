@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2020 Joao Pedro de O. Simas.
+ * Copyright 2020 Joao Pedro de O Simas.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,6 +18,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#include <gnuradio/io_signature.h>
 #include <LibreLoRa/getSymbol.h>
 
 namespace gr {
@@ -32,6 +37,7 @@ namespace gr {
       }
       return symbol;
     }
-    
+
   } /* namespace LibreLoRa */
 } /* namespace gr */
+

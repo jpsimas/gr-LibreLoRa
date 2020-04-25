@@ -46,6 +46,7 @@ namespace gr {
        * creating new instances.
        */
       static sptr make(size_t SF);
+      virtual void setSF(size_t SF) = 0;
     };
 
   } // namespace LibreLoRa

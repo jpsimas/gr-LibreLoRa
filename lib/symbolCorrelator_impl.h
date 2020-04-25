@@ -33,14 +33,13 @@ namespace gr {
       const std::vector<float> symbol;
 
      public:
-      symbolCorrelator_impl(std::vector<float> symbol);
+      symbolCorrelator_impl(const std::vector<float>& symbol);
       ~symbolCorrelator_impl();
 
       // Where all the action really happens
-      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+      // void forecast (int noutput_items, gr_vector_int &ninput_items_required);
 
-      int general_work(int noutput_items,
-           gr_vector_int &ninput_items,
+      int work(int noutput_items,
            gr_vector_const_void_star &input_items,
            gr_vector_void_star &output_items);
 

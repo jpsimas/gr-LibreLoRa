@@ -34,5 +34,12 @@ install(FILES
     grayEncode.h
     deinterleave.h
     getPairityMatrix.h
-    decode.h DESTINATION include/LibreLoRa
+    decode.h
+    chirpSelect.h
+    chirpSource.h
+    #maxFrequency.h
+    #streamToHistoryVector.h
+    slidingDFT.h
+    ArgMaxAbs.h
+    getSymbol.h DESTINATION include/LibreLoRa
 )

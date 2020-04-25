@@ -3,10 +3,16 @@ label: deinterleave
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.deinterleave(${SF})
+  make: LibreLoRa.deinterleave(${SF}, ${CR})
+  callbacks:
+  - setSF(${SF})
+  - setCR(${CR})
 parameters:
 - id: SF
   label: Sf
+  dtype: raw
+- id: CR
+  label: Cr
   dtype: raw
 inputs:
 - label: in
@@ -16,5 +22,5 @@ outputs:
 - label: out
   domain: stream
   dtype: byte
-  vlen: ${ SF }
+  vlen: 12
 file_format: 1

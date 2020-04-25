@@ -45,7 +45,8 @@ namespace gr {
        * class. LibreLoRa::decode::make is the public interface for
        * creating new instances.
        */
-      static sptr make(size_t SF);
+      static sptr make(size_t CR);
+      virtual void setCR(size_t CR) = 0;
     };
 
   } // namespace LibreLoRa

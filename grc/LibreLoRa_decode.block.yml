@@ -1,43 +1,23 @@
 id: LibreLoRa_decode
 label: decode
-category: '[LibreLoRa]'
-
+category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.decode(${SF})
-
-#  Make one 'parameters' list entry for every Parameter you want settable from the GUI.
-#     Sub-entries of dictionary:
-#     * id (makes the value accessible as \$keyname, e.g. in the make entry)
-#     * label
-#     * dtype 
+  make: LibreLoRa.decode(${CR})
+  callbacks:
+  - setCR(${CR})
 parameters:
-- id: ...
-  label: ...
-  dtype: ...
-- id: ...
-  label: ...
-  dtype: ...
-
-#  Make one 'inputs' list entry per input. Sub-entries of dictionary:
-#      * label (an identifier for the GUI)
-#      * domain
-#      * dtype
-#      * vlen
-#      * optional (set to 1 for optional inputs) 
+- id: CR
+  label: Cr
+  dtype: raw
 inputs:
-- label: ...
-  domain: ...
-  dtype: ...
-  vlen: ...
-
-#  Make one 'outputs' list entry per output. Sub-entries of dictionary:
-#      * label (an identifier for the GUI)
-#      * dtype
-#      * vlen
-#      * optional (set to 1 for optional inputs) 
-- label: ...
-  domain: ...
-  dtype: ... #!-- e.g. int, float, complex, byte, short, xxx_vector, ...--
-
+- label: in
+  domain: stream
+  dtype: byte
+  vlen: 12
+outputs:
+- label: out
+  domain: stream
+  dtype: byte
+  vlen: 12
 file_format: 1

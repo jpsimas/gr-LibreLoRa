@@ -27,5 +27,12 @@ install(FILES
     LibreLoRa_symbolDemod.block.yml
     LibreLoRa_grayEncode.block.yml
     LibreLoRa_deinterleave.block.yml
-    LibreLoRa_decode.block.yml DESTINATION share/gnuradio/grc/blocks
+    LibreLoRa_decode.block.yml
+    LibreLoRa_chirpSelect.block.yml
+    LibreLoRa_chirpSource.block.yml
+    LibreLoRa_maxFrequency.block.yml
+    LibreLoRa_streamToHistoryVector.block.yml
+    LibreLoRa_slidingDFT.block.yml
+    LibreLoRa_ArgMaxAbs.block.yml
+    DESTINATION share/gnuradio/grc/blocks
 )

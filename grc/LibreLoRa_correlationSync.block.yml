@@ -24,4 +24,8 @@ outputs:
   domain: stream
   dtype: float
   vlen: ${ maxDelay }
+- label: out
+  domain: stream
+  dtype: byte
+  vlen: ${ maxDelay }
 file_format: 1

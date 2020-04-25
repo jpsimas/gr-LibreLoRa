@@ -56,7 +56,7 @@ namespace gr {
     void
     grayEncode_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      ninput_items_required[0] = noutput_items + 1;
+      ninput_items_required[0] = noutput_items;
     }
 
     int
@@ -67,11 +67,10 @@ namespace gr {
     {
       const uint16_t *in = (const uint16_t *) input_items[0];
       uint16_t *out = (uint16_t *) output_items[0];
-      static const size_t bitMask = ((1 << SF) - 1);
       
       // Do <+signal processing+>
       for(size_t i = 0; i < noutput_items; i++)
-	out[i] = in[i] ^ (in[i] << 1) ^ bitMask;
+	out[i] = (in[i] ^ (in[i] << 1)) & ((1 << SF) - 1);
 
       // Tell runtime system how many input items we consumed on
       // each input stream.
@@ -81,6 +80,9 @@ namespace gr {
       return noutput_items;
     }
 
+    void grayEncode_impl::setSF(size_t SFnew) {
+      SF = SFnew;
+    }
   } /* namespace LibreLoRa */
 } /* namespace gr */
 

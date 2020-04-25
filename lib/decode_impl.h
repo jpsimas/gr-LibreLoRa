@@ -29,15 +29,15 @@ namespace gr {
     class decode_impl : public decode
     {
      private:
-      const size_t SF;
       size_t CR;
-      std::array<uint8_t, 4> checkMatrix;
+      
+      std::array<uint8_t, 4> pairityMatrix;
+      std::unordered_map<uint8_t, uint8_t> cosetLeader;
       // Nothing to declare in this block.
 
-      void setCR(size_t CR);
       void calculateCosetLeaders();
      public:
-      decode_impl(size_t SF);
+      decode_impl(size_t CR);
       ~decode_impl();
 
       // Where all the action really happens
@@ -48,6 +48,7 @@ namespace gr {
            gr_vector_const_void_star &input_items,
            gr_vector_void_star &output_items);
 
+      void setCR(size_t CR);
     };
 
   } // namespace LibreLoRa

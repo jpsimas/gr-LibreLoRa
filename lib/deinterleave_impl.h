@@ -33,7 +33,7 @@ namespace gr {
       size_t SF;
       size_t codeLength;
      public:
-      deinterleave_impl(size_t SF);
+      deinterleave_impl(size_t SF, size_t CR);
       ~deinterleave_impl();
 
       // Where all the action really happens
@@ -44,6 +44,8 @@ namespace gr {
            gr_vector_const_void_star &input_items,
            gr_vector_void_star &output_items);
 
+      void setSF(size_t SF);
+      void setCR(size_t CR);
     };
 
   } // namespace LibreLoRa

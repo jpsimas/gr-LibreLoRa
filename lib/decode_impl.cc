@@ -31,22 +31,22 @@ namespace gr {
   namespace LibreLoRa {
 
     decode::sptr
-    decode::make(size_t SF)
+    decode::make(size_t CR)
     {
       return gnuradio::get_initial_sptr
-        (new decode_impl(SF));
+        (new decode_impl(CR));
     }
 
 
     /*
      * The private constructor
      */
-    decode_impl::decode_impl(size_t SF)
-      : SF(SF),
-	gr::block("decode",
-		  gr::io_signature::make(1, 1, SF*sizeof(uint8_t)),
-		  gr::io_signature::make(1, 1, SF*sizeof(uint8_t))) {
-      setCR(4);
+    decode_impl::decode_impl(size_t CR)
+      : gr::block("decode",
+		  gr::io_signature::make(1, 1, 12*sizeof(uint8_t)),
+		  gr::io_signature::make(1, 1, 12*sizeof(uint8_t))) {
+      setCR(CR);
+      std::cout << "BENILOSCOPE v2 ACTIVATED" << std::endl;
     }
 
     /*
@@ -70,11 +70,13 @@ namespace gr {
     {
       const uint8_t *in = (const uint8_t *) input_items[0];
       uint8_t *out = (uint8_t *) output_items[0];
-
+      
       // Do <+signal processing+>
-      for(size_t i = 0; i < noutput_items; i++)
-	for(size_t j = 0; j < SF; j++)
-	  out[SF*i + j] = in[SF*i + j];
+	for(size_t i = 0; i < noutput_items; i++)
+	  for(size_t j = 0; j < 12; j++) {
+	    uint8_t syndrome = calculatePairity(in[i*12 + j], pairityMatrix) ^ in[i*12 + j];
+	    out[i*12 + j] = (in[i*12 + j] ^ cosetLeader[syndrome]) & 0x0f;
+	  }
 
       // Tell runtime system how many input items we consumed on
       // each input stream.
@@ -84,29 +86,27 @@ namespace gr {
       return noutput_items;
     }
 
-    void decode_impl::setCR(size_t CRnew) {
-      CR = CRnew;
-      auto pairityMatrix = getPairityMatrix(CR);
-      for(int i = 0; i < 4; i++)
-	checkMatrix[i] = calcPairity(1 << i);
-    }
-
     void decode_impl::calculateCosetLeaders(){
-      std::vector<bool, (1 << (CR + 4))> found;
-      for(auto& f : found)
-	f = false;
-      for(auto& c : checkMatrix)
-	found[c] = true;
+      cosetLeader.clear();
 
+      std::array<uint8_t, 4> checkMatrix;
+      for(int i = 0; i < 4; i++)
+	checkMatrix[i] = calculatePairity(1 << i, pairityMatrix);
+      
       for(size_t i = 0; i + 1 < (CR + 4); i++)
-	for(size_t j = 0; j < (CR + 4) j++) {
+	for(size_t j = 0; j < (CR + 4); j++) {
 	  uint8_t syndrome = checkMatrix[i]^checkMatrix[j];
-	  if(!found(syndrome))
-	    cosetLeaders(syndrome, std::make_pair(i, j)) = true;//CHECK THAT SHIT
-	  found(syndrome) = true;
+	  if(cosetLeader.find(syndrome) != cosetLeader.end())
+	    cosetLeader[syndrome] = (1 << i)&(1 << j);
 	}
     }
-    
+
+    void decode_impl::setCR(size_t CRnew) {
+      CR = CRnew;
+      pairityMatrix = getPairityMatrix(CR);
+      
+      calculateCosetLeaders();
+    }
   } /* namespace LibreLoRa */
 } /* namespace gr */
 

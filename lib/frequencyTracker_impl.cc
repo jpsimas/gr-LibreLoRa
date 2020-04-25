@@ -26,6 +26,8 @@
 #include "frequencyTracker_impl.h"
 #include <cmath>
 #include <complex>
+#include <volk/volk.h>
+#include <iostream>
 
 namespace gr {
   namespace LibreLoRa {
@@ -46,8 +48,10 @@ namespace gr {
 		  gr::io_signature::make(1, 1, sizeof(gr_complex)),
 		  gr::io_signature::make(1, 1, sizeof(float))),
 	mu(mu),
-	w(1, 0),
-	wStep(std::polar<float>(1, -2*M_PI*1.0/((1 << SF)*OSF*OSF))){
+	wStep(std::polar<float>(1, -2*M_PI*1.0/((1 << SF)*OSF*OSF))),
+	w{}
+	      {
+		std::cout << ":DDD" << std::endl;
     }
 
     /*
@@ -60,7 +64,7 @@ namespace gr {
     void
     frequencyTracker_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      ninput_items_required[0] = noutput_items + 1;
+      ninput_items_required[0] = noutput_items + nw;
     }
 
     int
@@ -75,12 +79,21 @@ namespace gr {
       // Do <+signal processing+>
 
       for(int i = 0; i < noutput_items; i++) {
-	w *= wStep;
+	//w *= wStep;
 
-	if(in[i] != gr_complex(0, 0))
-	  w = (1 - mu)*w + mu*std::conj(in[i + 1]/in[i]);
+	// if(in[i] != gr_complex(0, 0))
+	//   w = (1 - mu)*w + mu*std::conj(in[i + 1]/in[i]);
+	gr_complex yi;
+	gr_complex norm;
+	volk_32fc_x2_conjugate_dot_prod_32fc(&yi, in + i, w.data(), nw);
+	volk_32fc_x2_conjugate_dot_prod_32fc(&norm, in + i, in + i, nw);
+	for(size_t j = 0; j < nw; j++)
+	  w[j] += mu*std::conj(in[i + nw] - yi)*in[i + j]/(norm + 1e-6f);
 
-	out[i] = -std::arg(w)/(2*M_PI);
+	//here calculate roots of polynomial and get frequency
+	//that best approximates w
+	
+	out[i] = -std::arg(w[nw - 1])/(2*M_PI);
       }
 
       

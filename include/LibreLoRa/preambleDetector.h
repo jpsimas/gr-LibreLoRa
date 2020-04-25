@@ -45,7 +45,7 @@ namespace gr {
        * class. LibreLoRa::preambleDetector::make is the public interface for
        * creating new instances.
        */
-      static sptr make(size_t SF, size_t OSF, size_t nUpchirps, uint8_t syncWordNumber, float minCorr, float corrStop);
+      static sptr make(size_t SF, size_t OSF, size_t nUpchirps, uint8_t syncWordNumber);
     };
 
   } // namespace LibreLoRa

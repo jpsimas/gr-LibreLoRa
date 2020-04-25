@@ -34,7 +34,14 @@ list(APPEND LibreLoRa_sources
     grayEncode_impl.cc
     deinterleave_impl.cc
     getPairityMatrix.cc
-    decode_impl.cc)
+    decode_impl.cc
+    chirpSelect_impl.cc
+    chirpSource_impl.cc
+    #maxFrequency_impl.cc
+    #streamToHistoryVector_impl.cc
+    slidingDFT_impl.cc
+    ArgMaxAbs_impl.cc
+    getSymbol.cc )
 
 set(LibreLoRa_sources "${LibreLoRa_sources}" PARENT_SCOPE)
 if(NOT LibreLoRa_sources)
@@ -42,13 +49,17 @@ if(NOT LibreLoRa_sources)
     return()
 endif(NOT LibreLoRa_sources)
 
-add_library(gnuradio-LibreLoRa SHARED ${LibreLoRa_sources})
+
 #ADD USED GNURADIO LIBRARIES HERE!!!!!!!!!!!!!!!!!!!
+
+add_library(gnuradio-LibreLoRa SHARED ${LibreLoRa_sources})
+
 target_link_libraries(gnuradio-LibreLoRa gnuradio::gnuradio-runtime gnuradio-blocks gnuradio-filter)
 target_include_directories(gnuradio-LibreLoRa
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
     PUBLIC $<INSTALL_INTERFACE:include>
   )
+
 set_target_properties(gnuradio-LibreLoRa PROPERTIES DEFINE_SYMBOL "gnuradio_LibreLoRa_EXPORTS")
 
 if(APPLE)
@@ -75,7 +86,6 @@ message(STATUS "Building for version: ${VERSION} / ${LIBVER}")
 include(GrTest)
 
 # If your unit tests require special include paths, add them here
-#include_directories()
 # List all files that contain Boost.UTF unit tests here
 list(APPEND test_LibreLoRa_sources
 )

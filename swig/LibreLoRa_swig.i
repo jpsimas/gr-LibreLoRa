@@ -18,6 +18,13 @@
 #include "LibreLoRa/grayEncode.h"
 #include "LibreLoRa/deinterleave.h"
 #include "LibreLoRa/decode.h"
+#include "LibreLoRa/chirpSelect.h"
+#include "LibreLoRa/chirpSource.h"
+#include "LibreLoRa/slidingDFT.h"
+#include "LibreLoRa/ArgMaxAbs.h"
+//#include "LibreLoRa/maxFrequency.h"
+//#include "LibreLoRa/streamToHistoryVector.h"
+#include "LibreLoRa/getSymbol.h"
 %}
 
 %include "LibreLoRa/frequencyTracker.h"
@@ -40,3 +47,20 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, grayEncode);
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, deinterleave);
 %include "LibreLoRa/decode.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, decode);
+%include "LibreLoRa/chirpSelect.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, chirpSelect);
+%include "LibreLoRa/chirpSource.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, chirpSource);
+//%include "LibreLoRa/maxFrequency.h"
+//GR_SWIG_BLOCK_MAGIC2(LibreLoRa, maxFrequency);
+//%include "LibreLoRa/streamToHistoryVector.h"
+//GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, streamToHistoryVector_ff, streamToHistoryVector<float>);
+ ////GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, streamToHistoryVector_cc, streamToHistoryVector<gr_complex>);
+////GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, streamToHistoryVector_ii, streamToHistoryVector<int>);
+%include "LibreLoRa/slidingDFT.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, slidingDFT);
+
+%include "LibreLoRa/ArgMaxAbs.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, ArgMaxAbs);
+
+%include "LibreLoRa/getSymbol.h"

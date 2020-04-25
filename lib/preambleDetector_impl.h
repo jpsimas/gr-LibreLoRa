@@ -32,7 +32,7 @@ namespace gr {
       // Nothing to declare in this block.
 
      public:
-      preambleDetector_impl(size_t SF, size_t OSF, size_t nUpchirps, uint8_t syncWordNumber, float minCorr, float corrStop);
+      preambleDetector_impl(size_t SF, size_t OSF, size_t nUpchirps, uint8_t syncWordNumber);
       ~preambleDetector_impl();
 
       // Where all the action really happens

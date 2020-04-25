@@ -29,24 +29,25 @@ namespace gr {
   namespace LibreLoRa {
 
     deinterleave::sptr
-    deinterleave::make(size_t SF)
+    deinterleave::make(size_t SF, size_t CR)
     {
       return gnuradio::get_initial_sptr
-        (new deinterleave_impl(SF));
+        (new deinterleave_impl(SF, CR));
     }
 
 
     /*
      * The private constructor
      */
-    deinterleave_impl::deinterleave_impl(size_t SF)
-      : SF(SF),
-	codeLength(8),
+    deinterleave_impl::deinterleave_impl(size_t SF, size_t CR)
+      :	codeLength(CR + 4),
+	SF(SF),
 	gr::block("deinterleave",
 		  gr::io_signature::make(1, 1, sizeof(uint16_t)),
-		  gr::io_signature::make(1, 1, SF*sizeof(uint8_t)))
+		  gr::io_signature::make(1, 1, 12*sizeof(uint8_t)))
     {
-      set_relative_rate(1.0/codeLength);
+      set_relative_rate(float(SF)/codeLength);
+      std::cout << "ENCABULATION STABILIZER 1500 enabled" << std::endl;
     }
 
     /*
@@ -70,16 +71,16 @@ namespace gr {
     {
       const uint16_t *in = (const uint16_t *) input_items[0];
       uint8_t *out = (uint8_t *) output_items[0];
-
+      ;
       // Do <+signal processing+>
 
-      for(size_t i = 0; i < SF*codeLength; i++)
+      for(size_t i = 0; i < 12*noutput_items; i++)
 	out[i] = 0;
       
       for(size_t i = 0; i < noutput_items; i++)
 	for(size_t j = 0; j < codeLength; j++)
 	  for(size_t k = 0; k < SF; k++)
-	    out[i*SF + (j + k)%SF] |= in[i*codeLength + k] << k;
+	    out[SF*i + (j + k)%SF] |= (in[codeLength*i + j] >> k & 0x01) << j;
 
       // Tell runtime system how many input items we consumed on
       // each input stream.
@@ -89,6 +90,14 @@ namespace gr {
       return noutput_items;
     }
 
+    void deinterleave_impl::setSF(size_t SFNew) {
+      SF = SFNew;
+      set_relative_rate(SF/codeLength);
+    }
+    void deinterleave_impl::setCR(size_t CR) {
+      codeLength = CR + 4;
+      set_relative_rate(float(SF)/codeLength);
+    }
   } /* namespace LibreLoRa */
 } /* namespace gr */
 

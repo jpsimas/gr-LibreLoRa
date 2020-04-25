@@ -23,8 +23,10 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include <cmath>
 #include "normalizeCorrelation_impl.h"
+
+#include <cmath>
+#include <volk/volk.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -41,10 +43,11 @@ namespace gr {
      * The private constructor
      */
     normalizeCorrelation_impl::normalizeCorrelation_impl(size_t correlationVectorSize)
-      : gr::block("normalizeCorrelation",
+      : gr::sync_block("normalizeCorrelation",
 		  gr::io_signature::make(3, 3, sizeof(float)),
 		  gr::io_signature::make(1, 1, sizeof(float))),
 	correlationVectorSize(correlationVectorSize){
+      set_relative_rate(1.0);
     }
 
     /*
@@ -59,13 +62,10 @@ namespace gr {
     {
       /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
       ninput_items_required[0] = noutput_items;
-      ninput_items_required[1] = noutput_items;
-      ninput_items_required[2] = noutput_items;
     }
-
+    
     int
-    normalizeCorrelation_impl::general_work (int noutput_items,
-					     gr_vector_int &ninput_items,
+    normalizeCorrelation_impl::work (int noutput_items,
 					     gr_vector_const_void_star &input_items,
 					     gr_vector_void_star &output_items)
     {
@@ -76,11 +76,13 @@ namespace gr {
       float *out = (float *) output_items[0];
 
       // Do <+signal processing+>
-
+      
       for(size_t i = 0; i < noutput_items; i++) {
-	auto norm = signalSquaredSum[i] - signalSum[i]*signalSum[i]*(1.0/correlationVectorSize);
-	out[i] = unnormCorr[i]/sqrt(norm);
+       	auto norm = signalSquaredSum[i] - signalSum[i]*signalSum[i]*(1.0/correlationVectorSize);
+	
+       	out[i] = unnormCorr[i]/sqrt(norm);
       }
+      
       // Tell runtime system how many input items we consumed on
       // each input stream.
       consume_each (noutput_items);

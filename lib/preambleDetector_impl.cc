@@ -34,8 +34,8 @@
 
 #include <LibreLoRa/normalizeCorrelation.h>
 
-// #include <gnuradio/blocks/vector_source.h>
-// #include <LibreLoRa/symbolCorrelator.h>
+#include <gnuradio/blocks/vector_source.h>
+#include <LibreLoRa/symbolCorrelator.h>
 
 #include <LibreLoRa/getSymbol.h>
 #include <vector>
@@ -44,21 +44,20 @@ namespace gr {
   namespace LibreLoRa {
 
     preambleDetector::sptr
-    preambleDetector::make(size_t SF, size_t OSF, size_t nUpchirps, uint8_t syncWordNumber, float minCorr, float corrStop)
+    preambleDetector::make(size_t SF, size_t OSF, size_t nUpchirps, uint8_t syncWordNumber)
     {
       return gnuradio::get_initial_sptr
-        (new preambleDetector_impl(SF, OSF, nUpchirps, syncWordNumber, minCorr, corrStop));
+        (new preambleDetector_impl(SF, OSF, nUpchirps, syncWordNumber));
     }
 
 
     /*
      * The private constructor
      */
-    preambleDetector_impl::preambleDetector_impl(size_t SF, size_t OSF, size_t nUpchirps, uint8_t syncWordNumber, float minCorr, float corrStop)
+    preambleDetector_impl::preambleDetector_impl(size_t SF, size_t OSF, size_t nUpchirps, uint8_t syncWordNumber)
       : gr::hier_block2("preambleDetector",
 			gr::io_signature::make(1, 1, sizeof(float)),
-			gr::io_signature::make(2, 2, sizeof(float)))//replace by vector of symbols
-			// gr::io_signature::make2(2, 2, sizeof(float), ((1 << SF)*OSF)*sizeof(float)))
+			gr::io_signature::make(2, 2, sizeof(float)))
 	
     {
 
@@ -70,21 +69,21 @@ namespace gr {
 	preamble.push_back(upchirp);
 
       //calculate sync word symbols from sync word number
-      preamble.push_back(getSymbol((1 << (SF - 5))*(syncWordNumber >> 4), SF, OSF));
-
-      preamble.push_back(getSymbol((1 << (SF - 5))*(syncWordNumber & 0xf), SF, OSF));
-
+      preamble.push_back(getSymbol(((syncWordNumber >> 4) << (SF - 5)), SF, OSF));
+      preamble.push_back(getSymbol(((syncWordNumber & 0xf) << (SF - 5)), SF, OSF));
+      
+      
       auto downchirp = getSymbol(0, SF, OSF);
       for(auto& x : downchirp)
-      	x = -x;
+	x = -x;
 
       preamble.push_back(downchirp);
-      preamble.push_back(downchirp);
+      // preamble.push_back(downchirp);
 
-      std::vector<float> fractionOfDownchirp;
-      fractionOfDownchirp.insert(fractionOfDownchirp.begin(), downchirp.begin(), downchirp.begin() + (((1 << (SF - 2)) - 1)*OSF - 1));
-      preamble.push_back(fractionOfDownchirp);
-
+      // std::vector<float> fractionOfDownchirp;
+      // fractionOfDownchirp.insert(fractionOfDownchirp.begin(), downchirp.begin(), downchirp.begin() + (((1 << (SF - 2)) - 1)*OSF - 1));
+      // preamble.push_back(fractionOfDownchirp);
+      
       //normalize and make preamble zero-mean
       size_t preambleSize = 0;
       float mean = 0;
@@ -117,31 +116,37 @@ namespace gr {
       	for(auto& x : sym)
       	  x /= norm;
 
+      std::vector<symbolCorrelator::sptr> blocks;
+      for(auto& sym : preamble)
+       	blocks.push_back(symbolCorrelator::make(sym));
 
+      auto zeroblock = gr::blocks::vector_source<float>::make(std::vector<float>({0}), true);
+      
+      connect(self(), 0, blocks[0], 0);
+      for(size_t i = 1; i < 4; i++)
+	connect(zeroblock, 0, blocks[0], i);
+      
+      for(size_t i = 1; i < blocks.size(); i++) {
+	for(size_t j = 0; j < 4; j++)
+	  connect(blocks[i - 1], j, blocks[i], j);
+      }
+
+      auto normalizer = normalizeCorrelation::make(preambleSize);
+
+      for(size_t j = 1; j < 4; j++)
+	connect(blocks.back(), j, normalizer, j - 1);
+
+      connect(blocks.back(), 0, self(), 0);
+
+      connect(normalizer, 0, self(), 1);
+      
+      /*      
       //invert order of all symbols because of the way fir_filter block works
-      // for(auto& sym : preamble) {
-      // 	std::vector<float> symTmp = sym;
-      //  	for(size_t j = 0; j < sym.size(); j++)
-      // 	  sym.at(j) = symTmp.at(symTmp.size() - 1 - j);
-      // }
-
-      // std::vector<boost::shared_ptr<symbolCorrelator>> blocks;
-      // for(auto& sym : preamble)
-      //  	blocks.push_back(symbolCorrelator::make(sym));
-
-      // auto oneblock = gr::blocks::vector_source<float>::make(std::vector<float>({1}), true);
-      
-      // connect(self(), 0, blocks[0], 0);
-      // connect(oneblock, 0, blocks[0], 1);
-      
-      // for(size_t i = 1; i < blocks.size(); i++) {
-      // 	connect(blocks[i - 1], 0, blocks[i], 0);
-      // 	connect(blocks[i - 1], 1, blocks[i], 1);
-      // }
-      
-      // connect(blocks.back(), 0, self(), 0);
-      // connect(blocks.back(), 1, self(), 1);
-      
+	// for(auto& sym : preamble) {
+	//   std::vector<float> symTmp = sym;
+	//   for(size_t j = 0; j < sym.size(); j++)
+	//      sym.at(j) = symTmp.at(symTmp.size() - 1 - j);
+	// }
       std::vector<gr::filter::fir_filter_fff::sptr> blocksCorr;
       std::vector<gr::blocks::delay::sptr> blocksDelay;
       std::vector<gr::blocks::delay::sptr> blocksDelaySq;
@@ -201,12 +206,7 @@ namespace gr {
       connect(adderSum, 0, normalizer, 1);
       connect(adderSumSq, 0, normalizer, 2);
       connect(normalizer, 0, self(), 1);
-      
-      // auto synchronizer = correlationSync::make(minCorr, corrStop, preambleSize());
-      // connect(blocksDelay.back(), 0, syncronizer, 0);
-      // connect(normalizer, 0, synchronizer, 1);
-      // connect(synchronizer, 0, self(), 0);
-      // connect(synchronizer, 1, self(), 1);
+      */
     }
 
     /*
@@ -217,6 +217,6 @@ namespace gr {
     }
 
 
-  } /* namespace LibreLoRa */
+    } /* namespace LibreLoRa */
 } /* namespace gr */
 

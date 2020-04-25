@@ -22,6 +22,7 @@
 #define INCLUDED_LIBRELORA_FREQUENCYTRACKER_IMPL_H
 
 #include <LibreLoRa/frequencyTracker.h>
+#include <array>
 
 namespace gr {
   namespace LibreLoRa {
@@ -30,7 +31,8 @@ namespace gr {
      protected:
       // Nothing to declare in this block.
       float mu;
-      gr_complex w;
+      static constexpr size_t nw = 1;
+      std::array<gr_complex, nw> w;
       const gr_complex wStep;
      public:
       frequencyTracker_impl(float mu, size_t SF, size_t OSF);

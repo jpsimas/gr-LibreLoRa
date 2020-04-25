@@ -29,13 +29,12 @@ namespace gr {
     class grayEncode_impl : public grayEncode
     {
      private:
-      const size_t SF;
       // Nothing to declare in this block.
-
+      size_t SF;
      public:
       grayEncode_impl(size_t SF);
       ~grayEncode_impl();
-
+      
       // Where all the action really happens
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
 
@@ -44,6 +43,7 @@ namespace gr {
            gr_vector_const_void_star &input_items,
            gr_vector_void_star &output_items);
 
+      void setSF(size_t SF);
     };
 
   } // namespace LibreLoRa

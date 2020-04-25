@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2020 Joao Pedro de O. Simas.
+ * Copyright 2020 Joao Pedro de O Simas.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,15 +18,23 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef GETSYMBOL_H
-#define GETSYMBOL_H
+#ifndef INCLUDED_LIBRELORA_GETSYMBOL_H
+#define INCLUDED_LIBRELORA_GETSYMBOL_H
 
+#include <LibreLoRa/api.h>
 #include <vector>
 
 namespace gr {
   namespace LibreLoRa {
-    std::vector<float> getSymbol(size_t symbolNum, size_t SF, size_t OSF);
-  } /* namespace LibreLoRa */
-} /* namespace gr */
 
-#endif
+    /*!
+     * \brief <+description+>
+     *
+     */
+    LIBRELORA_API std::vector<float> getSymbol(size_t symbolNum, size_t SF, size_t OSF);
+
+  } // namespace LibreLoRa
+} // namespace gr
+
+#endif /* INCLUDED_LIBRELORA_GETSYMBOL_H */
+

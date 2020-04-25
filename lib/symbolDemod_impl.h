@@ -32,11 +32,10 @@ namespace gr {
      private:
       // Nothing to declare in this block.
       std::vector<float> twoUpchirps;
-      const size_t OSF;
       const size_t symbolSize;
-      
+      size_t SF;
      public:
-      symbolDemod_impl(size_t SF, size_t OSF);
+      symbolDemod_impl(size_t SF, size_t symbolSize);
       ~symbolDemod_impl();
 
       // Where all the action really happens
@@ -47,6 +46,7 @@ namespace gr {
            gr_vector_const_void_star &input_items,
            gr_vector_void_star &output_items);
 
+      void setSF(size_t SF);
     };
 
   } // namespace LibreLoRa

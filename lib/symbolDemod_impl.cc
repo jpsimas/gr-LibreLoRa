@@ -33,24 +33,26 @@ namespace gr {
   namespace LibreLoRa {
 
     symbolDemod::sptr
-    symbolDemod::make(size_t SF, size_t OSF)
+    symbolDemod::make(size_t SF, size_t symbolSize)
     {
       return gnuradio::get_initial_sptr
-        (new symbolDemod_impl(SF, OSF));
+        (new symbolDemod_impl(SF, symbolSize));
     }
 
 
     /*
      * The private constructor
      */
-    symbolDemod_impl::symbolDemod_impl(size_t SF, size_t OSF)
-      : OSF(OSF),
-	symbolSize((1 << SF)*OSF),
+    symbolDemod_impl::symbolDemod_impl(size_t SF, size_t symbolSize)
+      : symbolSize(symbolSize),
+	SF(SF),
 	gr::block("symbolDemod",
-		  gr::io_signature::make(1, 1, (1 << SF)*OSF*sizeof(float)),
+		  gr::io_signature::make(1, 1, symbolSize*sizeof(float)),
 		  gr::io_signature::make(1, 1, sizeof(uint16_t))) {
-      twoUpchirps = getSymbol(0, SF, OSF);
+      set_relative_rate(1.0/symbolSize);
+      twoUpchirps = getSymbol(0, SF, (symbolSize >> SF));
       twoUpchirps.insert(twoUpchirps.end(), twoUpchirps.begin(), twoUpchirps.end());
+      std::cout << "TURBO ENCABULATOR 1000 activated!" << std::endl;
     }
 
     /*
@@ -82,15 +84,15 @@ namespace gr {
 	size_t jMax = 0;
 	for(size_t j = 0; j < symbolSize; j++) {
 	  float corrJ;
-	  volk_32f_x2_dot_prod_32f(&corrJ, in + i, twoUpchirps.data() + j, symbolSize);
+	  volk_32f_x2_dot_prod_32f(&corrJ, in + i*symbolSize, twoUpchirps.data() + j, symbolSize);
 	  if(corrJ >= corrMax) {
 	    corrMax = corrJ;
 	    jMax = j;
 	  }
 	}
-	out[i] = round(float(jMax)/OSF);
+	out[i] = round(jMax*((1 << SF)/float(symbolSize)));
       }
-      
+
       // Tell runtime system how many input items we consumed on
       // each input stream.
       consume_each (noutput_items);
@@ -99,6 +101,9 @@ namespace gr {
       return noutput_items;
     }
 
+    void symbolDemod_impl::setSF(size_t SFNew) {
+      SF = SFNew;
+    }
   } /* namespace LibreLoRa */
 } /* namespace gr */
 
