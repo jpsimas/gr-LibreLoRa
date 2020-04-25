@@ -1,43 +1,25 @@
 id: LibreLoRa_normalizeCorrelation
 label: normalizeCorrelation
-category: '[LibreLoRa]'
-
+category: '[Librelora]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.normalizeCorrelation(${correlationVectorSize})
-
-#  Make one 'parameters' list entry for every Parameter you want settable from the GUI.
-#     Sub-entries of dictionary:
-#     * id (makes the value accessible as \$keyname, e.g. in the make entry)
-#     * label
-#     * dtype 
 parameters:
-- id: ...
-  label: ...
-  dtype: ...
-- id: ...
-  label: ...
-  dtype: ...
-
-#  Make one 'inputs' list entry per input. Sub-entries of dictionary:
-#      * label (an identifier for the GUI)
-#      * domain
-#      * dtype
-#      * vlen
-#      * optional (set to 1 for optional inputs) 
+- id: correlationVectorSize
+  label: Correlationvectorsize
+  dtype: raw
 inputs:
-- label: ...
-  domain: ...
-  dtype: ...
-  vlen: ...
-
-#  Make one 'outputs' list entry per output. Sub-entries of dictionary:
-#      * label (an identifier for the GUI)
-#      * dtype
-#      * vlen
-#      * optional (set to 1 for optional inputs) 
-- label: ...
-  domain: ...
-  dtype: ... #!-- e.g. int, float, complex, byte, short, xxx_vector, ...--
-
+- label: unnormCorr
+  domain: stream
+  dtype: float
+- label: signalSum
+  domain: stream
+  dtype: float
+- label: signalSqSum
+  domain: stream
+  dtype: float
+outputs:
+- label: out
+  domain: stream
+  dtype: float
 file_format: 1

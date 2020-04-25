@@ -47,7 +47,6 @@ namespace gr {
 		  gr::io_signature::make(3, 3, sizeof(float)),
 		  gr::io_signature::make(1, 1, sizeof(float))),
 	correlationVectorSize(correlationVectorSize){
-      set_relative_rate(1.0);
     }
 
     /*
@@ -57,12 +56,12 @@ namespace gr {
     {
     }
 
-    void
-    normalizeCorrelation_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
-    {
-      /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
-      ninput_items_required[0] = noutput_items;
-    }
+    // void
+    // normalizeCorrelation_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
+    // {
+    //   /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
+    //   ninput_items_required[0] = noutput_items;
+    // }
     
     int
     normalizeCorrelation_impl::work (int noutput_items,
@@ -85,7 +84,7 @@ namespace gr {
       
       // Tell runtime system how many input items we consumed on
       // each input stream.
-      consume_each (noutput_items);
+      //consume_each (noutput_items);
 
       // Tell runtime system how many output items we produced.
       return noutput_items;
