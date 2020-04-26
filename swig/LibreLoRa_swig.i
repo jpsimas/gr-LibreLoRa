@@ -25,6 +25,7 @@
 //#include "LibreLoRa/maxFrequency.h"
 //#include "LibreLoRa/streamToHistoryVector.h"
 #include "LibreLoRa/getSymbol.h"
+#include "LibreLoRa/readHeader.h"
 %}
 
 %include "LibreLoRa/frequencyTracker.h"
@@ -64,3 +65,5 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, slidingDFT);
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, ArgMaxAbs);
 
 %include "LibreLoRa/getSymbol.h"
+%include "LibreLoRa/readHeader.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, readHeader);

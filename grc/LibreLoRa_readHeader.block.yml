@@ -1,0 +1,34 @@
+id: LibreLoRa_readHeader
+label: readHeader
+category: '[LibreLoRa]'
+
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.readHeader(${SF})
+parameters:
+- id: SF
+  label: Sf
+  dtype: raw
+inputs:
+- label: in
+  domain: stream
+  dtype: byte
+  vlen: 12
+outputs:
+- label: payloadLength
+  domain: stream
+  dtype: byte
+- label: payloadCRCPresent
+  domain: stream
+  dtype: byte
+- label: CR
+  domain: stream
+  dtype: byte
+- label: headerChecksumValid
+  domain: stream
+  dtype: byte
+- label: dataOut
+  domain: stream
+  dtype: byte
+  vlen: 7
+file_format: 1

@@ -1,0 +1,20 @@
+id: LibreLoRa_slidingDFT
+label: slidingDFT
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.slidingDFT(${DFTLength})
+parameters:
+- id: DFTLength
+  label: Dftlength
+  dtype: raw
+inputs:
+- label: in
+  domain: stream
+  dtype: complex
+outputs:
+- label: out
+  domain: stream
+  dtype: complex
+  vlen: ${ DFTLength }
+file_format: 1

@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_GRAYENCODE_H
-#define INCLUDED_LIBRELORA_GRAYENCODE_H
+#ifndef INCLUDED_LIBRELORA_CHIRPSOURCE_H
+#define INCLUDED_LIBRELORA_CHIRPSOURCE_H
 
 #include <LibreLoRa/api.h>
 #include <gnuradio/sync_block.h>
@@ -32,25 +32,24 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
-    class LIBRELORA_API grayEncode : virtual public gr::sync_block
+    class LIBRELORA_API chirpSource : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<grayEncode> sptr;
+      typedef boost::shared_ptr<chirpSource> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of LibreLoRa::grayEncode.
+       * \brief Return a shared_ptr to a new instance of LibreLoRa::chirpSource.
        *
-       * To avoid accidental use of raw pointers, LibreLoRa::grayEncode's
+       * To avoid accidental use of raw pointers, LibreLoRa::chirpSource's
        * constructor is in a private implementation
-       * class. LibreLoRa::grayEncode::make is the public interface for
+       * class. LibreLoRa::chirpSource::make is the public interface for
        * creating new instances.
        */
-      static sptr make(size_t SF);
-      virtual void setSF(size_t SF) = 0;
+      static sptr make(size_t SF, size_t symbolSize);
     };
 
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_GRAYENCODE_H */
+#endif /* INCLUDED_LIBRELORA_CHIRPSOURCE_H */
 

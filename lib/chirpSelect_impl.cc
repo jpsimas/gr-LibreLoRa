@@ -23,65 +23,52 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include "grayEncode_impl.h"
+#include "chirpSelect_impl.h"
 
 namespace gr {
   namespace LibreLoRa {
 
-    grayEncode::sptr
-    grayEncode::make(size_t SF)
+    chirpSelect::sptr
+    chirpSelect::make(size_t SF, size_t symbolSize)
     {
       return gnuradio::get_initial_sptr
-        (new grayEncode_impl(SF));
+        (new chirpSelect_impl(SF, symbolSize));
     }
 
 
     /*
      * The private constructor
      */
-    grayEncode_impl::grayEncode_impl(size_t SF)
-      : SF(SF),
-	gr::sync_block("grayEncode",
-		  gr::io_signature::make(1, 1, sizeof(uint16_t)),
-		  gr::io_signature::make(1, 1, sizeof(uint16_t)))
-    {}
+    chirpSelect_impl::chirpSelect_impl(size_t SF, size_t symbolSize)
+      : gr::sync_block("chirpSelect",
+		       gr::io_signature::make(1, 1, sizeof(gr_complex)),
+		       gr::io_signature::make(1, 1, sizeof(gr_complex)))
+    {
+      
+    }
 
     /*
      * Our virtual destructor.
      */
-    grayEncode_impl::~grayEncode_impl()
+    chirpSelect_impl::~chirpSelect_impl()
     {
     }
 
-    // void
-    // grayEncode_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
-    // {
-    //   ninput_items_required[0] = noutput_items;
-    // }
-
     int
-    grayEncode_impl::work (int noutput_items,
-                       gr_vector_const_void_star &input_items,
-                       gr_vector_void_star &output_items)
+    chirpSelect_impl::work(int noutput_items,
+        gr_vector_const_void_star &input_items,
+        gr_vector_void_star &output_items)
     {
-      const uint16_t *in = (const uint16_t *) input_items[0];
-      uint16_t *out = (uint16_t *) output_items[0];
-      
-      // Do <+signal processing+>
-      for(size_t i = 0; i < noutput_items; i++)
-	out[i] = (in[i] ^ (in[i] << 1)) & ((1 << SF) - 1);
+      const gr_complex *in = (const gr_complex *) input_items[0];
+      gr_complex *out = (gr_complex *) output_items[0];
 
-      // Tell runtime system how many input items we consumed on
-      // each input stream.
-      // consume_each (noutput_items);
+      // Do <+signal processing+>
+      
 
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }
 
-    void grayEncode_impl::setSF(size_t SFnew) {
-      SF = SFnew;
-    }
   } /* namespace LibreLoRa */
 } /* namespace gr */
 

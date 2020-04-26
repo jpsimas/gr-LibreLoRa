@@ -1,0 +1,18 @@
+id: LibreLoRa_chirpSource
+label: chirpSource
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.chirpSource(${SF}, ${symbolSize})
+parameters:
+- id: SF
+  label: Sf
+  dtype: raw
+- id: symbolSize
+  label: Symbolsize
+  dtype: raw
+outputs:
+- label: out
+  domain: stream
+  dtype: complex
+file_format: 1

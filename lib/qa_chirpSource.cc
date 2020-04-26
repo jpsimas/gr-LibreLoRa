@@ -18,38 +18,20 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_SYMBOLDEMOD_IMPL_H
-#define INCLUDED_LIBRELORA_SYMBOLDEMOD_IMPL_H
-
-#include <LibreLoRa/symbolDemod.h>
-#include <vector>
+#include <gnuradio/attributes.h>
+#include <cppunit/TestAssert.h>
+#include "qa_chirpSource.h"
+#include <LibreLoRa/chirpSource.h>
 
 namespace gr {
   namespace LibreLoRa {
 
-    class symbolDemod_impl : public symbolDemod
+    void
+    qa_chirpSource::t1()
     {
-     private:
-      // Nothing to declare in this block.
-      std::vector<float> twoUpchirps;
-      const size_t symbolSize;
-      size_t SF;
-     public:
-      symbolDemod_impl(size_t SF, size_t symbolSize);
-      ~symbolDemod_impl();
+      // Put test here
+    }
 
-      // Where all the action really happens
-      //void forecast (int noutput_items, gr_vector_int &ninput_items_required);
-
-      int work(int noutput_items,
-           gr_vector_const_void_star &input_items,
-           gr_vector_void_star &output_items);
-
-      void setSF(size_t SF);
-    };
-
-  } // namespace LibreLoRa
-} // namespace gr
-
-#endif /* INCLUDED_LIBRELORA_SYMBOLDEMOD_IMPL_H */
+  } /* namespace LibreLoRa */
+} /* namespace gr */
 

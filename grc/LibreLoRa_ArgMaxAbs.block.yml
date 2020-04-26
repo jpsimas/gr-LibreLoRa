@@ -1,0 +1,20 @@
+id: LibreLoRa_ArgMaxAbs
+label: ArgMaxAbs
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.ArgMaxAbs(${vecLength})
+parameters:
+- id: vecLength
+  label: Veclength
+  dtype: raw
+inputs:
+- label: in
+  domain: stream
+  dtype: complex
+  vlen: ${ vecLength }
+outputs:
+- label: out
+  domain: stream
+  dtype: int
+file_format: 1

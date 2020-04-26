@@ -1,0 +1,20 @@
+id: LibreLoRa_maxFrequency
+label: maxFrequency
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.maxFrequency(${symbolSize})
+parameters:
+- id: symbolSize
+  label: Symbolsize
+  dtype: raw
+inputs:
+- label: in
+  domain: stream
+  dtype: complex
+outputs:
+- label: out
+  domain: stream
+  dtype: float
+  multiplicity: '1'
+file_format: 1

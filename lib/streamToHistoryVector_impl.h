@@ -18,39 +18,35 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_GRAYENCODE_H
-#define INCLUDED_LIBRELORA_GRAYENCODE_H
+#ifndef INCLUDED_LIBRELORA_STREAMTOHISTORYVECTOR_IMPL_H
+#define INCLUDED_LIBRELORA_STREAMTOHISTORYVECTOR_IMPL_H
 
-#include <LibreLoRa/api.h>
-#include <gnuradio/sync_block.h>
+#include <LibreLoRa/streamToHistoryVector.h>
 
 namespace gr {
   namespace LibreLoRa {
 
-    /*!
-     * \brief <+description of block+>
-     * \ingroup LibreLoRa
-     *
-     */
-    class LIBRELORA_API grayEncode : virtual public gr::sync_block
+    template<typename T>
+    class streamToHistoryVector_impl : public streamToHistoryVector<T>
     {
+     private:
+      // Nothing to declare in this block.
+      const size_t nVect;
      public:
-      typedef boost::shared_ptr<grayEncode> sptr;
+      streamToHistoryVector_impl(size_t nVect);
+      ~streamToHistoryVector_impl();
 
-      /*!
-       * \brief Return a shared_ptr to a new instance of LibreLoRa::grayEncode.
-       *
-       * To avoid accidental use of raw pointers, LibreLoRa::grayEncode's
-       * constructor is in a private implementation
-       * class. LibreLoRa::grayEncode::make is the public interface for
-       * creating new instances.
-       */
-      static sptr make(size_t SF);
-      virtual void setSF(size_t SF) = 0;
+      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+      // Where all the action really happens
+      int work(
+              int noutput_items,
+              gr_vector_const_void_star &input_items,
+              gr_vector_void_star &output_items
+      );
     };
 
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_GRAYENCODE_H */
+#endif /* INCLUDED_LIBRELORA_STREAMTOHISTORYVECTOR_IMPL_H */
 

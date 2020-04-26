@@ -23,65 +23,53 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include "grayEncode_impl.h"
+#include "ArgMaxAbs_impl.h"
+#include <volk/volk.h>
 
 namespace gr {
   namespace LibreLoRa {
 
-    grayEncode::sptr
-    grayEncode::make(size_t SF)
+    ArgMaxAbs::sptr
+    ArgMaxAbs::make(size_t vecLength)
     {
       return gnuradio::get_initial_sptr
-        (new grayEncode_impl(SF));
+        (new ArgMaxAbs_impl(vecLength));
     }
 
 
     /*
      * The private constructor
      */
-    grayEncode_impl::grayEncode_impl(size_t SF)
-      : SF(SF),
-	gr::sync_block("grayEncode",
-		  gr::io_signature::make(1, 1, sizeof(uint16_t)),
-		  gr::io_signature::make(1, 1, sizeof(uint16_t)))
+    ArgMaxAbs_impl::ArgMaxAbs_impl(size_t vecLength)
+      : gr::sync_block("ArgMaxAbs",
+		       gr::io_signature::make(1, 1, vecLength*sizeof(gr_complex)),
+		       gr::io_signature::make(1, 1, sizeof(uint32_t))),
+	length(vecLength)
     {}
 
     /*
      * Our virtual destructor.
      */
-    grayEncode_impl::~grayEncode_impl()
+    ArgMaxAbs_impl::~ArgMaxAbs_impl()
     {
     }
 
-    // void
-    // grayEncode_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
-    // {
-    //   ninput_items_required[0] = noutput_items;
-    // }
-
     int
-    grayEncode_impl::work (int noutput_items,
-                       gr_vector_const_void_star &input_items,
-                       gr_vector_void_star &output_items)
+    ArgMaxAbs_impl::work(int noutput_items,
+        gr_vector_const_void_star &input_items,
+        gr_vector_void_star &output_items)
     {
-      const uint16_t *in = (const uint16_t *) input_items[0];
-      uint16_t *out = (uint16_t *) output_items[0];
-      
+      const gr_complex *in = (const gr_complex *) input_items[0];
+      uint32_t *out = (uint32_t *) output_items[0];
+
       // Do <+signal processing+>
       for(size_t i = 0; i < noutput_items; i++)
-	out[i] = (in[i] ^ (in[i] << 1)) & ((1 << SF) - 1);
-
-      // Tell runtime system how many input items we consumed on
-      // each input stream.
-      // consume_each (noutput_items);
-
+	volk_32fc_index_max_32u(out + i, const_cast<gr_complex*>(in + i*length), length);
+      
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }
 
-    void grayEncode_impl::setSF(size_t SFnew) {
-      SF = SFnew;
-    }
   } /* namespace LibreLoRa */
 } /* namespace gr */
 

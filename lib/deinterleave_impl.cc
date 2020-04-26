@@ -42,12 +42,12 @@ namespace gr {
     deinterleave_impl::deinterleave_impl(size_t SF, size_t CR)
       :	codeLength(CR + 4),
 	SF(SF),
-	gr::block("deinterleave",
+	gr::sync_decimator("deinterleave",
 		  gr::io_signature::make(1, 1, sizeof(uint16_t)),
-		  gr::io_signature::make(1, 1, 12*sizeof(uint8_t)))
+		  gr::io_signature::make(1, 1, 12*sizeof(uint8_t)),
+		  CR + 4)
     {
-      set_relative_rate(float(SF)/codeLength);
-      std::cout << "ENCABULATION STABILIZER 1500 enabled" << std::endl;
+      std::cout << "ENCABULATION STABILIZER 1500 enabled!" << std::endl;
     }
 
     /*
@@ -57,15 +57,14 @@ namespace gr {
     {
     }
 
-    void
-    deinterleave_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
-    {
-      ninput_items_required[0] = codeLength;
-    }
+    // void
+    // deinterleave_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
+    // {
+    //   ninput_items_required[0] = codeLength;
+    // }
 
     int
-    deinterleave_impl::general_work (int noutput_items,
-				     gr_vector_int &ninput_items,
+    deinterleave_impl::work (int noutput_items,
                        gr_vector_const_void_star &input_items,
                        gr_vector_void_star &output_items)
     {
@@ -84,7 +83,7 @@ namespace gr {
 
       // Tell runtime system how many input items we consumed on
       // each input stream.
-      consume_each (noutput_items);
+      // consume_each (noutput_items);
 
       // Tell runtime system how many output items we produced.
       return noutput_items;
@@ -92,11 +91,13 @@ namespace gr {
 
     void deinterleave_impl::setSF(size_t SFNew) {
       SF = SFNew;
-      set_relative_rate(SF/codeLength);
+      //set_relative_rate(SF/codeLength);
     }
     void deinterleave_impl::setCR(size_t CR) {
       codeLength = CR + 4;
-      set_relative_rate(float(SF)/codeLength);
+      //set_history(codeLength);
+      //set_relative_rate(float(SF)/codeLength);
+      set_decimation(codeLength);
     }
   } /* namespace LibreLoRa */
 } /* namespace gr */

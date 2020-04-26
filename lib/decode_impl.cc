@@ -42,7 +42,7 @@ namespace gr {
      * The private constructor
      */
     decode_impl::decode_impl(size_t CR)
-      : gr::block("decode",
+      : gr::sync_block("decode",
 		  gr::io_signature::make(1, 1, 12*sizeof(uint8_t)),
 		  gr::io_signature::make(1, 1, 12*sizeof(uint8_t))) {
       setCR(CR);
@@ -56,15 +56,14 @@ namespace gr {
     {
     }
 
-    void
-    decode_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
-    {
-      /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
-    }
+    // void
+    // decode_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
+    // {
+    //   /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
+    // }
 
     int
-    decode_impl::general_work (int noutput_items,
-                       gr_vector_int &ninput_items,
+    decode_impl::work (int noutput_items,
                        gr_vector_const_void_star &input_items,
                        gr_vector_void_star &output_items)
     {
@@ -80,7 +79,7 @@ namespace gr {
 
       // Tell runtime system how many input items we consumed on
       // each input stream.
-      consume_each (noutput_items);
+      // consume_each (noutput_items);
 
       // Tell runtime system how many output items we produced.
       return noutput_items;

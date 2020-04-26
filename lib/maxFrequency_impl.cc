@@ -23,65 +23,70 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include "grayEncode_impl.h"
+#include "maxFrequency_impl.h"
 
 namespace gr {
   namespace LibreLoRa {
 
-    grayEncode::sptr
-    grayEncode::make(size_t SF)
+    maxFrequency::sptr
+    maxFrequency::make(size_t symbolSize)
     {
       return gnuradio::get_initial_sptr
-        (new grayEncode_impl(SF));
+        (new maxFrequency_impl(symbolSize));
     }
 
 
     /*
      * The private constructor
      */
-    grayEncode_impl::grayEncode_impl(size_t SF)
-      : SF(SF),
-	gr::sync_block("grayEncode",
-		  gr::io_signature::make(1, 1, sizeof(uint16_t)),
-		  gr::io_signature::make(1, 1, sizeof(uint16_t)))
-    {}
+    maxFrequency_impl::maxFrequency_impl(size_t symbolSize)
+      : gr::sync_block("maxFrequency",
+		  gr::io_signature::make(1, 1, sizeof(gr_complex)),
+		       gr::io_signature::make(1, 1, sizeof(float))),
+	// fftVect(symbolSize),
+	plan(symbolSize),
+	// planTemp(plan.temp_size),
+	symbolSize(symbolSize)
+    {
+      set_history(symbolSize);
+    }
 
     /*
      * Our virtual destructor.
      */
-    grayEncode_impl::~grayEncode_impl()
+    maxFrequency_impl::~maxFrequency_impl()
     {
     }
 
-    // void
-    // grayEncode_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
-    // {
-    //   ninput_items_required[0] = noutput_items;
-    // }
-
-    int
-    grayEncode_impl::work (int noutput_items,
-                       gr_vector_const_void_star &input_items,
-                       gr_vector_void_star &output_items)
+    void
+    maxFrequency_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      const uint16_t *in = (const uint16_t *) input_items[0];
-      uint16_t *out = (uint16_t *) output_items[0];
+      /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
+      ninput_items_required[0] = noutput_items + symbolSize;
+    }
+    
+    int
+    maxFrequency_impl::work (int noutput_items,
+				     gr_vector_const_void_star &input_items,
+				     gr_vector_void_star &output_items)
+    {
+      const gr_complex *in = (const gr_complex *) input_items[0];
+      float *out = (float *) output_items[0];
       
       // Do <+signal processing+>
-      for(size_t i = 0; i < noutput_items; i++)
-	out[i] = (in[i] ^ (in[i] << 1)) & ((1 << SF) - 1);
-
+      for(size_t i = 0; i < noutput_items; i++) {
+	// plan.execute(fftVect, kfr::make_univector(const_cast<std::complex<float>*>(in + i), symbolSize), planTemp, false);
+	out[i] = 0;
+       
+      }
       // Tell runtime system how many input items we consumed on
       // each input stream.
-      // consume_each (noutput_items);
+      consume_each (noutput_items);
 
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }
 
-    void grayEncode_impl::setSF(size_t SFnew) {
-      SF = SFnew;
-    }
   } /* namespace LibreLoRa */
 } /* namespace gr */
 

@@ -46,10 +46,10 @@ namespace gr {
     symbolDemod_impl::symbolDemod_impl(size_t SF, size_t symbolSize)
       : symbolSize(symbolSize),
 	SF(SF),
-	gr::block("symbolDemod",
+	gr::sync_block("symbolDemod",
 		  gr::io_signature::make(1, 1, symbolSize*sizeof(float)),
 		  gr::io_signature::make(1, 1, sizeof(uint16_t))) {
-      set_relative_rate(1.0/symbolSize);
+      //set_relative_rate(1.0/symbolSize);
       twoUpchirps = getSymbol(0, SF, (symbolSize >> SF));
       twoUpchirps.insert(twoUpchirps.end(), twoUpchirps.begin(), twoUpchirps.end());
       std::cout << "TURBO ENCABULATOR 1000 activated!" << std::endl;
@@ -62,16 +62,15 @@ namespace gr {
     {
     }
 
-    void
-    symbolDemod_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
-    {
-      /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
-      ninput_items_required[0] = noutput_items;
-    }
+    // void
+    // symbolDemod_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
+    // {
+    //   /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
+    //   ninput_items_required[0] = noutput_items;
+    // }
 
     int
-    symbolDemod_impl::general_work (int noutput_items,
-                       gr_vector_int &ninput_items,
+    symbolDemod_impl::work (int noutput_items,
                        gr_vector_const_void_star &input_items,
                        gr_vector_void_star &output_items)
     {
@@ -95,7 +94,7 @@ namespace gr {
 
       // Tell runtime system how many input items we consumed on
       // each input stream.
-      consume_each (noutput_items);
+      //consume_each (noutput_items);
 
       // Tell runtime system how many output items we produced.
       return noutput_items;

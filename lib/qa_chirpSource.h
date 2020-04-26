@@ -18,38 +18,28 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_SYMBOLDEMOD_IMPL_H
-#define INCLUDED_LIBRELORA_SYMBOLDEMOD_IMPL_H
+#ifndef _QA_CHIRPSOURCE_H_
+#define _QA_CHIRPSOURCE_H_
 
-#include <LibreLoRa/symbolDemod.h>
-#include <vector>
+#include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/TestCase.h>
 
 namespace gr {
   namespace LibreLoRa {
 
-    class symbolDemod_impl : public symbolDemod
+    class qa_chirpSource : public CppUnit::TestCase
     {
-     private:
-      // Nothing to declare in this block.
-      std::vector<float> twoUpchirps;
-      const size_t symbolSize;
-      size_t SF;
-     public:
-      symbolDemod_impl(size_t SF, size_t symbolSize);
-      ~symbolDemod_impl();
+    public:
+      CPPUNIT_TEST_SUITE(qa_chirpSource);
+      CPPUNIT_TEST(t1);
+      CPPUNIT_TEST_SUITE_END();
 
-      // Where all the action really happens
-      //void forecast (int noutput_items, gr_vector_int &ninput_items_required);
-
-      int work(int noutput_items,
-           gr_vector_const_void_star &input_items,
-           gr_vector_void_star &output_items);
-
-      void setSF(size_t SF);
+    private:
+      void t1();
     };
 
-  } // namespace LibreLoRa
-} // namespace gr
+  } /* namespace LibreLoRa */
+} /* namespace gr */
 
-#endif /* INCLUDED_LIBRELORA_SYMBOLDEMOD_IMPL_H */
+#endif /* _QA_CHIRPSOURCE_H_ */
 

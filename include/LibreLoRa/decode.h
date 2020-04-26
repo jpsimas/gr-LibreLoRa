@@ -22,7 +22,7 @@
 #define INCLUDED_LIBRELORA_DECODE_H
 
 #include <LibreLoRa/api.h>
-#include <gnuradio/block.h>
+#include <gnuradio/sync_block.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -32,7 +32,7 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
-    class LIBRELORA_API decode : virtual public gr::block
+    class LIBRELORA_API decode : virtual public gr::sync_block
     {
      public:
       typedef boost::shared_ptr<decode> sptr;

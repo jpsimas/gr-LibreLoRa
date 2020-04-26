@@ -41,5 +41,6 @@ install(FILES
     #streamToHistoryVector.h
     slidingDFT.h
     ArgMaxAbs.h
-    getSymbol.h DESTINATION include/LibreLoRa
+    getSymbol.h
+    readHeader.h DESTINATION include/LibreLoRa
 )

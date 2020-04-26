@@ -41,7 +41,8 @@ list(APPEND LibreLoRa_sources
     #streamToHistoryVector_impl.cc
     slidingDFT_impl.cc
     ArgMaxAbs_impl.cc
-    getSymbol.cc )
+    getSymbol.cc
+    readHeader_impl.cc )
 
 set(LibreLoRa_sources "${LibreLoRa_sources}" PARENT_SCOPE)
 if(NOT LibreLoRa_sources)

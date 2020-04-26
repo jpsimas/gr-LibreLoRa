@@ -26,6 +26,7 @@ from gnuradio import qtgui
 from gnuradio.filter import firdes
 import sip
 from gnuradio import blocks
+import pmt
 from gnuradio import gr
 import sys
 import signal
@@ -34,8 +35,6 @@ from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 import LibreLoRa
 import numpy
-import osmosdr
-import time
 from gnuradio import qtgui
 
 class premabletestRTL(gr.top_block, Qt.QWidget):
@@ -83,18 +82,53 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
-        self.rtlsdr_source_0 = osmosdr.source(
-            args="numchan=" + str(1) + " " + ""
+        self.qtgui_time_sink_x_2 = qtgui.time_sink_f(
+            12, #size
+            samp_rate, #samp_rate
+            "", #name
+            5 #number of inputs
         )
-        self.rtlsdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
-        self.rtlsdr_source_0.set_sample_rate(samp_rate)
-        self.rtlsdr_source_0.set_center_freq(433e6, 0)
-        self.rtlsdr_source_0.set_freq_corr(0, 0)
-        self.rtlsdr_source_0.set_gain(10, 0)
-        self.rtlsdr_source_0.set_if_gain(20, 0)
-        self.rtlsdr_source_0.set_bb_gain(20, 0)
-        self.rtlsdr_source_0.set_antenna('', 0)
-        self.rtlsdr_source_0.set_bandwidth(0, 0)
+        self.qtgui_time_sink_x_2.set_update_time(0.10)
+        self.qtgui_time_sink_x_2.set_y_axis(0, 16)
+
+        self.qtgui_time_sink_x_2.set_y_label('Amplitude', "")
+
+        self.qtgui_time_sink_x_2.enable_tags(True)
+        self.qtgui_time_sink_x_2.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
+        self.qtgui_time_sink_x_2.enable_autoscale(False)
+        self.qtgui_time_sink_x_2.enable_grid(False)
+        self.qtgui_time_sink_x_2.enable_axis_labels(True)
+        self.qtgui_time_sink_x_2.enable_control_panel(False)
+        self.qtgui_time_sink_x_2.enable_stem_plot(False)
+
+
+        labels = ['Signal 1', 'Signal 2', 'Signal 3', 'Signal 4', 'Signal 5',
+            'Signal 6', 'Signal 7', 'Signal 8', 'Signal 9', 'Signal 10']
+        widths = [1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1]
+        colors = ['blue', 'red', 'green', 'black', 'cyan',
+            'magenta', 'yellow', 'dark red', 'dark green', 'dark blue']
+        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0, 1.0]
+        styles = [1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1]
+        markers = [-1, -1, -1, -1, -1,
+            -1, -1, -1, -1, -1]
+
+
+        for i in range(5):
+            if len(labels[i]) == 0:
+                self.qtgui_time_sink_x_2.set_line_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_time_sink_x_2.set_line_label(i, labels[i])
+            self.qtgui_time_sink_x_2.set_line_width(i, widths[i])
+            self.qtgui_time_sink_x_2.set_line_color(i, colors[i])
+            self.qtgui_time_sink_x_2.set_line_style(i, styles[i])
+            self.qtgui_time_sink_x_2.set_line_marker(i, markers[i])
+            self.qtgui_time_sink_x_2.set_line_alpha(i, alphas[i])
+
+        self._qtgui_time_sink_x_2_win = sip.wrapinstance(self.qtgui_time_sink_x_2.pyqwidget(), Qt.QWidget)
+        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_2_win)
         self.qtgui_time_sink_x_1_1 = qtgui.time_sink_f(
             12, #size
             samp_rate, #samp_rate
@@ -519,22 +553,31 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win)
         self.blocks_vector_to_stream_2 = blocks.vector_to_stream(gr.sizeof_char*1, symbolSize)
+        self.blocks_vector_to_stream_1_0_0 = blocks.vector_to_stream(gr.sizeof_char*1, 7)
         self.blocks_vector_to_stream_1_0 = blocks.vector_to_stream(gr.sizeof_char*1, 12)
         self.blocks_vector_to_stream_1 = blocks.vector_to_stream(gr.sizeof_char*1, 12)
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_float*1, symbolSize)
         self.blocks_uchar_to_float_1 = blocks.uchar_to_float()
+        self.blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0 = blocks.uchar_to_float()
+        self.blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0 = blocks.uchar_to_float()
+        self.blocks_uchar_to_float_0_1_0_0 = blocks.uchar_to_float()
+        self.blocks_uchar_to_float_0_1_0 = blocks.uchar_to_float()
+        self.blocks_uchar_to_float_0_1 = blocks.uchar_to_float()
         self.blocks_uchar_to_float_0_0 = blocks.uchar_to_float()
         self.blocks_uchar_to_float_0 = blocks.uchar_to_float()
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
         self.blocks_short_to_float_0_0 = blocks.short_to_float(1, 1)
         self.blocks_short_to_float_0 = blocks.short_to_float(1, 1)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/jp/Polito/Thesis/lorasim-matlab/sample_data/out_sdr_sf7_fs1000k_length_7bytes_onehot_counting.raw', True, 0, 0)
+        self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.LibreLoRa_symbolDemod_0 = LibreLoRa.symbolDemod(SF, (2**SF)*OSF)
+        self.LibreLoRa_readHeader_0 = LibreLoRa.readHeader(SF)
         self.LibreLoRa_preambleDetector_0 = LibreLoRa.preambleDetector(SF, OSF, 1, 0x00)
         self.LibreLoRa_grayEncode_0 = LibreLoRa.grayEncode(SF)
         self.LibreLoRa_frequencyTracker_0 = LibreLoRa.frequencyTracker(2/OSF, SF, OSF)
         self.LibreLoRa_deinterleave_0 = LibreLoRa.deinterleave(7, 4)
         self.LibreLoRa_decode_0 = LibreLoRa.decode(4)
-        self.LibreLoRa_correlationSync_0 = LibreLoRa.correlationSync(0.6, 0.5, symbolSize)
+        self.LibreLoRa_correlationSync_0 = LibreLoRa.correlationSync(0.9, 0.7, symbolSize)
 
 
 
@@ -544,6 +587,7 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.connect((self.LibreLoRa_correlationSync_0, 0), (self.LibreLoRa_symbolDemod_0, 0))
         self.connect((self.LibreLoRa_correlationSync_0, 0), (self.blocks_vector_to_stream_0, 0))
         self.connect((self.LibreLoRa_correlationSync_0, 1), (self.blocks_vector_to_stream_2, 0))
+        self.connect((self.LibreLoRa_decode_0, 0), (self.LibreLoRa_readHeader_0, 0))
         self.connect((self.LibreLoRa_decode_0, 0), (self.blocks_vector_to_stream_1_0, 0))
         self.connect((self.LibreLoRa_deinterleave_0, 0), (self.LibreLoRa_decode_0, 0))
         self.connect((self.LibreLoRa_deinterleave_0, 0), (self.blocks_vector_to_stream_1, 0))
@@ -555,19 +599,30 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.connect((self.LibreLoRa_preambleDetector_0, 1), (self.LibreLoRa_correlationSync_0, 1))
         self.connect((self.LibreLoRa_preambleDetector_0, 0), (self.qtgui_time_sink_x_0_0, 0))
         self.connect((self.LibreLoRa_preambleDetector_0, 1), (self.qtgui_time_sink_x_0_0_0, 0))
+        self.connect((self.LibreLoRa_readHeader_0, 0), (self.blocks_uchar_to_float_0_1, 0))
+        self.connect((self.LibreLoRa_readHeader_0, 3), (self.blocks_uchar_to_float_0_1_0_0, 0))
+        self.connect((self.LibreLoRa_readHeader_0, 2), (self.blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0, 0))
+        self.connect((self.LibreLoRa_readHeader_0, 1), (self.blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0, 0))
+        self.connect((self.LibreLoRa_readHeader_0, 4), (self.blocks_vector_to_stream_1_0_0, 0))
         self.connect((self.LibreLoRa_symbolDemod_0, 0), (self.LibreLoRa_grayEncode_0, 0))
         self.connect((self.LibreLoRa_symbolDemod_0, 0), (self.blocks_short_to_float_0, 0))
+        self.connect((self.blocks_file_source_0, 0), (self.blocks_throttle_0, 0))
         self.connect((self.blocks_short_to_float_0, 0), (self.qtgui_time_sink_x_1_0, 0))
         self.connect((self.blocks_short_to_float_0_0, 0), (self.qtgui_time_sink_x_1_0_0, 0))
         self.connect((self.blocks_throttle_0, 0), (self.LibreLoRa_frequencyTracker_0, 0))
         self.connect((self.blocks_uchar_to_float_0, 0), (self.qtgui_time_sink_x_1, 0))
         self.connect((self.blocks_uchar_to_float_0_0, 0), (self.qtgui_time_sink_x_1_1, 0))
+        self.connect((self.blocks_uchar_to_float_0_1, 0), (self.qtgui_time_sink_x_2, 0))
+        self.connect((self.blocks_uchar_to_float_0_1_0, 0), (self.qtgui_time_sink_x_2, 4))
+        self.connect((self.blocks_uchar_to_float_0_1_0_0, 0), (self.qtgui_time_sink_x_2, 3))
+        self.connect((self.blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0, 0), (self.qtgui_time_sink_x_2, 2))
+        self.connect((self.blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0, 0), (self.qtgui_time_sink_x_2, 1))
         self.connect((self.blocks_uchar_to_float_1, 0), (self.qtgui_time_sink_x_0_1_0, 0))
         self.connect((self.blocks_vector_to_stream_0, 0), (self.qtgui_time_sink_x_0_1, 0))
         self.connect((self.blocks_vector_to_stream_1, 0), (self.blocks_uchar_to_float_0_0, 0))
         self.connect((self.blocks_vector_to_stream_1_0, 0), (self.blocks_uchar_to_float_0, 0))
+        self.connect((self.blocks_vector_to_stream_1_0_0, 0), (self.blocks_uchar_to_float_0_1_0, 0))
         self.connect((self.blocks_vector_to_stream_2, 0), (self.blocks_uchar_to_float_1, 0))
-        self.connect((self.rtlsdr_source_0, 0), (self.blocks_throttle_0, 0))
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "premabletestRTL")
@@ -592,7 +647,7 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.qtgui_time_sink_x_1_0.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_1_0_0.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_1_1.set_samp_rate(self.samp_rate)
-        self.rtlsdr_source_0.set_sample_rate(self.samp_rate)
+        self.qtgui_time_sink_x_2.set_samp_rate(self.samp_rate)
 
     def get_BW(self):
         return self.BW

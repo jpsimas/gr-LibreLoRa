@@ -1,0 +1,34 @@
+id: LibreLoRa_streamToHistoryVector
+label: streamToHistoryVector
+category: '[Librelora]'
+parameters:
+- id: type
+  label: Type
+  dtype: enum
+  options: [float, complex, int]
+  option_attributes:
+    fcn: [cc, ff, ii]
+  hide: part
+- id: nVect
+  label: Nvect
+  dtype: raw
+inputs:
+- label: in
+  domain: stream
+  dtype: raw
+outputs:
+- label: out
+  domain: stream
+  dtype: raw
+  vlen: ${ nVect }
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.streamToHistoryVector_${type.fcn}(${nVect})
+
+cpp_templates:
+  includes: ['#include <LibreLoRa/streamToHistoryVector.h>']
+  declarations: 'LibreLoRa::streamToHistoryVector_${type.fcn}::sptr ${id};'
+  make: 'this->${id} = LibreloRa::streamToHistoryVector_${type.fcn}::make(${nVect});'
+
+
+file_format: 1
