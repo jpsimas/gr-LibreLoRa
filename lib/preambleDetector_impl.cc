@@ -78,11 +78,11 @@ namespace gr {
 	x = -x;
 
       preamble.push_back(downchirp);
-      // preamble.push_back(downchirp);
+      preamble.push_back(downchirp);
 
-      // std::vector<float> fractionOfDownchirp;
-      // fractionOfDownchirp.insert(fractionOfDownchirp.begin(), downchirp.begin(), downchirp.begin() + (((1 << (SF - 2)) - 1)*OSF - 1));
-      // preamble.push_back(fractionOfDownchirp);
+      std::vector<float> fractionOfDownchirp;
+      fractionOfDownchirp.insert(fractionOfDownchirp.begin(), downchirp.begin(), downchirp.begin() + (((1 << (SF - 2)) - 1)*OSF - 1));
+      preamble.push_back(fractionOfDownchirp);
       
       //normalize and make preamble zero-mean
       size_t preambleSize = 0;
@@ -142,11 +142,11 @@ namespace gr {
       
       /*      
       //invert order of all symbols because of the way fir_filter block works
-	// for(auto& sym : preamble) {
-	//   std::vector<float> symTmp = sym;
-	//   for(size_t j = 0; j < sym.size(); j++)
-	//      sym.at(j) = symTmp.at(symTmp.size() - 1 - j);
-	// }
+      // for(auto& sym : preamble) {
+      //   std::vector<float> symTmp = sym;
+      //   for(size_t j = 0; j < sym.size(); j++)
+      //      sym.at(j) = symTmp.at(symTmp.size() - 1 - j);
+      // }
       std::vector<gr::filter::fir_filter_fff::sptr> blocksCorr;
       std::vector<gr::blocks::delay::sptr> blocksDelay;
       std::vector<gr::blocks::delay::sptr> blocksDelaySq;
@@ -154,16 +154,16 @@ namespace gr {
       std::vector<gr::filter::fir_filter_fff::sptr> blocksSumSq;
       
       for(auto& sym : preamble) {
-      	blocksCorr.push_back(gr::filter::fir_filter_fff::make(1, sym));
-      	blocksDelay.push_back(gr::blocks::delay::make(sizeof(float), sym.size()));
+      blocksCorr.push_back(gr::filter::fir_filter_fff::make(1, sym));
+      blocksDelay.push_back(gr::blocks::delay::make(sizeof(float), sym.size()));
 	
-	std::vector<float> onesVect(sym.size(), 1.0);
-      	blocksSum.push_back(gr::filter::fir_filter_fff::make(1, onesVect));
-      	blocksSumSq.push_back(gr::filter::fir_filter_fff::make(1, onesVect));
+      std::vector<float> onesVect(sym.size(), 1.0);
+      blocksSum.push_back(gr::filter::fir_filter_fff::make(1, onesVect));
+      blocksSumSq.push_back(gr::filter::fir_filter_fff::make(1, onesVect));
       }
 
       for(size_t i = 0; i + 1 < preamble.size(); i++)
-	blocksDelaySq.push_back(gr::blocks::delay::make(sizeof(float), preamble[i].size()));
+      blocksDelaySq.push_back(gr::blocks::delay::make(sizeof(float), preamble[i].size()));
       	
       auto adder = gr::blocks::add_ff::make();
       auto adderSum = gr::blocks::add_ff::make();
@@ -179,24 +179,24 @@ namespace gr {
       connect(self(), 0, multiplier, 1);
       connect(multiplier, 0, blocksSumSq.at(0), 0);
       if(blocksDelaySq.size() > 0)
-	connect(multiplier, 0, blocksDelaySq.at(0), 0);
+      connect(multiplier, 0, blocksDelaySq.at(0), 0);
       
       for(size_t i = 0; i < blocksCorr.size(); i++){
-       	connect(blocksCorr.at(i), 0, adder, i);
-	connect(blocksSum.at(i), 0, adderSum, i);
-	connect(blocksSumSq.at(i), 0, adderSumSq, i);
+      connect(blocksCorr.at(i), 0, adder, i);
+      connect(blocksSum.at(i), 0, adderSum, i);
+      connect(blocksSumSq.at(i), 0, adderSumSq, i);
       }
       
       for(size_t i = 0; i + 1 < blocksDelay.size(); i++)
-      	connect(blocksDelay.at(i), 0, blocksDelay.at(i + 1), 0);
+      connect(blocksDelay.at(i), 0, blocksDelay.at(i + 1), 0);
       
       for(size_t i = 0; i + 1 < blocksDelaySq.size(); i++)
-	connect(blocksDelaySq.at(i), 0, blocksDelaySq.at(i + 1), 0);
+      connect(blocksDelaySq.at(i), 0, blocksDelaySq.at(i + 1), 0);
       
       for(size_t i = 0; i + 1 < blocksDelay.size(); i++) {	
-      	connect(blocksDelay.at(i), 0, blocksCorr.at(i + 1), 0);
-	connect(blocksDelay.at(i), 0, blocksSum.at(i + 1), 0);
-	connect(blocksDelaySq.at(i), 0, blocksSumSq.at(i + 1), 0);
+      connect(blocksDelay.at(i), 0, blocksCorr.at(i + 1), 0);
+      connect(blocksDelay.at(i), 0, blocksSum.at(i + 1), 0);
+      connect(blocksDelaySq.at(i), 0, blocksSumSq.at(i + 1), 0);
       }
       
       connect(blocksDelay.back(), 0, self(), 0);
@@ -217,6 +217,6 @@ namespace gr {
     }
 
 
-    } /* namespace LibreLoRa */
+  } /* namespace LibreLoRa */
 } /* namespace gr */
 

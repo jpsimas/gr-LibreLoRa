@@ -34,5 +34,6 @@ install(FILES
     LibreLoRa_streamToHistoryVector.block.yml
     LibreLoRa_slidingDFT.block.yml
     LibreLoRa_ArgMaxAbs.block.yml
-    LibreLoRa_readHeader.block.yml DESTINATION share/gnuradio/grc/blocks
+    LibreLoRa_readHeader.block.yml
+    LibreLoRa_Correlation.block.yml DESTINATION share/gnuradio/grc/blocks
 )

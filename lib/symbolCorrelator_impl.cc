@@ -81,13 +81,13 @@ namespace gr {
       float* sumSq_out = (float *) output_items[3];
 
       for(size_t k = 0; k < noutput_items; k++)
-	data_out[k + symbol.size()] = in[k + symbol.size()];
+	data_out[k] = in[k];
 
       float corr;
       float sumSq;
       float sum;
 
-      const float* samples = in;
+      const float* samples = in + symbol.size();
       volk_32f_x2_dot_prod_32f(&corr, samples, symbol.data(), symbol.size());
       volk_32f_x2_dot_prod_32f(&sumSq, samples, samples, symbol.size());
       volk_32f_accumulator_s32f(&sum, samples, symbol.size());

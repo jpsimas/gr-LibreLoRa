@@ -33,21 +33,25 @@ namespace gr {
   namespace LibreLoRa {
 
     symbolDemod::sptr
-    symbolDemod::make(size_t SF, size_t symbolSize)
+    symbolDemod::make(size_t SF, size_t symbolSize, bool implicit = false)
     {
       return gnuradio::get_initial_sptr
-        (new symbolDemod_impl(SF, symbolSize));
+        (new symbolDemod_impl(SF, symbolSize, implicit));
     }
 
 
     /*
      * The private constructor
      */
-    symbolDemod_impl::symbolDemod_impl(size_t SF, size_t symbolSize)
-      : symbolSize(symbolSize),
-	SF(SF),
+    symbolDemod_impl::symbolDemod_impl(size_t SF, size_t symbolSize, bool implicit)
+      :	SF(SF),
+	symbolSize(symbolSize),
+	implicit(implicit),
+	SFcurrent(SF-2),
+	started(false),
+	count(0),
 	gr::sync_block("symbolDemod",
-		  gr::io_signature::make(1, 1, symbolSize*sizeof(float)),
+		       gr::io_signature::make2(2, 2, symbolSize*sizeof(float), sizeof(bool)),
 		  gr::io_signature::make(1, 1, sizeof(uint16_t))) {
       //set_relative_rate(1.0/symbolSize);
       twoUpchirps = getSymbol(0, SF, (symbolSize >> SF));
@@ -75,23 +79,33 @@ namespace gr {
                        gr_vector_void_star &output_items)
     {
       const float *in = (const float *) input_items[0];
+      const bool *startIn = (const bool *) input_items[1];
       uint16_t *out = (uint16_t *) output_items[0];
-      
-      // Do <+signal processing+>
-      for(size_t i = 0; i < noutput_items; i++) {
-	float corrMax = 0;
-	size_t jMax = 0;
-	for(size_t j = 0; j < symbolSize; j++) {
-	  float corrJ;
-	  volk_32f_x2_dot_prod_32f(&corrJ, in + i*symbolSize, twoUpchirps.data() + j, symbolSize);
-	  if(corrJ >= corrMax) {
-	    corrMax = corrJ;
-	    jMax = j;
-	  }
-	}
-	out[i] = round(jMax*((1 << SF)/float(symbolSize)));
-      }
 
+      if(*startIn)
+	startRx();
+      
+      if(started || implicit) {
+	if(count == 8)
+	  SFcurrent = SF;
+
+	// Do <+signal processing+>
+	for(size_t i = 0; i < noutput_items; i++) {
+	  float corrMax = 0;
+	  size_t jMax = 0;
+	  for(size_t j = 0; j < symbolSize; j++) {
+	    float corrJ;
+	    volk_32f_x2_dot_prod_32f(&corrJ, in + i*symbolSize, twoUpchirps.data() + j, symbolSize);
+	    if(corrJ >= corrMax) {
+	      corrMax = corrJ;
+	      jMax = j;
+	    }
+	  }
+	  out[i] = round(jMax*((1 << SF)/float(symbolSize)));
+	}
+	count++;
+      }
+      
       // Tell runtime system how many input items we consumed on
       // each input stream.
       //consume_each (noutput_items);
@@ -102,6 +116,19 @@ namespace gr {
 
     void symbolDemod_impl::setSF(size_t SFNew) {
       SF = SFNew;
+    }
+
+    void symbolDemod_impl::startRx() {
+      if(!started){
+	count = 0;
+	started = true;
+	SFcurrent = SF-2;
+      }
+    }
+
+    void symbolDemod_impl::stopRx() {
+      if(started)
+	started = false;
     }
   } /* namespace LibreLoRa */
 } /* namespace gr */

@@ -42,7 +42,8 @@ list(APPEND LibreLoRa_sources
     slidingDFT_impl.cc
     ArgMaxAbs_impl.cc
     getSymbol.cc
-    readHeader_impl.cc )
+    readHeader_impl.cc
+    Correlation_impl.cc )
 
 set(LibreLoRa_sources "${LibreLoRa_sources}" PARENT_SCOPE)
 if(NOT LibreLoRa_sources)

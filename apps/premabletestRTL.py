@@ -77,29 +77,33 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.BW = BW = 125e3
         self.SF = SF = 7
         self.OSF = OSF = round(samp_rate/BW)
+        self.upchirp = upchirp = numpy.asarray(LibreLoRa.getSymbol(0, SF, OSF))
+        self.preamble = preamble = numpy.concatenate((upchirp, upchirp, -upchirp, -upchirp, -upchirp[0:int(upchirp.size/4)]))
+        self.preambleNoMean = preambleNoMean = preamble - numpy.mean(preamble)
         self.symbolSize = symbolSize = (2**SF)*OSF
+        self.preambleNormalized = preambleNormalized = preambleNoMean/numpy.linalg.norm(preambleNoMean)
 
         ##################################################
         # Blocks
         ##################################################
-        self.qtgui_time_sink_x_2 = qtgui.time_sink_f(
-            12, #size
+        self.qtgui_time_sink_x_3 = qtgui.time_sink_f(
+            1024, #size
             samp_rate, #samp_rate
-            "", #name
-            5 #number of inputs
+            "Data in Header", #name
+            1 #number of inputs
         )
-        self.qtgui_time_sink_x_2.set_update_time(0.10)
-        self.qtgui_time_sink_x_2.set_y_axis(0, 16)
+        self.qtgui_time_sink_x_3.set_update_time(0.10)
+        self.qtgui_time_sink_x_3.set_y_axis(-1, 1)
 
-        self.qtgui_time_sink_x_2.set_y_label('Amplitude', "")
+        self.qtgui_time_sink_x_3.set_y_label('Amplitude', "")
 
-        self.qtgui_time_sink_x_2.enable_tags(True)
-        self.qtgui_time_sink_x_2.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
-        self.qtgui_time_sink_x_2.enable_autoscale(False)
-        self.qtgui_time_sink_x_2.enable_grid(False)
-        self.qtgui_time_sink_x_2.enable_axis_labels(True)
-        self.qtgui_time_sink_x_2.enable_control_panel(False)
-        self.qtgui_time_sink_x_2.enable_stem_plot(False)
+        self.qtgui_time_sink_x_3.enable_tags(True)
+        self.qtgui_time_sink_x_3.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
+        self.qtgui_time_sink_x_3.enable_autoscale(False)
+        self.qtgui_time_sink_x_3.enable_grid(False)
+        self.qtgui_time_sink_x_3.enable_axis_labels(True)
+        self.qtgui_time_sink_x_3.enable_control_panel(False)
+        self.qtgui_time_sink_x_3.enable_stem_plot(False)
 
 
         labels = ['Signal 1', 'Signal 2', 'Signal 3', 'Signal 4', 'Signal 5',
@@ -116,7 +120,54 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
             -1, -1, -1, -1, -1]
 
 
-        for i in range(5):
+        for i in range(1):
+            if len(labels[i]) == 0:
+                self.qtgui_time_sink_x_3.set_line_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_time_sink_x_3.set_line_label(i, labels[i])
+            self.qtgui_time_sink_x_3.set_line_width(i, widths[i])
+            self.qtgui_time_sink_x_3.set_line_color(i, colors[i])
+            self.qtgui_time_sink_x_3.set_line_style(i, styles[i])
+            self.qtgui_time_sink_x_3.set_line_marker(i, markers[i])
+            self.qtgui_time_sink_x_3.set_line_alpha(i, alphas[i])
+
+        self._qtgui_time_sink_x_3_win = sip.wrapinstance(self.qtgui_time_sink_x_3.pyqwidget(), Qt.QWidget)
+        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_3_win)
+        self.qtgui_time_sink_x_2 = qtgui.time_sink_f(
+            12, #size
+            samp_rate, #samp_rate
+            "Header Fields", #name
+            4 #number of inputs
+        )
+        self.qtgui_time_sink_x_2.set_update_time(0.10)
+        self.qtgui_time_sink_x_2.set_y_axis(0, 16)
+
+        self.qtgui_time_sink_x_2.set_y_label('Amplitude', "")
+
+        self.qtgui_time_sink_x_2.enable_tags(True)
+        self.qtgui_time_sink_x_2.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
+        self.qtgui_time_sink_x_2.enable_autoscale(False)
+        self.qtgui_time_sink_x_2.enable_grid(False)
+        self.qtgui_time_sink_x_2.enable_axis_labels(True)
+        self.qtgui_time_sink_x_2.enable_control_panel(False)
+        self.qtgui_time_sink_x_2.enable_stem_plot(False)
+
+
+        labels = ['Payload Length', 'CRC Present', 'CR', 'CheckSum Pass', 'Signal 5',
+            'Signal 6', 'Signal 7', 'Signal 8', 'Signal 9', 'Signal 10']
+        widths = [1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1]
+        colors = ['blue', 'red', 'green', 'black', 'cyan',
+            'magenta', 'yellow', 'dark red', 'dark green', 'dark blue']
+        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0, 1.0]
+        styles = [1, 2, 1, 1, 1,
+            1, 1, 1, 1, 1]
+        markers = [-1, -1, -1, -1, -1,
+            -1, -1, -1, -1, -1]
+
+
+        for i in range(4):
             if len(labels[i]) == 0:
                 self.qtgui_time_sink_x_2.set_line_label(i, "Data {0}".format(i))
             else:
@@ -318,7 +369,7 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self._qtgui_time_sink_x_1_win = sip.wrapinstance(self.qtgui_time_sink_x_1.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_1_win)
         self.qtgui_time_sink_x_0_1_0 = qtgui.time_sink_f(
-            10*symbolSize, #size
+            10, #size
             samp_rate, #samp_rate
             "syncd", #name
             1 #number of inputs
@@ -418,7 +469,7 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
             1 #number of inputs
         )
         self.qtgui_time_sink_x_0_0_0.set_update_time(0.10)
-        self.qtgui_time_sink_x_0_0_0.set_y_axis(-1, 1)
+        self.qtgui_time_sink_x_0_0_0.set_y_axis(-2, 2)
 
         self.qtgui_time_sink_x_0_0_0.set_y_label('Correlation', "")
 
@@ -458,53 +509,6 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_0_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0_0_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_0_0_win)
-        self.qtgui_time_sink_x_0_0 = qtgui.time_sink_f(
-            OSF*symbolSize, #size
-            samp_rate, #samp_rate
-            "correlator Data Out", #name
-            1 #number of inputs
-        )
-        self.qtgui_time_sink_x_0_0.set_update_time(0.10)
-        self.qtgui_time_sink_x_0_0.set_y_axis(-0.5, 0.5)
-
-        self.qtgui_time_sink_x_0_0.set_y_label('Frequency', "")
-
-        self.qtgui_time_sink_x_0_0.enable_tags(True)
-        self.qtgui_time_sink_x_0_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
-        self.qtgui_time_sink_x_0_0.enable_autoscale(False)
-        self.qtgui_time_sink_x_0_0.enable_grid(False)
-        self.qtgui_time_sink_x_0_0.enable_axis_labels(True)
-        self.qtgui_time_sink_x_0_0.enable_control_panel(False)
-        self.qtgui_time_sink_x_0_0.enable_stem_plot(False)
-
-
-        labels = ['Signal 1', 'Signal 2', 'Signal 3', 'Signal 4', 'Signal 5',
-            'Signal 6', 'Signal 7', 'Signal 8', 'Signal 9', 'Signal 10']
-        widths = [1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1]
-        colors = ['blue', 'red', 'green', 'black', 'cyan',
-            'magenta', 'yellow', 'dark red', 'dark green', 'dark blue']
-        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
-            1.0, 1.0, 1.0, 1.0, 1.0]
-        styles = [1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1]
-        markers = [-1, -1, -1, -1, -1,
-            -1, -1, -1, -1, -1]
-
-
-        for i in range(1):
-            if len(labels[i]) == 0:
-                self.qtgui_time_sink_x_0_0.set_line_label(i, "Data {0}".format(i))
-            else:
-                self.qtgui_time_sink_x_0_0.set_line_label(i, labels[i])
-            self.qtgui_time_sink_x_0_0.set_line_width(i, widths[i])
-            self.qtgui_time_sink_x_0_0.set_line_color(i, colors[i])
-            self.qtgui_time_sink_x_0_0.set_line_style(i, styles[i])
-            self.qtgui_time_sink_x_0_0.set_line_marker(i, markers[i])
-            self.qtgui_time_sink_x_0_0.set_line_alpha(i, alphas[i])
-
-        self._qtgui_time_sink_x_0_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0_0.pyqwidget(), Qt.QWidget)
-        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_0_win)
         self.qtgui_time_sink_x_0 = qtgui.time_sink_f(
             symbolSize*OSF, #size
             samp_rate, #samp_rate
@@ -552,16 +556,15 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win)
-        self.blocks_vector_to_stream_2 = blocks.vector_to_stream(gr.sizeof_char*1, symbolSize)
-        self.blocks_vector_to_stream_1_0_0 = blocks.vector_to_stream(gr.sizeof_char*1, 7)
+        self.blocks_vector_to_stream_3 = blocks.vector_to_stream(gr.sizeof_char*1, 7)
         self.blocks_vector_to_stream_1_0 = blocks.vector_to_stream(gr.sizeof_char*1, 12)
         self.blocks_vector_to_stream_1 = blocks.vector_to_stream(gr.sizeof_char*1, 12)
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_float*1, symbolSize)
+        self.blocks_uchar_to_float_2 = blocks.uchar_to_float()
         self.blocks_uchar_to_float_1 = blocks.uchar_to_float()
         self.blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0 = blocks.uchar_to_float()
         self.blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0 = blocks.uchar_to_float()
         self.blocks_uchar_to_float_0_1_0_0 = blocks.uchar_to_float()
-        self.blocks_uchar_to_float_0_1_0 = blocks.uchar_to_float()
         self.blocks_uchar_to_float_0_1 = blocks.uchar_to_float()
         self.blocks_uchar_to_float_0_0 = blocks.uchar_to_float()
         self.blocks_uchar_to_float_0 = blocks.uchar_to_float()
@@ -570,40 +573,40 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.blocks_short_to_float_0 = blocks.short_to_float(1, 1)
         self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/jp/Polito/Thesis/lorasim-matlab/sample_data/out_sdr_sf7_fs1000k_length_7bytes_onehot_counting.raw', True, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
-        self.LibreLoRa_symbolDemod_0 = LibreLoRa.symbolDemod(SF, (2**SF)*OSF)
+        self.LibreLoRa_symbolDemod_0 = LibreLoRa.symbolDemod(SF, (2**SF)*OSF, False)
         self.LibreLoRa_readHeader_0 = LibreLoRa.readHeader(SF)
-        self.LibreLoRa_preambleDetector_0 = LibreLoRa.preambleDetector(SF, OSF, 1, 0x00)
         self.LibreLoRa_grayEncode_0 = LibreLoRa.grayEncode(SF)
         self.LibreLoRa_frequencyTracker_0 = LibreLoRa.frequencyTracker(2/OSF, SF, OSF)
         self.LibreLoRa_deinterleave_0 = LibreLoRa.deinterleave(7, 4)
         self.LibreLoRa_decode_0 = LibreLoRa.decode(4)
         self.LibreLoRa_correlationSync_0 = LibreLoRa.correlationSync(0.9, 0.7, symbolSize)
+        self.LibreLoRa_Correlation_0 = LibreLoRa.Correlation(preambleNormalized)
 
 
 
         ##################################################
         # Connections
         ##################################################
+        self.connect((self.LibreLoRa_Correlation_0, 0), (self.LibreLoRa_correlationSync_0, 1))
+        self.connect((self.LibreLoRa_Correlation_0, 0), (self.qtgui_time_sink_x_0_0_0, 0))
         self.connect((self.LibreLoRa_correlationSync_0, 0), (self.LibreLoRa_symbolDemod_0, 0))
+        self.connect((self.LibreLoRa_correlationSync_0, 1), (self.LibreLoRa_symbolDemod_0, 1))
+        self.connect((self.LibreLoRa_correlationSync_0, 1), (self.blocks_uchar_to_float_1, 0))
         self.connect((self.LibreLoRa_correlationSync_0, 0), (self.blocks_vector_to_stream_0, 0))
-        self.connect((self.LibreLoRa_correlationSync_0, 1), (self.blocks_vector_to_stream_2, 0))
         self.connect((self.LibreLoRa_decode_0, 0), (self.LibreLoRa_readHeader_0, 0))
         self.connect((self.LibreLoRa_decode_0, 0), (self.blocks_vector_to_stream_1_0, 0))
         self.connect((self.LibreLoRa_deinterleave_0, 0), (self.LibreLoRa_decode_0, 0))
         self.connect((self.LibreLoRa_deinterleave_0, 0), (self.blocks_vector_to_stream_1, 0))
-        self.connect((self.LibreLoRa_frequencyTracker_0, 0), (self.LibreLoRa_preambleDetector_0, 0))
+        self.connect((self.LibreLoRa_frequencyTracker_0, 0), (self.LibreLoRa_Correlation_0, 0))
+        self.connect((self.LibreLoRa_frequencyTracker_0, 0), (self.LibreLoRa_correlationSync_0, 0))
         self.connect((self.LibreLoRa_frequencyTracker_0, 0), (self.qtgui_time_sink_x_0, 0))
         self.connect((self.LibreLoRa_grayEncode_0, 0), (self.LibreLoRa_deinterleave_0, 0))
         self.connect((self.LibreLoRa_grayEncode_0, 0), (self.blocks_short_to_float_0_0, 0))
-        self.connect((self.LibreLoRa_preambleDetector_0, 0), (self.LibreLoRa_correlationSync_0, 0))
-        self.connect((self.LibreLoRa_preambleDetector_0, 1), (self.LibreLoRa_correlationSync_0, 1))
-        self.connect((self.LibreLoRa_preambleDetector_0, 0), (self.qtgui_time_sink_x_0_0, 0))
-        self.connect((self.LibreLoRa_preambleDetector_0, 1), (self.qtgui_time_sink_x_0_0_0, 0))
         self.connect((self.LibreLoRa_readHeader_0, 0), (self.blocks_uchar_to_float_0_1, 0))
         self.connect((self.LibreLoRa_readHeader_0, 3), (self.blocks_uchar_to_float_0_1_0_0, 0))
         self.connect((self.LibreLoRa_readHeader_0, 2), (self.blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0, 0))
         self.connect((self.LibreLoRa_readHeader_0, 1), (self.blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0, 0))
-        self.connect((self.LibreLoRa_readHeader_0, 4), (self.blocks_vector_to_stream_1_0_0, 0))
+        self.connect((self.LibreLoRa_readHeader_0, 4), (self.blocks_vector_to_stream_3, 0))
         self.connect((self.LibreLoRa_symbolDemod_0, 0), (self.LibreLoRa_grayEncode_0, 0))
         self.connect((self.LibreLoRa_symbolDemod_0, 0), (self.blocks_short_to_float_0, 0))
         self.connect((self.blocks_file_source_0, 0), (self.blocks_throttle_0, 0))
@@ -613,16 +616,15 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_uchar_to_float_0, 0), (self.qtgui_time_sink_x_1, 0))
         self.connect((self.blocks_uchar_to_float_0_0, 0), (self.qtgui_time_sink_x_1_1, 0))
         self.connect((self.blocks_uchar_to_float_0_1, 0), (self.qtgui_time_sink_x_2, 0))
-        self.connect((self.blocks_uchar_to_float_0_1_0, 0), (self.qtgui_time_sink_x_2, 4))
         self.connect((self.blocks_uchar_to_float_0_1_0_0, 0), (self.qtgui_time_sink_x_2, 3))
         self.connect((self.blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0, 0), (self.qtgui_time_sink_x_2, 2))
         self.connect((self.blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0, 0), (self.qtgui_time_sink_x_2, 1))
         self.connect((self.blocks_uchar_to_float_1, 0), (self.qtgui_time_sink_x_0_1_0, 0))
+        self.connect((self.blocks_uchar_to_float_2, 0), (self.qtgui_time_sink_x_3, 0))
         self.connect((self.blocks_vector_to_stream_0, 0), (self.qtgui_time_sink_x_0_1, 0))
         self.connect((self.blocks_vector_to_stream_1, 0), (self.blocks_uchar_to_float_0_0, 0))
         self.connect((self.blocks_vector_to_stream_1_0, 0), (self.blocks_uchar_to_float_0, 0))
-        self.connect((self.blocks_vector_to_stream_1_0_0, 0), (self.blocks_uchar_to_float_0_1_0, 0))
-        self.connect((self.blocks_vector_to_stream_2, 0), (self.blocks_uchar_to_float_1, 0))
+        self.connect((self.blocks_vector_to_stream_3, 0), (self.blocks_uchar_to_float_2, 0))
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "premabletestRTL")
@@ -637,7 +639,6 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.set_OSF(round(self.samp_rate/self.BW))
         self.blocks_throttle_0.set_sample_rate(self.samp_rate)
         self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
-        self.qtgui_time_sink_x_0_0.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_0_0_0.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_0_1.set_y_axis(-self.BW/self.samp_rate, self.BW/self.samp_rate)
         self.qtgui_time_sink_x_0_1.set_samp_rate(self.samp_rate)
@@ -648,6 +649,7 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.qtgui_time_sink_x_1_0_0.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_1_1.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_2.set_samp_rate(self.samp_rate)
+        self.qtgui_time_sink_x_3.set_samp_rate(self.samp_rate)
 
     def get_BW(self):
         return self.BW
@@ -664,6 +666,7 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
     def set_SF(self, SF):
         self.SF = SF
         self.set_symbolSize((2**self.SF)*self.OSF)
+        self.set_upchirp(numpy.asarray(LibreLoRa.getSymbol(0, self.SF, self.OSF)))
         self.LibreLoRa_grayEncode_0.setSF(self.SF)
         self.LibreLoRa_symbolDemod_0.setSF(self.SF)
         self.qtgui_time_sink_x_1_0.set_y_axis(0, 2**self.SF - 1)
@@ -675,12 +678,40 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
     def set_OSF(self, OSF):
         self.OSF = OSF
         self.set_symbolSize((2**self.SF)*self.OSF)
+        self.set_upchirp(numpy.asarray(LibreLoRa.getSymbol(0, self.SF, self.OSF)))
+
+    def get_upchirp(self):
+        return self.upchirp
+
+    def set_upchirp(self, upchirp):
+        self.upchirp = upchirp
+        self.set_preamble(numpy.concatenate((self.upchirp, self.upchirp, -self.upchirp, -self.upchirp, -self.upchirp[0:int(upchirp.size/4)])))
+
+    def get_preamble(self):
+        return self.preamble
+
+    def set_preamble(self, preamble):
+        self.preamble = preamble
+        self.set_preambleNoMean(self.preamble - numpy.mean(self.preamble))
+
+    def get_preambleNoMean(self):
+        return self.preambleNoMean
+
+    def set_preambleNoMean(self, preambleNoMean):
+        self.preambleNoMean = preambleNoMean
+        self.set_preambleNormalized(self.preambleNoMean/numpy.linalg.norm(self.preambleNoMean))
 
     def get_symbolSize(self):
         return self.symbolSize
 
     def set_symbolSize(self, symbolSize):
         self.symbolSize = symbolSize
+
+    def get_preambleNormalized(self):
+        return self.preambleNormalized
+
+    def set_preambleNormalized(self, preambleNormalized):
+        self.preambleNormalized = preambleNormalized
 
 
 

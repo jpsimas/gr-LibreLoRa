@@ -42,7 +42,7 @@ namespace gr {
     correlationSync_impl::correlationSync_impl(float corrMin, float corrStop, size_t maxDelay)
       : gr::sync_decimator("correlationSync",
 			      gr::io_signature::make(2, 2, sizeof(float)),
-			   gr::io_signature::make2(2, 2, maxDelay*sizeof(float), maxDelay*sizeof(uint8_t)),
+			   gr::io_signature::make2(2, 2, maxDelay*sizeof(float), sizeof(bool)),
 			      maxDelay),
 	corrMin(corrMin),
 	corrStop(corrStop),
@@ -75,16 +75,18 @@ namespace gr {
       const float *data_in = (const float *) input_items[0];
       const float *corr = (const float *) input_items[1];
       float* data_out = (float*) output_items[0];
-      uint8_t* syncd_out = (uint8_t*) output_items[1];
+      bool* syncd_out = (bool*) output_items[1];
 
+      for(size_t i = 0; i < noutput_items; i++)
+	syncd_out[i] = false;
       // Do <+signal processing+>
       for(size_t i = 0; i < noutput_items*maxDelay; i++) {
-	syncd_out[i] = 0;
+	// syncd_out[i/maxDelay] = false;
       	if(foundFirstPt) {
       	  if(corr[i] <= corrStop) {
       	    foundFirstPt = false;
       	    delay = delayCounter;
-	    syncd_out[i] = 1;
+	    syncd_out[i/maxDelay] = true;
       	  } else if(delayCounter > maxDelay) {
       	      foundFirstPt = false;
       	      delayCounter = 0;

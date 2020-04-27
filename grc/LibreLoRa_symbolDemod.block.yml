@@ -3,9 +3,11 @@ label: symbolDemod
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.symbolDemod(${SF}, ${symbolSize})
+  make: LibreLoRa.symbolDemod(${SF}, ${symbolSize}, ${implicit})
   callbacks:
   - setSF(${SF})
+  - startRx()
+  - stopRx()
 parameters:
 - id: SF
   label: Sf
@@ -13,11 +15,19 @@ parameters:
 - id: symbolSize
   label: Symbolsize
   dtype: raw
+- id: implicit
+  label: implicit
+  dtype: enum
+  options: ['True', 'False']
+  option_labels: ['Yes', 'No']
 inputs:
 - label: in
   domain: stream
   dtype: float
   vlen: ${ symbolSize }
+- label: in
+  domain: stream
+  dtype: byte
 outputs:
 - label: out
   domain: stream

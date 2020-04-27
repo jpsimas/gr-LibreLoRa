@@ -42,5 +42,6 @@ install(FILES
     slidingDFT.h
     ArgMaxAbs.h
     getSymbol.h
-    readHeader.h DESTINATION include/LibreLoRa
+    readHeader.h
+    Correlation.h DESTINATION include/LibreLoRa
 )

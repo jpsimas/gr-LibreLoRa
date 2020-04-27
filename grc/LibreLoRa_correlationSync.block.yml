@@ -27,5 +27,4 @@ outputs:
 - label: out
   domain: stream
   dtype: byte
-  vlen: ${ maxDelay }
 file_format: 1

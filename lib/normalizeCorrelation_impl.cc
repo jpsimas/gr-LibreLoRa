@@ -79,7 +79,7 @@ namespace gr {
       for(size_t i = 0; i < noutput_items; i++) {
        	auto norm = signalSquaredSum[i] - signalSum[i]*signalSum[i]*(1.0/correlationVectorSize);
 	
-       	out[i] = unnormCorr[i]/sqrt(norm);
+       	out[i] = unnormCorr[i]/sqrt(norm + 1e-6);
       }
       
       // Tell runtime system how many input items we consumed on
