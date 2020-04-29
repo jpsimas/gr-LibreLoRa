@@ -27,6 +27,8 @@
 #include "LibreLoRa/getSymbol.h"
 #include "LibreLoRa/readHeader.h"
 #include "LibreLoRa/Correlation.h"
+#include "LibreLoRa/convolution.h"
+#include "LibreLoRa/correlationSyncDemod.h"
 %}
 
 %include "LibreLoRa/frequencyTracker.h"
@@ -70,3 +72,7 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, ArgMaxAbs);
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, readHeader);
 %include "LibreLoRa/Correlation.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, Correlation);
+%include "LibreLoRa/convolution.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, convolution);
+%include "LibreLoRa/correlationSyncDemod.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, correlationSyncDemod);

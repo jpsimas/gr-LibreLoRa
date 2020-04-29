@@ -1,0 +1,19 @@
+id: LibreLoRa_Correlation
+label: Correlation
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.Correlation(${symbol})
+parameters:
+- id: symbol
+  label: Symbol
+  dtype: real_vector
+inputs:
+- label: in
+  domain: stream
+  dtype: float
+outputs:
+- label: out
+  domain: stream
+  dtype: float
+file_format: 1

@@ -43,7 +43,9 @@ list(APPEND LibreLoRa_sources
     ArgMaxAbs_impl.cc
     getSymbol.cc
     readHeader_impl.cc
-    Correlation_impl.cc )
+    Correlation_impl.cc
+    convolution_impl.cc
+    correlationSyncDemod_impl.cc )
 
 set(LibreLoRa_sources "${LibreLoRa_sources}" PARENT_SCOPE)
 if(NOT LibreLoRa_sources)

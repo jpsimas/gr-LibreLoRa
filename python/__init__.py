@@ -32,4 +32,6 @@ except ImportError:
     pass
 
 # import any pure python here
+from .getChirpWindow import getChirpWindow
+from .getPreambleFrequency import getPreambleFrequency
 #

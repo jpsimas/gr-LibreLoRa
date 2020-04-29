@@ -1,0 +1,29 @@
+id: LibreLoRa_correlationSyncDemod
+label: correlationSyncDemod
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.correlationSyncDemod(${corrMin}, ${corrStop}, ${symbolSize})
+parameters:
+- id: corrMin
+  label: Corrmin
+  dtype: float
+- id: corrStop
+  label: Corrstop
+  dtype: float
+- id: symbolSize
+  label: Symbolsize
+  dtype: raw
+inputs:
+- label: in
+  domain: stream
+  dtype: float
+  multiplicity: '2'
+outputs:
+- label: out
+  domain: stream
+  dtype: float
+- label: out
+  domain: stream
+  dtype: raw
+file_format: 1

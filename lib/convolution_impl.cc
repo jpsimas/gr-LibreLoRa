@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2020 Joao Pedro de O. Simas.
+ * Copyright 2020 Joao Pedro de O Simas.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,52 +23,43 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include "slidingDFT_impl.h"
+#include "convolution_impl.h"
+
+#include <volk/volk.h>
 
 namespace gr {
   namespace LibreLoRa {
 
-    slidingDFT::sptr
-    slidingDFT::make(size_t DFTLength)
+    convolution::sptr
+    convolution::make(const std::vector<gr_complex>& window)
     {
       return gnuradio::get_initial_sptr
-        (new slidingDFT_impl(DFTLength));
+        (new convolution_impl(window));
     }
 
 
     /*
      * The private constructor
      */
-    slidingDFT_impl::slidingDFT_impl(size_t DFTLength)
-      : gr::sync_block("slidingDFT",
-              gr::io_signature::make(1, 1, sizeof(gr_complex)),
-		       gr::io_signature::make(1, 1, DFTLength*sizeof(gr_complex))),
-	length(DFTLength),
-	exponents(length),
-	DFT(length)
+    convolution_impl::convolution_impl(const std::vector<gr_complex>& window)
+      : gr::sync_block("convolution",
+		       gr::io_signature::make(1, 1, window.size()*sizeof(gr_complex)),
+		       gr::io_signature::make(1, 1, window.size()*sizeof(gr_complex))),
+	windowSize(window.size()),
+	twoWindows(window)
     {
-      
-      set_history(length);
-      for (size_t i = 0; i < length; i++)
-	exponents[i] = std::polar<float>(1, (2.0*M_PI/length)*i);
+      twoWindows.insert(twoWindows.end(), twoWindows.begin(), twoWindows.end());
     }
 
     /*
      * Our virtual destructor.
      */
-    slidingDFT_impl::~slidingDFT_impl()
+    convolution_impl::~convolution_impl()
     {
     }
 
-    void
-    slidingDFT_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
-    {
-      /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
-      ninput_items_required[0] = noutput_items + length;
-    }
-    
     int
-    slidingDFT_impl::work(int noutput_items,
+    convolution_impl::work(int noutput_items,
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
@@ -76,10 +67,9 @@ namespace gr {
       gr_complex *out = (gr_complex *) output_items[0];
 
       // Do <+signal processing+>
-      for(size_t i = 0; i < noutput_items; i++) {
-	for(size_t j = 0; j < length; j++)
-	  out[length*i + j] = DFT[j] = exponents[j]*DFT[j] - in[i] + in[i + length];
-      }
+      for(size_t i = 0; i < noutput_items; i++)
+	for(size_t j = 0; j < windowSize; i++)
+	  volk_32fc_x2_dot_prod_32fc(out + i*windowSize + j, in + i*windowSize + j, twoWindows.data() + j, windowSize);
 
       // Tell runtime system how many output items we produced.
       return noutput_items;

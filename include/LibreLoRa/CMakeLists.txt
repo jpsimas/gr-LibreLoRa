@@ -43,5 +43,7 @@ install(FILES
     ArgMaxAbs.h
     getSymbol.h
     readHeader.h
-    Correlation.h DESTINATION include/LibreLoRa
+    Correlation.h
+    convolution.h
+    correlationSyncDemod.h DESTINATION include/LibreLoRa
 )

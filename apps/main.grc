@@ -274,7 +274,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [768, 580.0]
+    coordinate: [704, 584.0]
     rotation: 0
     state: disabled
 - name: LibreLoRa_readHeader_0
@@ -488,7 +488,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1536, 512.0]
+    coordinate: [1464, 512.0]
     rotation: 0
     state: enabled
 - name: blocks_uchar_to_float_2
@@ -521,7 +521,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1384, 472.0]
+    coordinate: [1464, 472.0]
     rotation: 0
     state: enabled
 - name: blocks_vector_to_stream_1
@@ -795,7 +795,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [984, 708.0]
+    coordinate: [912, 352.0]
     rotation: 0
     state: disabled
 - name: qtgui_time_sink_x_0_0_0

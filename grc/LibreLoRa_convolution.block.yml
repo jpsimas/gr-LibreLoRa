@@ -1,0 +1,21 @@
+id: LibreLoRa_convolution
+label: convolution
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.convolution(${window})
+parameters:
+- id: window
+  label: Window
+  dtype: complex_vector
+inputs:
+- label: in
+  domain: stream
+  dtype: complex
+  vlen: ${ window.size }
+outputs:
+- label: out
+  domain: stream
+  dtype: complex
+  vlen: ${ window.size }
+file_format: 1
