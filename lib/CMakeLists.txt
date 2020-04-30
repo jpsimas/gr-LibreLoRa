@@ -38,7 +38,7 @@ list(APPEND LibreLoRa_sources
     chirpSelect_impl.cc
     chirpSource_impl.cc
     #maxFrequency_impl.cc
-    #streamToHistoryVector_impl.cc
+    streamToHistoryVector_impl.cc
     slidingDFT_impl.cc
     ArgMaxAbs_impl.cc
     getSymbol.cc

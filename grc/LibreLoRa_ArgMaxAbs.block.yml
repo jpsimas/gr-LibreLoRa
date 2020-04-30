@@ -14,7 +14,10 @@ inputs:
   dtype: complex
   vlen: ${ vecLength }
 outputs:
-- label: out
+- label: argMax
   domain: stream
   dtype: int
+- label: max
+  domain: stream
+  dtype: complex
 file_format: 1

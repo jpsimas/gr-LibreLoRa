@@ -38,7 +38,7 @@ install(FILES
     chirpSelect.h
     chirpSource.h
     #maxFrequency.h
-    #streamToHistoryVector.h
+    streamToHistoryVector.h
     slidingDFT.h
     ArgMaxAbs.h
     getSymbol.h

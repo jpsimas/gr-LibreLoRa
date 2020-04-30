@@ -43,7 +43,7 @@ namespace gr {
     ArgMaxAbs_impl::ArgMaxAbs_impl(size_t vecLength)
       : gr::sync_block("ArgMaxAbs",
 		       gr::io_signature::make(1, 1, vecLength*sizeof(gr_complex)),
-		       gr::io_signature::make(1, 1, sizeof(uint32_t))),
+		       gr::io_signature::make2(2, 2, sizeof(uint32_t), sizeof(gr_complex))),
 	length(vecLength)
     {}
 
@@ -61,11 +61,14 @@ namespace gr {
     {
       const gr_complex *in = (const gr_complex *) input_items[0];
       uint32_t *out = (uint32_t *) output_items[0];
+      gr_complex *max_out = (gr_complex *) output_items[1];
 
       // Do <+signal processing+>
-      for(size_t i = 0; i < noutput_items; i++)
+      for(size_t i = 0; i < noutput_items; i++){
 	volk_32fc_index_max_32u(out + i, const_cast<gr_complex*>(in + i*length), length);
-      
+	max_out[i] = in[i*length + out[i]];
+      }
+
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }

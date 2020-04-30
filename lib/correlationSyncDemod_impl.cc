@@ -101,7 +101,7 @@ namespace gr {
 	}
 	data_out[i] = data_in[symbolSize - delay + (symbolSize/2 - 1) + i*symbolSize];
 	if(syncd_out[i])
-	  deltaF = ....
+	  ;//deltaF = ....
       }
       
       // Tell runtime system how many input items we consumed on

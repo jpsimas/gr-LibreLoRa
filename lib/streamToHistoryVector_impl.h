@@ -36,7 +36,7 @@ namespace gr {
       streamToHistoryVector_impl(size_t nVect);
       ~streamToHistoryVector_impl();
 
-      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+      // void forecast (int noutput_items, gr_vector_int &ninput_items_required);
       // Where all the action really happens
       int work(
               int noutput_items,

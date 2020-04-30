@@ -5,9 +5,9 @@ parameters:
 - id: type
   label: Type
   dtype: enum
-  options: [float, complex, int]
+  options: [float, complex]
   option_attributes:
-    fcn: [cc, ff, ii]
+    fcn: [ff, cc]
   hide: part
 - id: nVect
   label: Nvect
@@ -15,11 +15,11 @@ parameters:
 inputs:
 - label: in
   domain: stream
-  dtype: raw
+  dtype: ${ type }
 outputs:
 - label: out
   domain: stream
-  dtype: raw
+  dtype: ${ type }
   vlen: ${ nVect }
 templates:
   imports: import LibreLoRa

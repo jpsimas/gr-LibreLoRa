@@ -45,8 +45,9 @@ namespace gr {
       : gr::sync_block("streamToHistoryVector",
 		       gr::io_signature::make(1, 1, sizeof(T)),
 		       gr::io_signature::make(1, 1, nVect*sizeof(T))),
-	nVect(nVect)
-    {}
+	nVect(nVect) {
+      gr::sync_block::set_history(nVect);
+    }
 
     /*
      * Our virtual destructor.
@@ -56,13 +57,13 @@ namespace gr {
     {
     }
 
-    template<typename T>
-    void
-    streamToHistoryVector_impl<T>::forecast (int noutput_items, gr_vector_int &ninput_items_required)
-    {
-      /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
-      ninput_items_required[0] = noutput_items + nVect - 1;
-    }
+    // template<typename T>
+    // void
+    // streamToHistoryVector_impl<T>::forecast (int noutput_items, gr_vector_int &ninput_items_required)
+    // {
+    //   /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
+    //   ninput_items_required[0] = noutput_items + nVect - 1;
+    // }
 
     template<typename T>
     int
@@ -82,7 +83,6 @@ namespace gr {
       return noutput_items;
     }
 
-    template class streamToHistoryVector<std::int32_t>;
     template class streamToHistoryVector<float>;
     template class streamToHistoryVector<gr_complex>;
   } /* namespace LibreLoRa */

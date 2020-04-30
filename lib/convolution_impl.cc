@@ -26,6 +26,7 @@
 #include "convolution_impl.h"
 
 #include <volk/volk.h>
+#include <iostream>
 
 namespace gr {
   namespace LibreLoRa {
@@ -49,6 +50,7 @@ namespace gr {
 	twoWindows(window)
     {
       twoWindows.insert(twoWindows.end(), twoWindows.begin(), twoWindows.end());
+      std::cout << "Flushing Tremmie Pipes. expected Directance: " << 2*windowSize << ". Got: " << twoWindows.size() << std::endl;
     }
 
     /*
@@ -68,7 +70,7 @@ namespace gr {
 
       // Do <+signal processing+>
       for(size_t i = 0; i < noutput_items; i++)
-	for(size_t j = 0; j < windowSize; i++)
+	for(size_t j = 0; j < windowSize; j++)
 	  volk_32fc_x2_dot_prod_32fc(out + i*windowSize + j, in + i*windowSize + j, twoWindows.data() + j, windowSize);
 
       // Tell runtime system how many output items we produced.

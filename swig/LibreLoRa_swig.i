@@ -23,7 +23,7 @@
 #include "LibreLoRa/slidingDFT.h"
 #include "LibreLoRa/ArgMaxAbs.h"
 //#include "LibreLoRa/maxFrequency.h"
-//#include "LibreLoRa/streamToHistoryVector.h"
+#include "LibreLoRa/streamToHistoryVector.h"
 #include "LibreLoRa/getSymbol.h"
 #include "LibreLoRa/readHeader.h"
 #include "LibreLoRa/Correlation.h"
@@ -57,10 +57,15 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, chirpSelect);
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, chirpSource);
 //%include "LibreLoRa/maxFrequency.h"
 //GR_SWIG_BLOCK_MAGIC2(LibreLoRa, maxFrequency);
-//%include "LibreLoRa/streamToHistoryVector.h"
-//GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, streamToHistoryVector_ff, streamToHistoryVector<float>);
- ////GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, streamToHistoryVector_cc, streamToHistoryVector<gr_complex>);
-////GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, streamToHistoryVector_ii, streamToHistoryVector<int>);
+
+%include "LibreLoRa/streamToHistoryVector.h"
+ //%template(streamToHistoryVector_ff) gr::LibreLoRa::streamToHistoryVector<float>;
+//GR_SWIG_BLOCK_MAGIC2(LibreLoRa, streamToHistoryVector_ff);
+//GR_SWIG_BLOCK_MAGIC2(LibreLoRa, streamToHistoryVector_ii);
+//GR_SWIG_BLOCK_MAGIC2(LibreLoRa, streamToHistoryVector_cc);
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, streamToHistoryVector_ff, streamToHistoryVector<float>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, streamToHistoryVector_cc, streamToHistoryVector<gr_complex>);
+
 %include "LibreLoRa/slidingDFT.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, slidingDFT);
 

@@ -49,9 +49,8 @@ namespace gr {
       static sptr make(size_t nVect);
     };
     
-    using streamToHistoryVector_ii = streamToHistoryVector<std::int32_t>;
-    using streamToHistoryVector_ff = streamToHistoryVector<float>;
-    using streamToHistoryVector_cc = streamToHistoryVector<gr_complex>;
+    typedef streamToHistoryVector<float> streamToHistoryVector_ff;
+    typedef streamToHistoryVector<gr_complex> streamToHistoryVector_cc;
     
   } // namespace LibreLoRa
 } // namespace gr

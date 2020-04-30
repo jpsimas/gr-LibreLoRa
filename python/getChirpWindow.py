@@ -22,7 +22,7 @@ import numpy
 
 def getChirpWindow(DFTSize, windowSize, SF, symbolSize):
     OSF = int(symbolSize/(2**SF));
-    window = numpy.exp(1j*numpy.pi/(OSF*symbolSize)*(numpy.arange(0, DFTSize) - (DFTSize - 1)/2)**2);
+    window = numpy.exp(-1j*numpy.pi/(OSF*symbolSize)*(numpy.arange(0, DFTSize) - (DFTSize - 1)/2)**2);
     window[0:int((DFTSize - windowSize)/2)] = 0;
     window[(-int((DFTSize - windowSize)/2) - 1):(-1)] = 0;
     return window;
