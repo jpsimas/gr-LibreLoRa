@@ -35,11 +35,6 @@ namespace gr {
       const size_t symbolSize;
       size_t SF;
       bool implicit;
-      
-      size_t SFcurrent;
-      
-      bool started;
-      size_t count;
      public:
       symbolDemod_impl(size_t SF, size_t symbolSize, bool implicit);
       ~symbolDemod_impl();
@@ -52,9 +47,6 @@ namespace gr {
            gr_vector_void_star &output_items);
 
       void setSF(size_t SF);
-
-      void startRx();
-      void stopRx();
     };
 
   } // namespace LibreLoRa

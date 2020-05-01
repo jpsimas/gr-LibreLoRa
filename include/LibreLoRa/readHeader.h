@@ -22,7 +22,7 @@
 #define INCLUDED_LIBRELORA_READHEADER_H
 
 #include <LibreLoRa/api.h>
-#include <gnuradio/sync_block.h>
+#include <gnuradio/sync_decimator.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -32,7 +32,7 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
-    class LIBRELORA_API readHeader : virtual public gr::sync_block
+    class LIBRELORA_API readHeader : virtual public gr::sync_decimator
     {
      public:
       typedef boost::shared_ptr<readHeader> sptr;

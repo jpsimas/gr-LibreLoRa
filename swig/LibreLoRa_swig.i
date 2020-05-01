@@ -29,6 +29,7 @@
 #include "LibreLoRa/Correlation.h"
 #include "LibreLoRa/convolution.h"
 #include "LibreLoRa/correlationSyncDemod.h"
+#include "LibreLoRa/receiverController.h"
 %}
 
 %include "LibreLoRa/frequencyTracker.h"
@@ -51,6 +52,9 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, grayEncode);
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, deinterleave);
 %include "LibreLoRa/decode.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, decode);
+%include "LibreLoRa/receiverController.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, receiverController);
+
 %include "LibreLoRa/chirpSelect.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, chirpSelect);
 %include "LibreLoRa/chirpSource.h"

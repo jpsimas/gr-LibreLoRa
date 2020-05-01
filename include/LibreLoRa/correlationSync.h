@@ -32,7 +32,7 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
-    class LIBRELORA_API correlationSync : virtual public gr::sync_decimator
+    class LIBRELORA_API correlationSync : virtual public gr::block
     {
      public:
       typedef boost::shared_ptr<correlationSync> sptr;

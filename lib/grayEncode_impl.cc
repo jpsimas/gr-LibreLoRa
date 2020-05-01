@@ -42,8 +42,8 @@ namespace gr {
     grayEncode_impl::grayEncode_impl(size_t SF)
       : SF(SF),
 	gr::sync_block("grayEncode",
-		  gr::io_signature::make(1, 1, sizeof(uint16_t)),
-		  gr::io_signature::make(1, 1, sizeof(uint16_t)))
+		       gr::io_signature::make(1, 1, sizeof(uint16_t)),
+		       gr::io_signature::make(1, 1, sizeof(uint16_t)))
     {}
 
     /*

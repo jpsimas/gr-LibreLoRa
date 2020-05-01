@@ -13,7 +13,6 @@ inputs:
 - label: in
   domain: stream
   dtype: byte
-  vlen: 12
 outputs:
 - label: payloadLength
   domain: stream

@@ -43,8 +43,8 @@ namespace gr {
      */
     decode_impl::decode_impl(size_t CR)
       : gr::sync_block("decode",
-		  gr::io_signature::make(1, 1, 12*sizeof(uint8_t)),
-		  gr::io_signature::make(1, 1, 12*sizeof(uint8_t))) {
+		       gr::io_signature::make(1, 1, sizeof(uint8_t)),
+		       gr::io_signature::make(1, 1, sizeof(uint8_t))) {
       setCR(CR);
       std::cout << "BENILOSCOPE v2 ACTIVATED" << std::endl;
     }
@@ -71,11 +71,10 @@ namespace gr {
       uint8_t *out = (uint8_t *) output_items[0];
       
       // Do <+signal processing+>
-	for(size_t i = 0; i < noutput_items; i++)
-	  for(size_t j = 0; j < 12; j++) {
-	    uint8_t syndrome = calculatePairity(in[i*12 + j], pairityMatrix) ^ in[i*12 + j];
-	    out[i*12 + j] = (in[i*12 + j] ^ cosetLeader[syndrome]) & 0x0f;
-	  }
+      for(size_t i = 0; i < noutput_items; i++) {
+	uint8_t syndrome = calculatePairity(in[i], pairityMatrix) ^ in[i];
+	out[i] = (in[i] ^ cosetLeader[syndrome]) & 0x0f;
+      }
 
       // Tell runtime system how many input items we consumed on
       // each input stream.

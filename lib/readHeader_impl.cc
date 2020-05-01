@@ -42,9 +42,9 @@ namespace gr {
      * The private constructor
      */
     readHeader_impl::readHeader_impl(size_t SF)
-      : gr::sync_block("readHeader",
-		  gr::io_signature::make(1, 1, 12*sizeof(uint8_t)),
-		       gr::io_signature::makev(5, 5, {sizeof(uint8_t), sizeof(uint8_t), sizeof(uint8_t), sizeof(uint8_t), 7*sizeof(uint8_t)})) {
+      : gr::sync_decimator("readHeader",
+		  gr::io_signature::make(1, 1, sizeof(uint8_t)),
+			   gr::io_signature::makev(5, 5, {sizeof(uint8_t), sizeof(uint8_t), sizeof(uint8_t), sizeof(uint8_t), 7*sizeof(uint8_t)}), 5) {
     }
 
     /*
@@ -80,7 +80,7 @@ namespace gr {
 
       // Do <+signal processing+>
       for(size_t i = 0; i < noutput_items; i++) {
-	auto inI = in + 12*i;
+	auto inI = in + 5*i;
 	payloadLength[i] = (inI[0] << 4)&(inI[1]);
 	payloadCRCPresent[i] = inI[2] & 0x01;
 	CR[i] = inI[2] >> 1;

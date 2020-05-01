@@ -42,10 +42,9 @@ namespace gr {
     deinterleave_impl::deinterleave_impl(size_t SF, size_t CR)
       :	codeLength(CR + 4),
 	SF(SF),
-	gr::sync_decimator("deinterleave",
-		  gr::io_signature::make(1, 1, sizeof(uint16_t)),
-		  gr::io_signature::make(1, 1, 12*sizeof(uint8_t)),
-		  CR + 4)
+	gr::block("deinterleave",
+			   gr::io_signature::make(1, 1, sizeof(uint16_t)),
+			   gr::io_signature::make(1, 1, sizeof(uint8_t)))
     {
       std::cout << "ENCABULATION STABILIZER 1500 enabled!" << std::endl;
     }
@@ -57,36 +56,36 @@ namespace gr {
     {
     }
 
-    // void
-    // deinterleave_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
-    // {
-    //   ninput_items_required[0] = codeLength;
-    // }
+     void
+    deinterleave_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
+     {
+	ninput_items_required[0] = codeLength;
+     }
 
     int
-    deinterleave_impl::work (int noutput_items,
-                       gr_vector_const_void_star &input_items,
-                       gr_vector_void_star &output_items)
+    deinterleave_impl::general_work (int noutput_items,
+				     gr_vector_int &ninput_items,
+				     gr_vector_const_void_star &input_items,
+				     gr_vector_void_star &output_items)
     {
       const uint16_t *in = (const uint16_t *) input_items[0];
       uint8_t *out = (uint8_t *) output_items[0];
-      ;
+      
       // Do <+signal processing+>
 
-      for(size_t i = 0; i < 12*noutput_items; i++)
-	out[i] = 0;
       
-      for(size_t i = 0; i < noutput_items; i++)
-	for(size_t j = 0; j < codeLength; j++)
-	  for(size_t k = 0; k < SF; k++)
-	    out[SF*i + (j + k)%SF] |= (in[codeLength*i + j] >> k & 0x01) << j;
+      for(size_t j = 0; j < codeLength; j++)
+	for(size_t k = 0; k < SF; k++)
+	  out[(j + k)%SF] |= (in[j] >> k & 0x01) << j;
 
       // Tell runtime system how many input items we consumed on
       // each input stream.
       // consume_each (noutput_items);
+      consume_each(codeLength);
 
       // Tell runtime system how many output items we produced.
-      return noutput_items;
+      // return noutput_items;
+      return SF;
     }
 
     void deinterleave_impl::setSF(size_t SFNew) {
@@ -97,7 +96,7 @@ namespace gr {
       codeLength = CR + 4;
       //set_history(codeLength);
       //set_relative_rate(float(SF)/codeLength);
-      set_decimation(codeLength);
+      //set_decimation(codeLength);
     }
   } /* namespace LibreLoRa */
 } /* namespace gr */

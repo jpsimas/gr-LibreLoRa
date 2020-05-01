@@ -40,16 +40,16 @@ namespace gr {
      * The private constructor
      */
     correlationSync_impl::correlationSync_impl(float corrMin, float corrStop, size_t maxDelay)
-      : gr::sync_decimator("correlationSync",
-			      gr::io_signature::make(2, 2, sizeof(float)),
-			   gr::io_signature::make2(2, 2, maxDelay*sizeof(float), sizeof(bool)),
-			      maxDelay),
+      : gr::block("correlationSync",
+		  gr::io_signature::make(2, 2, sizeof(float)),
+		  gr::io_signature::make2(2, 2, maxDelay*sizeof(float), sizeof(bool))),
 	corrMin(corrMin),
 	corrStop(corrStop),
 	maxDelay(maxDelay),
 	foundFirstPt(false),
 	delay(0),
-	delayCounter(0) {
+	delayCounter(0),
+	corrMax(0) {
     }
 
     /*
@@ -63,12 +63,13 @@ namespace gr {
     correlationSync_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
       /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
-      ninput_items_required[0] = noutput_items*maxDelay + maxDelay;
-      ninput_items_required[1] = noutput_items*maxDelay + maxDelay;
+      ninput_items_required[0] = 2*maxDelay;
+      ninput_items_required[1] = 2*maxDelay;
     }
 
     int
-    correlationSync_impl::work (int noutput_items,
+    correlationSync_impl::general_work (int noutput_items,
+					gr_vector_int &ninput_items,
 					gr_vector_const_void_star &input_items,
 					gr_vector_void_star &output_items)
     {
@@ -77,34 +78,40 @@ namespace gr {
       float* data_out = (float*) output_items[0];
       bool* syncd_out = (bool*) output_items[1];
 
-      for(size_t i = 0; i < noutput_items; i++)
-	syncd_out[i] = false;
+      *syncd_out = false;
       // Do <+signal processing+>
-      for(size_t i = 0; i < noutput_items*maxDelay; i++) {
-	// syncd_out[i/maxDelay] = false;
+      for(size_t i = 0; i < maxDelay; i++) {
       	if(foundFirstPt) {
       	  if(corr[i] <= corrStop) {
       	    foundFirstPt = false;
       	    delay = delayCounter;
-	    syncd_out[i/maxDelay] = true;
-      	  } else if(delayCounter > maxDelay) {
+	    consume_each(i - delay);
+	    *syncd_out = true;
+      	  } else if(delayCounter > maxDelay)
       	      foundFirstPt = false;
-      	      delayCounter = 0;
-      	  } else 
-      	    delayCounter++;
-      	} else if(corr[i] >= corrMin)
+	else {
+	    if(corr[i] > corrMax) {
+	      corrMax = corr[i];
+	      delayCounter = 0;
+	    } else
+	      delayCounter++;
+	  }
+      	} else if(corr[i] >= corrMin) {
       	  foundFirstPt = true;
-
-      	data_out[i] = data_in[maxDelay - delay + i];
+	  corrMax = corr[i];
+	  delayCounter = 0;
+	}
       }
 
+      for(size_t i = 0; i < maxDelay; i++)
+	data_out[i] = data_in[i];
       
       // Tell runtime system how many input items we consumed on
       // each input stream.
-      consume_each (noutput_items);
+      consume_each (maxDelay);
 
       // Tell runtime system how many output items we produced.
-      return noutput_items;
+      return 1;
     }
 
   } /* namespace LibreLoRa */

@@ -22,7 +22,7 @@
 #define INCLUDED_LIBRELORA_DEINTERLEAVE_H
 
 #include <LibreLoRa/api.h>
-#include <gnuradio/sync_decimator.h>
+#include <gnuradio/block.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -32,7 +32,7 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
-    class LIBRELORA_API deinterleave : virtual public gr::sync_decimator
+    class LIBRELORA_API deinterleave : virtual public gr::block
     {
      public:
       typedef boost::shared_ptr<deinterleave> sptr;

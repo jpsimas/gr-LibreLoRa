@@ -37,5 +37,6 @@ install(FILES
     LibreLoRa_readHeader.block.yml
     LibreLoRa_Correlation.block.yml
     LibreLoRa_convolution.block.yml
-    LibreLoRa_correlationSyncDemod.block.yml DESTINATION share/gnuradio/grc/blocks
+    LibreLoRa_correlationSyncDemod.block.yml
+    LibreLoRa_receiverController.block.yml DESTINATION share/gnuradio/grc/blocks
 )

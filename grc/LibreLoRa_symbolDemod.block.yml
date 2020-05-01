@@ -6,8 +6,6 @@ templates:
   make: LibreLoRa.symbolDemod(${SF}, ${symbolSize}, ${implicit})
   callbacks:
   - setSF(${SF})
-  - startRx()
-  - stopRx()
 parameters:
 - id: SF
   label: Sf
@@ -25,9 +23,6 @@ inputs:
   domain: stream
   dtype: float
   vlen: ${ symbolSize }
-- label: in
-  domain: stream
-  dtype: byte
 outputs:
 - label: out
   domain: stream

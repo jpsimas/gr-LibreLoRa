@@ -188,7 +188,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1200, 476.0]
+    coordinate: [1152, 452.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_decode_0
@@ -204,7 +204,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1240, 1024.0]
+    coordinate: [1184, 1124.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_deinterleave_0
@@ -221,7 +221,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1224, 936.0]
+    coordinate: [1176, 972.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_frequencyTracker_0
@@ -293,6 +293,25 @@ blocks:
     coordinate: [1344, 1168.0]
     rotation: 0
     state: enabled
+- name: LibreLoRa_receiverController_0
+  id: LibreLoRa_receiverController
+  parameters:
+    SF: SF
+    affinity: ''
+    alias: ''
+    comment: ''
+    decoder: self.LibreLoRa_decode_0
+    deinterleaver: self.LibreLoRa_deinterleave_0
+    demodulator: self.LibreLoRa_symbolDemod_0
+    grayEncoder: self.LibreLoRa_grayEncode_0
+    symbolSize: symbolSize
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1848, 572.0]
+    rotation: 0
+    state: enabled
 - name: LibreLoRa_symbolDemod_0
   id: LibreLoRa_symbolDemod
   parameters:
@@ -308,7 +327,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1224, 756.0]
+    coordinate: [1168, 748.0]
     rotation: 0
     state: enabled
 - name: blocks_file_source_0
@@ -347,7 +366,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1432, 780.0]
+    coordinate: [1416, 760.0]
     rotation: 0
     state: enabled
 - name: blocks_short_to_float_0_0
@@ -505,60 +524,6 @@ blocks:
     bus_structure: null
     coordinate: [1640, 1296.0]
     rotation: 0
-    state: true
-- name: blocks_vector_to_stream_0
-  id: blocks_vector_to_stream
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_items: symbolSize
-    type: float
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1464, 472.0]
-    rotation: 0
-    state: enabled
-- name: blocks_vector_to_stream_1
-  id: blocks_vector_to_stream
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_items: '12'
-    type: byte
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1384, 952.0]
-    rotation: 0
-    state: enabled
-- name: blocks_vector_to_stream_1_0
-  id: blocks_vector_to_stream
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_items: '12'
-    type: byte
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1368, 1032.0]
-    rotation: 0
     state: enabled
 - name: blocks_vector_to_stream_3
   id: blocks_vector_to_stream
@@ -577,7 +542,7 @@ blocks:
     bus_structure: null
     coordinate: [1472, 1296.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: import_0
   id: import
   parameters:
@@ -602,6 +567,40 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [824, 28.0]
+    rotation: 0
+    state: true
+- name: qtgui_tab_widget_0
+  id: qtgui_tab_widget
+  parameters:
+    alias: ''
+    comment: ''
+    gui_hint: ''
+    label0: Tab 0
+    label1: Tab 1
+    label10: Tab 10
+    label11: Tab 11
+    label12: Tab 12
+    label13: Tab 13
+    label14: Tab 14
+    label15: Tab 15
+    label16: Tab 16
+    label17: Tab 17
+    label18: Tab 18
+    label19: Tab 19
+    label2: Tab 2
+    label3: Tab 3
+    label4: Tab 4
+    label5: Tab 5
+    label6: Tab 6
+    label7: Tab 7
+    label8: Tab 8
+    label9: Tab 9
+    num_tabs: '2'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1848, 272.0]
     rotation: 0
     state: true
 - name: qtgui_time_sink_x_0
@@ -698,106 +697,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [552, 92.0]
+    coordinate: [568, 140.0]
     rotation: 0
     state: enabled
-- name: qtgui_time_sink_x_0_0
-  id: qtgui_time_sink_x
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
-    autoscale: 'False'
-    axislabels: 'True'
-    color1: blue
-    color10: dark blue
-    color2: red
-    color3: green
-    color4: black
-    color5: cyan
-    color6: magenta
-    color7: yellow
-    color8: dark red
-    color9: dark green
-    comment: ''
-    ctrlpanel: 'False'
-    entags: 'True'
-    grid: 'False'
-    gui_hint: ''
-    label1: Signal 1
-    label10: Signal 10
-    label2: Signal 2
-    label3: Signal 3
-    label4: Signal 4
-    label5: Signal 5
-    label6: Signal 6
-    label7: Signal 7
-    label8: Signal 8
-    label9: Signal 9
-    legend: 'True'
-    marker1: '-1'
-    marker10: '-1'
-    marker2: '-1'
-    marker3: '-1'
-    marker4: '-1'
-    marker5: '-1'
-    marker6: '-1'
-    marker7: '-1'
-    marker8: '-1'
-    marker9: '-1'
-    name: '"correlator Data Out"'
-    nconnections: '1'
-    size: OSF*symbolSize
-    srate: samp_rate
-    stemplot: 'False'
-    style1: '1'
-    style10: '1'
-    style2: '1'
-    style3: '1'
-    style4: '1'
-    style5: '1'
-    style6: '1'
-    style7: '1'
-    style8: '1'
-    style9: '1'
-    tr_chan: '0'
-    tr_delay: '0'
-    tr_level: '0.0'
-    tr_mode: qtgui.TRIG_MODE_FREE
-    tr_slope: qtgui.TRIG_SLOPE_POS
-    tr_tag: '""'
-    type: float
-    update_time: '0.10'
-    width1: '1'
-    width10: '1'
-    width2: '1'
-    width3: '1'
-    width4: '1'
-    width5: '1'
-    width6: '1'
-    width7: '1'
-    width8: '1'
-    width9: '1'
-    ylabel: Frequency
-    ymax: '0.5'
-    ymin: '-0.5'
-    yunit: '""'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [912, 352.0]
-    rotation: 0
-    state: disabled
 - name: qtgui_time_sink_x_0_0_0
   id: qtgui_time_sink_x
   parameters:
@@ -830,9 +732,9 @@ blocks:
     entags: 'True'
     grid: 'False'
     gui_hint: ''
-    label1: Signal 1
+    label1: data
     label10: Signal 10
-    label2: Signal 2
+    label2: corr
     label3: Signal 3
     label4: Signal 4
     label5: Signal 5
@@ -852,7 +754,7 @@ blocks:
     marker8: '-1'
     marker9: '-1'
     name: '"Correlation"'
-    nconnections: '1'
+    nconnections: '2'
     size: 500*symbolSize
     srate: samp_rate
     stemplot: 'False'
@@ -892,104 +794,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1048, 588.0]
-    rotation: 0
-    state: enabled
-- name: qtgui_time_sink_x_0_1
-  id: qtgui_time_sink_x
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
-    autoscale: 'False'
-    axislabels: 'True'
-    color1: blue
-    color10: dark blue
-    color2: red
-    color3: green
-    color4: black
-    color5: cyan
-    color6: magenta
-    color7: yellow
-    color8: dark red
-    color9: dark green
-    comment: ''
-    ctrlpanel: 'False'
-    entags: 'True'
-    grid: 'False'
-    gui_hint: ''
-    label1: Signal 1
-    label10: Signal 10
-    label2: Signal 2
-    label3: Signal 3
-    label4: Signal 4
-    label5: Signal 5
-    label6: Signal 6
-    label7: Signal 7
-    label8: Signal 8
-    label9: Signal 9
-    legend: 'True'
-    marker1: '-1'
-    marker10: '-1'
-    marker2: '-1'
-    marker3: '-1'
-    marker4: '-1'
-    marker5: '-1'
-    marker6: '-1'
-    marker7: '-1'
-    marker8: '-1'
-    marker9: '-1'
-    name: '"sync output"'
-    nconnections: '1'
-    size: 10*symbolSize
-    srate: samp_rate
-    stemplot: 'False'
-    style1: '1'
-    style10: '1'
-    style2: '1'
-    style3: '1'
-    style4: '1'
-    style5: '1'
-    style6: '1'
-    style7: '1'
-    style8: '1'
-    style9: '1'
-    tr_chan: '0'
-    tr_delay: '0'
-    tr_level: '0.0'
-    tr_mode: qtgui.TRIG_MODE_FREE
-    tr_slope: qtgui.TRIG_SLOPE_POS
-    tr_tag: '""'
-    type: float
-    update_time: '0.10'
-    width1: '1'
-    width10: '1'
-    width2: '1'
-    width3: '1'
-    width4: '1'
-    width5: '1'
-    width6: '1'
-    width7: '1'
-    width8: '1'
-    width9: '1'
-    ylabel: Frequency
-    ymax: BW/samp_rate
-    ymin: -BW/samp_rate
-    yunit: '""'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1696, 380.0]
+    coordinate: [1080, 348.0]
     rotation: 0
     state: enabled
 - name: qtgui_time_sink_x_0_1_0
@@ -1023,7 +828,7 @@ blocks:
     ctrlpanel: 'False'
     entags: 'True'
     grid: 'False'
-    gui_hint: ''
+    gui_hint: 0,1,1,1
     label1: Signal 1
     label10: Signal 10
     label2: Signal 2
@@ -1047,7 +852,7 @@ blocks:
     marker9: '-1'
     name: '"syncd"'
     nconnections: '1'
-    size: '10'
+    size: '2'
     srate: samp_rate
     stemplot: 'False'
     style1: '1'
@@ -1079,14 +884,14 @@ blocks:
     width8: '1'
     width9: '1'
     ylabel: Frequency
-    ymax: BW/samp_rate
-    ymin: -BW/samp_rate
+    ymax: '1'
+    ymin: '0'
     yunit: '""'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1696, 484.0]
+    coordinate: [1624, 420.0]
     rotation: 0
     state: enabled
 - name: qtgui_time_sink_x_1
@@ -1144,7 +949,7 @@ blocks:
     marker9: '-1'
     name: '"Data Nibbles"'
     nconnections: '1'
-    size: '12'
+    size: SF
     srate: samp_rate
     stemplot: 'False'
     style1: '1'
@@ -1241,7 +1046,7 @@ blocks:
     marker9: '-1'
     name: '"Symbols"'
     nconnections: '1'
-    size: '1024'
+    size: '32'
     srate: samp_rate
     stemplot: 'False'
     style1: '1'
@@ -1338,7 +1143,7 @@ blocks:
     marker9: '-1'
     name: '"Symbols (Gray Encoded)"'
     nconnections: '1'
-    size: '1024'
+    size: '32'
     srate: samp_rate
     stemplot: 'False'
     style1: '1'
@@ -1435,7 +1240,7 @@ blocks:
     marker9: '-1'
     name: '"Codewords"'
     nconnections: '1'
-    size: '12'
+    size: SF
     srate: samp_rate
     stemplot: 'False'
     style1: '1'
@@ -1531,8 +1336,8 @@ blocks:
     marker8: '-1'
     marker9: '-1'
     name: '"Header Fields"'
-    nconnections: '4'
-    size: '12'
+    nconnections: '5'
+    size: SF
     srate: samp_rate
     stemplot: 'False'
     style1: '1'
@@ -1668,7 +1473,80 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1808, 1324.0]
+    coordinate: [1632, 1764.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_vector_sink_f_0
+  id: qtgui_vector_sink_f
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    average: '1.0'
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    grid: 'False'
+    gui_hint: 0,0,1,1
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '"sync output"'
+    nconnections: '1'
+    ref_level: '0'
+    showports: 'False'
+    update_time: '0.10'
+    vlen: symbolSize
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    x_axis_label: '"x-Axis"'
+    x_start: '0'
+    x_step: '1.0'
+    x_units: '""'
+    y_axis_label: '"y-Axis"'
+    y_units: '""'
+    ymax: 0.5/OSF
+    ymin: -0.5/OSF
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1488, 244.0]
     rotation: 0
     state: true
 - name: qtgui_waterfall_sink_x_0_0
@@ -2092,29 +1970,26 @@ blocks:
 
 connections:
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSync_0, '1']
-- [LibreLoRa_Correlation_0, '0', qtgui_time_sink_x_0_0_0, '0']
+- [LibreLoRa_Correlation_0, '0', qtgui_time_sink_x_0_0_0, '1']
 - [LibreLoRa_chirpSource_0, '0', blocks_throttle_0, '0']
 - [LibreLoRa_correlationSync_0, '0', LibreLoRa_symbolDemod_0, '0']
-- [LibreLoRa_correlationSync_0, '0', blocks_vector_to_stream_0, '0']
-- [LibreLoRa_correlationSync_0, '1', LibreLoRa_symbolDemod_0, '1']
+- [LibreLoRa_correlationSync_0, '0', qtgui_vector_sink_f_0, '0']
+- [LibreLoRa_correlationSync_0, '1', LibreLoRa_receiverController_0, '0']
 - [LibreLoRa_correlationSync_0, '1', blocks_uchar_to_float_1, '0']
 - [LibreLoRa_decode_0, '0', LibreLoRa_readHeader_0, '0']
-- [LibreLoRa_decode_0, '0', blocks_vector_to_stream_1_0, '0']
+- [LibreLoRa_decode_0, '0', blocks_uchar_to_float_0, '0']
 - [LibreLoRa_deinterleave_0, '0', LibreLoRa_decode_0, '0']
-- [LibreLoRa_deinterleave_0, '0', blocks_vector_to_stream_1, '0']
+- [LibreLoRa_deinterleave_0, '0', blocks_uchar_to_float_0_0, '0']
 - [LibreLoRa_frequencyTracker_0, '0', LibreLoRa_Correlation_0, '0']
 - [LibreLoRa_frequencyTracker_0, '0', LibreLoRa_correlationSync_0, '0']
-- [LibreLoRa_frequencyTracker_0, '0', LibreLoRa_preambleDetector_0, '0']
 - [LibreLoRa_frequencyTracker_0, '0', qtgui_time_sink_x_0, '0']
+- [LibreLoRa_frequencyTracker_0, '0', qtgui_time_sink_x_0_0_0, '0']
 - [LibreLoRa_grayEncode_0, '0', LibreLoRa_deinterleave_0, '0']
 - [LibreLoRa_grayEncode_0, '0', blocks_short_to_float_0_0, '0']
-- [LibreLoRa_preambleDetector_0, '0', LibreLoRa_correlationSync_0, '0']
-- [LibreLoRa_preambleDetector_0, '0', qtgui_time_sink_x_0_0, '0']
-- [LibreLoRa_preambleDetector_0, '1', LibreLoRa_correlationSync_0, '1']
-- [LibreLoRa_preambleDetector_0, '1', qtgui_time_sink_x_0_0_0, '0']
 - [LibreLoRa_readHeader_0, '0', blocks_uchar_to_float_0_1, '0']
 - [LibreLoRa_readHeader_0, '1', blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0,
   '0']
+- [LibreLoRa_readHeader_0, '2', LibreLoRa_receiverController_0, '1']
 - [LibreLoRa_readHeader_0, '2', blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0,
   '0']
 - [LibreLoRa_readHeader_0, '3', blocks_uchar_to_float_0_1_0_0, '0']
@@ -2122,7 +1997,6 @@ connections:
 - [LibreLoRa_symbolDemod_0, '0', LibreLoRa_grayEncode_0, '0']
 - [LibreLoRa_symbolDemod_0, '0', blocks_short_to_float_0, '0']
 - [blocks_file_source_0, '0', blocks_throttle_0, '0']
-- [blocks_file_source_0, '0', qtgui_waterfall_sink_x_0_0, '0']
 - [blocks_short_to_float_0, '0', qtgui_time_sink_x_1_0, '0']
 - [blocks_short_to_float_0_0, '0', qtgui_time_sink_x_1_0_0, '0']
 - [blocks_throttle_0, '0', LibreLoRa_frequencyTracker_0, '0']
@@ -2135,13 +2009,10 @@ connections:
 - [blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0, '0', qtgui_time_sink_x_2,
   '1']
 - [blocks_uchar_to_float_1, '0', qtgui_time_sink_x_0_1_0, '0']
+- [blocks_uchar_to_float_1, '0', qtgui_time_sink_x_2, '4']
 - [blocks_uchar_to_float_2, '0', qtgui_time_sink_x_3, '0']
-- [blocks_vector_to_stream_0, '0', qtgui_time_sink_x_0_1, '0']
-- [blocks_vector_to_stream_1, '0', blocks_uchar_to_float_0_0, '0']
-- [blocks_vector_to_stream_1_0, '0', blocks_uchar_to_float_0, '0']
 - [blocks_vector_to_stream_3, '0', blocks_uchar_to_float_2, '0']
 - [rtlsdr_source_0, '0', blocks_throttle_0, '0']
-- [rtlsdr_source_0, '0', qtgui_waterfall_sink_x_0_0, '0']
 
 metadata:
   file_format: 1

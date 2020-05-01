@@ -45,5 +45,6 @@ install(FILES
     readHeader.h
     Correlation.h
     convolution.h
-    correlationSyncDemod.h DESTINATION include/LibreLoRa
+    correlationSyncDemod.h
+    receiverController.h DESTINATION include/LibreLoRa
 )

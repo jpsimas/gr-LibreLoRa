@@ -22,5 +22,4 @@ outputs:
 - label: out
   domain: stream
   dtype: byte
-  vlen: 12
 file_format: 1
