@@ -30,6 +30,7 @@
 #include "LibreLoRa/convolution.h"
 #include "LibreLoRa/correlationSyncDemod.h"
 #include "LibreLoRa/receiverController.h"
+#include "LibreLoRa/calculateHeaderChecksum.h"
 %}
 
 %include "LibreLoRa/frequencyTracker.h"
@@ -85,3 +86,4 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, Correlation);
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, convolution);
 %include "LibreLoRa/correlationSyncDemod.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, correlationSyncDemod);
+%include "LibreLoRa/calculateHeaderChecksum.h"

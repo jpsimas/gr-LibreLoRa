@@ -131,6 +131,53 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
+        self.qtgui_time_sink_x_3_0 = qtgui.time_sink_f(
+            1024, #size
+            samp_rate, #samp_rate
+            "Payload Nibbles", #name
+            1 #number of inputs
+        )
+        self.qtgui_time_sink_x_3_0.set_update_time(0.10)
+        self.qtgui_time_sink_x_3_0.set_y_axis(-1, 1)
+
+        self.qtgui_time_sink_x_3_0.set_y_label('Amplitude', "")
+
+        self.qtgui_time_sink_x_3_0.enable_tags(True)
+        self.qtgui_time_sink_x_3_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
+        self.qtgui_time_sink_x_3_0.enable_autoscale(False)
+        self.qtgui_time_sink_x_3_0.enable_grid(False)
+        self.qtgui_time_sink_x_3_0.enable_axis_labels(True)
+        self.qtgui_time_sink_x_3_0.enable_control_panel(False)
+        self.qtgui_time_sink_x_3_0.enable_stem_plot(False)
+
+
+        labels = ['Signal 1', 'Signal 2', 'Signal 3', 'Signal 4', 'Signal 5',
+            'Signal 6', 'Signal 7', 'Signal 8', 'Signal 9', 'Signal 10']
+        widths = [1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1]
+        colors = ['blue', 'red', 'green', 'black', 'cyan',
+            'magenta', 'yellow', 'dark red', 'dark green', 'dark blue']
+        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
+            1.0, 1.0, 1.0, 1.0, 1.0]
+        styles = [1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1]
+        markers = [-1, -1, -1, -1, -1,
+            -1, -1, -1, -1, -1]
+
+
+        for i in range(1):
+            if len(labels[i]) == 0:
+                self.qtgui_time_sink_x_3_0.set_line_label(i, "Data {0}".format(i))
+            else:
+                self.qtgui_time_sink_x_3_0.set_line_label(i, labels[i])
+            self.qtgui_time_sink_x_3_0.set_line_width(i, widths[i])
+            self.qtgui_time_sink_x_3_0.set_line_color(i, colors[i])
+            self.qtgui_time_sink_x_3_0.set_line_style(i, styles[i])
+            self.qtgui_time_sink_x_3_0.set_line_marker(i, markers[i])
+            self.qtgui_time_sink_x_3_0.set_line_alpha(i, alphas[i])
+
+        self._qtgui_time_sink_x_3_0_win = sip.wrapinstance(self.qtgui_time_sink_x_3_0.pyqwidget(), Qt.QWidget)
+        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_3_0_win)
         self.qtgui_time_sink_x_3 = qtgui.time_sink_f(
             1024, #size
             samp_rate, #samp_rate
@@ -571,6 +618,7 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.qtgui_tab_widget_0.addTab(self.qtgui_tab_widget_0_widget_1, 'Tab 1')
         self.top_grid_layout.addWidget(self.qtgui_tab_widget_0)
         self.blocks_vector_to_stream_3 = blocks.vector_to_stream(gr.sizeof_char*1, 7)
+        self.blocks_uchar_to_float_2_0 = blocks.uchar_to_float()
         self.blocks_uchar_to_float_2 = blocks.uchar_to_float()
         self.blocks_uchar_to_float_1 = blocks.uchar_to_float()
         self.blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0 = blocks.uchar_to_float()
@@ -597,11 +645,12 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         ##################################################
         self.connect((self.LibreLoRa_Correlation_0, 0), (self.LibreLoRa_correlationSync_0, 1))
         self.connect((self.LibreLoRa_Correlation_0, 0), (self.qtgui_time_sink_x_0_0_0, 1))
-        self.connect((self.LibreLoRa_correlationSync_0, 1), (self.LibreLoRa_receiverController_0, 0))
+        self.connect((self.LibreLoRa_correlationSync_0, 1), (self.LibreLoRa_receiverController_0, 1))
         self.connect((self.LibreLoRa_correlationSync_0, 0), (self.LibreLoRa_symbolDemod_0, 0))
         self.connect((self.LibreLoRa_correlationSync_0, 1), (self.blocks_uchar_to_float_1, 0))
         self.connect((self.LibreLoRa_correlationSync_0, 0), (self.qtgui_vector_sink_f_0, 0))
         self.connect((self.LibreLoRa_decode_0, 0), (self.LibreLoRa_readHeader_0, 0))
+        self.connect((self.LibreLoRa_decode_0, 0), (self.LibreLoRa_receiverController_0, 0))
         self.connect((self.LibreLoRa_decode_0, 0), (self.blocks_uchar_to_float_0, 0))
         self.connect((self.LibreLoRa_deinterleave_0, 0), (self.LibreLoRa_decode_0, 0))
         self.connect((self.LibreLoRa_deinterleave_0, 0), (self.blocks_uchar_to_float_0_0, 0))
@@ -611,12 +660,12 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.connect((self.LibreLoRa_frequencyTracker_0, 0), (self.qtgui_time_sink_x_0_0_0, 0))
         self.connect((self.LibreLoRa_grayEncode_0, 0), (self.LibreLoRa_deinterleave_0, 0))
         self.connect((self.LibreLoRa_grayEncode_0, 0), (self.blocks_short_to_float_0_0, 0))
-        self.connect((self.LibreLoRa_readHeader_0, 2), (self.LibreLoRa_receiverController_0, 1))
         self.connect((self.LibreLoRa_readHeader_0, 0), (self.blocks_uchar_to_float_0_1, 0))
         self.connect((self.LibreLoRa_readHeader_0, 3), (self.blocks_uchar_to_float_0_1_0_0, 0))
         self.connect((self.LibreLoRa_readHeader_0, 2), (self.blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0, 0))
         self.connect((self.LibreLoRa_readHeader_0, 1), (self.blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0, 0))
         self.connect((self.LibreLoRa_readHeader_0, 4), (self.blocks_vector_to_stream_3, 0))
+        self.connect((self.LibreLoRa_receiverController_0, 0), (self.blocks_uchar_to_float_2_0, 0))
         self.connect((self.LibreLoRa_symbolDemod_0, 0), (self.LibreLoRa_grayEncode_0, 0))
         self.connect((self.LibreLoRa_symbolDemod_0, 0), (self.blocks_short_to_float_0, 0))
         self.connect((self.blocks_file_source_0, 0), (self.blocks_throttle_0, 0))
@@ -632,6 +681,7 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_uchar_to_float_1, 0), (self.qtgui_time_sink_x_0_1_0, 0))
         self.connect((self.blocks_uchar_to_float_1, 0), (self.qtgui_time_sink_x_2, 4))
         self.connect((self.blocks_uchar_to_float_2, 0), (self.qtgui_time_sink_x_3, 0))
+        self.connect((self.blocks_uchar_to_float_2_0, 0), (self.qtgui_time_sink_x_3_0, 0))
         self.connect((self.blocks_vector_to_stream_3, 0), (self.blocks_uchar_to_float_2, 0))
 
     def closeEvent(self, event):
@@ -655,6 +705,7 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.qtgui_time_sink_x_1_1.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_2.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_3.set_samp_rate(self.samp_rate)
+        self.qtgui_time_sink_x_3_0.set_samp_rate(self.samp_rate)
 
     def get_BW(self):
         return self.BW

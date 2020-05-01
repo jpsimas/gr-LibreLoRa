@@ -26,6 +26,7 @@
 #include "readHeader_impl.h"
 
 #include <array>
+#include <LibreLoRa/calculateHeaderChecksum.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -52,18 +53,6 @@ namespace gr {
      */
     readHeader_impl::~readHeader_impl()
     {
-    }
-
-    constexpr uint8_t nibblePairity(const uint8_t nibble) {
-      return (nibble ^ (nibble >> 1) ^ (nibble >> 2) ^ (nibble >> 3)) & 0x1;
-    }
-    
-    uint8_t calculateHeaderChecksum(const uint16_t headerData) {
-      uint8_t checkSum = 0x00;
-      constexpr std::array<uint16_t, 5> masks = {0xF21, 0x752, 0xA94, 0x1E8, 0x00F};
-      for(size_t i = 0; i < masks.size(); i++)
-	checkSum |= nibblePairity(masks[i]&headerData) << i;
-      return checkSum;
     }
     
     int
