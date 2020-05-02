@@ -72,7 +72,13 @@ namespace gr {
       uint8_t *out = (uint8_t *) output_items[0];
       
       // Do <+signal processing+>
+      std::cout << "deinterleaving symbols: ";
+      for(size_t j = 0; j < codeLength; j++)
+	std::cout << std::hex << in[j] << " ";
+      std::cout << std::endl;
 
+      for(size_t k = 0; k < SF; k++)
+	out[k] = 0;
       
       for(size_t j = 0; j < codeLength; j++)
 	for(size_t k = 0; k < SF; k++)

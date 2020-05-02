@@ -26,6 +26,7 @@
 #include "decode_impl.h"
 
 #include <LibreLoRa/getPairityMatrix.h>
+#include <iostream>
 
 namespace gr {
   namespace LibreLoRa {
@@ -74,6 +75,7 @@ namespace gr {
       for(size_t i = 0; i < noutput_items; i++) {
 	uint8_t syndrome = calculatePairity(in[i], pairityMatrix) ^ in[i];
 	out[i] = (in[i] ^ cosetLeader[syndrome]) & 0x0f;
+	std::cout << "decoded nibble: " <<  std::hex << unsigned(out[i]) << std::endl;
       }
 
       // Tell runtime system how many input items we consumed on

@@ -28,6 +28,7 @@
 #include <volk/volk.h>
 
 #include <cmath>
+#include <iostream>
 
 namespace gr {
   namespace LibreLoRa {
@@ -78,6 +79,8 @@ namespace gr {
       const float *dataIn = (const float *) input_items[0];
       uint16_t *dataOut = (uint16_t *) output_items[0];
 
+      std::cout << "demodulating " << noutput_items <<  " symbols, SF = " << SF << std::endl;
+      
       // Do <+signal processing+>
       for(size_t i = 0; i < noutput_items; i++) {
 	float corrMax = 0;
@@ -91,6 +94,7 @@ namespace gr {
 	  }
 	}
 	dataOut[i] = round(jMax*(1 << SF)/float(symbolSize));
+	std::cout << "demodulated symbol: " << std::dec << dataOut[i] << std::endl;
       }
       
       // Tell runtime system how many input items we consumed on

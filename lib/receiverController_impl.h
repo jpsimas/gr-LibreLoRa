@@ -29,6 +29,7 @@ namespace gr {
     class receiverController_impl : public receiverController
     {
      private:
+      correlationSync::sptr synchronizer;
       symbolDemod::sptr demodulator;
       grayEncode::sptr grayEncoder;
       deinterleave::sptr deinterleaver;
@@ -36,6 +37,7 @@ namespace gr {
       
       // Nothing to declare in this block.
       size_t count;
+      bool gotHeader;
       size_t payloadCount;
       bool started;
       size_t symbolSize;
@@ -54,9 +56,10 @@ namespace gr {
 
       void readHeader(const uint8_t* nibbles, uint8_t* dataOut);
      public:
-      receiverController_impl(size_t SF, size_t symbolSize, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder);
+      receiverController_impl(size_t SF, size_t symbolSize, correlationSync::sptr synchronizer, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder);
       ~receiverController_impl();
 
+      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
       // Where all the action really happens
       int general_work(int noutput_items,
 		       gr_vector_int &ninput_items,

@@ -77,11 +77,11 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.BW = BW = 125e3
         self.SF = SF = 7
         self.OSF = OSF = round(samp_rate/BW)
-        self.upchirp = upchirp = numpy.asarray(LibreLoRa.getSymbol(0, SF, OSF))
-        self.preamble = preamble = numpy.concatenate((upchirp, upchirp, -upchirp, -upchirp, -upchirp[0:int(upchirp.size/4)]))
-        self.preambleNoMean = preambleNoMean = preamble - numpy.mean(preamble)
+        self.syncwordNumber = syncwordNumber = 0x00
         self.symbolSize = symbolSize = (2**SF)*OSF
-        self.preambleNormalized = preambleNormalized = preambleNoMean/numpy.linalg.norm(preambleNoMean)
+        self.nUpchirps = nUpchirps = 0
+        self.upchirp = upchirp = numpy.asarray(LibreLoRa.getSymbol(0, SF, OSF))
+        self.preambleNormalized = preambleNormalized = LibreLoRa.getPreambleFrequency(SF, symbolSize, nUpchirps, syncwordNumber)
 
         ##################################################
         # Blocks
@@ -90,6 +90,7 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.LibreLoRa_grayEncode_0 = LibreLoRa.grayEncode(SF)
         self.LibreLoRa_deinterleave_0 = LibreLoRa.deinterleave(7, 4)
         self.LibreLoRa_decode_0 = LibreLoRa.decode(4)
+        self.LibreLoRa_correlationSync_0 = LibreLoRa.correlationSync(0.9, 0.7, symbolSize)
         self.qtgui_vector_sink_f_0 = qtgui.vector_sink_f(
             symbolSize,
             0,
@@ -99,7 +100,7 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
             "sync output",
             1 # Number of inputs
         )
-        self.qtgui_vector_sink_f_0.set_update_time(0.10)
+        self.qtgui_vector_sink_f_0.set_update_time(1/samp_rate)
         self.qtgui_vector_sink_f_0.set_y_axis(-0.5/OSF, 0.5/OSF)
         self.qtgui_vector_sink_f_0.enable_autoscale(False)
         self.qtgui_vector_sink_f_0.enable_grid(False)
@@ -461,12 +462,12 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self._qtgui_time_sink_x_1_win = sip.wrapinstance(self.qtgui_time_sink_x_1.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_1_win)
         self.qtgui_time_sink_x_0_1_0 = qtgui.time_sink_f(
-            2, #size
+            20, #size
             samp_rate, #samp_rate
             "syncd", #name
             1 #number of inputs
         )
-        self.qtgui_time_sink_x_0_1_0.set_update_time(0.10)
+        self.qtgui_time_sink_x_0_1_0.set_update_time(1/samp_rate)
         self.qtgui_time_sink_x_0_1_0.set_y_axis(0, 1)
 
         self.qtgui_time_sink_x_0_1_0.set_y_label('Frequency', "")
@@ -523,7 +524,7 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.qtgui_time_sink_x_0_0_0.set_y_label('Correlation', "")
 
         self.qtgui_time_sink_x_0_0_0.enable_tags(True)
-        self.qtgui_time_sink_x_0_0_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
+        self.qtgui_time_sink_x_0_0_0.set_trigger_mode(qtgui.TRIG_MODE_NORM, qtgui.TRIG_SLOPE_POS, 0.9, 0, 1, "")
         self.qtgui_time_sink_x_0_0_0.enable_autoscale(False)
         self.qtgui_time_sink_x_0_0_0.enable_grid(False)
         self.qtgui_time_sink_x_0_0_0.enable_axis_labels(True)
@@ -605,18 +606,6 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win)
-        self.qtgui_tab_widget_0 = Qt.QTabWidget()
-        self.qtgui_tab_widget_0_widget_0 = Qt.QWidget()
-        self.qtgui_tab_widget_0_layout_0 = Qt.QBoxLayout(Qt.QBoxLayout.TopToBottom, self.qtgui_tab_widget_0_widget_0)
-        self.qtgui_tab_widget_0_grid_layout_0 = Qt.QGridLayout()
-        self.qtgui_tab_widget_0_layout_0.addLayout(self.qtgui_tab_widget_0_grid_layout_0)
-        self.qtgui_tab_widget_0.addTab(self.qtgui_tab_widget_0_widget_0, 'Tab 0')
-        self.qtgui_tab_widget_0_widget_1 = Qt.QWidget()
-        self.qtgui_tab_widget_0_layout_1 = Qt.QBoxLayout(Qt.QBoxLayout.TopToBottom, self.qtgui_tab_widget_0_widget_1)
-        self.qtgui_tab_widget_0_grid_layout_1 = Qt.QGridLayout()
-        self.qtgui_tab_widget_0_layout_1.addLayout(self.qtgui_tab_widget_0_grid_layout_1)
-        self.qtgui_tab_widget_0.addTab(self.qtgui_tab_widget_0_widget_1, 'Tab 1')
-        self.top_grid_layout.addWidget(self.qtgui_tab_widget_0)
         self.blocks_vector_to_stream_3 = blocks.vector_to_stream(gr.sizeof_char*1, 7)
         self.blocks_uchar_to_float_2_0 = blocks.uchar_to_float()
         self.blocks_uchar_to_float_2 = blocks.uchar_to_float()
@@ -630,12 +619,11 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
         self.blocks_short_to_float_0_0 = blocks.short_to_float(1, 1)
         self.blocks_short_to_float_0 = blocks.short_to_float(1, 1)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/jp/Polito/Thesis/lorasim-matlab/sample_data/out_sdr_sf7_fs1000k_length_7bytes_onehot_counting.raw', True, 0, 0)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/jp/Polito/Thesis/lorasim-matlab/sample_data/out_sdr_sf7_fs1000k_length_7bytes_onehot_counting.raw', False, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
-        self.LibreLoRa_receiverController_0 = LibreLoRa.receiverController(SF, symbolSize, self.LibreLoRa_symbolDemod_0, self.LibreLoRa_grayEncode_0, self.LibreLoRa_deinterleave_0, self.LibreLoRa_decode_0)
+        self.LibreLoRa_receiverController_0 = LibreLoRa.receiverController(SF, symbolSize, self.LibreLoRa_correlationSync_0, self.LibreLoRa_symbolDemod_0, self.LibreLoRa_grayEncode_0, self.LibreLoRa_deinterleave_0, self.LibreLoRa_decode_0)
         self.LibreLoRa_readHeader_0 = LibreLoRa.readHeader(SF)
-        self.LibreLoRa_frequencyTracker_0 = LibreLoRa.frequencyTracker(2/OSF, SF, OSF)
-        self.LibreLoRa_correlationSync_0 = LibreLoRa.correlationSync(0.9, 0.7, symbolSize)
+        self.LibreLoRa_frequencyTracker_0 = LibreLoRa.frequencyTracker(4/OSF, SF, OSF)
         self.LibreLoRa_Correlation_0 = LibreLoRa.Correlation(preambleNormalized)
 
 
@@ -698,6 +686,7 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.blocks_throttle_0.set_sample_rate(self.samp_rate)
         self.qtgui_time_sink_x_0.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_0_0_0.set_samp_rate(self.samp_rate)
+        self.qtgui_time_sink_x_0_1_0.set_update_time(1/self.samp_rate)
         self.qtgui_time_sink_x_0_1_0.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_1.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_1_0.set_samp_rate(self.samp_rate)
@@ -706,6 +695,7 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.qtgui_time_sink_x_2.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_3.set_samp_rate(self.samp_rate)
         self.qtgui_time_sink_x_3_0.set_samp_rate(self.samp_rate)
+        self.qtgui_vector_sink_f_0.set_update_time(1/self.samp_rate)
 
     def get_BW(self):
         return self.BW
@@ -719,6 +709,7 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
 
     def set_SF(self, SF):
         self.SF = SF
+        self.set_preambleNormalized(LibreLoRa.getPreambleFrequency(self.SF, self.symbolSize, self.nUpchirps, self.syncwordNumber))
         self.set_symbolSize((2**self.SF)*self.OSF)
         self.set_upchirp(numpy.asarray(LibreLoRa.getSymbol(0, self.SF, self.OSF)))
         self.LibreLoRa_grayEncode_0.setSF(self.SF)
@@ -735,32 +726,32 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.set_upchirp(numpy.asarray(LibreLoRa.getSymbol(0, self.SF, self.OSF)))
         self.qtgui_vector_sink_f_0.set_y_axis(-0.5/self.OSF, 0.5/self.OSF)
 
-    def get_upchirp(self):
-        return self.upchirp
+    def get_syncwordNumber(self):
+        return self.syncwordNumber
 
-    def set_upchirp(self, upchirp):
-        self.upchirp = upchirp
-        self.set_preamble(numpy.concatenate((self.upchirp, self.upchirp, -self.upchirp, -self.upchirp, -self.upchirp[0:int(upchirp.size/4)])))
-
-    def get_preamble(self):
-        return self.preamble
-
-    def set_preamble(self, preamble):
-        self.preamble = preamble
-        self.set_preambleNoMean(self.preamble - numpy.mean(self.preamble))
-
-    def get_preambleNoMean(self):
-        return self.preambleNoMean
-
-    def set_preambleNoMean(self, preambleNoMean):
-        self.preambleNoMean = preambleNoMean
-        self.set_preambleNormalized(self.preambleNoMean/numpy.linalg.norm(self.preambleNoMean))
+    def set_syncwordNumber(self, syncwordNumber):
+        self.syncwordNumber = syncwordNumber
+        self.set_preambleNormalized(LibreLoRa.getPreambleFrequency(self.SF, self.symbolSize, self.nUpchirps, self.syncwordNumber))
 
     def get_symbolSize(self):
         return self.symbolSize
 
     def set_symbolSize(self, symbolSize):
         self.symbolSize = symbolSize
+        self.set_preambleNormalized(LibreLoRa.getPreambleFrequency(self.SF, self.symbolSize, self.nUpchirps, self.syncwordNumber))
+
+    def get_nUpchirps(self):
+        return self.nUpchirps
+
+    def set_nUpchirps(self, nUpchirps):
+        self.nUpchirps = nUpchirps
+        self.set_preambleNormalized(LibreLoRa.getPreambleFrequency(self.SF, self.symbolSize, self.nUpchirps, self.syncwordNumber))
+
+    def get_upchirp(self):
+        return self.upchirp
+
+    def set_upchirp(self, upchirp):
+        self.upchirp = upchirp
 
     def get_preambleNormalized(self):
         return self.preambleNormalized

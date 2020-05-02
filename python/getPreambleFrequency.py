@@ -37,7 +37,7 @@ def getPreambleFrequency(SF, symbolSize, nUpchirps, syncWordNumber):
     #append downchirps
     for i in range(0, 2):
         preamble = numpy.concatenate((preamble, -upchirp));        
-    preamble = numpy.concatenate((preamble, -upchirp[0:int(upchirp.size/4)]));
+    preamble = numpy.concatenate((preamble, -upchirp[0:(int(upchirp.size/4) - OSF)]));
     
     preamble = preamble - numpy.mean(preamble);
     preamble = preamble/numpy.linalg.norm(preamble)

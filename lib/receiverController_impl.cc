@@ -32,31 +32,32 @@ namespace gr {
   namespace LibreLoRa {
 
     receiverController::sptr
-    receiverController::make(size_t SF, size_t symbolSize, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder)
+    receiverController::make(size_t SF, size_t symbolSize, correlationSync::sptr synchronizer, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder)
     {
       return gnuradio::get_initial_sptr
-        (new receiverController_impl(SF, symbolSize, demodulator, grayEncoder, deinterleaver, decoder));
+        (new receiverController_impl(SF, symbolSize, synchronizer, demodulator, grayEncoder, deinterleaver, decoder));
     }
 
 
     /*
      * The private constructor
      */
-    receiverController_impl::receiverController_impl(size_t SF, size_t symbolSize, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder)
+    receiverController_impl::receiverController_impl(size_t SF, size_t symbolSize, correlationSync::sptr synchronizer, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder)
       : gr::block("receiverController",
 		  gr::io_signature::make2(2, 2, sizeof(uint8_t), sizeof(bool)),
 		  gr::io_signature::make(1, 1, sizeof(uint8_t))),
 	SF(SF),
+	synchronizer(synchronizer),
 	symbolSize(symbolSize),
 	demodulator(demodulator),
 	grayEncoder(grayEncoder),
 	deinterleaver(deinterleaver),
 	decoder(decoder),
-	SFcurrent(SF-2),
-	CR(4),
 	started(false),
-	count(0) {
-
+	count(0),
+	gotHeader(false) {
+      setSFcurrent(SF-2);
+      setCR(4);
     }
 
     /*
@@ -66,6 +67,13 @@ namespace gr {
     {
     }
 
+    void
+    receiverController_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
+    {
+      ninput_items_required[0] = SFcurrent;
+      ninput_items_required[1] = 1;
+    }
+    
     int
     receiverController_impl::general_work(int noutput_items,
 					  gr_vector_int &ninput_items,
@@ -79,22 +87,34 @@ namespace gr {
       int produced = 0;
 
       // Do <+signal processing+>
-      if(*syncdIn)
+      if(!started)
+	if(*syncdIn)
 	  startRx();
       
       if(started) {
-	if(count == 7) {
+	if(!gotHeader) {
+	  gotHeader = true;
 	  //consume(1, 1);
 	  readHeader(nibblesIn, nibblesOut);
 	  consume(0, SFcurrent);
 	  produced = SFcurrent - 5;
-	  setSFcurrent(SF);
-	  std::cout << "reading payload. CR = " << unsigned(CR)<< std::endl;
-	  payloadCount = 0;
+
+	  if(!headerCheckSumValid || CR == 0 || CR > 4) {
+	    stopRx();
+	  } else {
+	    setSFcurrent(SF);
+	    payloadCount = 0;
+	    std::cout << "Got Valid Header" << ": ";
+	    std::cout << "length: " << unsigned(payloadLength) << ", ";	  
+	    std::cout << "CR: " << unsigned(CR) << ", ";
+	    std::cout << "CRC " << (payloadCRCPresent? "Present" : "Not Present") << std::endl;
+	    if(payloadLength == 0)
+	      stopRx();
+	  }
 	} else {
-	  size_t i = 0;
+	  size_t i;
 	  for(i = 0; i < noutput_items; i++) {
-	    if(payloadCount == 2*payloadLength) {
+	    if(payloadCount + (SFcurrent - 7) > 2*payloadLength) {
 	      stopRx();
 	      break;
 	    }
@@ -103,26 +123,28 @@ namespace gr {
 	    payloadCount++;
 	  }
 	  produced = i;
+	  consume(0, produced);
 	}
 
 	count++;
       }
-      
+     
+      consume(1, ninput_items[1]);
       // Tell runtime system how many output items we produced.
       return produced;
     }
 
     void receiverController_impl::startRx() {
       count = 0;
+      gotHeader = false;
       started = true;
-      setSFcurrent(SF-2);
-      setCR(4);
     }
 
     void receiverController_impl::stopRx() {
       started = false;
       setSFcurrent(SF-2);
       setCR(4);
+      synchronizer->reset();
     }
 
     void receiverController_impl::setSFcurrent(size_t SFnew) {
@@ -139,11 +161,24 @@ namespace gr {
     }
 
     void receiverController_impl::readHeader(const uint8_t* nibbles, uint8_t* dataOut) {
-      payloadLength = (nibbles[0] << 4)&(nibbles[1]);
+      std::cout << "reading header" << std::endl;
+      std::cout << "nibbles: ";
+      for(size_t i = 0; i < 5; i++)
+	std::cout << std::hex << unsigned(nibbles[i]) << " ";
+      std::cout << std::endl;
+      
+      payloadLength = (nibbles[0] << 4)|(nibbles[1]);
+      std::cout << "length: " << unsigned(payloadLength) << std::endl;
       payloadCRCPresent = nibbles[2] & 0x01;
+      std::cout << "Checksum present: " << (payloadCRCPresent? "yes" : "no") << std::endl;
       CR = nibbles[2] >> 1;
-      uint8_t headerCheckSum = (nibbles[3] << 4)&nibbles[4];
+      std::cout << "CR: " << unsigned(CR) << std::endl;
+      uint8_t headerCheckSum = (nibbles[3] << 4)|nibbles[4];
       uint8_t headerCheckSumCalculated = calculateHeaderChecksum(*((uint16_t*) nibbles));
+
+      std::cout << "checksum: " << std::hex << unsigned(headerCheckSum) << std::endl;
+      std::cout << "calculated checksum: " << std::hex << unsigned(headerCheckSumCalculated) << std::endl;
+      
       headerCheckSumValid = (headerCheckSum == headerCheckSumCalculated);
       for(size_t j = 0; j < SFcurrent - 5; j++)
 	dataOut[j] = nibbles[5 + j];

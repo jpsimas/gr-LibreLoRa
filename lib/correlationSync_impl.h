@@ -32,13 +32,11 @@ namespace gr {
       // Nothing to declare in this block.
       const float corrMin;
       const float corrStop;
-      const size_t maxDelay;
-      bool foundFirstPt;
-      size_t delay;
-      size_t delayCounter;
-      float corrMax;
+      const size_t symbolSize;
+
+      bool syncd;
      public:
-      correlationSync_impl(float corrMin, float corrStop, size_t maxDelay);
+      correlationSync_impl(float corrMin, float corrStop, size_t symbolSize);
       ~correlationSync_impl();
 
       // Where all the action really happens
@@ -49,6 +47,7 @@ namespace gr {
 		       gr_vector_const_void_star &input_items,
 		       gr_vector_void_star &output_items);
 
+      void reset();
     };
 
   } // namespace LibreLoRa

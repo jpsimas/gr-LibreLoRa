@@ -29,27 +29,24 @@ namespace gr {
   namespace LibreLoRa {
 
     correlationSync::sptr
-    correlationSync::make(float corrMin, float corrStop, size_t maxDelay)
+    correlationSync::make(float corrMin, float corrStop, size_t symbolSize)
     {
       return gnuradio::get_initial_sptr
-        (new correlationSync_impl(corrMin, corrStop, maxDelay));
+        (new correlationSync_impl(corrMin, corrStop, symbolSize));
     }
 
 
     /*
      * The private constructor
      */
-    correlationSync_impl::correlationSync_impl(float corrMin, float corrStop, size_t maxDelay)
+    correlationSync_impl::correlationSync_impl(float corrMin, float corrStop, size_t symbolSize)
       : gr::block("correlationSync",
 		  gr::io_signature::make(2, 2, sizeof(float)),
-		  gr::io_signature::make2(2, 2, maxDelay*sizeof(float), sizeof(bool))),
+		  gr::io_signature::make2(2, 2, symbolSize*sizeof(float), sizeof(bool))),
 	corrMin(corrMin),
 	corrStop(corrStop),
-	maxDelay(maxDelay),
-	foundFirstPt(false),
-	delay(0),
-	delayCounter(0),
-	corrMax(0) {
+	symbolSize(symbolSize),
+	syncd(false) {
     }
 
     /*
@@ -63,8 +60,8 @@ namespace gr {
     correlationSync_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
       /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
-      ninput_items_required[0] = 2*maxDelay;
-      ninput_items_required[1] = 2*maxDelay;
+      ninput_items_required[0] = 2*symbolSize;
+      ninput_items_required[1] = 2*symbolSize;
     }
 
     int
@@ -80,38 +77,51 @@ namespace gr {
 
       *syncd_out = false;
       // Do <+signal processing+>
-      for(size_t i = 0; i < maxDelay; i++) {
-      	if(foundFirstPt) {
-      	  if(corr[i] <= corrStop) {
-      	    foundFirstPt = false;
-      	    delay = delayCounter;
-	    consume_each(i - delay);
-	    *syncd_out = true;
-      	  } else if(delayCounter > maxDelay)
-      	      foundFirstPt = false;
-	else {
-	    if(corr[i] > corrMax) {
+      
+      if(!syncd) {
+	bool foundFirstPt = false;
+	float corrMax = 0.0;
+	size_t maxPos = 0;
+	
+	for(size_t i = 0; i < 2*symbolSize; i++) {
+	  if(foundFirstPt) {
+	    if(corr[i] <= corrStop) {
+	      foundFirstPt = false;
+	      consume_each(maxPos);
+	      *syncd_out = true;
+	      syncd = true;
+	      std::cout << "correlationSync: sync'd" << std::endl;
+	    } else if(corr[i] > corrMax) {
+	      if(i < symbolSize) {
+		corrMax = corr[i];
+		maxPos = i;
+	      } else
+		break;
+	    }
+	  } else if(corr[i] >= corrMin) {
+	    if(i < symbolSize) {
+	      foundFirstPt = true;
 	      corrMax = corr[i];
-	      delayCounter = 0;
 	    } else
-	      delayCounter++;
+	      break;
 	  }
-      	} else if(corr[i] >= corrMin) {
-      	  foundFirstPt = true;
-	  corrMax = corr[i];
-	  delayCounter = 0;
-	}
+	}       
       }
 
-      for(size_t i = 0; i < maxDelay; i++)
-	data_out[i] = data_in[i];
-      
-      // Tell runtime system how many input items we consumed on
-      // each input stream.
-      consume_each (maxDelay);
+      if(syncd) {
+	for(size_t i = 0; i < symbolSize; i++)
+	  data_out[i] = data_in[i];
 
-      // Tell runtime system how many output items we produced.
-      return 1;
+	consume_each (symbolSize);
+	return 1;
+      } else {
+	consume_each (symbolSize);
+	return 0;
+      }
+    }
+    
+    void correlationSync_impl::reset() {
+      syncd = false;
     }
 
   } /* namespace LibreLoRa */

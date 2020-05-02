@@ -3,7 +3,7 @@ label: correlationSync
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.correlationSync(${corrMin}, ${corrStop}, ${maxDelay})
+  make: LibreLoRa.correlationSync(${corrMin}, ${corrStop}, ${symbolSize})
 parameters:
 - id: corrMin
   label: Corrmin
@@ -11,8 +11,8 @@ parameters:
 - id: corrStop
   label: Corrstop
   dtype: float
-- id: maxDelay
-  label: Maxdelay
+- id: symbolSize
+  label: symbolSize
   dtype: raw
 inputs:
 - label: in
@@ -23,7 +23,7 @@ outputs:
 - label: out
   domain: stream
   dtype: float
-  vlen: ${ maxDelay }
+  vlen: ${ symbolSize }
 - label: out
   domain: stream
   dtype: byte

@@ -69,7 +69,7 @@ namespace gr {
       
       // Do <+signal processing+>
       for(size_t i = 0; i < noutput_items; i++)
-	out[i] = (in[i] ^ (in[i] << 1)) & ((1 << SF) - 1);
+	out[i] = (in[i] ^ (in[i] >> 1)) & ((1 << SF) - 1);
 
       // Tell runtime system how many input items we consumed on
       // each input stream.
