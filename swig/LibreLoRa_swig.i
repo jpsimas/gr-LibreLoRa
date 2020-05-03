@@ -79,6 +79,7 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, ArgMaxAbs);
 
 %include "LibreLoRa/getSymbol.h"
 %include "LibreLoRa/readHeader.h"
+
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, readHeader);
 %include "LibreLoRa/Correlation.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, Correlation);
@@ -86,3 +87,5 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, Correlation);
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, convolution);
 %include "LibreLoRa/correlationSyncDemod.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, correlationSyncDemod);
+
+%include "LibreLoRa/calculateHeaderChecksum.h"

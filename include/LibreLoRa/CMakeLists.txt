@@ -47,5 +47,6 @@ install(FILES
     convolution.h
     correlationSyncDemod.h
     receiverController.h
-    calculateHeaderChecksum.h DESTINATION include/LibreLoRa
+    calculateHeaderChecksum.h
+    utilities.h DESTINATION include/LibreLoRa
 )

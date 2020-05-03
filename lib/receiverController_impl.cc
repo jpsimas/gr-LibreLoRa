@@ -159,7 +159,7 @@ namespace gr {
       deinterleaver->setCR(CR);
       decoder->setCR(CR);
     }
-
+    
     void receiverController_impl::readHeader(const uint8_t* nibbles, uint8_t* dataOut) {
       std::cout << "reading header" << std::endl;
       std::cout << "nibbles: ";
@@ -174,7 +174,7 @@ namespace gr {
       CR = nibbles[2] >> 1;
       std::cout << "CR: " << unsigned(CR) << std::endl;
       uint8_t headerCheckSum = (nibbles[3] << 4)|nibbles[4];
-      uint8_t headerCheckSumCalculated = calculateHeaderChecksum(*((uint16_t*) nibbles));
+      uint8_t headerCheckSumCalculated = calculateHeaderChecksum((*(uint32_t*) nibbles));
 
       std::cout << "checksum: " << std::hex << unsigned(headerCheckSum) << std::endl;
       std::cout << "calculated checksum: " << std::hex << unsigned(headerCheckSumCalculated) << std::endl;

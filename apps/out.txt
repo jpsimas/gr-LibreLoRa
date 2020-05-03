@@ -1,0 +1,696 @@
+TURBO ENCABULATOR 1000 activated!
+ENCABULATION STABILIZER 1500 enabled!
+BENILOSCOPE v2 ACTIVATED
+:DDD
+symbol size:4344
+correlationSync: sync'd
+demodulating 4 symbols, SF = 5
+demodulated symbol: 27
+demodulated symbol: 14
+demodulated symbol: 31
+demodulated symbol: 28
+demodulating 8 symbols, SF = 5
+demodulated symbol: 8
+demodulated symbol: 7
+demodulated symbol: 15
+demodulated symbol: 0
+demodulated symbol: 13
+demodulated symbol: 25
+demodulated symbol: 19
+demodulated symbol: 11
+deinterleaving symbols: 16 9 10 12 c 4 8 0 
+decoded nibble: 0
+decoded nibble: 7
+decoded nibble: 9
+decoded nibble: 0
+decoded nibble: b
+header nibbles: 700
+reading header
+nibbles: 0 7 9 0 b 
+length: 7
+Checksum present: yes
+CR: 4
+header nibbles: 90700
+checksum: b
+calculated checksum: b
+Got Valid Header: length: 7, CR: 4, CRC Present
+demodulating 1 symbols, SF = 7
+demodulated symbol: 109
+demodulating 7 symbols, SF = 7
+demodulated symbol: 53
+demodulated symbol: 85
+demodulated symbol: 74
+demodulated symbol: 9
+demodulated symbol: 108
+demodulated symbol: 38
+demodulated symbol: 108
+deinterleaving symbols: b 15 1a e 5b 2f 7f 6f 
+decoded nibble: 1
+decoded nibble: 3
+decoded nibble: 0
+decoded nibble: 7
+decoded nibble: 8
+decoded nibble: e
+decoded nibble: c
+header nibbles: 301
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 26
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+correlationSync: sync'd
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulating 3 symbols, SF = 5
+demodulated symbol: 26
+demodulated symbol: 14
+demodulated symbol: 31
+deinterleaving symbols: d 5a 35 5a 17 17 9 10 
+decoded nibble: 3
+decoded nibble: c
+decoded nibble: f
+decoded nibble: 1
+decoded nibble: e
+header nibbles: c0e
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+demodulating 3 symbols, SF = 5
+demodulated symbol: 14
+demodulated symbol: 31
+demodulated symbol: 28
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 26
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 26
+demodulating 3 symbols, SF = 5
+demodulated symbol: 14
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+deinterleaving symbols: 17 9 10 12 17 17 17 17 
+decoded nibble: 1
+decoded nibble: 7
+decoded nibble: 9
+decoded nibble: 0
+decoded nibble: b
+header nibbles: e01
+demodulated symbol: 31
+demodulated symbol: 28
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 25
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+demodulating 1 symbols, SF = 5
+deinterleaving symbols: 9 10 12 17 17 15 17 17 
+decoded nibble: b
+decoded nibble: 4
+decoded nibble: 8
+decoded nibble: d
+decoded nibble: 8
+header nibbles: b00
+demodulated symbol: 14
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+demodulating 1 symbols, SF = 5
+demodulated symbol: 14
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 26
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 26
+demodulating 1 symbols, SF = 5
+demodulated symbol: 14
+demodulating 1 symbols, SF = 5
+demodulated symbol: 31
+demodulating 1 symbols, SF = 5
+demodulated symbol: 28
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+deinterleaving symbols: 9 17 9 17 17 9 10 12 
+decoded nibble: f
+decoded nibble: 2
+decoded nibble: e
+decoded nibble: b
+decoded nibble: 8
+header nibbles: 80d
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 26
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 25
+reading header
+nibbles: 0 0 0 0 demodulating 1 symbols, SF = 5
+0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 14
+demodulating 2 symbols, SF = 5
+demodulated symbol: 31
+demodulated symbol: 28
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+demodulating 2 symbols, SF = 5
+demodulated symbol: 14
+demodulated symbol: 31
+deinterleaving symbols: 17 17 15 9 10 12 17 9 
+decoded nibble: 3
+decoded nibble: f
+decoded nibble: 7
+decoded nibble: a
+decoded nibble: 5
+header nibbles: 80b
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 26
+reading headerdemodulating 
+nibbles: 0 0 0 0 0 
+1length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+ symbols, SF = 5
+demodulated symbol: 14
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 26
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 26
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 26
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 26
+deinterleaving symbols: 10 17 9 17 17 17 17 17 
+decoded nibble: e
+decoded nibble: 2
+decoded nibble: e
+decoded nibble: a
+decoded nibble: 9
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+header nibbles: 50a
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+correlationSync: sync'd
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulating 2 symbols, SF = 5
+demodulated symbol: 26
+demodulated symbol: 14
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 26
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+demodulating 2 symbols, SF = 5
+demodulated symbol: 14
+demodulated symbol: 31
+deinterleaving symbols: 17 17 17 9 17 17 17 9 
+decoded nibble: 3
+decoded nibble: f
+decoded nibble: 7
+decoded nibble: e
+decoded nibble: 5
+header nibbles: 90a
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 26
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+correlationSync: sync'd
+demodulating 3 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+demodulated symbol: 14
+demodulated symbol: 31
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+demodulating 1 symbols, SF = 5
+demodulated symbol: 14
+deinterleaving symbols: 10 17 17 17 9 10 17 9 
+decoded nibble: a
+decoded nibble: 6
+decoded nibble: e
+decoded nibble: e
+decoded nibble: d
+header nibbles: 50e
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+demodulating 1 symbols, SF = 5
+demodulated symbol: 14
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 26
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 26
+demodulating 1 symbols, SF = 5
+demodulated symbol: 14
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 26
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 26
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+demodulating 3 symbols, SF = 5
+deinterleaving symbols: 17 9 17 17 9 17 17 17 
+decoded nibble: 9
+decoded nibble: 7
+decoded nibble: d
+decoded nibble: c
+decoded nibble: f
+header nibbles: d0e
+demodulated symbol: 14
+demodulated symbol: 31
+demodulated symbol: 28
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 25
+demodulating 2 symbols, SF = 5
+demodulated symbol: 14
+demodulated symbol: 31
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+demodulating 1 symbols, SF = 5
+demodulated symbol: 14
+deinterleaving symbols: 9 10 12 15 9 10 17 9 
+decoded nibble: b
+decoded nibble: 4
+decoded nibble: 8
+decoded nibble: d
+decoded nibble: 0
+header nibbles: f0c
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+demodulated symbol: 26
+demodulating 2 symbols, SF = 5
+demodulated symbol: 14
+demodulated symbol: 31
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+correlationSync: sync'd
+demodulating 1 symbols, SF = 5
+reading header
+nibbles: 0 0 0 0 0 
+length: 0
+Checksum present: no
+CR: 0
+header nibbles: 0
+checksum: 0
+calculated checksum: 0
+demodulated symbol: 26

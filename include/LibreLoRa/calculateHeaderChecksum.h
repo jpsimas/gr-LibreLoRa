@@ -30,8 +30,8 @@ namespace gr {
      * \brief <+description+>
      *
      */
-    uint8_t calculateHeaderChecksum(const uint16_t headerData);
-
+    LIBRELORA_API uint8_t calculateHeaderChecksum(const uint32_t headerNibbles);
+    
   } // namespace LibreLoRa
 } // namespace gr
 

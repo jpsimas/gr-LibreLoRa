@@ -18,32 +18,30 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#ifndef INCLUDED_LIBRELORA_UTILITIES_H
+#define INCLUDED_LIBRELORA_UTILITIES_H
 
-#include <gnuradio/io_signature.h>
-#include <LibreLoRa/calculateHeaderChecksum.h>
-#include <LibreLoRa/utilities.h>
-
-#include <iostream>
+#include <LibreLoRa/api.h>
 
 namespace gr {
   namespace LibreLoRa {
-    
-    uint8_t calculateHeaderChecksumBytes(const uint16_t headerData) {
-      uint8_t checkSum = 0x00;
-      constexpr std::array<uint16_t, 5> masks = {0xF21, 0x752, 0xA94, 0x1E8, 0x00F};
-      for(size_t i = 0; i < masks.size(); i++)
-	checkSum |= pairity(masks[i]&headerData) << i;
-      return checkSum;
-    }
 
-    uint8_t calculateHeaderChecksum(const uint32_t headerNibbles) {
-      std::cout << "header nibbles: " << headerNibbles << std::endl;
-      return calculateHeaderChecksumBytes(nibbles2bytes<uint16_t>(headerNibbles, 3));
+    /*!
+     * \brief <+description+>
+     *
+     */
+    template <typename T>
+    constexpr T pairity(T x, size_t N = (sizeof(T) << 3)) {
+      return ((N == 1)? x : (x^pairity<T>(x >> 1, N - 1))) & 0x01;
     }
     
-  } /* namespace LibreLoRa */
-} /* namespace gr */
+    template <typename T2, typename T1>
+    constexpr T2 nibbles2bytes(T1 x, size_t N = sizeof(T1)) {
+      return ((N == 1)? (x & 0xf): (x & 0xf) | (nibbles2bytes<T2, T1>(x >> 8, N - 1)) << 4);
+    }    
+    
+  } // namespace LibreLoRa
+} // namespace gr
+
+#endif /* INCLUDED_LIBRELORA_UTILITIES_H */
 
