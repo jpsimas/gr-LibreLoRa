@@ -26,8 +26,6 @@
 #include <LibreLoRa/calculateHeaderChecksum.h>
 #include <LibreLoRa/utilities.h>
 
-#include <iostream>
-
 namespace gr {
   namespace LibreLoRa {
     
@@ -40,7 +38,6 @@ namespace gr {
     }
 
     uint8_t calculateHeaderChecksum(const uint32_t headerNibbles) {
-      std::cout << "header nibbles: " << headerNibbles << std::endl;
       return calculateHeaderChecksumBytes(nibbles2bytes<uint16_t>(headerNibbles, 3));
     }
     
