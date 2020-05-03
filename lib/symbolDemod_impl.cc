@@ -79,30 +79,32 @@ namespace gr {
       const float *dataIn = (const float *) input_items[0];
       uint16_t *dataOut = (uint16_t *) output_items[0];
 
-      std::cout << "demodulating " << noutput_items <<  " symbols, SF = " << SF << std::endl;
+      std::cout << "demodulating " << /*noutput_items*/1 <<  " symbols, SF = " << SF << std::endl;
       
       // Do <+signal processing+>
-      for(size_t i = 0; i < noutput_items; i++) {
-	float corrMax = 0;
-	size_t jMax = 0;
-	for(size_t j = 0; j < symbolSize; j++) {
-	  float corrJ;
-	  volk_32f_x2_dot_prod_32f(&corrJ, dataIn + i*symbolSize, twoUpchirps.data() + j, symbolSize);
-	  if(corrJ >= corrMax) {
-	    corrMax = corrJ;
-	    jMax = j;
-	  }
+      //for(size_t i = 0; i < noutput_items; i++) {
+      size_t i = 0;
+      float corrMax = 0;
+      size_t jMax = 0;
+      for(size_t j = 0; j < symbolSize; j++) {
+	float corrJ;
+	volk_32f_x2_dot_prod_32f(&corrJ, dataIn + i*symbolSize, twoUpchirps.data() + j, symbolSize);
+	if(corrJ >= corrMax) {
+	  corrMax = corrJ;
+	  jMax = j;
 	}
-	dataOut[i] = round(jMax*(1 << SF)/float(symbolSize));
-	std::cout << "demodulated symbol: " << std::dec << dataOut[i] << std::endl;
       }
+      dataOut[i] = round(jMax*(1 << SF)/float(symbolSize));
+      std::cout << "demodulated symbol: " << std::dec << dataOut[i] << ", SF = " << SF << std::endl;
+      //}
       
       // Tell runtime system how many input items we consumed on
       // each input stream.
       //consume_each (noutput_items);
 
       // Tell runtime system how many output items we produced.
-      return noutput_items;
+      //return noutput_items;
+      return 1;
     }
 
     void symbolDemod_impl::setSF(size_t SFNew) {

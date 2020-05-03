@@ -38,16 +38,17 @@ namespace gr {
       // Nothing to declare in this block.
       size_t count;
       bool gotHeader;
-      size_t payloadCount;
       bool started;
       size_t symbolSize;
-      size_t SF;
+      const size_t SF;
       size_t SFcurrent;
 
       uint8_t payloadLength;
       uint8_t CR;
       uint8_t payloadCRCPresent;
       bool headerCheckSumValid;
+
+      size_t nibblesToRead;
 
       void startRx();
       void stopRx();

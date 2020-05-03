@@ -292,7 +292,7 @@ blocks:
     bus_structure: null
     coordinate: [1320, 1264.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_receiverController_0
   id: LibreLoRa_receiverController
   parameters:
@@ -452,7 +452,7 @@ blocks:
     bus_structure: null
     coordinate: [1616, 1264.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_uchar_to_float_0_1_0_0
   id: blocks_uchar_to_float
   parameters:
@@ -467,7 +467,7 @@ blocks:
     bus_structure: null
     coordinate: [1616, 1360.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0
   id: blocks_uchar_to_float
   parameters:
@@ -482,7 +482,7 @@ blocks:
     bus_structure: null
     coordinate: [1616, 1328.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0
   id: blocks_uchar_to_float
   parameters:
@@ -497,7 +497,7 @@ blocks:
     bus_structure: null
     coordinate: [1616, 1296.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_uchar_to_float_1
   id: blocks_uchar_to_float
   parameters:
@@ -527,7 +527,7 @@ blocks:
     bus_structure: null
     coordinate: [1616, 1392.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_uchar_to_float_2_0
   id: blocks_uchar_to_float
   parameters:
@@ -560,7 +560,7 @@ blocks:
     bus_structure: null
     coordinate: [1448, 1392.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: import_0
   id: import
   parameters:
@@ -1362,7 +1362,7 @@ blocks:
     bus_structure: null
     coordinate: [1784, 1264.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_3
   id: qtgui_time_sink_x
   parameters:
@@ -1459,7 +1459,7 @@ blocks:
     bus_structure: null
     coordinate: [1800, 1424.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_3_0
   id: qtgui_time_sink_x
   parameters:

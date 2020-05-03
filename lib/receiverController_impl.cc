@@ -70,8 +70,8 @@ namespace gr {
     void
     receiverController_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      ninput_items_required[0] = SFcurrent;
-      ninput_items_required[1] = 1;
+      ninput_items_required[0] = started? nibblesToRead : SFcurrent;
+      ninput_items_required[1] = started? 0 : 1;
     }
     
     int
@@ -102,28 +102,28 @@ namespace gr {
 	  if(!headerCheckSumValid || CR == 0 || CR > 4) {
 	    stopRx();
 	  } else {
-	    setSFcurrent(SF);
-	    payloadCount = 0;
+	    std::cout << std::dec;
 	    std::cout << "Got Valid Header" << ": ";
 	    std::cout << "length: " << unsigned(payloadLength) << ", ";	  
 	    std::cout << "CR: " << unsigned(CR) << ", ";
 	    std::cout << "CRC " << (payloadCRCPresent? "Present" : "Not Present") << std::endl;
-	    if(payloadLength == 0)
+	    
+	    if(2*payloadLength <= (SFcurrent - 5))
 	      stopRx();
+	    else {
+	      nibblesToRead = 2*(payloadLength + (payloadCRCPresent? 1 : 0)) - (SFcurrent - 5);
+	      nibblesToRead = SF*ceil(nibblesToRead/float(SF));;
+	      setSFcurrent(SF);
+	    }
 	  }
 	} else {
-	  size_t i;
-	  for(i = 0; i < noutput_items; i++) {
-	    if(payloadCount + (SFcurrent - 7) > 2*(payloadLength + payloadCRCPresent? 1 : 0)) {
-	      stopRx();
-	      break;
-	    }
-	    
+	  for(size_t i = 0; i < nibblesToRead; i++) {
 	    nibblesOut[i] = nibblesIn[i];
-	    payloadCount++;
 	  }
-	  produced = i;
+	  
+	  produced = nibblesToRead;
 	  consume(0, produced);
+	  stopRx();
 	}
 
 	count++;

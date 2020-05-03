@@ -68,7 +68,8 @@ namespace gr {
       uint16_t *out = (uint16_t *) output_items[0];
       
       // Do <+signal processing+>
-      for(size_t i = 0; i < noutput_items; i++)
+      //for(size_t i = 0; i < noutput_items; i++)
+      size_t i = 0;
 	out[i] = (in[i] ^ (in[i] >> 1)) & ((1 << SF) - 1);
 
       // Tell runtime system how many input items we consumed on
@@ -76,7 +77,8 @@ namespace gr {
       // consume_each (noutput_items);
 
       // Tell runtime system how many output items we produced.
-      return noutput_items;
+	//return noutput_items;
+	return 1;
     }
 
     void grayEncode_impl::setSF(size_t SFnew) {
