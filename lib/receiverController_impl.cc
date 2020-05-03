@@ -114,7 +114,7 @@ namespace gr {
 	} else {
 	  size_t i;
 	  for(i = 0; i < noutput_items; i++) {
-	    if(payloadCount + (SFcurrent - 7) > 2*payloadLength) {
+	    if(payloadCount + (SFcurrent - 7) > 2*(payloadLength + payloadCRCPresent? 1 : 0)) {
 	      stopRx();
 	      break;
 	    }
