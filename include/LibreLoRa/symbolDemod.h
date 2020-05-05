@@ -22,7 +22,7 @@
 #define INCLUDED_LIBRELORA_SYMBOLDEMOD_H
 
 #include <LibreLoRa/api.h>
-#include <gnuradio/sync_block.h>
+#include <gnuradio/block.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -32,7 +32,7 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
-    class LIBRELORA_API symbolDemod : virtual public gr::sync_block
+    class LIBRELORA_API symbolDemod : virtual public gr::block
     {
      public:
       typedef boost::shared_ptr<symbolDemod> sptr;
@@ -47,6 +47,8 @@ namespace gr {
        */
       static sptr make(size_t SF, size_t symbolSize, bool implicit);
       virtual void setSF(size_t SF) = 0;
+      virtual void enable() = 0;
+      virtual void disable() = 0;
     };
 
   } // namespace LibreLoRa

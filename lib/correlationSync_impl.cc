@@ -25,6 +25,9 @@
 #include <gnuradio/io_signature.h>
 #include "correlationSync_impl.h"
 
+#include <gnuradio/block_detail.h>
+#include <gnuradio/runtime_types.h>
+
 namespace gr {
   namespace LibreLoRa {
 
@@ -46,7 +49,9 @@ namespace gr {
 	corrMin(corrMin),
 	corrStop(corrStop),
 	symbolSize(symbolSize),
-	syncd(false) {
+	syncd(false),
+	fixedMode(false),
+	nOutputItemsToProduce(0) {
     }
 
     /*
@@ -60,8 +65,10 @@ namespace gr {
     correlationSync_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
       /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
-      ninput_items_required[0] = 2*symbolSize;
-      ninput_items_required[1] = 2*symbolSize;
+      const size_t n = ((fixedMode && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
+      ninput_items_required[0] = (syncd? symbolSize*n : 2*symbolSize);
+      
+      ninput_items_required[1] = ninput_items_required[0];
     }
 
     int
@@ -75,6 +82,8 @@ namespace gr {
       float* data_out = (float*) output_items[0];
       bool* syncd_out = (bool*) output_items[1];
 
+      std::cout << "correlationSync: work called: noutput_items = " << noutput_items << std::endl;
+      
       *syncd_out = false;
       // Do <+signal processing+>
       
@@ -88,9 +97,12 @@ namespace gr {
 	    if(corr[i] <= corrStop) {
 	      foundFirstPt = false;
 	      consume_each(maxPos);
-	      *syncd_out = true;
 	      syncd = true;
 	      std::cout << "correlationSync: sync'd" << std::endl;
+	      *syncd_out = true;
+	      produce(1, 1);
+	      std::cout << "correlationSync: produced syncd signal" << std::endl;
+	      return WORK_CALLED_PRODUCE;
 	    } else if(corr[i] > corrMax) {
 	      if(i < symbolSize) {
 		corrMax = corr[i];
@@ -105,18 +117,26 @@ namespace gr {
 	    } else
 	      break;
 	  }
-	}       
-      }
+	}
 
-      if(syncd) {
-	for(size_t i = 0; i < symbolSize; i++)
-	  data_out[i] = data_in[i];
-
-	consume_each (symbolSize);
-	return 1;
-      } else {
-	consume_each (symbolSize);
+	consume_each(symbolSize);
 	return 0;
+      } else {
+
+	size_t n = ((fixedMode && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
+	
+	for(size_t j = 0; j < n; j++)
+	  for(size_t i = 0; i < symbolSize; i++)
+	    data_out[i + symbolSize*j] = data_in[i + symbolSize*j];
+
+	consume_each (symbolSize*n);
+	
+	if(fixedMode)
+	  nOutputItemsToProduce -= n;
+
+	std::cout << "produced " << n << " synced symbols" << std::endl;
+	
+	return n;
       }
     }
     

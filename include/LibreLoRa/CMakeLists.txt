@@ -48,5 +48,7 @@ install(FILES
     correlationSyncDemod.h
     receiverController.h
     calculateHeaderChecksum.h
-    utilities.h DESTINATION include/LibreLoRa
+    utilities.h
+    #blockFixedProduce.h
+    DESTINATION include/LibreLoRa
 )

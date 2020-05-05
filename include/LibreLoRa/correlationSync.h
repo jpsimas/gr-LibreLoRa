@@ -47,6 +47,8 @@ namespace gr {
        */
       static sptr make(float corrMin, float corrStop, size_t maxDelay);
       virtual void reset() = 0;
+      virtual void enableFixedMode() = 0;
+      virtual void setNOutputItemsToProduce(int noutput_items) = 0;
     };
 
   } // namespace LibreLoRa

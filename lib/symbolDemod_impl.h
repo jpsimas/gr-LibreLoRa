@@ -35,18 +35,23 @@ namespace gr {
       const size_t symbolSize;
       size_t SF;
       bool implicit;
+      bool started;
      public:
       symbolDemod_impl(size_t SF, size_t symbolSize, bool implicit);
       ~symbolDemod_impl();
 
       // Where all the action really happens
-      //void forecast (int noutput_items, gr_vector_int &ninput_items_required);
+      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
 
-      int work(int noutput_items,
-           gr_vector_const_void_star &input_items,
-           gr_vector_void_star &output_items);
+      int general_work(int noutput_items,
+		       gr_vector_int &ninput_items,
+		       gr_vector_const_void_star &input_items,
+		       gr_vector_void_star &output_items);
 
       void setSF(size_t SF);
+
+      void enable() {started = true;}
+      void disable() {started = false;}
     };
 
   } // namespace LibreLoRa

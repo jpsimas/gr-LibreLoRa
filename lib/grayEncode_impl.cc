@@ -66,19 +66,19 @@ namespace gr {
     {
       const uint16_t *in = (const uint16_t *) input_items[0];
       uint16_t *out = (uint16_t *) output_items[0];
+
+      std::cout << "grayEncode: work called: noutput_items = " << noutput_items << std::endl;
       
       // Do <+signal processing+>
-      //for(size_t i = 0; i < noutput_items; i++)
-      size_t i = 0;
+      for(size_t i = 0; i < noutput_items; i++)
 	out[i] = (in[i] ^ (in[i] >> 1)) & ((1 << SF) - 1);
 
       // Tell runtime system how many input items we consumed on
       // each input stream.
-      // consume_each (noutput_items);
+	//consume_each (noutput_items);
 
       // Tell runtime system how many output items we produced.
-	//return noutput_items;
-	return 1;
+	return noutput_items;
     }
 
     void grayEncode_impl::setSF(size_t SFnew) {

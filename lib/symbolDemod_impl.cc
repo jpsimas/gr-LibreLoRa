@@ -48,7 +48,8 @@ namespace gr {
       :	SF(SF),
 	symbolSize(symbolSize),
 	implicit(implicit),
-	gr::sync_block("symbolDemod",
+	started(true),
+	gr::block("symbolDemod",
 		       gr::io_signature::make(1, 1, symbolSize*sizeof(float)), 
 		       gr::io_signature::make(1, 1, sizeof(uint16_t))) {
       //set_relative_rate(1.0/symbolSize);
@@ -64,47 +65,54 @@ namespace gr {
     {
     }
 
-    // void
-    // symbolDemod_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
-    // {
-    //   /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
-    //   ninput_items_required[0] = noutput_items;
-    // }
+    void
+    symbolDemod_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
+    {
+      /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
+      ninput_items_required[0] = noutput_items;//1;
+      // std::cout << "symbolDemod: forecast called: nouput_items_required = " << ninput_items_required[0] << std::endl;
+    }
 
     int
-    symbolDemod_impl::work (int noutput_items,
-                       gr_vector_const_void_star &input_items,
-                       gr_vector_void_star &output_items)
+    symbolDemod_impl::general_work (int noutput_items,
+				    gr_vector_int &ninput_items,
+				    gr_vector_const_void_star &input_items,
+				    gr_vector_void_star &output_items)
     {
       const float *dataIn = (const float *) input_items[0];
       uint16_t *dataOut = (uint16_t *) output_items[0];
 
-      std::cout << "demodulating " << /*noutput_items*/1 <<  " symbols, SF = " << SF << std::endl;
-      
-      // Do <+signal processing+>
-      //for(size_t i = 0; i < noutput_items; i++) {
-      size_t i = 0;
-      float corrMax = 0;
-      size_t jMax = 0;
-      for(size_t j = 0; j < symbolSize; j++) {
-	float corrJ;
-	volk_32f_x2_dot_prod_32f(&corrJ, dataIn + i*symbolSize, twoUpchirps.data() + j, symbolSize);
-	if(corrJ >= corrMax) {
-	  corrMax = corrJ;
-	  jMax = j;
+      std::cout << "demodulating " << noutput_items <<  " symbols, SF = " << SF << std::endl;
+      if(started) {
+	// Do <+signal processing+>
+	for(size_t i = 0; i < noutput_items; i++) {
+	  //size_t i = 0;
+	  float corrMax = 0;
+	  size_t jMax = 0;
+	  for(size_t j = 0; j < symbolSize; j++) {
+	    float corrJ;
+	    volk_32f_x2_dot_prod_32f(&corrJ, dataIn + i*symbolSize, twoUpchirps.data() + j, symbolSize);
+	    if(corrJ >= corrMax) {
+	      corrMax = corrJ;
+	      jMax = j;
+	    }
+	  }
+	  dataOut[i] = round(jMax*(1 << SF)/float(symbolSize));
+	  std::cout << "demodulated symbol: " << std::dec << dataOut[i] << ", SF = " << SF << std::endl;
 	}
-      }
-      dataOut[i] = round(jMax*(1 << SF)/float(symbolSize));
-      std::cout << "demodulated symbol: " << std::dec << dataOut[i] << ", SF = " << SF << std::endl;
-      //}
       
-      // Tell runtime system how many input items we consumed on
-      // each input stream.
-      //consume_each (noutput_items);
+	// Tell runtime system how many input items we consumed on
+	// each input stream.
+	consume_each (noutput_items);
 
-      // Tell runtime system how many output items we produced.
-      //return noutput_items;
-      return 1;
+	// Tell runtime system how many output items we produced.
+	return noutput_items;
+	//consume_each(1);
+	//return 1;
+      } else {
+	//consume_each(1);
+	return 0;
+      }
     }
 
     void symbolDemod_impl::setSF(size_t SFNew) {

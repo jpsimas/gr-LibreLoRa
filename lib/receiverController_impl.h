@@ -34,11 +34,13 @@ namespace gr {
       grayEncode::sptr grayEncoder;
       deinterleave::sptr deinterleaver;
       decode::sptr decoder;
-      
+
+      enum controllerState {waitingForSync,
+			    decodingHeader,
+			    decodingPayload};
+
+      controllerState currentState;
       // Nothing to declare in this block.
-      size_t count;
-      bool gotHeader;
-      bool started;
       size_t symbolSize;
       const size_t SF;
       size_t SFcurrent;
@@ -49,7 +51,7 @@ namespace gr {
       bool headerCheckSumValid;
 
       size_t nibblesToRead;
-
+      
       void startRx();
       void stopRx();
       void setSFcurrent(size_t SF);

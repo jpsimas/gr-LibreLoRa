@@ -31,6 +31,7 @@
 #include "LibreLoRa/correlationSyncDemod.h"
 #include "LibreLoRa/receiverController.h"
 #include "LibreLoRa/calculateHeaderChecksum.h"
+#include "LibreLoRa/blockFixedProduce.h"
 %}
 
 %include "LibreLoRa/frequencyTracker.h"

@@ -57,11 +57,14 @@ namespace gr {
     {
     }
 
-    // void
-    // decode_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
-    // {
-    //   /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
-    // }
+    void
+    decode_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
+    {
+       /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
+      //ninput_items_required[0] = noutput_items;
+      sync_block::forecast(noutput_items, ninput_items_required);
+      // std::cout << "decode: forecast called: nouput_items_required = " << ninput_items_required[0] << std::endl;
+    }
 
     int
     decode_impl::work (int noutput_items,
@@ -70,6 +73,8 @@ namespace gr {
     {
       const uint8_t *in = (const uint8_t *) input_items[0];
       uint8_t *out = (uint8_t *) output_items[0];
+
+      std::cout << "decode: work called: noutput_items = " << noutput_items << std::endl;
       
       // Do <+signal processing+>
       for(size_t i = 0; i < noutput_items; i++) {

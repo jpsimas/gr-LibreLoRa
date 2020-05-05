@@ -47,7 +47,9 @@ list(APPEND LibreLoRa_sources
     convolution_impl.cc
     correlationSyncDemod_impl.cc
     receiverController_impl.cc
-    calculateHeaderChecksum.cc )
+    calculateHeaderChecksum.cc
+    #blockFixedProduce.cc
+    )
 
 set(LibreLoRa_sources "${LibreLoRa_sources}" PARENT_SCOPE)
 if(NOT LibreLoRa_sources)

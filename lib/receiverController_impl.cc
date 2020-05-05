@@ -53,11 +53,12 @@ namespace gr {
 	grayEncoder(grayEncoder),
 	deinterleaver(deinterleaver),
 	decoder(decoder),
-	started(false),
-	count(0),
-	gotHeader(false) {
+	currentState(waitingForSync) {
       setSFcurrent(SF-2);
-      setCR(4);
+
+      //prevent demodulotator producing symbols before start
+      synchronizer->enableFixedMode();
+      synchronizer->setNOutputItemsToProduce(0);
     }
 
     /*
@@ -70,8 +71,28 @@ namespace gr {
     void
     receiverController_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      ninput_items_required[0] = started? nibblesToRead : SFcurrent;
-      ninput_items_required[1] = started? 0 : 1;
+      // ninput_items_required[0] = started? (gotHeader? nibblesToRead : SFcurrent) : 0;
+      // ninput_items_required[1] = started? 0 : 1;
+      switch(currentState) {
+      case waitingForSync:
+	ninput_items_required[0] = 0;
+	ninput_items_required[1] = 1;
+	break;
+      case decodingHeader:
+	ninput_items_required[0] = SFcurrent;
+	ninput_items_required[1] = 0;
+	break;
+      case decodingPayload:
+	ninput_items_required[0] = nibblesToRead;
+	ninput_items_required[1] = 0;
+	break;
+      default:
+	ninput_items_required[0] = 0;
+	ninput_items_required[1] = 0;
+      }
+
+      // std::cout << "receiverController: forecast called: nouput_items_required[0] = " << ninput_items_required[0] << std::endl << " nouput_items_required[1] = " << ninput_items_required[1] << std::endl;
+      // std::cout << " noutput_items = "<< noutput_items << std::endl;
     }
     
     int
@@ -83,68 +104,78 @@ namespace gr {
       const uint8_t *nibblesIn = (const uint8_t *) input_items[0];
       const bool *syncdIn = (const bool *) input_items[1];
       uint8_t *nibblesOut = (uint8_t *) output_items[0];
+
+      std::cout << "receiverController: work called: noutput_items = " << noutput_items << std::endl;
       
       int produced = 0;
 
       // Do <+signal processing+>
-      if(!started)
-	if(*syncdIn)
+      switch(currentState) {
+      case waitingForSync:
+	if(*syncdIn) {
 	  startRx();
-      
-      if(started) {
-	if(!gotHeader) {
-	  gotHeader = true;
-	  //consume(1, 1);
-	  readHeader(nibblesIn, nibblesOut);
-	  consume(0, SFcurrent);
-	  produced = SFcurrent - 5;
-
-	  if(!headerCheckSumValid || CR == 0 || CR > 4) {
-	    stopRx();
-	  } else {
-	    std::cout << std::dec;
-	    std::cout << "Got Valid Header" << ": ";
-	    std::cout << "length: " << unsigned(payloadLength) << ", ";	  
-	    std::cout << "CR: " << unsigned(CR) << ", ";
-	    std::cout << "CRC " << (payloadCRCPresent? "Present" : "Not Present") << std::endl;
-	    
-	    if(2*payloadLength <= (SFcurrent - 5))
-	      stopRx();
-	    else {
-	      nibblesToRead = 2*(payloadLength + (payloadCRCPresent? 1 : 0)) - (SFcurrent - 5);
-	      nibblesToRead = SF*ceil(nibblesToRead/float(SF));;
-	      setSFcurrent(SF);
-	    }
-	  }
-	} else {
-	  for(size_t i = 0; i < nibblesToRead; i++) {
-	    nibblesOut[i] = nibblesIn[i];
-	  }
-	  
-	  produced = nibblesToRead;
-	  consume(0, produced);
-	  stopRx();
 	}
+	consume(1, 1);
+	break;
 
-	count++;
+      case decodingHeader:
+	//consume(1, 1);
+	readHeader(nibblesIn, nibblesOut);
+	consume(0, SFcurrent);
+	produced = SFcurrent - 5;
+
+	if(!headerCheckSumValid || CR == 0 || CR > 4) {
+	  stopRx();
+	} else {
+	  std::cout << std::dec;
+	  std::cout << "Got Valid Header" << ": ";
+	  std::cout << "length: " << unsigned(payloadLength) << ", ";	  
+	  std::cout << "CR: " << unsigned(CR) << ", ";
+	  std::cout << "CRC " << (payloadCRCPresent? "Present" : "Not Present") << std::endl;
+	    
+	  if(2*payloadLength <= (SFcurrent - 5))
+	    stopRx();
+	  else {
+	    nibblesToRead = 2*(payloadLength + (payloadCRCPresent? 1 : 0)) - (SFcurrent - 5);
+	    nibblesToRead = SF*ceil(nibblesToRead/float(SF));
+	    std::cout << "nibbles to read: " << nibblesToRead << ", SF = " << SF << std::endl;
+	    setSFcurrent(SF);
+	    currentState = decodingPayload;
+	    synchronizer->setNOutputItemsToProduce(nibblesToRead*(CR + 4)/SF);
+	  }
+	}
+	break;
+      case decodingPayload:
+	for(size_t i = 0; i < nibblesToRead; i++) {
+	  nibblesOut[i] = nibblesIn[i];
+	}
+	  
+	produced = nibblesToRead;
+	consume(0, produced);
+	stopRx();	 
+
+	break;
+      default:
+	;
       }
-     
-      consume(1, ninput_items[1]);
+      
       // Tell runtime system how many output items we produced.
       return produced;
     }
 
     void receiverController_impl::startRx() {
-      count = 0;
-      gotHeader = false;
-      started = true;
+      setCR(4);
+      currentState = decodingHeader;
+      synchronizer->setNOutputItemsToProduce(8);
+      std::cout << "starting RX" << std::endl;
     }
 
     void receiverController_impl::stopRx() {
-      started = false;
+      currentState = waitingForSync;
       setSFcurrent(SF-2);
-      setCR(4);
       synchronizer->reset();
+      // demodulator->disable();
+      std::cout << "stopping RX" << std::endl;
     }
 
     void receiverController_impl::setSFcurrent(size_t SFnew) {

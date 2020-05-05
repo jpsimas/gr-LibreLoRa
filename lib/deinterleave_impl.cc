@@ -59,7 +59,8 @@ namespace gr {
      void
     deinterleave_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
      {
-	ninput_items_required[0] = codeLength;
+       ninput_items_required[0] = codeLength*(noutput_items/SF);
+       // std::cout << "deinterleave: forecast called: nouput_items_required = " << ninput_items_required[0] << ", noutput_items = " << noutput_items << std::endl;
      }
 
     int
@@ -70,28 +71,40 @@ namespace gr {
     {
       const uint16_t *in = (const uint16_t *) input_items[0];
       uint8_t *out = (uint8_t *) output_items[0];
-      
-      // Do <+signal processing+>
-      std::cout << "deinterleaving symbols: ";
-      for(size_t j = 0; j < codeLength; j++)
-	std::cout << std::hex << in[j] << " ";
-      std::cout << std::endl;
 
+      //      std::cout << "deinterleave: work called: noutput_items = " << noutput_items << std::endl;
+      
+      const size_t blocksToProduce = noutput_items/SF;
+
+      if(blocksToProduce != 0) {
+	std::cout << "producing: " << blocksToProduce << " blocks (" << "nouput_items = " << noutput_items << ", SF = " << SF << ")" << std::endl;
+      
+	// Do <+signal processing+>
+      }
+      
       for(size_t k = 0; k < SF; k++)
 	out[k] = 0;
-      
-      for(size_t j = 0; j < codeLength; j++)
-	for(size_t k = 0; k < SF; k++)
-	  out[(j + k)%SF] |= (in[j] >> k & 0x01) << j;
 
+      for(size_t i = 0; i < blocksToProduce; i++){
+
+	std::cout << "deinterleaving symbols: ";
+	for(size_t j = 0; j < codeLength; j++)
+	  std::cout << std::hex << in[i*codeLength + j] << " ";
+	std::cout << std::endl;
+	
+	for(size_t j = 0; j < codeLength; j++)
+	  for(size_t k = 0; k < SF; k++)
+	    out[i*SF + (j + k)%SF] |= (in[i*codeLength + j] >> k & 0x01) << j;
+
+      }
       // Tell runtime system how many input items we consumed on
       // each input stream.
       // consume_each (noutput_items);
-      consume_each(codeLength);
+      consume_each(codeLength*blocksToProduce);
 
       // Tell runtime system how many output items we produced.
       // return noutput_items;
-      return SF;
+      return SF*blocksToProduce;
     }
 
     void deinterleave_impl::setSF(size_t SFNew) {

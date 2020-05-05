@@ -312,7 +312,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1440, 636.0]
+    coordinate: [1440, 604.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_symbolDemod_0
@@ -355,6 +355,23 @@ blocks:
     coordinate: [40, 500.0]
     rotation: 0
     state: enabled
+- name: blocks_null_sink_0
+  id: blocks_null_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    bus_structure_sink: '[[0,],]'
+    comment: ''
+    num_inputs: '1'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1656, 696.0]
+    rotation: 0
+    state: true
 - name: blocks_short_to_float_0
   id: blocks_short_to_float
   parameters:
@@ -369,9 +386,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1392, 856.0]
+    coordinate: [1472, 820.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_short_to_float_0_0
   id: blocks_short_to_float
   parameters:
@@ -386,9 +403,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1376, 968.0]
+    coordinate: [1480, 924.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_throttle_0
   id: blocks_throttle
   parameters:
@@ -422,7 +439,7 @@ blocks:
     bus_structure: null
     coordinate: [1504, 1136.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_uchar_to_float_0_0
   id: blocks_uchar_to_float
   parameters:
@@ -437,7 +454,7 @@ blocks:
     bus_structure: null
     coordinate: [1536, 1056.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_uchar_to_float_0_1
   id: blocks_uchar_to_float
   parameters:
@@ -510,9 +527,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1464, 512.0]
+    coordinate: [1608, 488.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_uchar_to_float_2
   id: blocks_uchar_to_float
   parameters:
@@ -540,9 +557,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1656, 672.0]
+    coordinate: [1784, 648.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_vector_to_stream_3
   id: blocks_vector_to_stream
   parameters:
@@ -778,7 +795,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1080, 348.0]
+    coordinate: [1152, 340.0]
     rotation: 0
     state: enabled
 - name: qtgui_time_sink_x_0_1_0
@@ -875,9 +892,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1624, 420.0]
+    coordinate: [1816, 448.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_1
   id: qtgui_time_sink_x
   parameters:
@@ -974,7 +991,7 @@ blocks:
     bus_structure: null
     coordinate: [1696, 1136.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_1_0
   id: qtgui_time_sink_x
   parameters:
@@ -1071,7 +1088,7 @@ blocks:
     bus_structure: null
     coordinate: [1680, 816.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_1_0_0
   id: qtgui_time_sink_x
   parameters:
@@ -1168,7 +1185,7 @@ blocks:
     bus_structure: null
     coordinate: [1664, 928.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_1_1
   id: qtgui_time_sink_x
   parameters:
@@ -1265,7 +1282,7 @@ blocks:
     bus_structure: null
     coordinate: [1712, 1024.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_2
   id: qtgui_time_sink_x
   parameters:
@@ -1554,9 +1571,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1824, 640.0]
+    coordinate: [1920, 596.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_vector_sink_f_0
   id: qtgui_vector_sink_f
   parameters:
@@ -1629,7 +1646,7 @@ blocks:
     bus_structure: null
     coordinate: [1480, 244.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: qtgui_waterfall_sink_x_0_0
   id: qtgui_waterfall_sink_x
   parameters:
@@ -2075,6 +2092,7 @@ connections:
   '0']
 - [LibreLoRa_readHeader_0, '3', blocks_uchar_to_float_0_1_0_0, '0']
 - [LibreLoRa_readHeader_0, '4', blocks_vector_to_stream_3, '0']
+- [LibreLoRa_receiverController_0, '0', blocks_null_sink_0, '0']
 - [LibreLoRa_receiverController_0, '0', blocks_uchar_to_float_2_0, '0']
 - [LibreLoRa_symbolDemod_0, '0', LibreLoRa_grayEncode_0, '0']
 - [LibreLoRa_symbolDemod_0, '0', blocks_short_to_float_0, '0']
