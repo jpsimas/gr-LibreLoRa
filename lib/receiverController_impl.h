@@ -34,6 +34,10 @@ namespace gr {
       grayEncode::sptr grayEncoder;
       deinterleave::sptr deinterleaver;
       decode::sptr decoder;
+<<<<<<< HEAD
+      randomize::sptr randomizer;
+=======
+>>>>>>> 062e63eb739d92a3a44626a7e493c62fa54e1060
 
       enum controllerState {waitingForSync,
 			    decodingHeader,
@@ -59,7 +63,7 @@ namespace gr {
 
       void readHeader(const uint8_t* nibbles, uint8_t* dataOut);
      public:
-      receiverController_impl(size_t SF, size_t symbolSize, correlationSync::sptr synchronizer, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder);
+      receiverController_impl(size_t SF, size_t symbolSize, correlationSync::sptr synchronizer, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer);
       ~receiverController_impl();
 
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);

@@ -49,7 +49,11 @@ list(APPEND LibreLoRa_sources
     receiverController_impl.cc
     calculateHeaderChecksum.cc
     #blockFixedProduce.cc
+<<<<<<< HEAD
+    randomize_impl.cc )
+=======
     )
+>>>>>>> 062e63eb739d92a3a44626a7e493c62fa54e1060
 
 set(LibreLoRa_sources "${LibreLoRa_sources}" PARENT_SCOPE)
 if(NOT LibreLoRa_sources)

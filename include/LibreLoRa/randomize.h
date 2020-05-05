@@ -18,18 +18,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_RECEIVERCONTROLLER_H
-#define INCLUDED_LIBRELORA_RECEIVERCONTROLLER_H
+#ifndef INCLUDED_LIBRELORA_RANDOMIZE_H
+#define INCLUDED_LIBRELORA_RANDOMIZE_H
 
 #include <LibreLoRa/api.h>
-#include <gnuradio/block.h>
-
-#include <LibreLoRa/correlationSync.h>
-#include <LibreLoRa/symbolDemod.h>
-#include <LibreLoRa/grayEncode.h>
-#include <LibreLoRa/deinterleave.h>
-#include <LibreLoRa/decode.h>
-#include <LibreLoRa/randomize.h>
+#include <gnuradio/sync_block.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -39,24 +32,25 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
-    class LIBRELORA_API receiverController : virtual public gr::block
+    class LIBRELORA_API randomize : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<receiverController> sptr;
+      typedef boost::shared_ptr<randomize> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of LibreLoRa::receiverController.
+       * \brief Return a shared_ptr to a new instance of LibreLoRa::randomize.
        *
-       * To avoid accidental use of raw pointers, LibreLoRa::receiverController's
+       * To avoid accidental use of raw pointers, LibreLoRa::randomize's
        * constructor is in a private implementation
-       * class. LibreLoRa::receiverController::make is the public interface for
+       * class. LibreLoRa::randomize::make is the public interface for
        * creating new instances.
        */
-      static sptr make(size_t SF, size_t symbolSize, correlationSync::sptr synchronizer, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer);
+      static sptr make( );
+      virtual void reset() = 0;
     };
 
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_RECEIVERCONTROLLER_H */
+#endif /* INCLUDED_LIBRELORA_RANDOMIZE_H */
 
