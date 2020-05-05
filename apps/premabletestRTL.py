@@ -87,6 +87,7 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
         self.LibreLoRa_symbolDemod_0 = LibreLoRa.symbolDemod(SF, (2**SF)*OSF, False)
+        self.LibreLoRa_randomize_0 = LibreLoRa.randomize()
         self.LibreLoRa_grayEncode_0 = LibreLoRa.grayEncode(SF)
         self.LibreLoRa_deinterleave_0 = LibreLoRa.deinterleave(7, 4)
         self.LibreLoRa_decode_0 = LibreLoRa.decode(4)
@@ -186,11 +187,13 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
-        self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_char*1)
         self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/jp/Polito/Thesis/lorasim-matlab/sample_data/out_sdr_sf7_fs1000k_length_7bytes_onehot_counting.raw', False, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
-        self.LibreLoRa_receiverController_0 = LibreLoRa.receiverController(SF, symbolSize, self.LibreLoRa_correlationSync_0, self.LibreLoRa_symbolDemod_0, self.LibreLoRa_grayEncode_0, self.LibreLoRa_deinterleave_0, self.LibreLoRa_decode_0)
+        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/home/jp/Code/C++/LibreLoRa/apps/nibbles.raw', False)
+        self.blocks_file_sink_0.set_unbuffered(False)
+        self.LibreLoRa_receiverController_0 = LibreLoRa.receiverController(SF, symbolSize, self.LibreLoRa_correlationSync_0, self.LibreLoRa_symbolDemod_0, self.LibreLoRa_grayEncode_0, self.LibreLoRa_deinterleave_0, self.LibreLoRa_decode_0, self.LibreLoRa_randomize_0)
         self.LibreLoRa_frequencyTracker_0 = LibreLoRa.frequencyTracker(4/OSF, SF, OSF)
+        self.LibreLoRa_NibblesToBytes_0 = LibreLoRa.NibblesToBytes()
         self.LibreLoRa_Correlation_0 = LibreLoRa.Correlation(preambleNormalized)
 
 
@@ -198,8 +201,10 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         ##################################################
         # Connections
         ##################################################
+        self.msg_connect((self.LibreLoRa_receiverController_0, 'startRx'), (self.LibreLoRa_randomize_0, 'reset'))
         self.connect((self.LibreLoRa_Correlation_0, 0), (self.LibreLoRa_correlationSync_0, 1))
         self.connect((self.LibreLoRa_Correlation_0, 0), (self.qtgui_time_sink_x_0_0_0, 1))
+        self.connect((self.LibreLoRa_NibblesToBytes_0, 0), (self.LibreLoRa_randomize_0, 0))
         self.connect((self.LibreLoRa_correlationSync_0, 1), (self.LibreLoRa_receiverController_0, 1))
         self.connect((self.LibreLoRa_correlationSync_0, 0), (self.LibreLoRa_symbolDemod_0, 0))
         self.connect((self.LibreLoRa_decode_0, 0), (self.LibreLoRa_receiverController_0, 0))
@@ -209,7 +214,8 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.connect((self.LibreLoRa_frequencyTracker_0, 0), (self.qtgui_time_sink_x_0, 0))
         self.connect((self.LibreLoRa_frequencyTracker_0, 0), (self.qtgui_time_sink_x_0_0_0, 0))
         self.connect((self.LibreLoRa_grayEncode_0, 0), (self.LibreLoRa_deinterleave_0, 0))
-        self.connect((self.LibreLoRa_receiverController_0, 0), (self.blocks_null_sink_0, 0))
+        self.connect((self.LibreLoRa_randomize_0, 0), (self.blocks_file_sink_0, 0))
+        self.connect((self.LibreLoRa_receiverController_0, 0), (self.LibreLoRa_NibblesToBytes_0, 0))
         self.connect((self.LibreLoRa_symbolDemod_0, 0), (self.LibreLoRa_grayEncode_0, 0))
         self.connect((self.blocks_file_source_0, 0), (self.blocks_throttle_0, 0))
         self.connect((self.blocks_throttle_0, 0), (self.LibreLoRa_frequencyTracker_0, 0))

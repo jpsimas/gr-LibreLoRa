@@ -53,16 +53,16 @@ namespace gr {
 	grayEncoder(grayEncoder),
 	deinterleaver(deinterleaver),
 	decoder(decoder),
-<<<<<<< HEAD
 	randomizer(randomizer),
-=======
->>>>>>> 062e63eb739d92a3a44626a7e493c62fa54e1060
 	currentState(waitingForSync) {
       setSFcurrent(SF-2);
 
       //prevent demodulotator producing symbols before start
       synchronizer->enableFixedMode();
       synchronizer->setNOutputItemsToProduce(0);
+      //randomizer->reset();
+
+      message_port_register_out(pmt::string_to_symbol("startRx"));
     }
 
     /*
@@ -141,21 +141,29 @@ namespace gr {
 	    stopRx();
 	  else {
 	    nibblesToRead = 2*(payloadLength + (payloadCRCPresent? 1 : 0)) - (SFcurrent - 5);
-	    nibblesToRead = SF*ceil(nibblesToRead/float(SF));
+	    nibblesToConsume = SF*ceil(nibblesToRead/float(SF));
 	    std::cout << "nibbles to read: " << nibblesToRead << ", SF = " << SF << std::endl;
 	    setSFcurrent(SF);
 	    currentState = decodingPayload;
-	    synchronizer->setNOutputItemsToProduce(nibblesToRead*(CR + 4)/SF);
+	    synchronizer->setNOutputItemsToProduce(nibblesToConsume*(CR + 4)/SF);
+	    // randomizer->reset();
 	  }
 	}
 	break;
       case decodingPayload:
+
+	// fill it with random bytes
+
+	// send the vector
+	message_port_pub(pmt::string_to_symbol("startRx"), pmt::PMT_NIL);
+	
 	for(size_t i = 0; i < nibblesToRead; i++) {
 	  nibblesOut[i] = nibblesIn[i];
+	  std::cout << "receiverController: produced data nibble:" << std::hex << unsigned(nibblesOut[i]) << std::endl;
 	}
 	  
 	produced = nibblesToRead;
-	consume(0, produced);
+	consume(0, nibblesToConsume);
 	stopRx();	 
 
 	break;

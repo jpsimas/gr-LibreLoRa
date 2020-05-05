@@ -39,10 +39,7 @@ install(FILES
     LibreLoRa_convolution.block.yml
     LibreLoRa_correlationSyncDemod.block.yml
     LibreLoRa_receiverController.block.yml
-<<<<<<< HEAD
     LibreLoRa_blockFixedProduce.block.yml
-    LibreLoRa_randomize.block.yml DESTINATION share/gnuradio/grc/blocks
-=======
-    LibreLoRa_blockFixedProduce.block.yml DESTINATION share/gnuradio/grc/blocks
->>>>>>> 062e63eb739d92a3a44626a7e493c62fa54e1060
+    LibreLoRa_randomize.block.yml
+    LibreLoRa_NibblesToBytes.block.yml DESTINATION share/gnuradio/grc/blocks
 )

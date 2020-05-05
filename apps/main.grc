@@ -156,6 +156,21 @@ blocks:
     coordinate: [864, 516.0]
     rotation: 0
     state: true
+- name: LibreLoRa_NibblesToBytes_0
+  id: LibreLoRa_NibblesToBytes
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1696, 688.0]
+    rotation: 0
+    state: true
 - name: LibreLoRa_chirpSource_0
   id: LibreLoRa_chirpSource
   parameters:
@@ -277,6 +292,21 @@ blocks:
     coordinate: [704, 584.0]
     rotation: 0
     state: disabled
+- name: LibreLoRa_randomize_0
+  id: LibreLoRa_randomize
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1552, 1208.0]
+    rotation: 0
+    state: true
 - name: LibreLoRa_readHeader_0
   id: LibreLoRa_readHeader
   parameters:
@@ -306,6 +336,7 @@ blocks:
     grayEncoder: self.LibreLoRa_grayEncode_0
     maxoutbuf: '0'
     minoutbuf: '0'
+    randomizer: self.LibreLoRa_randomize_0
     symbolSize: symbolSize
     synchronizer: self.LibreLoRa_correlationSync_0
   states:
@@ -333,6 +364,24 @@ blocks:
     coordinate: [1144, 840.0]
     rotation: 0
     state: enabled
+- name: blocks_file_sink_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: /home/jp/Code/C++/LibreLoRa/apps/nibbles.raw
+    type: byte
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1792, 1204.0]
+    rotation: 0
+    state: true
 - name: blocks_file_source_0
   id: blocks_file_source
   parameters:
@@ -355,23 +404,6 @@ blocks:
     coordinate: [40, 500.0]
     rotation: 0
     state: enabled
-- name: blocks_null_sink_0
-  id: blocks_null_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    bus_structure_sink: '[[0,],]'
-    comment: ''
-    num_inputs: '1'
-    type: byte
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1656, 696.0]
-    rotation: 0
-    state: true
 - name: blocks_short_to_float_0
   id: blocks_short_to_float
   parameters:
@@ -2069,6 +2101,7 @@ blocks:
 connections:
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSync_0, '1']
 - [LibreLoRa_Correlation_0, '0', qtgui_time_sink_x_0_0_0, '1']
+- [LibreLoRa_NibblesToBytes_0, '0', LibreLoRa_randomize_0, '0']
 - [LibreLoRa_chirpSource_0, '0', blocks_throttle_0, '0']
 - [LibreLoRa_correlationSync_0, '0', LibreLoRa_symbolDemod_0, '0']
 - [LibreLoRa_correlationSync_0, '0', qtgui_vector_sink_f_0, '0']
@@ -2085,6 +2118,7 @@ connections:
 - [LibreLoRa_frequencyTracker_0, '0', qtgui_time_sink_x_0_0_0, '0']
 - [LibreLoRa_grayEncode_0, '0', LibreLoRa_deinterleave_0, '0']
 - [LibreLoRa_grayEncode_0, '0', blocks_short_to_float_0_0, '0']
+- [LibreLoRa_randomize_0, '0', blocks_file_sink_0, '0']
 - [LibreLoRa_readHeader_0, '0', blocks_uchar_to_float_0_1, '0']
 - [LibreLoRa_readHeader_0, '1', blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0,
   '0']
@@ -2092,8 +2126,9 @@ connections:
   '0']
 - [LibreLoRa_readHeader_0, '3', blocks_uchar_to_float_0_1_0_0, '0']
 - [LibreLoRa_readHeader_0, '4', blocks_vector_to_stream_3, '0']
-- [LibreLoRa_receiverController_0, '0', blocks_null_sink_0, '0']
+- [LibreLoRa_receiverController_0, '0', LibreLoRa_NibblesToBytes_0, '0']
 - [LibreLoRa_receiverController_0, '0', blocks_uchar_to_float_2_0, '0']
+- [LibreLoRa_receiverController_0, startRx, LibreLoRa_randomize_0, reset]
 - [LibreLoRa_symbolDemod_0, '0', LibreLoRa_grayEncode_0, '0']
 - [LibreLoRa_symbolDemod_0, '0', blocks_short_to_float_0, '0']
 - [blocks_file_source_0, '0', blocks_throttle_0, '0']

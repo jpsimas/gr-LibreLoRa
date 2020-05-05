@@ -34,10 +34,7 @@ namespace gr {
       grayEncode::sptr grayEncoder;
       deinterleave::sptr deinterleaver;
       decode::sptr decoder;
-<<<<<<< HEAD
       randomize::sptr randomizer;
-=======
->>>>>>> 062e63eb739d92a3a44626a7e493c62fa54e1060
 
       enum controllerState {waitingForSync,
 			    decodingHeader,
@@ -55,6 +52,7 @@ namespace gr {
       bool headerCheckSumValid;
 
       size_t nibblesToRead;
+      size_t nibblesToConsume;
       
       void startRx();
       void stopRx();

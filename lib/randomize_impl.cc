@@ -27,6 +27,8 @@
 
 #include <LibreLoRa/utilities.h>
 
+#include <iostream>
+
 namespace gr {
   namespace LibreLoRa {
 
@@ -46,6 +48,9 @@ namespace gr {
               gr::io_signature::make(1, 1, sizeof(uint8_t)),
 		       gr::io_signature::make(1, 1, sizeof(uint8_t))),
 	lfsrState(0xff) {
+
+      message_port_register_in(pmt::mp("reset"));
+      set_msg_handler(pmt::mp("reset"), [this](pmt::pmt_t msg) {reset();});
     }
 
     /*
@@ -63,12 +68,13 @@ namespace gr {
       const uint8_t *in = (const uint8_t *) input_items[0];
       uint8_t *out = (uint8_t *) output_items[0];
 
-      // Do <+signal processing+>
-
-      // Tell runtime system how many output items we produced.
+      std::vector<tag_t> tags;
+      get_tags_in_range(tags, 0, nitems_read(0), nitems_read(0) + noutput_items);
+      
       for(size_t i = 0; i < noutput_items; i++) {
 	out[i] = in[i] ^ lfsrState;
-	lfsrState = (lfsrState << 1) & pairity(lfsrState&0xB8);
+	std::cout << "randomize: in = " << std::hex << unsigned(in[i]) << ", out = " << unsigned(out[i]) << ", state = " << unsigned(lfsrState) << std::endl;
+	lfsrState = (lfsrState << 1) | pairity(lfsrState&0xB8);
       }
       
       return noutput_items;

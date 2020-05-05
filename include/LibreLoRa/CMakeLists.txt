@@ -50,9 +50,6 @@ install(FILES
     calculateHeaderChecksum.h
     utilities.h
     #blockFixedProduce.h
-<<<<<<< HEAD
-    randomize.h DESTINATION include/LibreLoRa
-=======
-    DESTINATION include/LibreLoRa
->>>>>>> 062e63eb739d92a3a44626a7e493c62fa54e1060
+    randomize.h
+    NibblesToBytes.h DESTINATION include/LibreLoRa
 )
