@@ -23,6 +23,9 @@ inputs:
   domain: stream
   dtype: float
   vlen: ${ symbolSize }
+- domain: message
+  id: setSF
+  optional: true
 outputs:
 - label: out
   domain: stream

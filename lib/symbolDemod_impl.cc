@@ -56,6 +56,9 @@ namespace gr {
       twoUpchirps = getSymbol(0, SF, (symbolSize >> SF));
       twoUpchirps.insert(twoUpchirps.end(), twoUpchirps.begin(), twoUpchirps.end());
       std::cout << "TURBO ENCABULATOR 1000 activated!" << std::endl;
+
+      message_port_register_in(pmt::mp("setSF"));
+      set_msg_handler(pmt::mp("setSF"), [this](pmt::pmt_t msg) {setSF(size_t(pmt::to_long(msg)));});
     }
 
     /*

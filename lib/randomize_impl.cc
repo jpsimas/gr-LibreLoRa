@@ -67,9 +67,6 @@ namespace gr {
     {
       const uint8_t *in = (const uint8_t *) input_items[0];
       uint8_t *out = (uint8_t *) output_items[0];
-
-      std::vector<tag_t> tags;
-      get_tags_in_range(tags, 0, nitems_read(0), nitems_read(0) + noutput_items);
       
       for(size_t i = 0; i < noutput_items; i++) {
 	out[i] = in[i] ^ lfsrState;

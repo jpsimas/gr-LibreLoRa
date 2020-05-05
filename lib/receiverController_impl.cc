@@ -32,37 +32,46 @@ namespace gr {
   namespace LibreLoRa {
 
     receiverController::sptr
-    receiverController::make(size_t SF, size_t symbolSize, correlationSync::sptr synchronizer, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer)
+    receiverController::make(size_t SF, correlationSync::sptr synchronizer/*, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer*/)
     {
       return gnuradio::get_initial_sptr
-        (new receiverController_impl(SF, symbolSize, synchronizer, demodulator, grayEncoder, deinterleaver, decoder, randomizer));
+        (new receiverController_impl(SF, synchronizer/*, demodulator, grayEncoder, deinterleaver, decoder, randomizer*/));
     }
 
 
     /*
      * The private constructor
      */
-    receiverController_impl::receiverController_impl(size_t SF, size_t symbolSize, correlationSync::sptr synchronizer, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer)
+    receiverController_impl::receiverController_impl(size_t SF, correlationSync::sptr synchronizer/*, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer*/)
       : gr::block("receiverController",
 		  gr::io_signature::make2(2, 2, sizeof(uint8_t), sizeof(bool)),
 		  gr::io_signature::make(1, 1, sizeof(uint8_t))),
 	SF(SF),
 	synchronizer(synchronizer),
-	symbolSize(symbolSize),
-	demodulator(demodulator),
-	grayEncoder(grayEncoder),
-	deinterleaver(deinterleaver),
-	decoder(decoder),
-	randomizer(randomizer),
+	// symbolSize(symbolSize),
+	// demodulator(demodulator),
+	// grayEncoder(grayEncoder),
+	// deinterleaver(deinterleaver),
+	// decoder(decoder),
+	// randomizer(randomizer),
 	currentState(waitingForSync) {
-      setSFcurrent(SF-2);
 
       //prevent demodulotator producing symbols before start
       synchronizer->enableFixedMode();
       synchronizer->setNOutputItemsToProduce(0);
       //randomizer->reset();
 
-      message_port_register_out(pmt::string_to_symbol("startRx"));
+      startRxPort = pmt::string_to_symbol("startRx");
+      setSFPort = pmt::string_to_symbol("setSFout");
+      setCRPort = pmt::string_to_symbol("setCRout");
+      
+      message_port_register_out(startRxPort);
+      message_port_register_out(setSFPort);
+      message_port_register_out(setCRPort);
+
+      //setSFcurrent(SF-2);
+      
+      std::cout << "Turbo Encabulator Started" << std::endl;
     }
 
     /*
@@ -155,7 +164,7 @@ namespace gr {
 	// fill it with random bytes
 
 	// send the vector
-	message_port_pub(pmt::string_to_symbol("startRx"), pmt::PMT_NIL);
+	message_port_pub(startRxPort, pmt::PMT_NIL);
 	
 	for(size_t i = 0; i < nibblesToRead; i++) {
 	  nibblesOut[i] = nibblesIn[i];
@@ -176,6 +185,7 @@ namespace gr {
     }
 
     void receiverController_impl::startRx() {
+      setSFcurrent(SF-2);
       setCR(4);
       currentState = decodingHeader;
       synchronizer->setNOutputItemsToProduce(8);
@@ -192,15 +202,17 @@ namespace gr {
 
     void receiverController_impl::setSFcurrent(size_t SFnew) {
       SFcurrent = SFnew;
-      demodulator->setSF(SFcurrent);
-      grayEncoder->setSF(SFcurrent);
-      deinterleaver->setSF(SFcurrent);
+       // demodulator->setSF(SFcurrent);
+       // grayEncoder->setSF(SFcurrent);
+       // deinterleaver->setSF(SFcurrent);
+       message_port_pub(setSFPort, pmt::from_long(SFcurrent));//HOOOOOOOUSTOOOOOON!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
     void receiverController_impl::setCR(size_t CRnew) {
       CR = CRnew;
-      deinterleaver->setCR(CR);
-      decoder->setCR(CR);
+      // deinterleaver->setCR(CR);
+      // decoder->setCR(CR);
+      message_port_pub(setCRPort, pmt::from_long(CR));
     }
     
     void receiverController_impl::readHeader(const uint8_t* nibbles, uint8_t* dataOut) {

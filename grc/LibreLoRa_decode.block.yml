@@ -14,6 +14,9 @@ inputs:
 - label: in
   domain: stream
   dtype: byte
+- domain: message
+  id: setCR
+  optional: true
 outputs:
 - label: out
   domain: stream

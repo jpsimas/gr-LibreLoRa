@@ -3,31 +3,13 @@ label: receiverController
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.receiverController(${SF}, ${symbolSize}, ${synchronizer}, ${demodulator}, ${grayEncoder}, ${deinterleaver}, ${decoder}, ${randomizer})
+  make: LibreLoRa.receiverController(${SF}, ${synchronizer})
 parameters:
 - id: SF
   label: Sf
   dtype: raw
-- id: symbolSize
-  label: symbolSize
-  dtype: raw
 - id: synchronizer
   label: synchronizer
-  dtype: raw
-- id: demodulator
-  label: demodulator
-  dtype: raw
-- id: grayEncoder
-  label: grayEncoder
-  dtype: raw
-- id: deinterleaver
-  label: deinterleaver
-  dtype: raw
-- id: decoder
-  label: decoder
-  dtype: raw
-- id: randomizer
-  label: randomizer
   dtype: raw
 inputs:
 - label: nibblesIn
@@ -42,5 +24,11 @@ outputs:
   dtype: byte
 - domain: message
   id: startRx
+  optional: true
+- domain: message
+  id: setSFout
+  optional: true
+- domain: message
+  id: setCRout
   optional: true
 file_format: 1

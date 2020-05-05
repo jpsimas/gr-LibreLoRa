@@ -48,6 +48,9 @@ namespace gr {
 		       gr::io_signature::make(1, 1, sizeof(uint8_t))) {
       setCR(CR);
       std::cout << "BENILOSCOPE v2 ACTIVATED" << std::endl;
+      
+      message_port_register_in(pmt::mp("setCR"));
+      set_msg_handler(pmt::mp("setCR"), [this](pmt::pmt_t msg) {setCR(size_t(pmt::to_long(msg)));});
     }
 
     /*

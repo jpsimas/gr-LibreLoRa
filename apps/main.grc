@@ -168,9 +168,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1696, 688.0]
+    coordinate: [1648, 616.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: LibreLoRa_chirpSource_0
   id: LibreLoRa_chirpSource
   parameters:
@@ -219,7 +219,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1160, 1224.0]
+    coordinate: [1160, 1256.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_deinterleave_0
@@ -236,7 +236,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1152, 1072.0]
+    coordinate: [1120, 1064.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_frequencyTracker_0
@@ -270,7 +270,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1200, 968.0]
+    coordinate: [1112, 896.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_preambleDetector_0
@@ -304,9 +304,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1552, 1208.0]
+    coordinate: [1888, 752.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: LibreLoRa_readHeader_0
   id: LibreLoRa_readHeader
   parameters:
@@ -343,9 +343,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1440, 604.0]
+    coordinate: [1392, 596.0]
     rotation: 0
-    state: enabled
+    state: true
 - name: LibreLoRa_symbolDemod_0
   id: LibreLoRa_symbolDemod
   parameters:
@@ -361,7 +361,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1144, 840.0]
+    coordinate: [1088, 744.0]
     rotation: 0
     state: enabled
 - name: blocks_file_sink_0
@@ -379,9 +379,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1792, 1204.0]
+    coordinate: [2064, 744.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: blocks_file_source_0
   id: blocks_file_source
   parameters:
@@ -2127,28 +2127,15 @@ connections:
 - [LibreLoRa_readHeader_0, '3', blocks_uchar_to_float_0_1_0_0, '0']
 - [LibreLoRa_readHeader_0, '4', blocks_vector_to_stream_3, '0']
 - [LibreLoRa_receiverController_0, '0', LibreLoRa_NibblesToBytes_0, '0']
-- [LibreLoRa_receiverController_0, '0', blocks_uchar_to_float_2_0, '0']
+- [LibreLoRa_receiverController_0, setCRout, LibreLoRa_decode_0, setCR]
+- [LibreLoRa_receiverController_0, setCRout, LibreLoRa_deinterleave_0, setCR]
+- [LibreLoRa_receiverController_0, setSFout, LibreLoRa_deinterleave_0, setSF]
+- [LibreLoRa_receiverController_0, setSFout, LibreLoRa_grayEncode_0, setSF]
+- [LibreLoRa_receiverController_0, setSFout, LibreLoRa_symbolDemod_0, setSF]
 - [LibreLoRa_receiverController_0, startRx, LibreLoRa_randomize_0, reset]
 - [LibreLoRa_symbolDemod_0, '0', LibreLoRa_grayEncode_0, '0']
-- [LibreLoRa_symbolDemod_0, '0', blocks_short_to_float_0, '0']
 - [blocks_file_source_0, '0', blocks_throttle_0, '0']
-- [blocks_short_to_float_0, '0', qtgui_time_sink_x_1_0, '0']
-- [blocks_short_to_float_0_0, '0', qtgui_time_sink_x_1_0_0, '0']
 - [blocks_throttle_0, '0', LibreLoRa_frequencyTracker_0, '0']
-- [blocks_uchar_to_float_0, '0', qtgui_time_sink_x_1, '0']
-- [blocks_uchar_to_float_0_0, '0', qtgui_time_sink_x_1_1, '0']
-- [blocks_uchar_to_float_0_1, '0', qtgui_time_sink_x_2, '0']
-- [blocks_uchar_to_float_0_1_0_0, '0', qtgui_time_sink_x_2, '3']
-- [blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0, '0', qtgui_time_sink_x_2,
-  '2']
-- [blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0, '0', qtgui_time_sink_x_2,
-  '1']
-- [blocks_uchar_to_float_1, '0', qtgui_time_sink_x_0_1_0, '0']
-- [blocks_uchar_to_float_1, '0', qtgui_time_sink_x_2, '4']
-- [blocks_uchar_to_float_2, '0', qtgui_time_sink_x_3, '0']
-- [blocks_uchar_to_float_2_0, '0', qtgui_time_sink_x_3_0, '0']
-- [blocks_vector_to_stream_3, '0', blocks_uchar_to_float_2, '0']
-- [rtlsdr_source_0, '0', blocks_throttle_0, '0']
 
 metadata:
   file_format: 1

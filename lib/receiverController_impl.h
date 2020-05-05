@@ -30,19 +30,18 @@ namespace gr {
     {
      private:
       correlationSync::sptr synchronizer;
-      symbolDemod::sptr demodulator;
-      grayEncode::sptr grayEncoder;
-      deinterleave::sptr deinterleaver;
-      decode::sptr decoder;
-      randomize::sptr randomizer;
+      // symbolDemod::sptr demodulator;
+      // grayEncode::sptr grayEncoder;
+      // deinterleave::sptr deinterleaver;
+      // decode::sptr decoder;
+      // randomize::sptr randomizer;
 
       enum controllerState {waitingForSync,
 			    decodingHeader,
 			    decodingPayload};
 
       controllerState currentState;
-      // Nothing to declare in this block.
-      size_t symbolSize;
+      // size_t symbolSize;
       const size_t SF;
       size_t SFcurrent;
 
@@ -53,6 +52,10 @@ namespace gr {
 
       size_t nibblesToRead;
       size_t nibblesToConsume;
+
+      pmt::pmt_t startRxPort;
+      pmt::pmt_t setSFPort;
+      pmt::pmt_t setCRPort;
       
       void startRx();
       void stopRx();
@@ -61,7 +64,7 @@ namespace gr {
 
       void readHeader(const uint8_t* nibbles, uint8_t* dataOut);
      public:
-      receiverController_impl(size_t SF, size_t symbolSize, correlationSync::sptr synchronizer, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer);
+      receiverController_impl(size_t SF, correlationSync::sptr synchronizer/*, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer*/);
       ~receiverController_impl();
 
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);

@@ -14,6 +14,9 @@ inputs:
 - label: in
   domain: stream
   dtype: short
+- domain: message
+  id: setSF
+  optional: true
 outputs:
 - label: out
   domain: stream

@@ -86,11 +86,6 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
-        self.LibreLoRa_symbolDemod_0 = LibreLoRa.symbolDemod(SF, (2**SF)*OSF, False)
-        self.LibreLoRa_randomize_0 = LibreLoRa.randomize()
-        self.LibreLoRa_grayEncode_0 = LibreLoRa.grayEncode(SF)
-        self.LibreLoRa_deinterleave_0 = LibreLoRa.deinterleave(7, 4)
-        self.LibreLoRa_decode_0 = LibreLoRa.decode(4)
         self.LibreLoRa_correlationSync_0 = LibreLoRa.correlationSync(0.9, 0.7, symbolSize)
         self.qtgui_time_sink_x_0_0_0 = qtgui.time_sink_f(
             500*symbolSize, #size
@@ -191,8 +186,13 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/home/jp/Code/C++/LibreLoRa/apps/nibbles.raw', False)
         self.blocks_file_sink_0.set_unbuffered(False)
-        self.LibreLoRa_receiverController_0 = LibreLoRa.receiverController(SF, symbolSize, self.LibreLoRa_correlationSync_0, self.LibreLoRa_symbolDemod_0, self.LibreLoRa_grayEncode_0, self.LibreLoRa_deinterleave_0, self.LibreLoRa_decode_0, self.LibreLoRa_randomize_0)
+        self.LibreLoRa_symbolDemod_0 = LibreLoRa.symbolDemod(SF, (2**SF)*OSF, False)
+        self.LibreLoRa_receiverController_0 = LibreLoRa.receiverController(SF, self.LibreLoRa_correlationSync_0)
+        self.LibreLoRa_randomize_0 = LibreLoRa.randomize()
+        self.LibreLoRa_grayEncode_0 = LibreLoRa.grayEncode(SF)
         self.LibreLoRa_frequencyTracker_0 = LibreLoRa.frequencyTracker(4/OSF, SF, OSF)
+        self.LibreLoRa_deinterleave_0 = LibreLoRa.deinterleave(7, 4)
+        self.LibreLoRa_decode_0 = LibreLoRa.decode(4)
         self.LibreLoRa_NibblesToBytes_0 = LibreLoRa.NibblesToBytes()
         self.LibreLoRa_Correlation_0 = LibreLoRa.Correlation(preambleNormalized)
 
@@ -201,7 +201,12 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         ##################################################
         # Connections
         ##################################################
+        self.msg_connect((self.LibreLoRa_receiverController_0, 'setCRout'), (self.LibreLoRa_decode_0, 'setCR'))
+        self.msg_connect((self.LibreLoRa_receiverController_0, 'setSFout'), (self.LibreLoRa_deinterleave_0, 'setSF'))
+        self.msg_connect((self.LibreLoRa_receiverController_0, 'setCRout'), (self.LibreLoRa_deinterleave_0, 'setCR'))
+        self.msg_connect((self.LibreLoRa_receiverController_0, 'setSFout'), (self.LibreLoRa_grayEncode_0, 'setSF'))
         self.msg_connect((self.LibreLoRa_receiverController_0, 'startRx'), (self.LibreLoRa_randomize_0, 'reset'))
+        self.msg_connect((self.LibreLoRa_receiverController_0, 'setSFout'), (self.LibreLoRa_symbolDemod_0, 'setSF'))
         self.connect((self.LibreLoRa_Correlation_0, 0), (self.LibreLoRa_correlationSync_0, 1))
         self.connect((self.LibreLoRa_Correlation_0, 0), (self.qtgui_time_sink_x_0_0_0, 1))
         self.connect((self.LibreLoRa_NibblesToBytes_0, 0), (self.LibreLoRa_randomize_0, 0))

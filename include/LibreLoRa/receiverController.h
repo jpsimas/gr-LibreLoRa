@@ -25,11 +25,11 @@
 #include <gnuradio/block.h>
 
 #include <LibreLoRa/correlationSync.h>
-#include <LibreLoRa/symbolDemod.h>
-#include <LibreLoRa/grayEncode.h>
-#include <LibreLoRa/deinterleave.h>
-#include <LibreLoRa/decode.h>
-#include <LibreLoRa/randomize.h>
+// #include <LibreLoRa/symbolDemod.h>
+// #include <LibreLoRa/grayEncode.h>
+// #include <LibreLoRa/deinterleave.h>
+// #include <LibreLoRa/decode.h>
+// #include <LibreLoRa/randomize.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -52,7 +52,7 @@ namespace gr {
        * class. LibreLoRa::receiverController::make is the public interface for
        * creating new instances.
        */
-      static sptr make(size_t SF, size_t symbolSize, correlationSync::sptr synchronizer, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer);
+      static sptr make(size_t SF, correlationSync::sptr synchronizer/*, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer*/);
     };
 
   } // namespace LibreLoRa
