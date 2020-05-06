@@ -23,69 +23,51 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include "randomize_impl.h"
-
-#include <LibreLoRa/utilities.h>
-
-#include <iostream>
+#include "NibblesToBytes_impl.h"
 
 namespace gr {
   namespace LibreLoRa {
 
-    randomize::sptr
-    randomize::make( )
+    NibblesToBytes::sptr
+    NibblesToBytes::make( )
     {
       return gnuradio::get_initial_sptr
-        (new randomize_impl());
+        (new NibblesToBytes_impl());
     }
 
 
     /*
      * The private constructor
      */
-    randomize_impl::randomize_impl( )
-      : gr::sync_block("randomize",
+    NibblesToBytes_impl::NibblesToBytes_impl( )
+      : gr::sync_decimator("NibblesToBytes",
               gr::io_signature::make(1, 1, sizeof(uint8_t)),
-		       gr::io_signature::make(1, 1, sizeof(uint8_t))),
-	lfsrState(0x00) {
-
-      message_port_register_in(pmt::mp("setLfsrState"));
-      set_msg_handler(pmt::mp("setLfsrState"), [this](pmt::pmt_t msg) {setLfsrState(uint8_t(pmt::to_long(msg)));});
-    }
+              gr::io_signature::make(1, 1, sizeof(uint8_t)), 2)
+    {}
 
     /*
      * Our virtual destructor.
      */
-    randomize_impl::~randomize_impl()
+    NibblesToBytes_impl::~NibblesToBytes_impl()
     {
     }
 
     int
-    randomize_impl::work(int noutput_items,
+    NibblesToBytes_impl::work(int noutput_items,
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
       const uint8_t *in = (const uint8_t *) input_items[0];
       uint8_t *out = (uint8_t *) output_items[0];
+
+      // Do <+signal processing+>
+      for(size_t i = 0; i < noutput_items; i++)
+	out[i] = (in[2*i + 1] << 4)|in[2*i];
       
-      for(size_t i = 0; i < noutput_items; i++) {
-	out[i] = in[i] ^ lfsrState;
-	std::cout << "randomize: in = " << std::hex << unsigned(in[i]) << ", out = " << unsigned(out[i]) << ", state = " << unsigned(lfsrState) << std::endl;
-	lfsrState = (lfsrState << 1) | pairity(lfsrState&0xB8);
-      }
-      
+      // Tell runtime system how many output items we produced.
       return noutput_items;
     }
 
-    void
-    randomize_impl::reset() {
-      lfsrState = 0xff;
-    }
-
-    void
-    randomize_impl::setLfsrState(uint8_t state) {
-      lfsrState = state;
-    }
   } /* namespace LibreLoRa */
 } /* namespace gr */
 

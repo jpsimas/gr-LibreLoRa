@@ -37,8 +37,9 @@ namespace gr {
       // randomize::sptr randomizer;
 
       enum controllerState {waitingForSync,
-			    decodingHeader,
-			    decodingPayload};
+			    readingHeader,
+			    sendingPayload,
+			    sendingCRC};
 
       controllerState currentState;
       // size_t symbolSize;
@@ -50,10 +51,10 @@ namespace gr {
       uint8_t payloadCRCPresent;
       bool headerCheckSumValid;
 
-      size_t nibblesToRead;
-      size_t nibblesToConsume;
+      size_t payloadNibblesToRead;
+      size_t extraNibblesToConsume;
 
-      pmt::pmt_t startRxPort;
+      pmt::pmt_t lfsrStatePort;
       pmt::pmt_t setSFPort;
       pmt::pmt_t setCRPort;
       

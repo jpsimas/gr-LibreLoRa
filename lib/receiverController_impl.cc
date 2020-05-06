@@ -61,11 +61,11 @@ namespace gr {
       synchronizer->setNOutputItemsToProduce(0);
       //randomizer->reset();
 
-      startRxPort = pmt::string_to_symbol("startRx");
+      lfsrStatePort = pmt::string_to_symbol("lfsrStateOut");
       setSFPort = pmt::string_to_symbol("setSFout");
       setCRPort = pmt::string_to_symbol("setCRout");
       
-      message_port_register_out(startRxPort);
+      message_port_register_out(lfsrStatePort);
       message_port_register_out(setSFPort);
       message_port_register_out(setCRPort);
 
@@ -91,12 +91,16 @@ namespace gr {
 	ninput_items_required[0] = 0;
 	ninput_items_required[1] = 1;
 	break;
-      case decodingHeader:
+      case readingHeader:
 	ninput_items_required[0] = SFcurrent;
 	ninput_items_required[1] = 0;
 	break;
-      case decodingPayload:
-	ninput_items_required[0] = nibblesToRead;
+      case sendingPayload:
+	ninput_items_required[0] = payloadNibblesToRead + (payloadCRCPresent? 0 : extraNibblesToConsume);
+	ninput_items_required[1] = 0;
+	break;
+      case sendingCRC:
+	ninput_items_required[0] = 2 + extraNibblesToConsume;
 	ninput_items_required[1] = 0;
 	break;
       default:
@@ -131,7 +135,7 @@ namespace gr {
 	consume(1, 1);
 	break;
 
-      case decodingHeader:
+      case readingHeader:
 	//consume(1, 1);
 	readHeader(nibblesIn, nibblesOut);
 	consume(0, SFcurrent);
@@ -149,32 +153,47 @@ namespace gr {
 	  if(2*payloadLength <= (SFcurrent - 5))
 	    stopRx();
 	  else {
-	    nibblesToRead = 2*(payloadLength + (payloadCRCPresent? 1 : 0)) - (SFcurrent - 5);
-	    nibblesToConsume = SF*ceil(nibblesToRead/float(SF));
-	    std::cout << "nibbles to read: " << nibblesToRead << ", SF = " << SF << std::endl;
+	    payloadNibblesToRead = 2*payloadLength - (SFcurrent - 5);
+	    size_t nibblesToRead = payloadNibblesToRead + 2*(payloadCRCPresent? 1 : 0);
+	    extraNibblesToConsume = SF*ceil(nibblesToRead/float(SF)) - nibblesToRead;
+	    std::cout << "nibbles to read: " << payloadNibblesToRead << ", SF = " << SF << std::endl;
 	    setSFcurrent(SF);
-	    currentState = decodingPayload;
-	    synchronizer->setNOutputItemsToProduce(nibblesToConsume*(CR + 4)/SF);
+
+	    currentState = sendingPayload;
+	    synchronizer->setNOutputItemsToProduce((extraNibblesToConsume + nibblesToRead)*(CR + 4)/SF);
 	    // randomizer->reset();
 	  }
 	}
 	break;
-      case decodingPayload:
+      case sendingPayload:
 
-	// fill it with random bytes
-
-	// send the vector
-	message_port_pub(startRxPort, pmt::PMT_NIL);
+	message_port_pub(lfsrStatePort, pmt::from_long(0xff));
 	
-	for(size_t i = 0; i < nibblesToRead; i++) {
+	for(size_t i = 0; i < payloadNibblesToRead; i++) {
 	  nibblesOut[i] = nibblesIn[i];
 	  std::cout << "receiverController: produced data nibble:" << std::hex << unsigned(nibblesOut[i]) << std::endl;
 	}
-	  
-	produced = nibblesToRead;
-	consume(0, nibblesToConsume);
-	stopRx();	 
+	
+	produced = payloadNibblesToRead;
 
+	if(payloadCRCPresent) {
+	  consume(0, payloadNibblesToRead);
+	  currentState = sendingCRC;
+	} else {
+	  consume(0, payloadNibblesToRead + extraNibblesToConsume);
+	  stopRx();
+	}
+
+	break;
+      case sendingCRC:
+	message_port_pub(lfsrStatePort, pmt::from_long(0x00));
+	
+	for(size_t i = 0; i < 2; i++)
+	  nibblesOut[i] = nibblesIn[i];
+
+	produced = 2;
+	consume(0, 2 + extraNibblesToConsume);
+	stopRx();
 	break;
       default:
 	;
@@ -187,7 +206,7 @@ namespace gr {
     void receiverController_impl::startRx() {
       setSFcurrent(SF-2);
       setCR(4);
-      currentState = decodingHeader;
+      currentState = readingHeader;
       synchronizer->setNOutputItemsToProduce(8);
       std::cout << "starting RX" << std::endl;
     }
@@ -205,7 +224,7 @@ namespace gr {
        // demodulator->setSF(SFcurrent);
        // grayEncoder->setSF(SFcurrent);
        // deinterleaver->setSF(SFcurrent);
-       message_port_pub(setSFPort, pmt::from_long(SFcurrent));//HOOOOOOOUSTOOOOOON!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      message_port_pub(setSFPort, pmt::from_long(SFcurrent));
     }
 
     void receiverController_impl::setCR(size_t CRnew) {

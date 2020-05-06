@@ -1,16 +1,13 @@
-id: LibreLoRa_randomize
-label: randomize
+id: LibreLoRa_NibblesToBytes
+label: NibblesToBytes
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.randomize()
+  make: LibreLoRa.NibblesToBytes()
 inputs:
 - label: in
   domain: stream
   dtype: byte
-- domain: message
-  id: setLfsrState
-  optional: true
 outputs:
 - label: out
   domain: stream

@@ -18,36 +18,38 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_RANDOMIZE_IMPL_H
-#define INCLUDED_LIBRELORA_RANDOMIZE_IMPL_H
+#ifndef INCLUDED_LIBRELORA_NIBBLESTOBYTES_H
+#define INCLUDED_LIBRELORA_NIBBLESTOBYTES_H
 
-#include <LibreLoRa/randomize.h>
+#include <LibreLoRa/api.h>
+#include <gnuradio/sync_decimator.h>
 
 namespace gr {
   namespace LibreLoRa {
 
-    class randomize_impl : public randomize
+    /*!
+     * \brief <+description of block+>
+     * \ingroup LibreLoRa
+     *
+     */
+    class LIBRELORA_API NibblesToBytes : virtual public gr::sync_decimator
     {
-     private:
-      uint8_t lfsrState;
-
      public:
-      randomize_impl( );
-      ~randomize_impl();
+      typedef boost::shared_ptr<NibblesToBytes> sptr;
 
-      // Where all the action really happens
-      int work(
-              int noutput_items,
-              gr_vector_const_void_star &input_items,
-              gr_vector_void_star &output_items
-      );
-
-      void reset();
-      void setLfsrState(uint8_t state);
+      /*!
+       * \brief Return a shared_ptr to a new instance of LibreLoRa::NibblesToBytes.
+       *
+       * To avoid accidental use of raw pointers, LibreLoRa::NibblesToBytes's
+       * constructor is in a private implementation
+       * class. LibreLoRa::NibblesToBytes::make is the public interface for
+       * creating new instances.
+       */
+      static sptr make( );
     };
 
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_RANDOMIZE_IMPL_H */
+#endif /* INCLUDED_LIBRELORA_NIBBLESTOBYTES_H */
 

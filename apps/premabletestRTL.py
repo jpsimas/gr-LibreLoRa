@@ -202,10 +202,10 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         # Connections
         ##################################################
         self.msg_connect((self.LibreLoRa_receiverController_0, 'setCRout'), (self.LibreLoRa_decode_0, 'setCR'))
-        self.msg_connect((self.LibreLoRa_receiverController_0, 'setSFout'), (self.LibreLoRa_deinterleave_0, 'setSF'))
         self.msg_connect((self.LibreLoRa_receiverController_0, 'setCRout'), (self.LibreLoRa_deinterleave_0, 'setCR'))
+        self.msg_connect((self.LibreLoRa_receiverController_0, 'setSFout'), (self.LibreLoRa_deinterleave_0, 'setSF'))
         self.msg_connect((self.LibreLoRa_receiverController_0, 'setSFout'), (self.LibreLoRa_grayEncode_0, 'setSF'))
-        self.msg_connect((self.LibreLoRa_receiverController_0, 'startRx'), (self.LibreLoRa_randomize_0, 'reset'))
+        self.msg_connect((self.LibreLoRa_receiverController_0, 'lfsrStateOut'), (self.LibreLoRa_randomize_0, 'setLfsrState'))
         self.msg_connect((self.LibreLoRa_receiverController_0, 'setSFout'), (self.LibreLoRa_symbolDemod_0, 'setSF'))
         self.connect((self.LibreLoRa_Correlation_0, 0), (self.LibreLoRa_correlationSync_0, 1))
         self.connect((self.LibreLoRa_Correlation_0, 0), (self.qtgui_time_sink_x_0_0_0, 1))

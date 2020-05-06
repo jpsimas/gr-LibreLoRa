@@ -18,22 +18,22 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_RANDOMIZE_IMPL_H
-#define INCLUDED_LIBRELORA_RANDOMIZE_IMPL_H
+#ifndef INCLUDED_LIBRELORA_NIBBLESTOBYTES_IMPL_H
+#define INCLUDED_LIBRELORA_NIBBLESTOBYTES_IMPL_H
 
-#include <LibreLoRa/randomize.h>
+#include <LibreLoRa/NibblesToBytes.h>
 
 namespace gr {
   namespace LibreLoRa {
 
-    class randomize_impl : public randomize
+    class NibblesToBytes_impl : public NibblesToBytes
     {
      private:
-      uint8_t lfsrState;
+      // Nothing to declare in this block.
 
      public:
-      randomize_impl( );
-      ~randomize_impl();
+      NibblesToBytes_impl( );
+      ~NibblesToBytes_impl();
 
       // Where all the action really happens
       int work(
@@ -41,13 +41,10 @@ namespace gr {
               gr_vector_const_void_star &input_items,
               gr_vector_void_star &output_items
       );
-
-      void reset();
-      void setLfsrState(uint8_t state);
     };
 
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_RANDOMIZE_IMPL_H */
+#endif /* INCLUDED_LIBRELORA_NIBBLESTOBYTES_IMPL_H */
 

@@ -330,14 +330,8 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    decoder: self.LibreLoRa_decode_0
-    deinterleaver: self.LibreLoRa_deinterleave_0
-    demodulator: self.LibreLoRa_symbolDemod_0
-    grayEncoder: self.LibreLoRa_grayEncode_0
     maxoutbuf: '0'
     minoutbuf: '0'
-    randomizer: self.LibreLoRa_randomize_0
-    symbolSize: symbolSize
     synchronizer: self.LibreLoRa_correlationSync_0
   states:
     bus_sink: false
@@ -379,7 +373,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2064, 744.0]
+    coordinate: [2056, 764.0]
     rotation: 0
     state: enabled
 - name: blocks_file_source_0
@@ -2127,12 +2121,12 @@ connections:
 - [LibreLoRa_readHeader_0, '3', blocks_uchar_to_float_0_1_0_0, '0']
 - [LibreLoRa_readHeader_0, '4', blocks_vector_to_stream_3, '0']
 - [LibreLoRa_receiverController_0, '0', LibreLoRa_NibblesToBytes_0, '0']
+- [LibreLoRa_receiverController_0, lfsrStateOut, LibreLoRa_randomize_0, setLfsrState]
 - [LibreLoRa_receiverController_0, setCRout, LibreLoRa_decode_0, setCR]
 - [LibreLoRa_receiverController_0, setCRout, LibreLoRa_deinterleave_0, setCR]
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_deinterleave_0, setSF]
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_grayEncode_0, setSF]
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_symbolDemod_0, setSF]
-- [LibreLoRa_receiverController_0, startRx, LibreLoRa_randomize_0, reset]
 - [LibreLoRa_symbolDemod_0, '0', LibreLoRa_grayEncode_0, '0']
 - [blocks_file_source_0, '0', blocks_throttle_0, '0']
 - [blocks_throttle_0, '0', LibreLoRa_frequencyTracker_0, '0']

@@ -23,7 +23,7 @@ outputs:
   domain: stream
   dtype: byte
 - domain: message
-  id: startRx
+  id: lfsrStateOut
   optional: true
 - domain: message
   id: setSFout
