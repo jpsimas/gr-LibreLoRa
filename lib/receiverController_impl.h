@@ -38,8 +38,7 @@ namespace gr {
 
       enum controllerState {waitingForSync,
 			    readingHeader,
-			    sendingPayload,
-			    sendingCRC};
+			    sendingPayload};
 
       controllerState currentState;
       // size_t symbolSize;
@@ -59,6 +58,8 @@ namespace gr {
       pmt::pmt_t lfsrStatePort;
       pmt::pmt_t setSFPort;
       pmt::pmt_t setCRPort;
+      pmt::pmt_t synchronizerSetNPort;
+      pmt::pmt_t synchronizerResetPort;
       
       void startRx();
       void stopRx();

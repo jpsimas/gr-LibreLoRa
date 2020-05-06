@@ -32,13 +32,10 @@
 #include "LibreLoRa/receiverController.h"
 #include "LibreLoRa/calculateHeaderChecksum.h"
 #include "LibreLoRa/blockFixedProduce.h"
-<<<<<<< HEAD
 #include "LibreLoRa/randomize.h"
 #include "LibreLoRa/NibblesToBytes.h"
-=======
->>>>>>> 062e63eb739d92a3a44626a7e493c62fa54e1060
-%}
-
+  %}
+  
 %include "LibreLoRa/frequencyTracker.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, frequencyTracker);
 %include "LibreLoRa/symbolCorrelator.h"

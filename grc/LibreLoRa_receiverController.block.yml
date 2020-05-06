@@ -31,4 +31,10 @@ outputs:
 - domain: message
   id: setCRout
   optional: true
+- domain: message
+  id: synchronizerSetN
+  optional: true
+- domain: message
+  id: synchronizerReset
+  optional: true
 file_format: 1

@@ -50,8 +50,20 @@ namespace gr {
 	corrStop(corrStop),
 	symbolSize(symbolSize),
 	syncd(false),
-	fixedMode(false),
+	fixedMode(true),
 	nOutputItemsToProduce(0) {
+      message_port_register_in(pmt::mp("setNOutputItemsToProduce"));
+      set_msg_handler(pmt::mp("setNOutputItemsToProduce"),
+		      [this](pmt::pmt_t msg) {
+			std::cout << "correlationSync: setting n to " << int(pmt::to_long(msg)) << std::endl;
+			setNOutputItemsToProduce(int(pmt::to_long(msg)));
+		      });
+      message_port_register_in(pmt::mp("reset"));
+      set_msg_handler(pmt::mp("reset"),
+		      [this](pmt::pmt_t msg) {
+			std::cout << "correlationSync: reset" << std::endl;
+			reset();
+		      });
     }
 
     /*
@@ -65,7 +77,7 @@ namespace gr {
     correlationSync_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
       /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
-      const size_t n = ((fixedMode && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
+      const size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
       ninput_items_required[0] = (syncd? symbolSize*n : 2*symbolSize);
       
       ninput_items_required[1] = ninput_items_required[0];
@@ -123,7 +135,7 @@ namespace gr {
 	return 0;
       } else {
 
-	size_t n = ((fixedMode && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
+	size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
 	
 	for(size_t j = 0; j < n; j++)
 	  for(size_t i = 0; i < symbolSize; i++)
@@ -131,7 +143,7 @@ namespace gr {
 
 	consume_each (symbolSize*n);
 	
-	if(fixedMode)
+	if(fixedModeEnabled())
 	  nOutputItemsToProduce -= n;
 
 	std::cout << "produced " << n << " synced symbols" << std::endl;

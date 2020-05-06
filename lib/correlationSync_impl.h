@@ -36,7 +36,9 @@ namespace gr {
 
       bool syncd;
 
+      constexpr static int fixedModeDisabled = -1;
       bool fixedMode;
+      
       int nOutputItemsToProduce;
      public:
       correlationSync_impl(float corrMin, float corrStop, size_t symbolSize);
@@ -51,10 +53,13 @@ namespace gr {
 		       gr_vector_void_star &output_items);
 
       void reset();
-      void enableFixedMode() {fixedMode = true;};
       void setNOutputItemsToProduce(int noutput_items) {nOutputItemsToProduce = noutput_items;};
-    };
 
+      constexpr bool fixedModeEnabled() {
+	return fixedMode;
+	//return nOutputItemsToProduce != fixedModeDisabled;};
+      };
+    };
   } // namespace LibreLoRa
 } // namespace gr
 

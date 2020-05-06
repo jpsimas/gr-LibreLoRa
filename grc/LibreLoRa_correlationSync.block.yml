@@ -19,6 +19,12 @@ inputs:
   domain: stream
   dtype: float
   multiplicity: '2'
+- domain: message
+  id: setNOutputItemsToProduce
+  optional: true
+- domain: message
+  id: reset
+  optional: true
 outputs:
 - label: out
   domain: stream

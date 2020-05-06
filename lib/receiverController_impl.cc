@@ -27,6 +27,7 @@
 
 #include <iostream>
 #include <LibreLoRa/calculateHeaderChecksum.h>
+#include <LibreLoRa/utilities.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -57,18 +58,24 @@ namespace gr {
 	currentState(waitingForSync) {
 
       //prevent demodulotator producing symbols before start
-      synchronizer->enableFixedMode();
-      synchronizer->setNOutputItemsToProduce(0);
+      // synchronizer->enableFixedMode();
+      // synchronizer->setNOutputItemsToProduce(0);
+
+      
       //randomizer->reset();
 
       lfsrStatePort = pmt::string_to_symbol("lfsrStateOut");
       setSFPort = pmt::string_to_symbol("setSFout");
       setCRPort = pmt::string_to_symbol("setCRout");
+      synchronizerSetNPort = pmt::string_to_symbol("synchronizerSetN");
+      synchronizerResetPort = pmt::string_to_symbol("synchronizerReset");
       
       message_port_register_out(lfsrStatePort);
       message_port_register_out(setSFPort);
       message_port_register_out(setCRPort);
-
+      message_port_register_out(synchronizerSetNPort);
+      message_port_register_out(synchronizerResetPort);
+      
       //setSFcurrent(SF-2);
       
       std::cout << "Turbo Encabulator Started" << std::endl;
@@ -96,11 +103,7 @@ namespace gr {
 	ninput_items_required[1] = 0;
 	break;
       case sendingPayload:
-	ninput_items_required[0] = payloadNibblesToRead + (payloadCRCPresent? 0 : extraNibblesToConsume);
-	ninput_items_required[1] = 0;
-	break;
-      case sendingCRC:
-	ninput_items_required[0] = 2 + extraNibblesToConsume;
+	ninput_items_required[0] = payloadNibblesToRead + extraNibblesToConsume + (payloadCRCPresent? 2*payloadCRCSize : 0);
 	ninput_items_required[1] = 0;
 	break;
       default:
@@ -129,9 +132,9 @@ namespace gr {
       // Do <+signal processing+>
       switch(currentState) {
       case waitingForSync:
-	if(*syncdIn) {
+	if(*syncdIn)
 	  startRx();
-	}
+	
 	consume(1, 1);
 	break;
 
@@ -155,12 +158,14 @@ namespace gr {
 	  else {
 	    payloadNibblesToRead = 2*payloadLength - (SFcurrent - 5);
 	    size_t nibblesToRead = payloadNibblesToRead + 2*(payloadCRCPresent? payloadCRCSize : 0);
-	    extraNibblesToConsume = SF*ceil(nibblesToRead/float(SF)) - nibblesToRead;
+	    // extraNibblesToConsume = SF*ceil(nibblesToRead/float(SF)) - nibblesToRead;
+	    extraNibblesToConsume = (SF - nibblesToRead%SF)%SF;
 	    std::cout << "nibbles to read: " << payloadNibblesToRead << ", SF = " << SF << std::endl;
 	    setSFcurrent(SF);
 
 	    currentState = sendingPayload;
-	    synchronizer->setNOutputItemsToProduce((extraNibblesToConsume + nibblesToRead)*(CR + 4)/SF);
+	    // synchronizer->setNOutputItemsToProduce((extraNibblesToConsume + nibblesToRead)*(CR + 4)/SF);
+	    message_port_pub(synchronizerSetNPort, pmt::from_long((extraNibblesToConsume + nibblesToRead)*(CR + 4)/SF));
 	    // randomizer->reset();
 	  }
 	}
@@ -177,23 +182,13 @@ namespace gr {
 	produced = payloadNibblesToRead;
 
 	if(payloadCRCPresent) {
-	  consume(0, payloadNibblesToRead);
-	  currentState = sendingCRC;
-	} else {
-	  consume(0, payloadNibblesToRead + extraNibblesToConsume);
-	  stopRx();
+	  uint16_t CRC = nibbles2bytes<uint16_t>(*((uint32_t*)(nibblesOut + payloadNibblesToRead)));
+	  //here use CRC block (TBI)
 	}
-
-	break;
-      case sendingCRC:
-	message_port_pub(lfsrStatePort, pmt::from_long(0x00));
 	
-	for(size_t i = 0; i < 2*payloadCRCSize; i++)
-	  nibblesOut[i] = nibblesIn[i];
-
-	produced = 2*payloadCRCSize;
-	consume(0, 2*payloadCRCSize + extraNibblesToConsume);
+	consume(0, payloadNibblesToRead + extraNibblesToConsume + (payloadCRCPresent? 2*payloadCRCSize : 0));
 	stopRx();
+
 	break;
       default:
 	;
@@ -207,14 +202,16 @@ namespace gr {
       setSFcurrent(SF-2);
       setCR(4);
       currentState = readingHeader;
-      synchronizer->setNOutputItemsToProduce(8);
+      //synchronizer->setNOutputItemsToProduce(8);
+      message_port_pub(synchronizerSetNPort, pmt::from_long(8));
       std::cout << "starting RX" << std::endl;
     }
 
     void receiverController_impl::stopRx() {
       currentState = waitingForSync;
       setSFcurrent(SF-2);
-      synchronizer->reset();
+      //synchronizer->reset();
+      message_port_pub(synchronizerResetPort, pmt::PMT_NIL);
       // demodulator->disable();
       std::cout << "stopping RX" << std::endl;
     }
