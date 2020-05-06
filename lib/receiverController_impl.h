@@ -51,6 +51,8 @@ namespace gr {
       uint8_t payloadCRCPresent;
       bool headerCheckSumValid;
 
+      constexpr static size_t payloadCRCSize = 2;
+      
       size_t payloadNibblesToRead;
       size_t extraNibblesToConsume;
 

@@ -154,7 +154,7 @@ namespace gr {
 	    stopRx();
 	  else {
 	    payloadNibblesToRead = 2*payloadLength - (SFcurrent - 5);
-	    size_t nibblesToRead = payloadNibblesToRead + 2*(payloadCRCPresent? 1 : 0);
+	    size_t nibblesToRead = payloadNibblesToRead + 2*(payloadCRCPresent? payloadCRCSize : 0);
 	    extraNibblesToConsume = SF*ceil(nibblesToRead/float(SF)) - nibblesToRead;
 	    std::cout << "nibbles to read: " << payloadNibblesToRead << ", SF = " << SF << std::endl;
 	    setSFcurrent(SF);
@@ -188,11 +188,11 @@ namespace gr {
       case sendingCRC:
 	message_port_pub(lfsrStatePort, pmt::from_long(0x00));
 	
-	for(size_t i = 0; i < 2; i++)
+	for(size_t i = 0; i < 2*payloadCRCSize; i++)
 	  nibblesOut[i] = nibblesIn[i];
 
-	produced = 2;
-	consume(0, 2 + extraNibblesToConsume);
+	produced = 2*payloadCRCSize;
+	consume(0, 2*payloadCRCSize + extraNibblesToConsume);
 	stopRx();
 	break;
       default:
