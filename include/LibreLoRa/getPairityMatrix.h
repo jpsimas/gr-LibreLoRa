@@ -23,6 +23,7 @@
 
 #include <array>
 #include <cstdint>
+#include <LibreLoRa/utilities.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -41,8 +42,16 @@ namespace gr {
       }
     }
     
-    uint8_t calculatePairityBit(const uint8_t nibble, const uint8_t pairityMask);
-    uint8_t calculatePairity(const uint8_t nibble, const std::array<uint8_t, 4> pairityMatrix);
+    constexpr uint8_t calculatePairityBit(const uint8_t nibble, const uint8_t pairityMask) {
+      return pairity<uint8_t>(nibble&pairityMask, 4);
+    }
+
+    constexpr uint8_t calculatePairity(const uint8_t nibble, const std::array<uint8_t, 4> pairityMatrix, size_t N = 0) {
+      return (N == 4)?
+	nibble :
+	calculatePairity(nibble | (calculatePairityBit(nibble, pairityMatrix[N]) << (N + 4)), pairityMatrix, N + 1);
+    }
+    
   } /* namespace LibreLoRa */
 } /* namespace gr */
 
