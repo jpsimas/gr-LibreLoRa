@@ -287,7 +287,7 @@ namespace gr {
       std::cout << "Checksum present: " << (payloadCRCPresent? "yes" : "no") << std::endl;
 #endif
       
-      CR = nibbles[2] >> 1;
+      setCR(nibbles[2] >> 1);
 
 #ifdef DEBUG
       std::cout << "CR: " << unsigned(CR) << std::endl;
