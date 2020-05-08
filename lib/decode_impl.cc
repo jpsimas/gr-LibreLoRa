@@ -106,18 +106,19 @@ namespace gr {
     }
 
     void decode_impl::calculateCosetLeaders(){
-      cosetLeader.clear();
+      // cosetLeader.clear();
 
-      std::array<uint8_t, 4> checkMatrix;
-      for(int i = 0; i < 4; i++)
-	checkMatrix[i] = calculatePairity(1 << i, pairityMatrix);
+      // std::array<uint8_t, 4> checkMatrix;
+      // for(int i = 0; i < 4; i++)
+      // 	checkMatrix[i] = calculatePairity(1 << i, pairityMatrix);
       
-      for(size_t i = 0; i + 1 < (CR + 4); i++)
-	for(size_t j = 0; j < (CR + 4); j++) {
-	  uint8_t syndrome = checkMatrix[i]^checkMatrix[j];
-	  if(cosetLeader.find(syndrome) != cosetLeader.end())
-	    cosetLeader[syndrome] = (1 << i)&(1 << j);
-	}
+      // for(size_t i = 0; i + 1 < (CR + 4); i++)
+      // 	for(size_t j = 0; j < (CR + 4); j++) {
+      // 	  uint8_t syndrome = checkMatrix[i]^checkMatrix[j];
+      // 	  if(cosetLeader.find(syndrome) != cosetLeader.end())
+      // 	    cosetLeader[syndrome] = (1 << i)&(1 << j);
+      // 	}
+      cosetLeader = getCosetLeaders(CR);
     }
 
     void decode_impl::setCR(size_t CRnew) {

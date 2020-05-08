@@ -23,6 +23,7 @@
 
 #include <array>
 #include <cstdint>
+#include <unordered_map>
 #include <LibreLoRa/utilities.h>
 
 namespace gr {
@@ -51,6 +52,9 @@ namespace gr {
 	nibble :
 	calculatePairity(nibble | (calculatePairityBit(nibble, pairityMatrix[N]) << (N + 4)), pairityMatrix, N + 1);
     }
+
+    std::array<uint8_t, 4> getCheckMatrix(size_t CR);
+    std::unordered_map<uint8_t, uint8_t> getCosetLeaders(size_t CR);
     
   } /* namespace LibreLoRa */
 } /* namespace gr */

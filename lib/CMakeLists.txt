@@ -33,6 +33,7 @@ list(APPEND LibreLoRa_sources
     symbolDemod_impl.cc
     grayEncode_impl.cc
     deinterleave_impl.cc
+    getPairityMatrix.cc
     decode_impl.cc
     chirpSelect_impl.cc
     chirpSource_impl.cc
