@@ -39,28 +39,28 @@ namespace gr {
   namespace LibreLoRa {
 
     CRC16::sptr
-    CRC16::make(uint16_t polynomial, uint16_t initial)
+    CRC16::make(uint16_t polynomial, uint16_t xorOut)
     {
       return gnuradio::get_initial_sptr
-        (new CRC16_impl(polynomial, initial));
+        (new CRC16_impl(polynomial, xorOut));
     }
 
 
     /*
      * The private constructor
      */
-    CRC16_impl::CRC16_impl(uint16_t polynomial, uint16_t initial)
+    CRC16_impl::CRC16_impl(uint16_t polynomial, uint16_t xorOut)
       : gr::block("CRC16",
               gr::io_signature::make(1, 1, sizeof(uint8_t)),
 		  gr::io_signature::make(1, 1, sizeof(uint16_t))),
 	polynomial(polynomial),
-	initial(initial),
+	xorOut(xorOut),
 	payloadSize(2) {
       message_port_register_in(pmt::mp("setPayloadSize"));
       set_msg_handler(pmt::mp("setPayloadSize"), [this](pmt::pmt_t msg) {setPayloadSize(size_t(pmt::to_long(msg)));});
       
-      message_port_register_in(pmt::mp("setInitial"));
-      set_msg_handler(pmt::mp("setInitial"), [this](pmt::pmt_t msg) {setInitial(uint16_t(pmt::to_long(msg)));});
+      message_port_register_in(pmt::mp("setXorOut"));
+      set_msg_handler(pmt::mp("setXorOut"), [this](pmt::pmt_t msg) {setXorOut(uint16_t(pmt::to_long(msg)));});
 #ifdef DEBUG
       std::cout << "gyro-controlled sine-wave director calibration started." << std::endl;
 #endif
@@ -90,14 +90,14 @@ namespace gr {
       uint16_t *out = (uint16_t *) output_items[0];
 
 #ifdef DEBUG
-      std::cout << "CRC16: work called, noutput_items = " << noutput_items << ", payloadSize = " << payloadSize << std::endl;
+      std::cout << std::dec << "CRC16: work called, noutput_items = " << noutput_items << ", payloadSize = " << payloadSize << std::endl;
 #endif
 
       const auto nWords = payloadSize/2;
       
       for(size_t j = 0; j < noutput_items; j++) {
 	auto inJ = in + j*payloadSize;
-	uint16_t crc = initial;
+	uint16_t crc = 0x00;
 
 	if(payloadSize%2 != 0) {
 	  uint32_t word = inJ[0];
@@ -112,10 +112,10 @@ namespace gr {
 
 	crc ^= invertEndianness(*(uint16_t*)(inJ + 2*(nWords - 1)));
 	
-	out[j] = crc;
+	out[j] = crc^xorOut;
 
 #ifdef DEBUG
-	std::cout << "CRC16: calculated CRC: " << unsigned(out[j]) << std::endl;
+	std::cout << std::hex << "CRC16: calculated CRC: " << unsigned(out[j]) << std::endl;
 #endif
       }
       // Tell runtime system how many input items we consumed on
@@ -126,12 +126,15 @@ namespace gr {
       return noutput_items;
     }
     
-    void CRC16_impl::setInitial(uint16_t newInitial) {
-      initial = newInitial;
+    void CRC16_impl::setXorOut(uint16_t newXorOut) {
+#ifdef DEBUG
+      std::cout << std::hex << "CRC16: set xorOut to:" << newXorOut << std::endl;
+#endif
+      xorOut = newXorOut;
     }
     
     void CRC16_impl::setPayloadSize(size_t newSize) {
-      #ifdef DEBUG
+#ifdef DEBUG
       std::cout << "CRC16: set payloadSize to:" << newSize << std::endl;
 #endif
       payloadSize = newSize;

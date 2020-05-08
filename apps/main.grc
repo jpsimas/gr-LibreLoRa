@@ -146,10 +146,10 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    initial: '0x00'
     maxoutbuf: '0'
     minoutbuf: '0'
     polynomial: '0x1021'
+    xorout: '0x0000'
   states:
     bus_sink: false
     bus_source: false
@@ -354,7 +354,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1392, 608.0]
+    coordinate: [1384, 616.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_symbolDemod_0
@@ -2196,7 +2196,7 @@ connections:
 - [LibreLoRa_readHeader_0, '3', blocks_uchar_to_float_0_1_0_0, '0']
 - [LibreLoRa_readHeader_0, '4', blocks_vector_to_stream_3, '0']
 - [LibreLoRa_receiverController_0, '0', LibreLoRa_NibblesToBytes_0, '0']
-- [LibreLoRa_receiverController_0, crc, LibreLoRa_CRC16_0, setInitial]
+- [LibreLoRa_receiverController_0, crc, LibreLoRa_CRC16_0, setXorOut]
 - [LibreLoRa_receiverController_0, lfsrStateOut, LibreLoRa_randomize_0, setLfsrState]
 - [LibreLoRa_receiverController_0, payloadLength, LibreLoRa_CRC16_0, setPayloadSize]
 - [LibreLoRa_receiverController_0, setCRout, LibreLoRa_decode_0, setCR]
@@ -2211,10 +2211,6 @@ connections:
 - [LibreLoRa_symbolDemod_0, '0', LibreLoRa_grayEncode_0, '0']
 - [blocks_file_source_0, '0', blocks_throttle_0, '0']
 - [blocks_throttle_0, '0', LibreLoRa_frequencyTracker_0, '0']
-- [blocks_uchar_to_float_0, '0', qtgui_time_sink_x_1, '0']
-- [blocks_uchar_to_float_1, '0', qtgui_time_sink_x_3_0, '0']
-- [rtlsdr_source_0, '0', LibreLoRa_frequencyTracker_0, '0']
-- [rtlsdr_source_0, '0', qtgui_waterfall_sink_x_0_0, '0']
 
 metadata:
   file_format: 1

@@ -3,13 +3,13 @@ label: CRC16
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.CRC16(${polynomial}, ${initial})
+  make: LibreLoRa.CRC16(${polynomial}, ${xorout})
 parameters:
 - id: polynomial
   label: Polynomial
   dtype: raw
-- id: initial
-  label: Initial
+- id: xorout
+  label: XorOut
   dtype: raw
 inputs:
 - label: in
@@ -19,7 +19,7 @@ inputs:
   id: setPayloadSize
   optional: true
 - domain: message
-  id: setInitial
+  id: setXorOut
   optional: true
 outputs:
 - label: out

@@ -31,7 +31,7 @@ namespace gr {
      private:
       // Nothing to declare in this block.
       uint16_t polynomial;
-      uint16_t initial;
+      uint16_t xorOut;
 
       size_t payloadSize;//inBytes
      public:
@@ -46,7 +46,7 @@ namespace gr {
            gr_vector_const_void_star &input_items,
            gr_vector_void_star &output_items);
 
-      void setInitial(uint16_t newInitial);
+      void setXorOut(uint16_t newXorOut);
       void setPayloadSize(size_t newSize);
     };
     

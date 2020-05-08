@@ -148,7 +148,7 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         self.LibreLoRa_decode_0 = LibreLoRa.decode(4)
         self.LibreLoRa_NibblesToBytes_0 = LibreLoRa.NibblesToBytes()
         self.LibreLoRa_Correlation_0 = LibreLoRa.Correlation(preambleNormalized)
-        self.LibreLoRa_CRC16_0 = LibreLoRa.CRC16(0x1021, 0x00)
+        self.LibreLoRa_CRC16_0 = LibreLoRa.CRC16(0x1021, 0x0000)
 
 
 
@@ -156,9 +156,9 @@ class premabletestRTL(gr.top_block, Qt.QWidget):
         # Connections
         ##################################################
         self.msg_connect((self.LibreLoRa_receiverController_0, 'payloadLength'), (self.LibreLoRa_CRC16_0, 'setPayloadSize'))
-        self.msg_connect((self.LibreLoRa_receiverController_0, 'crc'), (self.LibreLoRa_CRC16_0, 'setInitial'))
-        self.msg_connect((self.LibreLoRa_receiverController_0, 'synchronizerSetN'), (self.LibreLoRa_correlationSync_0, 'setNOutputItemsToProduce'))
+        self.msg_connect((self.LibreLoRa_receiverController_0, 'crc'), (self.LibreLoRa_CRC16_0, 'setXorOut'))
         self.msg_connect((self.LibreLoRa_receiverController_0, 'synchronizerReset'), (self.LibreLoRa_correlationSync_0, 'reset'))
+        self.msg_connect((self.LibreLoRa_receiverController_0, 'synchronizerSetN'), (self.LibreLoRa_correlationSync_0, 'setNOutputItemsToProduce'))
         self.msg_connect((self.LibreLoRa_receiverController_0, 'setCRout'), (self.LibreLoRa_decode_0, 'setCR'))
         self.msg_connect((self.LibreLoRa_receiverController_0, 'setCRout'), (self.LibreLoRa_deinterleave_0, 'setCR'))
         self.msg_connect((self.LibreLoRa_receiverController_0, 'setSFout'), (self.LibreLoRa_deinterleave_0, 'setSF'))

@@ -190,7 +190,7 @@ namespace gr {
 	if(payloadCRCPresent) {
 	  uint16_t CRC = nibbles2bytes<uint16_t>(*((uint32_t*)(nibblesIn + payloadNibblesToRead)));
 	  std::cout << "receiverController: read CRC: " << unsigned(CRC) << std::endl; 
-	  //message_port_pub(crcPort, pmt::from_long(CRC));
+	  message_port_pub(crcPort, pmt::from_long(CRC));
 
 	}
 	
