@@ -25,6 +25,10 @@
 #include <gnuradio/io_signature.h>
 #include "grayEncode_impl.h"
 
+#ifdef DEBUG
+#include <iostream>
+#endif
+
 namespace gr {
   namespace LibreLoRa {
 
@@ -70,7 +74,9 @@ namespace gr {
       const uint16_t *in = (const uint16_t *) input_items[0];
       uint16_t *out = (uint16_t *) output_items[0];
 
+#ifdef DEBUG
       std::cout << "grayEncode: work called: noutput_items = " << noutput_items << std::endl;
+#endif
       
       // Do <+signal processing+>
       for(size_t i = 0; i < noutput_items; i++)

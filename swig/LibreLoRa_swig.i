@@ -34,6 +34,7 @@
 #include "LibreLoRa/blockFixedProduce.h"
 #include "LibreLoRa/randomize.h"
 #include "LibreLoRa/NibblesToBytes.h"
+#include "LibreLoRa/CRC16.h"
   %}
   
 %include "LibreLoRa/frequencyTracker.h"
@@ -97,3 +98,5 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, correlationSyncDemod);
 
 %include "LibreLoRa/NibblesToBytes.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, NibblesToBytes);
+%include "LibreLoRa/CRC16.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, CRC16);

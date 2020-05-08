@@ -61,6 +61,9 @@ namespace gr {
       pmt::pmt_t synchronizerSetNPort;
       pmt::pmt_t synchronizerResetPort;
       
+      pmt::pmt_t payloadLengthPort;
+      pmt::pmt_t crcPort;
+      
       void startRx();
       void stopRx();
       void setSFcurrent(size_t SF);

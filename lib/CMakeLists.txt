@@ -50,7 +50,8 @@ list(APPEND LibreLoRa_sources
     calculateHeaderChecksum.cc
     #blockFixedProduce.cc
     randomize_impl.cc
-    NibblesToBytes_impl.cc )
+    NibblesToBytes_impl.cc
+    CRC16_impl.cc )
 
 set(LibreLoRa_sources "${LibreLoRa_sources}" PARENT_SCOPE)
 if(NOT LibreLoRa_sources)

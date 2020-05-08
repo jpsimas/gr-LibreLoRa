@@ -69,12 +69,16 @@ namespace gr {
       setCRPort = pmt::string_to_symbol("setCRout");
       synchronizerSetNPort = pmt::string_to_symbol("synchronizerSetN");
       synchronizerResetPort = pmt::string_to_symbol("synchronizerReset");
+      payloadLengthPort = pmt::string_to_symbol("payloadLength");
+      crcPort = pmt::string_to_symbol("crc");
       
       message_port_register_out(lfsrStatePort);
       message_port_register_out(setSFPort);
       message_port_register_out(setCRPort);
       message_port_register_out(synchronizerSetNPort);
       message_port_register_out(synchronizerResetPort);
+      message_port_register_out(payloadLengthPort);
+      message_port_register_out(crcPort);
       
       //setSFcurrent(SF-2);
       
@@ -166,6 +170,8 @@ namespace gr {
 	    currentState = sendingPayload;
 	    // synchronizer->setNOutputItemsToProduce((extraNibblesToConsume + nibblesToRead)*(CR + 4)/SF);
 	    message_port_pub(synchronizerSetNPort, pmt::from_long((extraNibblesToConsume + nibblesToRead)*(CR + 4)/SF));
+	    message_port_pub(payloadLengthPort, pmt::from_long(payloadLength));
+	    // message_port_pub(synchronizerResetPort, pmt::PMT_NIL);
 	    // randomizer->reset();
 	  }
 	}
@@ -182,8 +188,10 @@ namespace gr {
 	produced = payloadNibblesToRead;
 
 	if(payloadCRCPresent) {
-	  uint16_t CRC = nibbles2bytes<uint16_t>(*((uint32_t*)(nibblesOut + payloadNibblesToRead)));
-	  //here use CRC block (TBI)
+	  uint16_t CRC = nibbles2bytes<uint16_t>(*((uint32_t*)(nibblesIn + payloadNibblesToRead)));
+	  std::cout << "receiverController: read CRC: " << unsigned(CRC) << std::endl; 
+	  //message_port_pub(crcPort, pmt::from_long(CRC));
+
 	}
 	
 	consume(0, payloadNibblesToRead + extraNibblesToConsume + (payloadCRCPresent? 2*payloadCRCSize : 0));

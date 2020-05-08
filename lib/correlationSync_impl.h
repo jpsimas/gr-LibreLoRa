@@ -35,11 +35,15 @@ namespace gr {
       const size_t symbolSize;
 
       bool syncd;
-
-      constexpr static int fixedModeDisabled = -1;
+      // enum syncState {initial, foundFirstPt, syncd};
+      // syncState currState;
+      // float corrMax;
+      
+      //constexpr static int fixedModeDisabled = -1;
       bool fixedMode;
       
       int nOutputItemsToProduce;
+      bool deSyncAfterDone;
      public:
       correlationSync_impl(float corrMin, float corrStop, size_t symbolSize);
       ~correlationSync_impl();

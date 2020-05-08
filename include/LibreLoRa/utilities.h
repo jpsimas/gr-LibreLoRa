@@ -37,8 +37,28 @@ namespace gr {
     
     template <typename T2, typename T1>
     constexpr T2 nibbles2bytes(T1 x, size_t N = sizeof(T1)) {
-      return ((N == 1)? (x & 0xf): (x & 0xf) | (nibbles2bytes<T2, T1>(x >> 8, N - 1)) << 4);
-    }    
+      return ((N == 1)?
+	      (x & 0xf) :
+	      (x & 0xf) | (nibbles2bytes<T2, T1>(x >> 8, N - 1)) << 4);
+    }
+
+    template <typename T2, typename T1, size_t N2 = (sizeof(T2) << 3) + 1>
+    constexpr T2 polDiv(T1 data, T2 polynomial, size_t N = (sizeof(T1) << 3)) {
+      return ((N < N2)?
+	      data :
+	      ((data >> (N - 1))?
+	       polDiv<T2, T1>(data^((T1(polynomial) << (N - N2)) | (T1(1) << (N - 1))), polynomial, N - 1) :
+	       polDiv<T2, T1>(data, polynomial, N - 1)
+	       )
+	      );
+    }
+
+      template <typename T>
+      constexpr T invertEndianness(T val, size_t N = sizeof(T)) {
+	return (N == 1)?
+	  val&0xff :
+	  ((val&0xff) << ((N - 1) << 3))|invertEndianness<T>(val >> 8, N - 1);
+      }
     
   } // namespace LibreLoRa
 } // namespace gr

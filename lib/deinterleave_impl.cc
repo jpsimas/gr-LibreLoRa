@@ -46,7 +46,9 @@ namespace gr {
 			   gr::io_signature::make(1, 1, sizeof(uint16_t)),
 			   gr::io_signature::make(1, 1, sizeof(uint8_t)))
     {
+#ifdef DEBUG
       std::cout << "ENCABULATION STABILIZER 1500 enabled!" << std::endl;
+#endif
 
       message_port_register_in(pmt::mp("setSF"));
       set_msg_handler(pmt::mp("setSF"), [this](pmt::pmt_t msg) {setSF(size_t(pmt::to_long(msg)));});
@@ -81,22 +83,26 @@ namespace gr {
       //      std::cout << "deinterleave: work called: noutput_items = " << noutput_items << std::endl;
       
       const size_t blocksToProduce = noutput_items/SF;
-
+      
+#ifdef DEBUG
       if(blocksToProduce != 0) {
 	std::cout << "producing: " << blocksToProduce << " blocks (" << "nouput_items = " << noutput_items << ", SF = " << SF << ")" << std::endl;
-      
+	
 	// Do <+signal processing+>
       }
+#endif
       
       for(size_t k = 0; k < SF; k++)
 	out[k] = 0;
 
       for(size_t i = 0; i < blocksToProduce; i++){
 
+#ifdef DEBUG
 	std::cout << "deinterleaving symbols: ";
 	for(size_t j = 0; j < codeLength; j++)
 	  std::cout << std::hex << in[i*codeLength + j] << " ";
 	std::cout << std::endl;
+#endif
 	
 	for(size_t j = 0; j < codeLength; j++)
 	  for(size_t k = 0; k < SF; k++)

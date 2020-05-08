@@ -28,7 +28,10 @@
 #include <volk/volk.h>
 
 #include <cmath>
+
+#ifdef DEBUG
 #include <iostream>
+#endif
 
 namespace gr {
   namespace LibreLoRa {
@@ -55,7 +58,10 @@ namespace gr {
       //set_relative_rate(1.0/symbolSize);
       twoUpchirps = getSymbol(0, SF, (symbolSize >> SF));
       twoUpchirps.insert(twoUpchirps.end(), twoUpchirps.begin(), twoUpchirps.end());
+
+#ifdef DEBUG
       std::cout << "TURBO ENCABULATOR 1000 activated!" << std::endl;
+#endif
 
       message_port_register_in(pmt::mp("setSF"));
       set_msg_handler(pmt::mp("setSF"), [this](pmt::pmt_t msg) {setSF(size_t(pmt::to_long(msg)));});
@@ -85,7 +91,9 @@ namespace gr {
       const float *dataIn = (const float *) input_items[0];
       uint16_t *dataOut = (uint16_t *) output_items[0];
 
+#ifdef DEBUG
       std::cout << "demodulating " << noutput_items <<  " symbols, SF = " << SF << std::endl;
+#endif
       if(started) {
 	// Do <+signal processing+>
 	for(size_t i = 0; i < noutput_items; i++) {
@@ -101,7 +109,9 @@ namespace gr {
 	    }
 	  }
 	  dataOut[i] = round(jMax*(1 << SF)/float(symbolSize));
+#ifdef DEBUG
 	  std::cout << "demodulated symbol: " << std::dec << dataOut[i] << ", SF = " << SF << std::endl;
+#endif
 	}
       
 	// Tell runtime system how many input items we consumed on

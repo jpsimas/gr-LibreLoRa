@@ -51,5 +51,6 @@ install(FILES
     utilities.h
     #blockFixedProduce.h
     randomize.h
-    NibblesToBytes.h DESTINATION include/LibreLoRa
+    NibblesToBytes.h
+    CRC16.h DESTINATION include/LibreLoRa
 )

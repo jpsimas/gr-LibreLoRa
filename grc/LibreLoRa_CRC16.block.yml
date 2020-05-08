@@ -1,0 +1,28 @@
+id: LibreLoRa_CRC16
+label: CRC16
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.CRC16(${polynomial}, ${initial})
+parameters:
+- id: polynomial
+  label: Polynomial
+  dtype: raw
+- id: initial
+  label: Initial
+  dtype: raw
+inputs:
+- label: in
+  domain: stream
+  dtype: byte
+- domain: message
+  id: setPayloadSize
+  optional: true
+- domain: message
+  id: setInitial
+  optional: true
+outputs:
+- label: out
+  domain: stream
+  dtype: short
+file_format: 1

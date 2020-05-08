@@ -37,4 +37,10 @@ outputs:
 - domain: message
   id: synchronizerReset
   optional: true
+- domain: message
+  id: payloadLength
+  optional: true
+- domain: message
+  id: crc
+  optional: true
 file_format: 1

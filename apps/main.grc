@@ -140,6 +140,23 @@ blocks:
     coordinate: [752, 148.0]
     rotation: 0
     state: enabled
+- name: LibreLoRa_CRC16_0
+  id: LibreLoRa_CRC16
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    initial: '0x00'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    polynomial: '0x1021'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1984, 704.0]
+    rotation: 0
+    state: true
 - name: LibreLoRa_Correlation_0
   id: LibreLoRa_Correlation
   parameters:
@@ -249,7 +266,7 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    mu: 4/OSF
+    mu: 1/OSF
   states:
     bus_sink: false
     bus_source: false
@@ -304,7 +321,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1808, 608.0]
+    coordinate: [1856, 608.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_readHeader_0
@@ -339,7 +356,7 @@ blocks:
     bus_structure: null
     coordinate: [1392, 608.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: LibreLoRa_symbolDemod_0
   id: LibreLoRa_symbolDemod
   parameters:
@@ -373,9 +390,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2248, 660.0]
+    coordinate: [2280, 524.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_file_source_0
   id: blocks_file_source
   parameters:
@@ -383,12 +400,12 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: /home/jp/Polito/Thesis/lorasim-matlab/sample_data/out_sdr_sf7_fs1000k_length_7bytes_onehot_counting.raw
+    file: /home/jp/Polito/Thesis/lorasim-matlab/sample_data/out_sdr_sf7_fs1000k_length_5bytes_onehot_counting.raw
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
     offset: '0'
-    repeat: 'False'
+    repeat: 'True'
     type: complex
     vlen: '1'
   states:
@@ -397,7 +414,24 @@ blocks:
     bus_structure: null
     coordinate: [40, 500.0]
     rotation: 0
-    state: disabled
+    state: enabled
+- name: blocks_null_sink_0
+  id: blocks_null_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    bus_structure_sink: '[[0,],]'
+    comment: ''
+    num_inputs: '1'
+    type: short
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2208, 712.0]
+    rotation: 0
+    state: true
 - name: blocks_short_to_float_0
   id: blocks_short_to_float
   parameters:
@@ -412,7 +446,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1472, 820.0]
+    coordinate: [1504, 916.0]
     rotation: 0
     state: disabled
 - name: blocks_short_to_float_0_0
@@ -432,6 +466,24 @@ blocks:
     coordinate: [1480, 924.0]
     rotation: 0
     state: disabled
+- name: blocks_tcp_server_sink_0
+  id: blocks_tcp_server_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ipaddr: 127.0.0.1
+    noblock: 'True'
+    port: '1202'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2240, 604.0]
+    rotation: 0
+    state: true
 - name: blocks_throttle_0
   id: blocks_throttle
   parameters:
@@ -450,7 +502,7 @@ blocks:
     bus_structure: null
     coordinate: [360, 492.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: blocks_uchar_to_float_0
   id: blocks_uchar_to_float
   parameters:
@@ -602,9 +654,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2136, 820.0]
+    coordinate: [2192, 764.0]
     rotation: 0
-    state: true
+    state: disabled
 - name: blocks_vector_to_stream_3
   id: blocks_vector_to_stream
   parameters:
@@ -1752,7 +1804,7 @@ blocks:
     bus_structure: null
     coordinate: [360, 136.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: rtlsdr_source_0
   id: rtlsdr_source
   parameters:
@@ -2109,9 +2161,10 @@ blocks:
     bus_structure: null
     coordinate: [16, 164.0]
     rotation: 0
-    state: enabled
+    state: disabled
 
 connections:
+- [LibreLoRa_CRC16_0, '0', blocks_null_sink_0, '0']
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSync_0, '1']
 - [LibreLoRa_Correlation_0, '0', qtgui_time_sink_x_0_0_0, '1']
 - [LibreLoRa_NibblesToBytes_0, '0', LibreLoRa_randomize_0, '0']
@@ -2131,7 +2184,9 @@ connections:
 - [LibreLoRa_frequencyTracker_0, '0', qtgui_time_sink_x_0_0_0, '0']
 - [LibreLoRa_grayEncode_0, '0', LibreLoRa_deinterleave_0, '0']
 - [LibreLoRa_grayEncode_0, '0', blocks_short_to_float_0_0, '0']
+- [LibreLoRa_randomize_0, '0', LibreLoRa_CRC16_0, '0']
 - [LibreLoRa_randomize_0, '0', blocks_file_sink_0, '0']
+- [LibreLoRa_randomize_0, '0', blocks_tcp_server_sink_0, '0']
 - [LibreLoRa_randomize_0, '0', blocks_udp_sink_1, '0']
 - [LibreLoRa_readHeader_0, '0', blocks_uchar_to_float_0_1, '0']
 - [LibreLoRa_readHeader_0, '1', blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0,
@@ -2141,7 +2196,9 @@ connections:
 - [LibreLoRa_readHeader_0, '3', blocks_uchar_to_float_0_1_0_0, '0']
 - [LibreLoRa_readHeader_0, '4', blocks_vector_to_stream_3, '0']
 - [LibreLoRa_receiverController_0, '0', LibreLoRa_NibblesToBytes_0, '0']
+- [LibreLoRa_receiverController_0, crc, LibreLoRa_CRC16_0, setInitial]
 - [LibreLoRa_receiverController_0, lfsrStateOut, LibreLoRa_randomize_0, setLfsrState]
+- [LibreLoRa_receiverController_0, payloadLength, LibreLoRa_CRC16_0, setPayloadSize]
 - [LibreLoRa_receiverController_0, setCRout, LibreLoRa_decode_0, setCR]
 - [LibreLoRa_receiverController_0, setCRout, LibreLoRa_deinterleave_0, setCR]
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_deinterleave_0, setSF]
@@ -2154,6 +2211,8 @@ connections:
 - [LibreLoRa_symbolDemod_0, '0', LibreLoRa_grayEncode_0, '0']
 - [blocks_file_source_0, '0', blocks_throttle_0, '0']
 - [blocks_throttle_0, '0', LibreLoRa_frequencyTracker_0, '0']
+- [blocks_uchar_to_float_0, '0', qtgui_time_sink_x_1, '0']
+- [blocks_uchar_to_float_1, '0', qtgui_time_sink_x_3_0, '0']
 - [rtlsdr_source_0, '0', LibreLoRa_frequencyTracker_0, '0']
 - [rtlsdr_source_0, '0', qtgui_waterfall_sink_x_0_0, '0']
 

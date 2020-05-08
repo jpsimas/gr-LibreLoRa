@@ -26,7 +26,9 @@
 #include "decode_impl.h"
 
 #include <LibreLoRa/getPairityMatrix.h>
+#ifdef DEBUG
 #include <iostream>
+#endif
 
 namespace gr {
   namespace LibreLoRa {
@@ -47,7 +49,10 @@ namespace gr {
 		       gr::io_signature::make(1, 1, sizeof(uint8_t)),
 		       gr::io_signature::make(1, 1, sizeof(uint8_t))) {
       setCR(CR);
+
+#ifdef DEBUG
       std::cout << "BENILOSCOPE v2 ACTIVATED" << std::endl;
+#endif
       
       message_port_register_in(pmt::mp("setCR"));
       set_msg_handler(pmt::mp("setCR"), [this](pmt::pmt_t msg) {setCR(size_t(pmt::to_long(msg)));});
@@ -77,13 +82,19 @@ namespace gr {
       const uint8_t *in = (const uint8_t *) input_items[0];
       uint8_t *out = (uint8_t *) output_items[0];
 
+#ifdef DEBUG
       std::cout << "decode: work called: noutput_items = " << noutput_items << std::endl;
+#endif
       
       // Do <+signal processing+>
       for(size_t i = 0; i < noutput_items; i++) {
 	uint8_t syndrome = calculatePairity(in[i], pairityMatrix) ^ in[i];
 	out[i] = (in[i] ^ cosetLeader[syndrome]) & 0x0f;
+
+#ifdef DEBUG
 	std::cout << "decoded nibble: " <<  std::hex << unsigned(out[i]) << std::endl;
+#endif
+	
       }
 
       // Tell runtime system how many input items we consumed on
