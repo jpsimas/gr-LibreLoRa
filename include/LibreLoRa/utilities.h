@@ -43,16 +43,16 @@ namespace gr {
     }
 
     template <typename T2, typename T1, size_t N2 = (sizeof(T2) << 3) + 1>
-    constexpr T2 polDiv(T1 data, T2 polynomial, size_t N = (sizeof(T1) << 3)) {
+    constexpr T2 polDivRem(T1 data, T2 polynomial, size_t N = (sizeof(T1) << 3)) {
       return ((N < N2)?
 	      data :
 	      ((data >> (N - 1))?
-	       polDiv<T2, T1>(data^((T1(polynomial) << (N - N2)) | (T1(1) << (N - 1))), polynomial, N - 1) :
-	       polDiv<T2, T1>(data, polynomial, N - 1)
+	       polDivRem<T2, T1>(data^((T1(polynomial) << (N - N2)) | (T1(1) << (N - 1))), polynomial, N - 1) :
+	       polDivRem<T2, T1>(data, polynomial, N - 1)
 	       )
 	      );
     }
-
+      
       template <typename T>
       constexpr T invertEndianness(T val, size_t N = sizeof(T)) {
 	return (N == 1)?
