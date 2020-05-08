@@ -27,10 +27,6 @@
 
 #include <LibreLoRa/utilities.h>
 
-#ifndef DEBUG
-#define DEBUG
-#endif
-
 #ifdef DEBUG
 #include <iostream>
 #endif

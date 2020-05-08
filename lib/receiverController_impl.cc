@@ -25,9 +25,12 @@
 #include <gnuradio/io_signature.h>
 #include "receiverController_impl.h"
 
-#include <iostream>
 #include <LibreLoRa/calculateHeaderChecksum.h>
 #include <LibreLoRa/utilities.h>
+
+#ifdef DEBUG
+#include <iostream>
+#endif
 
 namespace gr {
   namespace LibreLoRa {
@@ -81,8 +84,10 @@ namespace gr {
       message_port_register_out(crcPort);
       
       //setSFcurrent(SF-2);
-      
+
+#ifdef DEBUG
       std::cout << "Turbo Encabulator Started" << std::endl;
+#endif
     }
 
     /*
@@ -114,9 +119,6 @@ namespace gr {
 	ninput_items_required[0] = 0;
 	ninput_items_required[1] = 0;
       }
-
-      // std::cout << "receiverController: forecast called: nouput_items_required[0] = " << ninput_items_required[0] << std::endl << " nouput_items_required[1] = " << ninput_items_required[1] << std::endl;
-      // std::cout << " noutput_items = "<< noutput_items << std::endl;
     }
     
     int
@@ -129,7 +131,9 @@ namespace gr {
       const bool *syncdIn = (const bool *) input_items[1];
       uint8_t *nibblesOut = (uint8_t *) output_items[0];
 
+#ifdef DEBUG
       std::cout << "receiverController: work called: noutput_items = " << noutput_items << std::endl;
+#endif
       
       int produced = 0;
 
@@ -151,11 +155,13 @@ namespace gr {
 	if(!headerCheckSumValid || CR == 0 || CR > 4) {
 	  stopRx();
 	} else {
+#ifdef DEBUG
 	  std::cout << std::dec;
 	  std::cout << "Got Valid Header" << ": ";
 	  std::cout << "length: " << unsigned(payloadLength) << ", ";	  
 	  std::cout << "CR: " << unsigned(CR) << ", ";
 	  std::cout << "CRC " << (payloadCRCPresent? "Present" : "Not Present") << std::endl;
+#endif
 	    
 	  if(2*payloadLength <= (SFcurrent - 5))
 	    stopRx();
@@ -164,7 +170,11 @@ namespace gr {
 	    size_t nibblesToRead = payloadNibblesToRead + 2*(payloadCRCPresent? payloadCRCSize : 0);
 	    // extraNibblesToConsume = SF*ceil(nibblesToRead/float(SF)) - nibblesToRead;
 	    extraNibblesToConsume = (SF - nibblesToRead%SF)%SF;
+
+#ifdef DEBUG
 	    std::cout << "nibbles to read: " << payloadNibblesToRead << ", SF = " << SF << std::endl;
+#endif
+	    
 	    setSFcurrent(SF);
 
 	    currentState = sendingPayload;
@@ -182,14 +192,22 @@ namespace gr {
 	
 	for(size_t i = 0; i < payloadNibblesToRead; i++) {
 	  nibblesOut[i] = nibblesIn[i];
+
+#ifdef DEBUG
 	  std::cout << "receiverController: produced data nibble:" << std::hex << unsigned(nibblesOut[i]) << std::endl;
+#endif
+	  
 	}
 	
 	produced = payloadNibblesToRead;
 
 	if(payloadCRCPresent) {
 	  uint16_t CRC = nibbles2bytes<uint16_t>(*((uint32_t*)(nibblesIn + payloadNibblesToRead)));
-	  std::cout << "receiverController: read CRC: " << unsigned(CRC) << std::endl; 
+
+#ifdef DEBUG
+	  std::cout << "receiverController: read CRC: " << unsigned(CRC) << std::endl;
+#endif
+	  
 	  message_port_pub(crcPort, pmt::from_long(CRC));
 
 	}
@@ -212,7 +230,11 @@ namespace gr {
       currentState = readingHeader;
       //synchronizer->setNOutputItemsToProduce(8);
       message_port_pub(synchronizerSetNPort, pmt::from_long(8));
+
+#ifdef DEBUG
       std::cout << "starting RX" << std::endl;
+#endif
+      
     }
 
     void receiverController_impl::stopRx() {
@@ -221,7 +243,11 @@ namespace gr {
       //synchronizer->reset();
       message_port_pub(synchronizerResetPort, pmt::PMT_NIL);
       // demodulator->disable();
+
+#ifdef DEBUG
       std::cout << "stopping RX" << std::endl;
+#endif
+      
     }
 
     void receiverController_impl::setSFcurrent(size_t SFnew) {
@@ -240,23 +266,40 @@ namespace gr {
     }
     
     void receiverController_impl::readHeader(const uint8_t* nibbles, uint8_t* dataOut) {
+#ifdef DEBUG
       std::cout << "reading header" << std::endl;
       std::cout << "nibbles: ";
+      
       for(size_t i = 0; i < 5; i++)
 	std::cout << std::hex << unsigned(nibbles[i]) << " ";
       std::cout << std::endl;
+#endif
       
       payloadLength = (nibbles[0] << 4)|(nibbles[1]);
+
+#ifdef DEBUG
       std::cout << "length: " << unsigned(payloadLength) << std::endl;
+#endif
+      
       payloadCRCPresent = nibbles[2] & 0x01;
+
+#ifdef DEBUG
       std::cout << "Checksum present: " << (payloadCRCPresent? "yes" : "no") << std::endl;
+#endif
+      
       CR = nibbles[2] >> 1;
+
+#ifdef DEBUG
       std::cout << "CR: " << unsigned(CR) << std::endl;
+#endif
+      
       uint8_t headerCheckSum = (nibbles[3] << 4)|nibbles[4];
       uint8_t headerCheckSumCalculated = calculateHeaderChecksum((*(uint32_t*) nibbles));
 
+#ifdef DEBUG
       std::cout << "checksum: " << std::hex << unsigned(headerCheckSum) << std::endl;
       std::cout << "calculated checksum: " << std::hex << unsigned(headerCheckSumCalculated) << std::endl;
+#endif
       
       headerCheckSumValid = (headerCheckSum == headerCheckSumCalculated);
       for(size_t j = 0; j < SFcurrent - 5; j++)

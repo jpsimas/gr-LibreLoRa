@@ -27,7 +27,10 @@
 #include <cmath>
 #include <complex>
 #include <volk/volk.h>
+
+#ifdef DEBUG
 #include <iostream>
+#endif
 
 namespace gr {
   namespace LibreLoRa {
@@ -49,9 +52,10 @@ namespace gr {
 		  gr::io_signature::make(1, 1, sizeof(float))),
 	mu(mu),
 	wStep(std::polar<float>(1, -2*M_PI*1.0/((1 << SF)*OSF*OSF))),
-	w(1.0)
-	      {
-		std::cout << ":DDD" << std::endl;
+	w(1.0) {
+#ifdef DEBUG
+      std::cout << ":DDD" << std::endl;
+#endif
     }
 
     /*
