@@ -101,12 +101,13 @@ namespace gr {
 	  inJ++;
 	}
 	
-	for(size_t i = 0; i < nWords - 1; i++) {
+	for(size_t i = 0; i + 1 < nWords; i++) {
 	  uint32_t word = *(uint16_t*)(inJ + 2*i);
 	  crc ^= polDivRem(uint32_t(crc)^invertEndianness(word), polynomial);
 	}
 
-	crc ^= invertEndianness(*(uint16_t*)(inJ + 2*(nWords - 1)));
+	if(nWords != 0)
+	  crc ^= invertEndianness(*(uint16_t*)(inJ + 2*(nWords - 1)));
 	
 	out[j] = crc^xorOut;
 
