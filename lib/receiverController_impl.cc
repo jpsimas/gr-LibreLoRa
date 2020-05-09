@@ -48,7 +48,8 @@ namespace gr {
      */
     receiverController_impl::receiverController_impl(size_t SF/*, correlationSync::sptr synchronizer/*, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer*/)
       : gr::block("receiverController",
-		  gr::io_signature::make2(2, 2, sizeof(uint8_t), sizeof(bool)),
+		  // gr::io_signature::make2(2, 2, sizeof(uint8_t), sizeof(bool)),
+		  gr::io_signature::make(1, 1, sizeof(uint8_t)),
 		  gr::io_signature::make(1, 1, sizeof(uint8_t))),
 	SF(SF),
 	// synchronizer(synchronizer),
@@ -82,6 +83,9 @@ namespace gr {
       message_port_register_out(synchronizerResetPort);
       message_port_register_out(payloadLengthPort);
       message_port_register_out(crcPort);
+
+      message_port_register_in(pmt::mp("sync"));
+      set_msg_handler(pmt::mp("sync"), [this](pmt::pmt_t msg) {startRx();});
       
       //setSFcurrent(SF-2);
 
@@ -105,19 +109,19 @@ namespace gr {
       switch(currentState) {
       case waitingForSync:
 	ninput_items_required[0] = 0;
-	ninput_items_required[1] = 1;
+	// ninput_items_required[1] = 1;
 	break;
       case readingHeader:
 	ninput_items_required[0] = SFcurrent;
-	ninput_items_required[1] = 0;
+	// ninput_items_required[1] = 0;
 	break;
       case sendingPayload:
 	ninput_items_required[0] = payloadNibblesToRead + extraNibblesToConsume + (payloadCRCPresent? 2*payloadCRCSize : 0);
-	ninput_items_required[1] = 0;
+	// ninput_items_required[1] = 0;
 	break;
       default:
 	ninput_items_required[0] = 0;
-	ninput_items_required[1] = 0;
+	// ninput_items_required[1] = 0;
       }
     }
     
@@ -128,7 +132,7 @@ namespace gr {
 					  gr_vector_void_star &output_items)
     {
       const uint8_t *nibblesIn = (const uint8_t *) input_items[0];
-      const bool *syncdIn = (const bool *) input_items[1];
+      // const bool *syncdIn = (const bool *) input_items[1];
       uint8_t *nibblesOut = (uint8_t *) output_items[0];
 
 #ifdef DEBUG
@@ -140,10 +144,10 @@ namespace gr {
       // Do <+signal processing+>
       switch(currentState) {
       case waitingForSync:
-	if(*syncdIn)
-	  startRx();
+	// if(*syncdIn)
+	//   startRx();
 	
-	consume(1, 1);
+	// consume(1, 1);
 	break;
 
       case readingHeader:

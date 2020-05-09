@@ -49,7 +49,9 @@ namespace gr {
     correlationSync_impl::correlationSync_impl(float corrMin, float corrStop, size_t symbolSize)
       : gr::block("correlationSync",
 		  gr::io_signature::make(2, 2, sizeof(float)),
-		  gr::io_signature::make2(2, 2, symbolSize*sizeof(float), sizeof(bool))),
+		  // gr::io_signature::make2(2, 2, symbolSize*sizeof(float), sizeof(bool))
+		  gr::io_signature::make(1, 1, symbolSize*sizeof(float))
+		  ),
 	corrMin(corrMin),
 	corrStop(corrStop),
 	symbolSize(symbolSize),
@@ -58,6 +60,10 @@ namespace gr {
 	fixedMode(true),
 	nOutputItemsToProduce(0),
 	deSyncAfterDone(false) {
+
+      syncPort = pmt::string_to_symbol("sync");
+      message_port_register_out(syncPort);
+      
       message_port_register_in(pmt::mp("setNOutputItemsToProduce"));
       set_msg_handler(pmt::mp("setNOutputItemsToProduce"),
 		      [this](pmt::pmt_t msg) {
@@ -101,13 +107,13 @@ namespace gr {
       const float *data_in = (const float *) input_items[0];
       const float *corr = (const float *) input_items[1];
       float* data_out = (float*) output_items[0];
-      bool* syncd_out = (bool*) output_items[1];
+      // bool* syncd_out = (bool*) output_items[1];
 
 #ifdef DEBUG
       std::cout << "correlationSync: work called: noutput_items = " << noutput_items << std::endl;
 #endif
       
-      *syncd_out = false;
+      // *syncd_out = false;
       // Do <+signal processing+>
 
       if(!syncd) {
@@ -125,8 +131,9 @@ namespace gr {
 #ifdef DEBUG
     	      std::cout << "correlationSync: sync'd" << std::endl;
 #endif
-    	      *syncd_out = true;
-    	      produce(1, 1);
+    	      // *syncd_out = true;
+    	      // produce(1, 1);
+	      message_port_pub(syncPort, pmt::PMT_NIL);
 #ifdef DEBUG
     	      std::cout << "correlationSync: produced syncd signal" << std::endl;
 #endif

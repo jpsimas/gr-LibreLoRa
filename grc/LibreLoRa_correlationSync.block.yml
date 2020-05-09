@@ -30,7 +30,10 @@ outputs:
   domain: stream
   dtype: float
   vlen: ${ symbolSize }
-- label: out
-  domain: stream
-  dtype: byte
+# - label: out
+#   domain: stream
+#   dtype: byte
+- domain: message
+  id: sync
+  optional: true
 file_format: 1

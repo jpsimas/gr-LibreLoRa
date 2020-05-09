@@ -123,7 +123,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2160, 544.0]
+    coordinate: [2272, 552.0]
     rotation: 0
     state: true
 - name: LibreLoRa_Correlation_0
@@ -349,7 +349,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2384, 344.0]
+    coordinate: [2488, 340.0]
     rotation: 0
     state: true
 - name: pad_sink_1
@@ -367,7 +367,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2384, 568.0]
+    coordinate: [2456, 580.0]
     rotation: 0
     state: true
 - name: pad_source_0
@@ -430,7 +430,7 @@ connections:
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSync_0, '1']
 - [LibreLoRa_NibblesToBytes_0, '0', LibreLoRa_randomize_0, '0']
 - [LibreLoRa_correlationSync_0, '0', LibreLoRa_symbolDemod_0, '0']
-- [LibreLoRa_correlationSync_0, '1', LibreLoRa_receiverController_0, '1']
+- [LibreLoRa_correlationSync_0, sync, LibreLoRa_receiverController_0, sync]
 - [LibreLoRa_decode_0, '0', LibreLoRa_receiverController_0, '0']
 - [LibreLoRa_deinterleave_0, '0', LibreLoRa_decode_0, '0']
 - [LibreLoRa_frequencyTracker_0, '0', LibreLoRa_Correlation_0, '0']

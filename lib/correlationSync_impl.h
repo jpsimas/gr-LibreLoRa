@@ -44,6 +44,8 @@ namespace gr {
       
       int nOutputItemsToProduce;
       bool deSyncAfterDone;
+
+      pmt::pmt_t syncPort;
      public:
       correlationSync_impl(float corrMin, float corrStop, size_t symbolSize);
       ~correlationSync_impl();

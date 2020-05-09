@@ -26,6 +26,7 @@
 #include "decode_impl.h"
 
 #include <LibreLoRa/getPairityMatrix.h>
+
 #ifdef DEBUG
 #include <iostream>
 #endif
@@ -92,7 +93,7 @@ namespace gr {
 	out[i] = (in[i] ^ cosetLeader[syndrome]) & 0x0f;
 
 #ifdef DEBUG
-	std::cout << "decoded nibble: " <<  std::hex << unsigned(out[i]) << std::endl;
+	std::cout << std::hex << "decoded: in: " << unsigned(in[i]) << ", out: "<<  std::hex << unsigned(out[i]) << ", CR = " << CR << std::endl;
 #endif
 	
       }

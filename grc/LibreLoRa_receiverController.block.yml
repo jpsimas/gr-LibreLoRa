@@ -12,9 +12,12 @@ inputs:
 - label: nibblesIn
   domain: stream
   dtype: byte
-- label: syncdIn
-  domain: stream
-  dtype: byte
+# - label: syncdIn
+#   domain: stream
+#   dtype: byte
+- domain: message
+  id: sync
+  optional: true
 outputs:
 - label: nibblesOut
   domain: stream
