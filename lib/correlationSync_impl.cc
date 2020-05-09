@@ -133,11 +133,13 @@ namespace gr {
 #endif
     	      // *syncd_out = true;
     	      // produce(1, 1);
+	      // return WORK_CALLED_PRODUCE;
+	      
 	      message_port_pub(syncPort, pmt::PMT_NIL);
 #ifdef DEBUG
     	      std::cout << "correlationSync: produced syncd signal" << std::endl;
 #endif
-	      return WORK_CALLED_PRODUCE;
+	      return 0;
     	    } else if(corr[i] > corrMax) {
 	      if(i < symbolSize) {
     	      // if(i < ninput_items[0] - symbolSize) {
@@ -181,8 +183,9 @@ namespace gr {
     	  syncd = false;
     	}
 
-	produce(0, n);
-    	return WORK_CALLED_PRODUCE;
+	// produce(0, n);
+    	// return WORK_CALLED_PRODUCE;
+	return n;
       }
     }
     
