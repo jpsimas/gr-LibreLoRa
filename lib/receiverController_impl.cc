@@ -36,22 +36,22 @@ namespace gr {
   namespace LibreLoRa {
 
     receiverController::sptr
-    receiverController::make(size_t SF, correlationSync::sptr synchronizer/*, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer*/)
+    receiverController::make(size_t SF/*, correlationSync::sptr synchronizer/*, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer*/)
     {
       return gnuradio::get_initial_sptr
-        (new receiverController_impl(SF, synchronizer/*, demodulator, grayEncoder, deinterleaver, decoder, randomizer*/));
+        (new receiverController_impl(SF/*, synchronizer/*, demodulator, grayEncoder, deinterleaver, decoder, randomizer*/));
     }
 
 
     /*
      * The private constructor
      */
-    receiverController_impl::receiverController_impl(size_t SF, correlationSync::sptr synchronizer/*, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer*/)
+    receiverController_impl::receiverController_impl(size_t SF/*, correlationSync::sptr synchronizer/*, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer*/)
       : gr::block("receiverController",
 		  gr::io_signature::make2(2, 2, sizeof(uint8_t), sizeof(bool)),
 		  gr::io_signature::make(1, 1, sizeof(uint8_t))),
 	SF(SF),
-	synchronizer(synchronizer),
+	// synchronizer(synchronizer),
 	// symbolSize(symbolSize),
 	// demodulator(demodulator),
 	// grayEncoder(grayEncoder),

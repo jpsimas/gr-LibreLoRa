@@ -3,13 +3,10 @@ label: receiverController
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.receiverController(${SF}, ${synchronizer})
+  make: LibreLoRa.receiverController(${SF})
 parameters:
 - id: SF
   label: Sf
-  dtype: raw
-- id: synchronizer
-  label: synchronizer
   dtype: raw
 inputs:
 - label: nibblesIn
