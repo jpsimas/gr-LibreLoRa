@@ -52,6 +52,7 @@ namespace gr {
 		  gr::io_signature::make(1, 1, sizeof(uint8_t)),
 		  gr::io_signature::make(1, 1, sizeof(uint8_t))),
 	SF(SF),
+	SFcurrent(SF),
 	// synchronizer(synchronizer),
 	// symbolSize(symbolSize),
 	// demodulator(demodulator),
@@ -108,7 +109,8 @@ namespace gr {
       // ninput_items_required[1] = started? 0 : 1;
       switch(currentState) {
       case waitingForSync:
-	ninput_items_required[0] = 0;
+	//no samples are really needed, but this avoinds work being called when it is not necessary
+	ninput_items_required[0] = SFcurrent;//0;
 	// ninput_items_required[1] = 1;
 	break;
       case readingHeader:
@@ -119,9 +121,6 @@ namespace gr {
 	ninput_items_required[0] = payloadNibblesToRead + extraNibblesToConsume + (payloadCRCPresent? 2*payloadCRCSize : 0);
 	// ninput_items_required[1] = 0;
 	break;
-      default:
-	ninput_items_required[0] = 0;
-	// ninput_items_required[1] = 0;
       }
     }
     
