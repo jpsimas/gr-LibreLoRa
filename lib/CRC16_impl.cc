@@ -88,26 +88,15 @@ namespace gr {
 #ifdef DEBUG
       std::cout << std::dec << "CRC16: work called, noutput_items = " << noutput_items << ", payloadSize = " << payloadSize << std::endl;
 #endif
-
-      const auto nWords = payloadSize/2;
       
       for(size_t j = 0; j < noutput_items; j++) {
-	auto inJ = in + j*payloadSize;
-	uint16_t crc = 0x00;
+	const uint8_t* inJ = in + j*payloadSize;
 
-	if(payloadSize%2 != 0) {
-	  uint32_t word = inJ[0];
-	  crc ^= polDivRem(uint32_t(crc)^invertEndianness(word), polynomial);
-	  inJ++;
+	uint32_t crc = 0x0000;
+	for(size_t i = 0; i < payloadSize; i++) {
+	  crc <<= 8;
+	  crc = polDivRem(crc^uint16_t(inJ[i]), polynomial);
 	}
-	
-	for(size_t i = 0; i + 1 < nWords; i++) {
-	  uint32_t word = *(uint16_t*)(inJ + 2*i);
-	  crc ^= polDivRem(uint32_t(crc)^invertEndianness(word), polynomial);
-	}
-
-	if(nWords != 0)
-	  crc ^= invertEndianness(*(uint16_t*)(inJ + 2*(nWords - 1)));
 	
 	out[j] = crc^xorOut;
 
