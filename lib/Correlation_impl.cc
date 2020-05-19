@@ -42,7 +42,7 @@ namespace gr {
     Correlation_impl::Correlation_impl(const std::vector<float>& symbol)
       : gr::sync_block("Correlation",
 		       gr::io_signature::make(1, 1, sizeof(float)),
-		       gr::io_signature::make(1, 1, sizeof(float))),
+		       gr::io_signature::make(2, 2, sizeof(float))),
 	symbol(symbol) {
       set_history(symbol.size());
       std::cout << "symbol size:" << symbol.size() << std::endl;
@@ -62,6 +62,7 @@ namespace gr {
     {
       const float *in = (const float *) input_items[0];
       float *corr_out = (float *) output_items[0];
+      float *data_out = (float *) output_items[1];
 
       // Do <+signal processing+>
 
@@ -88,6 +89,7 @@ namespace gr {
       	volk_32f_x2_dot_prod_32f(&corr, samples, symbol.data(), symbol.size());
 
       	corr_out[k] = corr/sqrt(sumSq - sum*sum/symbol.size());
+	data_out[k] = samples[0];
       }
 
       

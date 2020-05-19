@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2020 Joao Pedro de O. Simas.
+ * Copyright 2020 Joao Pedro de O Simas.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,11 +18,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_CORRELATIONSYNC_H
-#define INCLUDED_LIBRELORA_CORRELATIONSYNC_H
+#ifndef INCLUDED_LIBRELORA_SLIDINGDFTMAX_H
+#define INCLUDED_LIBRELORA_SLIDINGDFTMAX_H
 
 #include <LibreLoRa/api.h>
-#include <gnuradio/sync_decimator.h>
+#include <gnuradio/sync_block.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -32,26 +32,24 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
-    class LIBRELORA_API correlationSync : virtual public gr::block
+    class LIBRELORA_API slidingDFTMax : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<correlationSync> sptr;
+      typedef boost::shared_ptr<slidingDFTMax> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of LibreLoRa::correlationSync.
+       * \brief Return a shared_ptr to a new instance of LibreLoRa::slidingDFTMax.
        *
-       * To avoid accidental use of raw pointers, LibreLoRa::correlationSync's
+       * To avoid accidental use of raw pointers, LibreLoRa::slidingDFTMax's
        * constructor is in a private implementation
-       * class. LibreLoRa::correlationSync::make is the public interface for
+       * class. LibreLoRa::slidingDFTMax::make is the public interface for
        * creating new instances.
        */
-      static sptr make(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize);
-      virtual void reset() = 0;
-      virtual void setNOutputItemsToProduce(int noutput_items) = 0;
+      static sptr make(size_t DFTLength, size_t SF, size_t symbolSize);
     };
 
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_CORRELATIONSYNC_H */
+#endif /* INCLUDED_LIBRELORA_SLIDINGDFTMAX_H */
 

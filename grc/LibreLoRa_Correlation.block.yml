@@ -13,7 +13,10 @@ inputs:
   domain: stream
   dtype: float
 outputs:
-- label: out
+- label: corrOut
+  domain: stream
+  dtype: float
+- label: dataOut
   domain: stream
   dtype: float
 file_format: 1

@@ -32,6 +32,18 @@ options:
     state: enabled
 
 blocks:
+- name: DFTSize
+  id: variable
+  parameters:
+    comment: ''
+    value: 2*symbolSize
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [464, 652.0]
+    rotation: 0
+    state: true
 - name: OSF
   id: variable
   parameters:
@@ -44,6 +56,18 @@ blocks:
     coordinate: [504, 20.0]
     rotation: 0
     state: enabled
+- name: chirpWindow
+  id: variable
+  parameters:
+    comment: ''
+    value: LibreLoRa.getChirpWindow(DFTSize, windowSize, SF, symbolSize)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [568, 620.0]
+    rotation: 0
+    state: true
 - name: nUpchirps
   id: variable
   parameters:
@@ -92,6 +116,18 @@ blocks:
     coordinate: [984, 28.0]
     rotation: 0
     state: enabled
+- name: windowSize
+  id: variable
+  parameters:
+    comment: ''
+    value: symbolSize/2
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [320, 620.0]
+    rotation: 0
+    state: true
 - name: BW
   id: parameter
   parameters:
@@ -109,6 +145,22 @@ blocks:
     coordinate: [320, 12.0]
     rotation: 0
     state: true
+- name: LibreLoRa_ArgMaxAbs_0
+  id: LibreLoRa_ArgMaxAbs
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vecLength: DFTSize
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [392, 512.0]
+    rotation: 0
+    state: disabled
 - name: LibreLoRa_CRC16_0
   id: LibreLoRa_CRC16
   parameters:
@@ -139,7 +191,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [400, 248.0]
+    coordinate: [392, 224.0]
     rotation: 0
     state: true
 - name: LibreLoRa_NibblesToBytes_0
@@ -167,6 +219,7 @@ blocks:
     corrStop: '0.7'
     maxoutbuf: '0'
     minoutbuf: '0'
+    preambleSize: preambleNormalized.size
     symbolSize: symbolSize
   states:
     bus_sink: false
@@ -223,7 +276,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [192, 220.0]
+    coordinate: [192, 212.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_grayEncode_0
@@ -273,6 +326,23 @@ blocks:
     coordinate: [1648, 360.0]
     rotation: 0
     state: enabled
+- name: LibreLoRa_streamToHistoryVector_0
+  id: LibreLoRa_streamToHistoryVector
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nVect: DFTSize
+    type: complex
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [152, 348.0]
+    rotation: 0
+    state: disabled
 - name: LibreLoRa_symbolDemod_0
   id: LibreLoRa_symbolDemod
   parameters:
@@ -308,6 +378,164 @@ blocks:
     coordinate: [408, 4.0]
     rotation: 0
     state: true
+- name: analog_const_source_x_0
+  id: analog_const_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [656, 508.0]
+    rotation: 0
+    state: disabled
+- name: blocks_complex_to_arg_0
+  id: blocks_complex_to_arg
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1136, 576.0]
+    rotation: 0
+    state: disabled
+- name: blocks_int_to_float_0
+  id: blocks_int_to_float
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    scale: DFTSize
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [472, 444.0]
+    rotation: 0
+    state: disabled
+- name: blocks_magphase_to_complex_0
+  id: blocks_magphase_to_complex
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [912, 528.0]
+    rotation: 0
+    state: disabled
+- name: blocks_multiply_const_vxx_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: chirpWindow
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: DFTSize
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [160, 436.0]
+    rotation: 0
+    state: disabled
+- name: blocks_multiply_const_vxx_1
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 2*numpy.pi
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [752, 556.0]
+    rotation: 0
+    state: disabled
+- name: blocks_multiply_const_vxx_1_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 1/(2*numpy.pi)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1280, 556.0]
+    rotation: 0
+    state: disabled
+- name: blocks_null_sink_2
+  id: blocks_null_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    bus_structure_sink: '[[0,],]'
+    comment: ''
+    num_inputs: '1'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [568, 544.0]
+    rotation: 0
+    state: disabled
+- name: fft_vxx_0
+  id: fft_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    fft_size: DFTSize
+    forward: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nthreads: '1'
+    shift: 'True'
+    type: complex
+    window: numpy.ones(DFTSize)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [144, 508.0]
+    rotation: 0
+    state: disabled
 - name: import_0
   id: import
   parameters:
@@ -426,15 +654,17 @@ blocks:
     state: true
 
 connections:
+- [LibreLoRa_ArgMaxAbs_0, '0', blocks_int_to_float_0, '0']
+- [LibreLoRa_ArgMaxAbs_0, '1', blocks_null_sink_2, '0']
 - [LibreLoRa_CRC16_0, '0', pad_sink_1, '0']
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSync_0, '1']
+- [LibreLoRa_Correlation_0, '1', LibreLoRa_correlationSync_0, '0']
 - [LibreLoRa_NibblesToBytes_0, '0', LibreLoRa_randomize_0, '0']
 - [LibreLoRa_correlationSync_0, '0', LibreLoRa_symbolDemod_0, '0']
 - [LibreLoRa_correlationSync_0, sync, LibreLoRa_receiverController_0, sync]
 - [LibreLoRa_decode_0, '0', LibreLoRa_receiverController_0, '0']
 - [LibreLoRa_deinterleave_0, '0', LibreLoRa_decode_0, '0']
 - [LibreLoRa_frequencyTracker_0, '0', LibreLoRa_Correlation_0, '0']
-- [LibreLoRa_frequencyTracker_0, '0', LibreLoRa_correlationSync_0, '0']
 - [LibreLoRa_grayEncode_0, '0', LibreLoRa_deinterleave_0, '0']
 - [LibreLoRa_randomize_0, '0', LibreLoRa_CRC16_0, '0']
 - [LibreLoRa_randomize_0, '0', pad_sink_0, '0']
@@ -451,8 +681,19 @@ connections:
   reset]
 - [LibreLoRa_receiverController_0, synchronizerSetN, LibreLoRa_correlationSync_0,
   setNOutputItemsToProduce]
+- [LibreLoRa_streamToHistoryVector_0, '0', blocks_multiply_const_vxx_0, '0']
 - [LibreLoRa_symbolDemod_0, '0', LibreLoRa_grayEncode_0, '0']
+- [analog_const_source_x_0, '0', blocks_magphase_to_complex_0, '0']
+- [blocks_complex_to_arg_0, '0', blocks_multiply_const_vxx_1_0, '0']
+- [blocks_int_to_float_0, '0', blocks_multiply_const_vxx_1, '0']
+- [blocks_magphase_to_complex_0, '0', blocks_complex_to_arg_0, '0']
+- [blocks_multiply_const_vxx_0, '0', fft_vxx_0, '0']
+- [blocks_multiply_const_vxx_1, '0', blocks_magphase_to_complex_0, '1']
+- [blocks_multiply_const_vxx_1_0, '0', LibreLoRa_Correlation_0, '0']
+- [blocks_multiply_const_vxx_1_0, '0', LibreLoRa_correlationSync_0, '0']
+- [fft_vxx_0, '0', LibreLoRa_ArgMaxAbs_0, '0']
 - [pad_source_0, '0', LibreLoRa_frequencyTracker_0, '0']
+- [pad_source_0, '0', LibreLoRa_streamToHistoryVector_0, '0']
 
 metadata:
   file_format: 1

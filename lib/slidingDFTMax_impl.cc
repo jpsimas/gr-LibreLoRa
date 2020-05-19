@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2020 Joao Pedro de O. Simas.
+ * Copyright 2020 Joao Pedro de O Simas.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,106 +23,95 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include "slidingDFT_impl.h"
+#include "slidingDFTMax_impl.h"
 
 #include <volk/volk.h>
-
-#include <iostream>
 
 namespace gr {
   namespace LibreLoRa {
 
-    slidingDFT::sptr
-    slidingDFT::make(size_t DFTLength, size_t SF, size_t symbolSize)
+    slidingDFTMax::sptr
+    slidingDFTMax::make(size_t DFTLength, size_t SF, size_t symbolSize)
     {
       return gnuradio::get_initial_sptr
-        (new slidingDFT_impl(DFTLength, SF, symbolSize));
+        (new slidingDFTMax_impl(DFTLength, SF, symbolSize));
     }
 
 
     /*
      * The private constructor
      */
-    slidingDFT_impl::slidingDFT_impl(size_t DFTLength, size_t SF, size_t symbolSize)
-      : gr::sync_block("slidingDFT",
+    slidingDFTMax_impl::slidingDFTMax_impl(size_t DFTLength, size_t SF, size_t symbolSize)
+      : gr::sync_block("slidingDFTMax",
               gr::io_signature::make(1, 1, sizeof(gr_complex)),
-		       gr::io_signature::make(1, 1, DFTLength*sizeof(gr_complex))),
+		       gr::io_signature::make(1, 1, sizeof(float))),
 	length(DFTLength),
-	alpha(0.8),
-	alphaN(pow(alpha, length)),
-	beta(float(1 << SF)*2*M_PI/(symbolSize*symbolSize)),
-	step(std::polar<float>(1.0, beta)),
-	stepN(1.0),
-	index(0){
-
-      std::cout << "WIENERSHLIEDEN ENGAGED. SCHLIDENESS = " << beta << std::endl;
-      std::cout << "COMPLEX SCHLIDENESS = " << step << std::endl;
-
-      std::cout << "ANTI-SCHLIDENESS = " << alpha << std::endl;
-      std::cout << "N-ANTI-SCHLIDENESS = " << alphaN << std::endl;
+	beta(float(1 << SF)/(symbolSize*symbolSize)),
+	offset(beta),
+	step(std::polar<float>(1.0, -2*M_PI*beta))
+    {
+      
       set_history(length);
 
       const int alignment_multiple = volk_get_alignment()/sizeof(gr_complex);
       set_alignment(std::max(1,alignment_multiple));
-
-      exponents = (gr_complex *)volk_malloc((length + 1)*sizeof(gr_complex), volk_get_alignment());
+      
+      exponents = (gr_complex *)volk_malloc(length*sizeof(gr_complex), volk_get_alignment());
 
       DFT = (gr_complex *)volk_malloc(length*sizeof(gr_complex), volk_get_alignment());
-
-      for (auto i = 0; i < length; i++) 
-	DFT[i] = 0.0;
-
-      for (auto i = 0; i < length + 1; i++) {
-	exponents[i] = std::polar<float>(alpha, (2.0*M_PI/length)*i);
+      float alphai = 1.0;
+      for (size_t i = 0; i < length; i++) {
+	exponents[i] = alphai*std::polar<float>(1, (2.0*M_PI/length)*i);
+	alphai *= alpha;
+	DFT[i] = 1;
       }
 
-      a = 1.0;
+      e0 = 1.0;
+      eN = std::polar<float>(1.0, beta*length*(length + 1)/2.0);
     }
 
     /*
      * Our virtual destructor.
      */
-    slidingDFT_impl::~slidingDFT_impl()
+    slidingDFTMax_impl::~slidingDFTMax_impl()
     {
       free(exponents);
       free(DFT);
     }
 
     // void
-    // slidingDFT_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
+    // slidingDFTMax_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     // {
     //   /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
     //   ninput_items_required[0] = noutput_items + length;
     // }
     
     int
-    slidingDFT_impl::work(int noutput_items,
+    slidingDFTMax_impl::work(int noutput_items,
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
       const gr_complex *in = (const gr_complex *) input_items[0];
-      gr_complex *out = (gr_complex *) output_items[0];
+      float *indexOut = (float *) output_items[0];
 
       // Do <+signal processing+>
       
-      for(auto i = 0; i < noutput_items; i++) {
-	// for(size_t j = 0; j < length; j++)	
-	a *= std::polar<float>(1.0, std::arg(exponents[0]));
+      for(size_t i = 0; i < noutput_items; i++) {
 	volk_32fc_x2_multiply_32fc(DFT, exponents, DFT, length);
+	
+	const auto delta = - in[i]*alphaN*eN + in[i + length]*e0;
 
-	// const auto delta = in[i + length]*exponents[0];
-	const auto delta = /*- a*in[i]*alphaN*/ + in[i + length];
-	// const auto delta = - in[i] + in[i + length]*alphaN;
+	e0 *= step;
+	eN *= step;
+	
+	for(auto j = 0; j < length; j++)
+	  DFT[j] += delta;
 
-	 for(auto j = 0; j < length; j++)
-	   //DFT[j] = DFT[j] + in[i + length];
-	   DFT[j] += delta;
-
-	 // for(auto j = 0; j < length; j++)
-	 //   out[j + length*i] = DFT[j];
-	 memcpy(out + length*i, DFT, length*sizeof(gr_complex));
-	 
-	 volk_32fc_s32fc_multiply_32fc(exponents, exponents, step, length);
+	uint32_t indMax;
+	volk_32fc_index_max_32u(&indMax, DFT, length);
+	
+	indexOut[i] = remainder(indMax/float(length)/* + offset*/ , 1.0);
+	offset += beta;
       }
 
       // Tell runtime system how many output items we produced.

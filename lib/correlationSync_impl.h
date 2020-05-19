@@ -33,6 +33,7 @@ namespace gr {
       const float corrMin;
       const float corrStop;
       const size_t symbolSize;
+      const size_t preambleSize;
 
       bool syncd;
       // enum syncState {initial, foundFirstPt, syncd};
@@ -45,9 +46,10 @@ namespace gr {
       int nOutputItemsToProduce;
       bool deSyncAfterDone;
 
+      bool preambleConsumed;
       pmt::pmt_t syncPort;
      public:
-      correlationSync_impl(float corrMin, float corrStop, size_t symbolSize);
+      correlationSync_impl(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize);
       ~correlationSync_impl();
 
       // Where all the action really happens

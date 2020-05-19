@@ -75,9 +75,11 @@ namespace gr {
       T *out = (T *) output_items[0];
 
       // Do <+signal processing+>
-      for(size_t i = 0; i < noutput_items; i++)
-	for(size_t j = 0; j < nVect; j++)
-	  out[nVect*i + j] = in[i + j];
+      for(size_t i = 0; i < noutput_items; i++) {
+	// for(size_t j = 0; j < nVect; j++)
+	//   out[nVect*i + j] = in[i + j];
+	memcpy(out + nVect*i, in + i, nVect*sizeof(gr_complex));
+      }
 
       // Tell runtime system how many output items we produced.
       return noutput_items;

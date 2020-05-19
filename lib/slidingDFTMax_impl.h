@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2020 Joao Pedro de O. Simas.
+ * Copyright 2020 Joao Pedro de O Simas.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,50 +18,49 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_SLIDINGDFT_IMPL_H
-#define INCLUDED_LIBRELORA_SLIDINGDFT_IMPL_H
+#ifndef INCLUDED_LIBRELORA_SLIDINGDFTMAX_IMPL_H
+#define INCLUDED_LIBRELORA_SLIDINGDFTMAX_IMPL_H
 
-#include <LibreLoRa/slidingDFT.h>
+#include <LibreLoRa/slidingDFTMax.h>
+
 #include <vector>
 
 namespace gr {
   namespace LibreLoRa {
 
-    class slidingDFT_impl : public slidingDFT
+    class slidingDFTMax_impl : public slidingDFTMax
     {
-     private:
+    private:
       // Nothing to declare in this block.
       size_t length;
-      // std::vector<gr_complex> exponents;
-      // std::vector<gr_complex> DFT;
       gr_complex* exponents;
       gr_complex* DFT;
 
-      const float alpha;//for stability
-      const float alphaN;
+      static constexpr float alpha = 1 - 1e-6;//for stability
+      const float alphaN = pow(alpha, length);
 
       const float beta;
       
-      gr_complex step;
-      gr_complex stepN;
-      size_t index;
+      const gr_complex step;
+      gr_complex e0;
+      gr_complex eN;
 
-      gr_complex a;
-     public:
-      slidingDFT_impl(size_t DFTLength, size_t SF, size_t symbolSize);
-      ~slidingDFT_impl();
+      float offset;
+    public:
+      slidingDFTMax_impl(size_t DFTLength, size_t SF, size_t symbolSize);
+      ~slidingDFTMax_impl();
 
       // Where all the action really happens
       // void forecast (int noutput_items, gr_vector_int &ninput_items_required);
       int work(
-              int noutput_items,
-              gr_vector_const_void_star &input_items,
-              gr_vector_void_star &output_items
-      );
+	       int noutput_items,
+	       gr_vector_const_void_star &input_items,
+	       gr_vector_void_star &output_items
+	       );
     };
 
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_SLIDINGDFT_IMPL_H */
+#endif /* INCLUDED_LIBRELORA_SLIDINGDFTMAX_IMPL_H */
 

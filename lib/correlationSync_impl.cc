@@ -36,17 +36,17 @@ namespace gr {
   namespace LibreLoRa {
 
     correlationSync::sptr
-    correlationSync::make(float corrMin, float corrStop, size_t symbolSize)
+    correlationSync::make(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize)
     {
       return gnuradio::get_initial_sptr
-        (new correlationSync_impl(corrMin, corrStop, symbolSize));
+        (new correlationSync_impl(corrMin, corrStop, symbolSize, preambleSize));
     }
 
 
     /*
      * The private constructor
      */
-    correlationSync_impl::correlationSync_impl(float corrMin, float corrStop, size_t symbolSize)
+    correlationSync_impl::correlationSync_impl(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize)
       : gr::block("correlationSync",
 		  gr::io_signature::make(2, 2, sizeof(float)),
 		  // gr::io_signature::make2(2, 2, symbolSize*sizeof(float), sizeof(bool))
@@ -55,11 +55,13 @@ namespace gr {
 	corrMin(corrMin),
 	corrStop(corrStop),
 	symbolSize(symbolSize),
+	preambleSize(preambleSize),
 	syncd(false),
 	// currState(initial),
 	fixedMode(true),
 	nOutputItemsToProduce(0),
-	deSyncAfterDone(false) {
+	deSyncAfterDone(false),
+	preambleConsumed(false) {
 
       syncPort = pmt::string_to_symbol("sync");
       message_port_register_out(syncPort);
@@ -93,7 +95,7 @@ namespace gr {
     correlationSync_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
       const size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
-      ninput_items_required[0] = (syncd? symbolSize*n : /*(noutput_items + 1)*symbolSize*/2*symbolSize);
+      ninput_items_required[0] = (syncd? (symbolSize*n + (preambleConsumed? 0 : preambleSize)) : /*(noutput_items + 1)*symbolSize*/2*symbolSize);
       
       ninput_items_required[1] = ninput_items_required[0];
     }
@@ -110,7 +112,7 @@ namespace gr {
       // bool* syncd_out = (bool*) output_items[1];
 
 #ifdef DEBUG
-      std::cout << "correlationSync: work called: noutput_items = " << noutput_items << std::endl;
+      // std::cout << "correlationSync: work called: noutput_items = " << noutput_items << std::endl;
 #endif
       
       // *syncd_out = false;
@@ -128,6 +130,7 @@ namespace gr {
     	      foundFirstPt = false;
     	      consume_each(maxPos);
     	      syncd = true;
+	      preambleConsumed = false;
 #ifdef DEBUG
     	      std::cout << "correlationSync: sync'd" << std::endl;
 #endif
@@ -163,28 +166,32 @@ namespace gr {
 	
     	return 0;
       } else {
-
-    	size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
+	if(!preambleConsumed) {
+	  consume_each(preambleSize);
+	  preambleConsumed = true;
+	}
 	
-    	for(size_t j = 0; j < n; j++)
-    	  for(size_t i = 0; i < symbolSize; i++)
-    	    data_out[i + symbolSize*j] = data_in[i + symbolSize*j];
-
-    	consume_each (symbolSize*n);
+	size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
 	
-    	if(fixedModeEnabled())
-    	  nOutputItemsToProduce -= n;
+	for(size_t j = 0; j < n; j++)
+	  for(size_t i = 0; i < symbolSize; i++)
+	    data_out[i + symbolSize*j] = data_in[i + symbolSize*j];
+
+	consume_each (symbolSize*n);
+	
+	if(fixedModeEnabled())
+	  nOutputItemsToProduce -= n;
 #ifdef DEBUG
-    	std::cout << "produced " << n << " synced symbols" << std::endl;
+	std::cout << "produced " << n << " synced symbols" << std::endl;
 #endif
 
-    	if(nOutputItemsToProduce == 0 && deSyncAfterDone) {
-    	  deSyncAfterDone = false;
-    	  syncd = false;
-    	}
+	if(nOutputItemsToProduce == 0 && deSyncAfterDone) {
+	  deSyncAfterDone = false;
+	  syncd = false;
+	}
 
 	// produce(0, n);
-    	// return WORK_CALLED_PRODUCE;
+	// return WORK_CALLED_PRODUCE;
 	return n;
       }
     }

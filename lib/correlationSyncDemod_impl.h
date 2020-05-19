@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2020 Joao Pedro de O Simas.
+ * Copyright 2020 Joao Pedro de O. Simas.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,25 +33,45 @@ namespace gr {
       const float corrMin;
       const float corrStop;
       const size_t symbolSize;
-      bool foundFirstPt;
-      size_t delay;
-      size_t delayCounter;
+      const size_t preambleSize;
+
+      bool syncd;
+      // enum syncState {initial, foundFirstPt, syncd};
+      // syncState currState;
+      // float corrMax;
+      
+      //constexpr static int fixedModeDisabled = -1;
+      bool fixedMode;
+      
+      int nOutputItemsToProduce;
+      bool deSyncAfterDone;
+
+      bool preambleConsumed;
+      pmt::pmt_t syncPort;
+
+      float deltaF;
      public:
-      correlationSyncDemod_impl(float corrMin, float corrStop, size_t symbolSize);
+      correlationSyncDemod_impl(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize);
       ~correlationSyncDemod_impl();
 
       // Where all the action really happens
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);
-      
-      int work(
-              int noutput_items,
-              gr_vector_const_void_star &input_items,
-              gr_vector_void_star &output_items
-      );
-    };
 
+      int general_work(int noutput_items,
+		       gr_vector_int &ninput_items,
+		       gr_vector_const_void_star &input_items,
+		       gr_vector_void_star &output_items);
+
+      void reset();
+      void setNOutputItemsToProduce(int noutput_items) {nOutputItemsToProduce = noutput_items;};
+
+      constexpr bool fixedModeEnabled() {
+	return fixedMode;
+	//return nOutputItemsToProduce != fixedModeDisabled;};
+      };
+    };
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_CORRELATIONSYNCDEMOD_IMPL_H */
+#endif /* INCLUDED_LIBRELORA_CORRELATIONSYNC_IMPL_H */
 

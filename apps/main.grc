@@ -170,7 +170,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [864, 516.0]
+    coordinate: [760, 496.0]
     rotation: 0
     state: true
 - name: LibreLoRa_NibblesToBytes_0
@@ -220,7 +220,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1152, 452.0]
+    coordinate: [1088, 440.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_decode_0
@@ -349,7 +349,6 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    synchronizer: self.LibreLoRa_correlationSync_0
   states:
     bus_sink: false
     bus_source: false
@@ -894,7 +893,7 @@ blocks:
     bus_structure: null
     coordinate: [1064, 340.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: qtgui_time_sink_x_0_1_0
   id: qtgui_time_sink_x
   parameters:
@@ -2167,34 +2166,19 @@ connections:
 - [LibreLoRa_CRC16_0, '0', blocks_null_sink_0, '0']
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSync_0, '1']
 - [LibreLoRa_Correlation_0, '0', qtgui_time_sink_x_0_0_0, '1']
+- [LibreLoRa_Correlation_0, '1', qtgui_time_sink_x_0_0_0, '0']
 - [LibreLoRa_NibblesToBytes_0, '0', LibreLoRa_randomize_0, '0']
 - [LibreLoRa_chirpSource_0, '0', blocks_throttle_0, '0']
 - [LibreLoRa_correlationSync_0, '0', LibreLoRa_symbolDemod_0, '0']
 - [LibreLoRa_correlationSync_0, '0', qtgui_vector_sink_f_0, '0']
-- [LibreLoRa_correlationSync_0, '1', LibreLoRa_receiverController_0, '1']
-- [LibreLoRa_correlationSync_0, '1', blocks_uchar_to_float_1, '0']
-- [LibreLoRa_decode_0, '0', LibreLoRa_readHeader_0, '0']
+- [LibreLoRa_correlationSync_0, sync, LibreLoRa_receiverController_0, sync]
 - [LibreLoRa_decode_0, '0', LibreLoRa_receiverController_0, '0']
-- [LibreLoRa_decode_0, '0', blocks_uchar_to_float_0, '0']
 - [LibreLoRa_deinterleave_0, '0', LibreLoRa_decode_0, '0']
-- [LibreLoRa_deinterleave_0, '0', blocks_uchar_to_float_0_0, '0']
 - [LibreLoRa_frequencyTracker_0, '0', LibreLoRa_Correlation_0, '0']
 - [LibreLoRa_frequencyTracker_0, '0', LibreLoRa_correlationSync_0, '0']
-- [LibreLoRa_frequencyTracker_0, '0', qtgui_time_sink_x_0, '0']
-- [LibreLoRa_frequencyTracker_0, '0', qtgui_time_sink_x_0_0_0, '0']
 - [LibreLoRa_grayEncode_0, '0', LibreLoRa_deinterleave_0, '0']
-- [LibreLoRa_grayEncode_0, '0', blocks_short_to_float_0_0, '0']
 - [LibreLoRa_randomize_0, '0', LibreLoRa_CRC16_0, '0']
-- [LibreLoRa_randomize_0, '0', blocks_file_sink_0, '0']
 - [LibreLoRa_randomize_0, '0', blocks_tcp_server_sink_0, '0']
-- [LibreLoRa_randomize_0, '0', blocks_udp_sink_1, '0']
-- [LibreLoRa_readHeader_0, '0', blocks_uchar_to_float_0_1, '0']
-- [LibreLoRa_readHeader_0, '1', blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0,
-  '0']
-- [LibreLoRa_readHeader_0, '2', blocks_uchar_to_float_0_1_0_0_0_0_0_0_0_0_0_0_0_0_0_0_0,
-  '0']
-- [LibreLoRa_readHeader_0, '3', blocks_uchar_to_float_0_1_0_0, '0']
-- [LibreLoRa_readHeader_0, '4', blocks_vector_to_stream_3, '0']
 - [LibreLoRa_receiverController_0, '0', LibreLoRa_NibblesToBytes_0, '0']
 - [LibreLoRa_receiverController_0, crc, LibreLoRa_CRC16_0, setXorOut]
 - [LibreLoRa_receiverController_0, lfsrStateOut, LibreLoRa_randomize_0, setLfsrState]
@@ -2211,6 +2195,7 @@ connections:
 - [LibreLoRa_symbolDemod_0, '0', LibreLoRa_grayEncode_0, '0']
 - [blocks_file_source_0, '0', blocks_throttle_0, '0']
 - [blocks_throttle_0, '0', LibreLoRa_frequencyTracker_0, '0']
+- [rtlsdr_source_0, '0', LibreLoRa_frequencyTracker_0, '0']
 
 metadata:
   file_format: 1

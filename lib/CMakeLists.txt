@@ -51,7 +51,8 @@ list(APPEND LibreLoRa_sources
     #blockFixedProduce.cc
     randomize_impl.cc
     NibblesToBytes_impl.cc
-    CRC16_impl.cc )
+    CRC16_impl.cc
+    slidingDFTMax_impl.cc )
 
 set(LibreLoRa_sources "${LibreLoRa_sources}" PARENT_SCOPE)
 if(NOT LibreLoRa_sources)

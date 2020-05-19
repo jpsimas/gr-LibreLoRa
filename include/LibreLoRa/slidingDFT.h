@@ -45,7 +45,7 @@ namespace gr {
        * class. LibreLoRa::slidingDFT::make is the public interface for
        * creating new instances.
        */
-      static sptr make(size_t DFTLength);
+      static sptr make(size_t DFTLength, size_t SF, size_t symbolSize);
     };
 
   } // namespace LibreLoRa

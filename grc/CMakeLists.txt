@@ -42,5 +42,6 @@ install(FILES
     LibreLoRa_blockFixedProduce.block.yml
     LibreLoRa_randomize.block.yml
     LibreLoRa_NibblesToBytes.block.yml
-    LibreLoRa_CRC16.block.yml DESTINATION share/gnuradio/grc/blocks
+    LibreLoRa_CRC16.block.yml
+    LibreLoRa_slidingDFTMax.block.yml DESTINATION share/gnuradio/grc/blocks
 )

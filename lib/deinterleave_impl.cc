@@ -25,6 +25,12 @@
 #include <gnuradio/io_signature.h>
 #include "deinterleave_impl.h"
 
+#define DEBUG
+
+#ifdef DEBUG
+#include <iostream>
+#endif
+
 namespace gr {
   namespace LibreLoRa {
 
@@ -80,7 +86,9 @@ namespace gr {
       const uint16_t *in = (const uint16_t *) input_items[0];
       uint8_t *out = (uint8_t *) output_items[0];
 
+#ifdef DEBUG
       //      std::cout << "deinterleave: work called: noutput_items = " << noutput_items << std::endl;
+#endif
       
       const size_t blocksToProduce = noutput_items/SF;
       

@@ -52,5 +52,6 @@ install(FILES
     #blockFixedProduce.h
     randomize.h
     NibblesToBytes.h
-    CRC16.h DESTINATION include/LibreLoRa
+    CRC16.h
+    slidingDFTMax.h DESTINATION include/LibreLoRa
 )

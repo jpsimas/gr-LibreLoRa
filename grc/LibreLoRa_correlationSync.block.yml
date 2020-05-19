@@ -3,7 +3,7 @@ label: correlationSync
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.correlationSync(${corrMin}, ${corrStop}, ${symbolSize})
+  make: LibreLoRa.correlationSync(${corrMin}, ${corrStop}, ${symbolSize}, ${preambleSize})
 parameters:
 - id: corrMin
   label: Corrmin
@@ -13,6 +13,9 @@ parameters:
   dtype: float
 - id: symbolSize
   label: symbolSize
+  dtype: raw
+- id: preambleSize
+  label: preambleSize
   dtype: raw
 inputs:
 - label: in

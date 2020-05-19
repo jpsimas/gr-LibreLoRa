@@ -22,7 +22,7 @@
 #define INCLUDED_LIBRELORA_CORRELATIONSYNCDEMOD_H
 
 #include <LibreLoRa/api.h>
-#include <gnuradio/sync_decimator.h>
+#include <gnuradio/block.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -32,7 +32,7 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
-    class LIBRELORA_API correlationSyncDemod : virtual public gr::sync_decimator
+    class LIBRELORA_API correlationSyncDemod : virtual public gr::block
     {
      public:
       typedef boost::shared_ptr<correlationSyncDemod> sptr;
@@ -45,7 +45,9 @@ namespace gr {
        * class. LibreLoRa::correlationSyncDemod::make is the public interface for
        * creating new instances.
        */
-      static sptr make(float corrMin, float corrStop, size_t symbolSize);
+      static sptr make(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize);
+      virtual void reset() = 0;
+      virtual void setNOutputItemsToProduce(int noutput_items) = 0;
     };
 
   } // namespace LibreLoRa
