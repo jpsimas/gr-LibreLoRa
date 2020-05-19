@@ -19,11 +19,11 @@
 # Boston, MA 02110-1301, USA.
 #
 import numpy
-from LibreLoRa import getSymbol
+import LibreLoRa
 
 def getPreambleFrequency(SF, symbolSize, nUpchirps, syncWordNumber):
     OSF = int(symbolSize/(2**SF));
-    upchirp = numpy.asarray(getSymbol(0, SF, OSF));
+    upchirp = numpy.asarray(LibreLoRa.getSymbol(0, SF, OSF));
 
     #append upchirps
     preamble = numpy.array([]);
@@ -31,8 +31,8 @@ def getPreambleFrequency(SF, symbolSize, nUpchirps, syncWordNumber):
         preamble = numpy.concatenate((preamble, upchirp));
 
     #append syncword
-    preamble = numpy.concatenate((preamble, numpy.asarray(getSymbol(((syncWordNumber >> 4) << (SF - 4)), SF, OSF))));
-    preamble = numpy.concatenate((preamble, numpy.asarray(getSymbol(((syncWordNumber & 0xf) << (SF - 4)), SF, OSF))));
+    preamble = numpy.concatenate((preamble, numpy.asarray(LibreLoRa.getSymbol(((syncWordNumber >> 4) << (SF - 4)), SF, OSF))));
+    preamble = numpy.concatenate((preamble, numpy.asarray(LibreLoRa.getSymbol(((syncWordNumber & 0xf) << (SF - 4)), SF, OSF))));
 
     #append downchirps
     for i in range(0, 2):
