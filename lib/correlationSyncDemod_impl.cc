@@ -158,7 +158,7 @@ namespace gr {
       } else {
 	if(!preambleConsumed) {
 
-	  deltaF = ((data_in[symbolSize/2] - syncWord1/float(symbolSize)) + (data_in[symbolSize/2 + symbolSize] - syncWord2/float(symbolSize)))/2;
+	  // deltaF = ((data_in[symbolSize/2] - syncWord1/float(symbolSize)) + (data_in[symbolSize/2 + symbolSize] - syncWord2/float(symbolSize)))/2;
 	  
 	  consume_each(preambleSize);
 	  preambleConsumed = true;
@@ -167,7 +167,7 @@ namespace gr {
 	size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
 	
 	for(size_t j = 0; j < n; j++)
-	    data_out[j] = data_in[i + symbolSize*j] - deltaF;
+	  data_out[j] = data_in[symbolSize*j + symbolSize/2];/* - deltaF;*/
 
 	consume_each (symbolSize*n);
 	
