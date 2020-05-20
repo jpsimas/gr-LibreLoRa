@@ -35,6 +35,13 @@ namespace gr {
       const size_t symbolSize;
       const size_t preambleSize;
 
+      const size_t OSF;
+      
+      size_t SF;
+      
+      const uint8_t syncWordNum1;
+      const uint8_t syncWordNum2;
+
       bool syncd;
       // enum syncState {initial, foundFirstPt, syncd};
       // syncState currState;
@@ -51,7 +58,7 @@ namespace gr {
 
       float deltaF;
      public:
-      correlationSyncDemod_impl(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize);
+      correlationSyncDemod_impl(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize, size_t SF, uint16_t syncWordNumber);
       ~correlationSyncDemod_impl();
 
       // Where all the action really happens
@@ -69,6 +76,8 @@ namespace gr {
 	return fixedMode;
 	//return nOutputItemsToProduce != fixedModeDisabled;};
       };
+
+      void setSF(size_t SF);
     };
   } // namespace LibreLoRa
 } // namespace gr

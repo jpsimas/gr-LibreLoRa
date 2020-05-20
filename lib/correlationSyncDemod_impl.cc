@@ -28,6 +28,8 @@
 #include <gnuradio/block_detail.h>
 #include <gnuradio/runtime_types.h>
 
+#define DEBUG
+
 #ifdef DEBUG
 #include <iostream>
 #endif
@@ -36,26 +38,30 @@ namespace gr {
   namespace LibreLoRa {
 
     correlationSyncDemod::sptr
-    correlationSyncDemod::make(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize)
+    correlationSyncDemod::make(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize, size_t SF, uint16_t syncWordNumber)
     {
       return gnuradio::get_initial_sptr
-        (new correlationSyncDemod_impl(corrMin, corrStop, symbolSize, preambleSize));
+        (new correlationSyncDemod_impl(corrMin, corrStop, symbolSize, preambleSize, SF, syncWordNumber));
     }
 
 
     /*
      * The private constructor
      */
-    correlationSyncDemod_impl::correlationSyncDemod_impl(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize)
+    correlationSyncDemod_impl::correlationSyncDemod_impl(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize, size_t SF, uint16_t syncWordNumber)
       : gr::block("correlationSyncDemod",
 		  gr::io_signature::make(2, 2, sizeof(float)),
 		  // gr::io_signature::make2(2, 2, symbolSize*sizeof(float), sizeof(bool))
-		  gr::io_signature::make(1, 1, sizeof(float))
+		  gr::io_signature::make(1, 1, sizeof(uint16_t))
 		  ),
 	corrMin(corrMin),
 	corrStop(corrStop),
 	symbolSize(symbolSize),
 	preambleSize(preambleSize),
+	SF(SF - 2),
+	OSF(symbolSize >> SF),
+	syncWordNum1((syncWordNumber >> 4) << (SF - 4)),
+	syncWordNum2((syncWordNumber & 0xf) << (SF - 4)),
 	syncd(false),
 	// currState(initial),
 	fixedMode(true),
@@ -63,6 +69,10 @@ namespace gr {
 	deSyncAfterDone(false),
 	preambleConsumed(false) {
 
+#ifdef DEBUG
+      std::cout << "correlationSyncDemod: Constructed" << std::endl;
+#endif
+      
       syncPort = pmt::string_to_symbol("sync");
       message_port_register_out(syncPort);
       
@@ -82,6 +92,9 @@ namespace gr {
 #endif
 			reset();
 		      });
+
+      message_port_register_in(pmt::mp("setSF"));
+      set_msg_handler(pmt::mp("setSF"), [this](pmt::pmt_t msg) {setSF(size_t(pmt::to_long(msg)));});
     }
 
     /*
@@ -108,7 +121,7 @@ namespace gr {
     {
       const float *data_in = (const float *) input_items[0];
       const float *corr = (const float *) input_items[1];
-      float* data_out = (float*) output_items[0];
+      uint16_t* data_out = (uint16_t*) output_items[0];
 
 #ifdef DEBUG
 #endif
@@ -157,24 +170,44 @@ namespace gr {
     	return 0;
       } else {
 	if(!preambleConsumed) {
+	  size_t minPreSize = 4*symbolSize + symbolSize/4 - (symbolSize >> (SF + 2));
+	  consume_each(preambleSize - minPreSize);
 
-	  // deltaF = ((data_in[symbolSize/2] - syncWord1/float(symbolSize)) + (data_in[symbolSize/2 + symbolSize] - syncWord2/float(symbolSize)))/2;
+#ifdef DEBUG
+	  std::cout << "correlationSyncDemod: minPreSize = " << std::dec << minPreSize << std::endl;
+#endif
 	  
-	  consume_each(preambleSize);
+	  float deltaF1 = (data_in[symbolSize/2] - syncWordNum1/float(symbolSize));
+	  float deltaF2 = (data_in[symbolSize/2 + symbolSize] - syncWordNum2/float(symbolSize));
+	  
+	  deltaF = (deltaF1 + deltaF2)/2.0;
+
+#ifdef DEBUG
+	  std::cout << "correlationSyncDemod: calculated frequency offset 1: " << deltaF1 << std::endl;
+	  std::cout << "correlationSyncDemod: calculated frequency offset 2: " << deltaF2 << std::endl;
+	  std::cout << "correlationSyncDemod: calculated mean frequency offset: " << deltaF << std::endl;
+#endif
+	  
+	  consume_each(minPreSize);
 	  preambleConsumed = true;
 	}
 	
 	size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
 	
-	for(size_t j = 0; j < n; j++)
-	  data_out[j] = data_in[symbolSize*j + symbolSize/2];/* - deltaF;*/
-
+	for(size_t j = 0; j < n; j++) {
+	  data_out[j] = (uint16_t(std::round((data_in[symbolSize*j + symbolSize/2] - deltaF)*(OSF << SF))))%uint16_t(1 << SF);
+#ifdef DEBUG
+	  std::cout << "correlationSyncDemod: demodulated symbol, SF = " << std::dec << SF << ": " << data_out[j] << std::endl;
+#endif
+	}
+	  
 	consume_each (symbolSize*n);
 	
 	if(fixedModeEnabled())
 	  nOutputItemsToProduce -= n;
 #ifdef DEBUG
-	std::cout << "produced " << n << " synced symbols" << std::endl;
+	if(n != 0)
+	  std::cout << "correlationSyncDemod: produced " << n << " synced symbols" << std::endl;
 #endif
 
 	if(nOutputItemsToProduce == 0 && deSyncAfterDone) {
@@ -189,6 +222,9 @@ namespace gr {
       syncd = false;
     }
 
+    void correlationSyncDemod_impl::setSF(size_t SFNew) {
+      SF = SFNew;
+    }
   } /* namespace LibreLoRa */
 } /* namespace gr */
 

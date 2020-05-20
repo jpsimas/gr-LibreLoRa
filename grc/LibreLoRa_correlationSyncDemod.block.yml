@@ -3,7 +3,7 @@ label: correlationSyncDemod
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.correlationSyncDemod(${corrMin}, ${corrStop}, ${symbolSize})
+  make: LibreLoRa.correlationSyncDemod(${corrMin}, ${corrStop}, ${symbolSize}, ${preambleSize}, ${SF}, ${syncWordNumber})
 parameters:
 - id: corrMin
   label: Corrmin
@@ -14,16 +14,36 @@ parameters:
 - id: symbolSize
   label: Symbolsize
   dtype: raw
+- id: preambleSize
+  label: preambleSize
+  dtype: raw
+- id: SF
+  label: SF
+  dtype: raw
+- id: syncWordNumber
+  label: syncWordNumber
+  dtype: raw
 inputs:
-- label: in
+- label: dataIn
   domain: stream
   dtype: float
-  multiplicity: '2'
+- label: corrIn
+  domain: stream
+  dtype: float
+- domain: message
+  id: setNOutputItemsToProduce
+  optional: true
+- domain: message
+  id: reset
+  optional: true
+- domain: message
+  id: setSF
+  optional: true
 outputs:
 - label: out
   domain: stream
-  dtype: float
-- label: out
-  domain: stream
-  dtype: raw
+  dtype: short
+- domain: message
+  id: sync
+  optional: true
 file_format: 1
