@@ -76,6 +76,7 @@ namespace gr {
       volk_32f_accumulator_s32f(&sum, samples, symbol.size());
 
       corr_out[0] = corr/sqrt(sumSq - sum*sum/symbol.size());
+      data_out[0] = samples[0];
 
       for(size_t k = 1; k < noutput_items; k++) {
       	sumSq -= samples[0]*samples[0];
