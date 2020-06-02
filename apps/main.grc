@@ -10,7 +10,7 @@ options:
     gen_linking: dynamic
     generate_options: qt_gui
     hier_block_src_path: '.:'
-    id: premabletestRTL
+    id: main
     max_nouts: '0'
     output_language: python
     placement: (0,0)
@@ -220,7 +220,7 @@ blocks:
     bus_structure: null
     coordinate: [2616, 800.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: LibreLoRa_Correlation_0
   id: LibreLoRa_Correlation
   parameters:
@@ -272,7 +272,7 @@ blocks:
     bus_structure: null
     coordinate: [1048, 528.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_correlationSync_0
   id: LibreLoRa_correlationSync
   parameters:
@@ -289,9 +289,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1056, 368.0]
+    coordinate: [1056, 336.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: LibreLoRa_decode_0
   id: LibreLoRa_decode
   parameters:
@@ -343,7 +343,7 @@ blocks:
     bus_structure: null
     coordinate: [504, 564.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_frequencyTracker_0
   id: LibreLoRa_frequencyTracker
   parameters:
@@ -361,7 +361,7 @@ blocks:
     bus_structure: null
     coordinate: [536, 460.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: LibreLoRa_grayEncode_0
   id: LibreLoRa_grayEncode
   parameters:
@@ -441,9 +441,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1312, 412.0]
+    coordinate: [1312, 348.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: analog_const_source_x_0
   id: analog_const_source_x
   parameters:
@@ -498,7 +498,7 @@ blocks:
     bus_structure: null
     coordinate: [40, 852.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_int_to_float_0
   id: blocks_int_to_float
   parameters:
@@ -656,7 +656,7 @@ blocks:
     bus_structure: null
     coordinate: [304, 660.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: fft_vxx_0
   id: fft_vxx
   parameters:
@@ -871,7 +871,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1480, 244.0]
+    coordinate: [1520, 236.0]
     rotation: 0
     state: disabled
 - name: qtgui_waterfall_sink_x_0_0
@@ -954,7 +954,7 @@ blocks:
     bus_structure: null
     coordinate: [296, 364.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: rtlsdr_source_0
   id: rtlsdr_source
   parameters:
@@ -1311,7 +1311,7 @@ blocks:
     bus_structure: null
     coordinate: [8, 316.0]
     rotation: 0
-    state: disabled
+    state: enabled
 
 connections:
 - [LibreLoRa_ArgMaxAbs_0, '0', blocks_int_to_float_0, '0']

@@ -217,7 +217,7 @@ blocks:
     alias: ''
     comment: ''
     corrMin: '0.8'
-    corrStop: '0.7'
+    corrStop: '0.6'
     maxoutbuf: '0'
     minoutbuf: '0'
     preambleSize: preambleNormalized.size
@@ -229,15 +229,15 @@ blocks:
     bus_structure: null
     coordinate: [712, 288.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_correlationSync_0
   id: LibreLoRa_correlationSync
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    corrMin: '0.9'
-    corrStop: '0.7'
+    corrMin: '0.8'
+    corrStop: '0.6'
     maxoutbuf: '0'
     minoutbuf: '0'
     preambleSize: preambleNormalized.size
@@ -248,7 +248,7 @@ blocks:
     bus_structure: null
     coordinate: [720, 144.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: LibreLoRa_decode_0
   id: LibreLoRa_decode
   parameters:
@@ -300,7 +300,7 @@ blocks:
     bus_structure: null
     coordinate: [184, 308.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_frequencyTracker_0
   id: LibreLoRa_frequencyTracker
   parameters:
@@ -318,7 +318,7 @@ blocks:
     bus_structure: null
     coordinate: [192, 212.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: LibreLoRa_grayEncode_0
   id: LibreLoRa_grayEncode
   parameters:
@@ -400,7 +400,7 @@ blocks:
     bus_structure: null
     coordinate: [936, 164.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: SF
   id: parameter
   parameters:

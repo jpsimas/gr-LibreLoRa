@@ -211,7 +211,7 @@ blocks:
     bus_structure: null
     coordinate: [1912, 1176.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_Correlation_0_0_0
   id: LibreLoRa_Correlation
   parameters:
@@ -227,7 +227,7 @@ blocks:
     bus_structure: null
     coordinate: [1800, 1368.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_frequencyTrackerN_0_0
   id: LibreLoRa_frequencyTrackerN
   parameters:
@@ -246,7 +246,7 @@ blocks:
     bus_structure: null
     coordinate: [1608, 1164.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_frequencyTracker_0
   id: LibreLoRa_frequencyTracker
   parameters:
@@ -264,7 +264,7 @@ blocks:
     bus_structure: null
     coordinate: [1576, 1360.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_streamToHistoryVector_0
   id: LibreLoRa_streamToHistoryVector
   parameters:
@@ -341,12 +341,12 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: /home/jp/gnuradio/out_sdr_OSF_1_255as_SF_7_crcon_CR_1.raw
+    file: /home/jp/gnuradio/out_sdr_OSF_1_a_SF_7_crcon_CR_1.raw
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
     offset: '0'
-    repeat: 'True'
+    repeat: 'False'
     type: complex
     vlen: '1'
   states:
@@ -728,7 +728,7 @@ blocks:
     style9: '1'
     tr_chan: '0'
     tr_delay: '0'
-    tr_level: '0.9'
+    tr_level: '0.8'
     tr_mode: qtgui.TRIG_MODE_AUTO
     tr_slope: qtgui.TRIG_SLOPE_POS
     tr_tag: '""'
@@ -754,7 +754,7 @@ blocks:
     bus_structure: null
     coordinate: [2200, 1176.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_0_0_0
   id: qtgui_time_sink_x
   parameters:
@@ -851,7 +851,7 @@ blocks:
     bus_structure: null
     coordinate: [2040, 1360.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_1
   id: qtgui_time_sink_x
   parameters:
@@ -1414,6 +1414,7 @@ connections:
 - [blocks_throttle_0, '0', LibreLoRa_frequencyTrackerN_0_0, '0']
 - [blocks_throttle_0, '0', LibreLoRa_frequencyTracker_0, '0']
 - [blocks_throttle_0, '0', LibreLoRa_streamToHistoryVector_0, '0']
+- [blocks_throttle_0, '0', LoRaRx_0, '0']
 - [blocks_throttle_0, '0', qtgui_waterfall_sink_x_0, '0']
 - [fft_vxx_0, '0', LibreLoRa_ArgMaxAbs_0, '0']
 - [rational_resampler_xxx_0, '0', LibreLoRa_frequencyTrackerN_0_0, '0']
