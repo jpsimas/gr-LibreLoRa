@@ -73,8 +73,10 @@ namespace gr {
      void
     deinterleave_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
      {
-       ninput_items_required[0] = codeLength*(noutput_items/SF);
-       // std::cout << "deinterleave: forecast called: nouput_items_required = " << ninput_items_required[0] << ", noutput_items = " << noutput_items << std::endl;
+       ninput_items_required[0] = codeLength*((noutput_items + SF - 1)/SF);
+#ifdef DEBUG
+       //std::cout << "deinterleave: forecast called: ninput_items_required[0] = " << ninput_items_required[0] << ", noutput_items = " << noutput_items << std::endl;
+#endif
      }
 
     int
@@ -87,10 +89,10 @@ namespace gr {
       uint8_t *out = (uint8_t *) output_items[0];
 
 #ifdef DEBUG
-      //      std::cout << "deinterleave: work called: noutput_items = " << noutput_items << std::endl;
+      //std::cout << "deinterleave: work called: noutput_items = " << noutput_items << std::endl;
 #endif
       
-      const size_t blocksToProduce = noutput_items/SF;
+      const size_t blocksToProduce = (noutput_items + SF - 1)/SF;
       
 #ifdef DEBUG
       if(blocksToProduce != 0) {
