@@ -96,7 +96,7 @@ namespace gr {
       
 #ifdef DEBUG
       if(blocksToProduce != 0) {
-	std::cout << "producing: " << blocksToProduce << " blocks (" << "nouput_items = " << noutput_items << ", SF = " << SF << ")" << std::endl;
+	std::cout << "deinterleave: producing: " << blocksToProduce << " blocks (" << "nouput_items = " << noutput_items << ", SF = " << SF << ")" << std::endl;
 	
 	// Do <+signal processing+>
       }
@@ -108,7 +108,7 @@ namespace gr {
       for(size_t i = 0; i < blocksToProduce; i++){
 
 #ifdef DEBUG
-	std::cout << "deinterleaving symbols: ";
+	std::cout << "deinterleave: deinterleaving symbols: ";
 	for(size_t j = 0; j < codeLength; j++)
 	  std::cout << std::hex << in[i*codeLength + j] << " ";
 	std::cout << std::endl;
