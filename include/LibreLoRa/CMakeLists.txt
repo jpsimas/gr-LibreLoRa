@@ -53,5 +53,6 @@ install(FILES
     randomize.h
     NibblesToBytes.h
     CRC16.h
-    slidingDFTMax.h DESTINATION include/LibreLoRa
+    slidingDFTMax.h
+    frequencyTrackerN.h DESTINATION include/LibreLoRa
 )

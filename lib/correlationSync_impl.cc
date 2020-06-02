@@ -28,6 +28,8 @@
 #include <gnuradio/block_detail.h>
 #include <gnuradio/runtime_types.h>
 
+#define DEBUG
+
 #ifdef DEBUG
 #include <iostream>
 #endif
@@ -182,7 +184,8 @@ namespace gr {
 	if(fixedModeEnabled())
 	  nOutputItemsToProduce -= n;
 #ifdef DEBUG
-	std::cout << "produced " << n << " synced symbols" << std::endl;
+	if(n != 0)
+	  std::cout << "produced " << n << " synced symbols" << std::endl;
 #endif
 
 	if(nOutputItemsToProduce == 0 && deSyncAfterDone) {

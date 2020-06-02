@@ -52,7 +52,8 @@ namespace gr {
       
       int nOutputItemsToProduce;
       bool deSyncAfterDone;
-
+      size_t SFAfterDone;
+      
       bool preambleConsumed;
       pmt::pmt_t syncPort;
 

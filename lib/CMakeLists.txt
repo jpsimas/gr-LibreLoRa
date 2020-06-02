@@ -52,7 +52,8 @@ list(APPEND LibreLoRa_sources
     randomize_impl.cc
     NibblesToBytes_impl.cc
     CRC16_impl.cc
-    slidingDFTMax_impl.cc )
+    slidingDFTMax_impl.cc
+    frequencyTrackerN_impl.cc )
 
 set(LibreLoRa_sources "${LibreLoRa_sources}" PARENT_SCOPE)
 if(NOT LibreLoRa_sources)

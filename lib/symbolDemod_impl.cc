@@ -110,7 +110,7 @@ namespace gr {
 	      jMax = j;
 	    }
 	  }
-	  dataOut[i] = round(jMax*(1 << SF)/float(symbolSize));
+	  dataOut[i] = uint16_t(round(jMax*(1 << SF)/float(symbolSize)))%uint16_t(1 << SF);
 #ifdef DEBUG
 	  std::cout << "demodulated symbol: " << std::dec << dataOut[i] << ", SF = " << SF << std::endl;
 #endif

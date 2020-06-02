@@ -36,6 +36,7 @@
 #include "LibreLoRa/NibblesToBytes.h"
 #include "LibreLoRa/CRC16.h"
 #include "LibreLoRa/slidingDFTMax.h"
+#include "LibreLoRa/frequencyTrackerN.h"
   %}
   
 %include "LibreLoRa/frequencyTracker.h"
@@ -103,3 +104,5 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, NibblesToBytes);
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, CRC16);
 %include "LibreLoRa/slidingDFTMax.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, slidingDFTMax);
+%include "LibreLoRa/frequencyTrackerN.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, frequencyTrackerN);

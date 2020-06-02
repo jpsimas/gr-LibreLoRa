@@ -108,7 +108,7 @@ namespace gr {
     correlationSyncDemod_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
       const size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
-      ninput_items_required[0] = (syncd? (symbolSize*n + (preambleConsumed? 0 : preambleSize)) : 2*symbolSize);
+      ninput_items_required[0] = (syncd? (preambleConsumed? (symbolSize*n) : preambleSize) : 2*symbolSize);
       
       ninput_items_required[1] = ninput_items_required[0];
     }
@@ -171,11 +171,15 @@ namespace gr {
       } else {
 	if(!preambleConsumed) {
 	  size_t minPreSize = 4*symbolSize + symbolSize/4 - (symbolSize >> (SF + 2));
+
+
 	  consume_each(preambleSize - minPreSize);
 
 #ifdef DEBUG
+	  std::cout << "correlationSyncDemod: preambleSize - minPreSize = " << std::dec << preambleSize - minPreSize << std::endl;
 	  std::cout << "correlationSyncDemod: minPreSize = " << std::dec << minPreSize << std::endl;
 #endif
+	    
 	  
 	  float deltaF1 = (data_in[symbolSize/2] - syncWordNum1/float(symbolSize));
 	  float deltaF2 = (data_in[symbolSize/2 + symbolSize] - syncWordNum2/float(symbolSize));
@@ -190,12 +194,14 @@ namespace gr {
 	  
 	  consume_each(minPreSize);
 	  preambleConsumed = true;
+	  return 0;
 	}
 	
 	size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
 	
 	for(size_t j = 0; j < n; j++) {
-	  data_out[j] = (uint16_t(std::round((data_in[symbolSize*j + symbolSize/2] - deltaF)*(OSF << SF))))%uint16_t(1 << SF);
+	  data_out[j] = (uint16_t(std::round((data_in[symbolSize*j + symbolSize/2]- deltaF)*(OSF << SF))))%uint16_t(1 << SF);
+	  
 #ifdef DEBUG
 	  std::cout << "correlationSyncDemod: demodulated symbol, SF = " << std::dec << SF << ": " << data_out[j] << std::endl;
 #endif
@@ -213,17 +219,26 @@ namespace gr {
 	if(nOutputItemsToProduce == 0 && deSyncAfterDone) {
 	  deSyncAfterDone = false;
 	  syncd = false;
+	  preambleConsumed = false;
+	  SF = SFAfterDone;
 	}
 	return n;
       }
     }
     
     void correlationSyncDemod_impl::reset() {
-      syncd = false;
+      if(nOutputItemsToProduce == 0)      
+	syncd = false;
+      else {
+	deSyncAfterDone = true;
+      }
     }
 
     void correlationSyncDemod_impl::setSF(size_t SFNew) {
-      SF = SFNew;
+      if(nOutputItemsToProduce == 0 && !deSyncAfterDone)
+	SF = SFNew;
+      else
+	SFAfterDone = SFNew;
     }
   } /* namespace LibreLoRa */
 } /* namespace gr */
