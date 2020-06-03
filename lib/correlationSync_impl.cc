@@ -97,7 +97,7 @@ namespace gr {
     correlationSync_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
       const size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
-      ninput_items_required[0] = (syncd? (symbolSize*n + (preambleConsumed? 0 : preambleSize)) : /*(noutput_items + 1)*symbolSize*/2*symbolSize);
+      ninput_items_required[0] = (syncd? (preambleConsumed? (symbolSize*n) : preambleSize) : 2*symbolSize);
       
       ninput_items_required[1] = ninput_items_required[0];
     }
@@ -171,6 +171,7 @@ namespace gr {
 	if(!preambleConsumed) {
 	  consume_each(preambleSize);
 	  preambleConsumed = true;
+	  return 0;
 	}
 	
 	size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
