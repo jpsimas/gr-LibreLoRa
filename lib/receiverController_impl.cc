@@ -38,23 +38,24 @@ namespace gr {
   namespace LibreLoRa {
 
     receiverController::sptr
-    receiverController::make(size_t SF/*, correlationSync::sptr synchronizer/*, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer*/)
+    receiverController::make(size_t SF, bool lowDataRate/*, correlationSync::sptr synchronizer/*, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer*/)
     {
       return gnuradio::get_initial_sptr
-        (new receiverController_impl(SF/*, synchronizer/*, demodulator, grayEncoder, deinterleaver, decoder, randomizer*/));
+        (new receiverController_impl(SF, lowDataRate/*, synchronizer/*, demodulator, grayEncoder, deinterleaver, decoder, randomizer*/));
     }
 
 
     /*
      * The private constructor
      */
-    receiverController_impl::receiverController_impl(size_t SF/*, correlationSync::sptr synchronizer/*, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer*/)
+    receiverController_impl::receiverController_impl(size_t SF, bool lowDataRate/*, correlationSync::sptr synchronizer/*, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer*/)
       : gr::block("receiverController",
 		  // gr::io_signature::make2(2, 2, sizeof(uint8_t), sizeof(bool)),
 		  gr::io_signature::make(1, 1, sizeof(uint8_t)),
 		  gr::io_signature::make(1, 1, sizeof(uint8_t))),
 	SF(SF),
 	SFcurrent(SF),
+	lowDataRate(lowDataRate),
 	// synchronizer(synchronizer),
 	// symbolSize(symbolSize),
 	// demodulator(demodulator),
@@ -62,6 +63,8 @@ namespace gr {
 	// deinterleaver(deinterleaver),
 	// decoder(decoder),
 	// randomizer(randomizer),
+	payloadNibblesToRead(0),
+	extraNibblesToConsume(0),
 	currentState(waitingForSync) {
 
       //prevent demodulotator producing symbols before start
@@ -70,6 +73,7 @@ namespace gr {
 
       
       //randomizer->reset();
+      
 
       lfsrStatePort = pmt::string_to_symbol("lfsrStateOut");
       setSFPort = pmt::string_to_symbol("setSFout");
@@ -93,7 +97,7 @@ namespace gr {
       //setSFcurrent(SF-2);
 
 #ifdef DEBUG
-      std::cout << "Turbo Encabulator Started" << std::endl;
+      std::cout << "Turbo Encabulator Started. Low Data Rate? " << (lowDataRate? "YES" : "NO") << std::endl;
 #endif
     }
 
@@ -141,7 +145,7 @@ namespace gr {
 #endif
       
       int produced = 0;
-
+      size_t payloadNibblesToProduce = 0;
       // Do <+signal processing+>
       switch(currentState) {
       case waitingForSync:
@@ -154,8 +158,10 @@ namespace gr {
       case readingHeader:
 	//consume(1, 1);
 	readHeader(nibblesIn, nibblesOut);
-	consume(0, SFcurrent);
-	produced = SFcurrent - 5;
+	//consume(0, SFcurrent);
+	//produced = SFcurrent - 5;
+	consume(0, 5);
+	produced = 0;
 
 	if(!headerCheckSumValid || CR == 0 || CR > 4) {
 	  stopRx();
@@ -167,34 +173,40 @@ namespace gr {
 	  std::cout << "CR: " << unsigned(CR) << ", ";
 	  std::cout << "CRC " << (payloadCRCPresent? "Present" : "Not Present") << std::endl;
 #endif
-	    
-	  if(2*payloadLength <= (SFcurrent - 5))
-	    stopRx();
-	  else {
-	    payloadNibblesToRead = 2*payloadLength - (SFcurrent - 5);
-	    size_t nibblesToRead = payloadNibblesToRead + 2*(payloadCRCPresent? payloadCRCSize : 0);
+
+	  message_port_pub(lfsrStatePort, pmt::from_long(0xff));
+	  message_port_pub(payloadLengthPort, pmt::from_long(payloadLength));
+
+	  // if(2*payloadLength <= (SFcurrent - 5))
+	  //   stopRx();
+	  // else {
+	  payloadNibblesToRead = 2*payloadLength;// - (SFcurrent - 5);
+	  size_t nibblesToRead = payloadNibblesToRead + 2*(payloadCRCPresent? payloadCRCSize : 0);
 	    // extraNibblesToConsume = SF*ceil(nibblesToRead/float(SF)) - nibblesToRead;
-	    extraNibblesToConsume = (SF - nibblesToRead%SF)%SF;
+	    //extraNibblesToConsume = (SF - nibblesToRead%SF)%SF;
+
+	  setSFcurrent(lowDataRate? (SF - 2) : SF);
+	    //setSFcurrent(SF);
+	  if(nibblesToRead > (SF - 7))
+	     extraNibblesToConsume = (SFcurrent - (nibblesToRead - (SF - 7))%SFcurrent)%SFcurrent;
 
 #ifdef DEBUG
 	    std::cout << "nibbles to read: " << payloadNibblesToRead << ", SF = " << SF << std::endl;
+	    std::cout << "extra nibbles: " << extraNibblesToConsume << ", SF = " << SF << std::endl;
 #endif
-	    
-	    setSFcurrent(SF);
 
 	    currentState = sendingPayload;
 	    // synchronizer->setNOutputItemsToProduce((extraNibblesToConsume + nibblesToRead)*(CR + 4)/SF);
-	    message_port_pub(synchronizerSetNPort, pmt::from_long((extraNibblesToConsume + nibblesToRead)*(CR + 4)/SF));
-	    message_port_pub(payloadLengthPort, pmt::from_long(payloadLength));
+	    if(nibblesToRead + extraNibblesToConsume > (SF - 7))	    
+	      message_port_pub(synchronizerSetNPort, pmt::from_long((extraNibblesToConsume + nibblesToRead - (SF - 7))*(CR + 4)/SF));
 	    // message_port_pub(synchronizerResetPort, pmt::PMT_NIL);
 	    // randomizer->reset();
-	  }
+	  // }
 	}
 	break;
       case sendingPayload:
 
-	message_port_pub(lfsrStatePort, pmt::from_long(0xff));
-	
+	//message_port_pub(lfsrStatePort, pmt::from_long(0xff));
 	for(size_t i = 0; i < payloadNibblesToRead; i++) {
 	  nibblesOut[i] = nibblesIn[i];
 
@@ -216,6 +228,11 @@ namespace gr {
 	  message_port_pub(crcPort, pmt::from_long(CRC));
 
 	}
+
+#ifdef DEBUG
+	for(size_t i = 0 ; i < extraNibblesToConsume; i++)
+	  std::cout << "receiverController: extra nibble:" << std::hex << unsigned(nibblesIn[payloadNibblesToRead + (payloadCRCPresent? 2*payloadCRCSize : 0) + i]) << std::endl;
+#endif
 	
 	consume(0, payloadNibblesToRead + extraNibblesToConsume + (payloadCRCPresent? 2*payloadCRCSize : 0));
 	stopRx();
@@ -307,8 +324,8 @@ namespace gr {
 #endif
       
       headerCheckSumValid = (headerCheckSum == headerCheckSumCalculated);
-      for(size_t j = 0; j < SFcurrent - 5; j++)
-	dataOut[j] = nibbles[5 + j];
+      // for(size_t j = 0; j < SFcurrent - 5; j++)
+      // 	dataOut[j] = nibbles[5 + j];
     }
   } /* namespace LibreLoRa */
 } /* namespace gr */

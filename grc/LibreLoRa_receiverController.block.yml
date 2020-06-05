@@ -3,11 +3,16 @@ label: receiverController
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.receiverController(${SF})
+  make: LibreLoRa.receiverController(${SF}, ${lowDataRate})
 parameters:
 - id: SF
   label: Sf
   dtype: raw
+- id: lowDataRate
+  label: lowDataRate
+  dtype: enum
+  options: ['True', 'False']
+  option_labels: ['Yes', 'No']
 inputs:
 - label: nibblesIn
   domain: stream

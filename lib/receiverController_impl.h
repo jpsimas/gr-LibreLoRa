@@ -45,6 +45,10 @@ namespace gr {
       const size_t SF;
       size_t SFcurrent;
 
+      // mode flags
+      bool lowDataRate;
+      
+      // header fields
       uint8_t payloadLength;
       uint8_t CR;
       uint8_t payloadCRCPresent;
@@ -71,7 +75,7 @@ namespace gr {
 
       void readHeader(const uint8_t* nibbles, uint8_t* dataOut);
      public:
-      receiverController_impl(size_t SF/*, correlationSync::sptr synchronizer/*, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer*/);
+      receiverController_impl(size_t SF, bool lowDataRate/*, correlationSync::sptr synchronizer/*, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer*/);
       ~receiverController_impl();
 
       void forecast (int noutput_items, gr_vector_int &ninput_items_required);

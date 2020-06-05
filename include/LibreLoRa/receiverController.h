@@ -52,7 +52,7 @@ namespace gr {
        * class. LibreLoRa::receiverController::make is the public interface for
        * creating new instances.
        */
-      static sptr make(size_t SF/*, correlationSync::sptr synchronizer/*, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer*/);
+      static sptr make(size_t SF, bool lowDataRate/*, correlationSync::sptr synchronizer/*, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer*/);
     };
 
   } // namespace LibreLoRa

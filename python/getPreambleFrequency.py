@@ -31,8 +31,10 @@ def getPreambleFrequency(SF, symbolSize, nUpchirps, syncWordNumber):
         preamble = numpy.concatenate((preamble, upchirp));
 
     #append syncword
-    preamble = numpy.concatenate((preamble, numpy.asarray(LibreLoRa.getSymbol(((syncWordNumber >> 4) << (SF - 4)), SF, OSF))));
-    preamble = numpy.concatenate((preamble, numpy.asarray(LibreLoRa.getSymbol(((syncWordNumber & 0xf) << (SF - 4)), SF, OSF))));
+    # preamble = numpy.concatenate((preamble, numpy.asarray(LibreLoRa.getSymbol(((syncWordNumber >> 4) << (SF - 4)), SF, OSF))));
+    # preamble = numpy.concatenate((preamble, numpy.asarray(LibreLoRa.getSymbol(((syncWordNumber & 0xf) << (SF - 4)), SF, OSF))));
+    preamble = numpy.concatenate((preamble, numpy.asarray(LibreLoRa.getSymbol(((syncWordNumber >> 4) << 3), SF, OSF))));
+    preamble = numpy.concatenate((preamble, numpy.asarray(LibreLoRa.getSymbol(((syncWordNumber & 0xf) << 3), SF, OSF))));    
 
     #append downchirps
     for i in range(0, 2):
