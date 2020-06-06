@@ -68,6 +68,18 @@ blocks:
     coordinate: [528, 820.0]
     rotation: 0
     state: enabled
+- name: lowDataRateRequired
+  id: variable
+  parameters:
+    comment: ''
+    value: ((BW*(2**(-SF))) < 62.5)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [560, 84.0]
+    rotation: 0
+    state: true
 - name: nUpchirps
   id: variable
   parameters:
@@ -236,8 +248,8 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    corrMin: '0.8'
-    corrStop: '0.6'
+    corrMin: '0.9'
+    corrStop: '0.7'
     maxoutbuf: '0'
     minoutbuf: '0'
     preambleSize: preambleNormalized.size
@@ -298,7 +310,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [184, 308.0]
+    coordinate: [176, 308.0]
     rotation: 0
     state: disabled
 - name: LibreLoRa_frequencyTracker_0
@@ -357,6 +369,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
+    lowDataRate: lowDataRate or lowDataRateRequired
     maxoutbuf: '0'
     minoutbuf: '0'
   states:
@@ -381,6 +394,24 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [152, 476.0]
+    rotation: 0
+    state: disabled
+- name: LibreLoRa_symbolDemodNew_0
+  id: LibreLoRa_symbolDemodNew
+  parameters:
+    OSF: OSF
+    SF: SF
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    symbolSize: symbolSize
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [960, 300.0]
     rotation: 0
     state: disabled
 - name: LibreLoRa_symbolDemod_0
@@ -602,6 +633,23 @@ blocks:
     coordinate: [848, 28.0]
     rotation: 0
     state: true
+- name: lowDataRate
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: lowDataRate
+    short_id: ''
+    type: ''
+    value: 'False'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [368, 92.0]
+    rotation: 0
+    state: true
 - name: pad_sink_0
   id: pad_sink
   parameters:
@@ -704,6 +752,7 @@ connections:
 - [LibreLoRa_NibblesToBytes_0, '0', LibreLoRa_randomize_0, '0']
 - [LibreLoRa_correlationSyncDemod_0, '0', LibreLoRa_grayEncode_0, '0']
 - [LibreLoRa_correlationSyncDemod_0, sync, LibreLoRa_receiverController_0, sync]
+- [LibreLoRa_correlationSync_0, '0', LibreLoRa_symbolDemodNew_0, '0']
 - [LibreLoRa_correlationSync_0, '0', LibreLoRa_symbolDemod_0, '0']
 - [LibreLoRa_correlationSync_0, sync, LibreLoRa_receiverController_0, sync]
 - [LibreLoRa_decode_0, '0', LibreLoRa_receiverController_0, '0']
@@ -722,6 +771,7 @@ connections:
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_correlationSyncDemod_0, setSF]
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_deinterleave_0, setSF]
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_grayEncode_0, setSF]
+- [LibreLoRa_receiverController_0, setSFout, LibreLoRa_symbolDemodNew_0, setSF]
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_symbolDemod_0, setSF]
 - [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_correlationSyncDemod_0,
   reset]
@@ -732,6 +782,7 @@ connections:
 - [LibreLoRa_receiverController_0, synchronizerSetN, LibreLoRa_correlationSync_0,
   setNOutputItemsToProduce]
 - [LibreLoRa_streamToHistoryVector_0, '0', blocks_multiply_const_vxx_0, '0']
+- [LibreLoRa_symbolDemodNew_0, '0', LibreLoRa_grayEncode_0, '0']
 - [LibreLoRa_symbolDemod_0, '0', LibreLoRa_grayEncode_0, '0']
 - [analog_const_source_x_0, '0', blocks_magphase_to_complex_0, '0']
 - [blocks_complex_to_arg_0, '0', blocks_multiply_const_vxx_1_0, '0']
