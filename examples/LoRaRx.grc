@@ -187,7 +187,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2272, 552.0]
+    coordinate: [2256, 520.0]
     rotation: 0
     state: true
 - name: LibreLoRa_Correlation_0
@@ -683,7 +683,43 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2456, 580.0]
+    coordinate: [2456, 548.0]
+    rotation: 0
+    state: true
+- name: pad_sink_2
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: CRout
+    num_streams: '1'
+    optional: 'True'
+    type: message
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1992, 452.0]
+    rotation: 0
+    state: true
+- name: pad_sink_2_0
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: payloadLengthOut
+    num_streams: '1'
+    optional: 'True'
+    type: message
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1984, 508.0]
     rotation: 0
     state: true
 - name: pad_source_0
@@ -766,8 +802,10 @@ connections:
 - [LibreLoRa_receiverController_0, crc, LibreLoRa_CRC16_0, setXorOut]
 - [LibreLoRa_receiverController_0, lfsrStateOut, LibreLoRa_randomize_0, setLfsrState]
 - [LibreLoRa_receiverController_0, payloadLength, LibreLoRa_CRC16_0, setPayloadSize]
+- [LibreLoRa_receiverController_0, payloadLength, pad_sink_2_0, in]
 - [LibreLoRa_receiverController_0, setCRout, LibreLoRa_decode_0, setCR]
 - [LibreLoRa_receiverController_0, setCRout, LibreLoRa_deinterleave_0, setCR]
+- [LibreLoRa_receiverController_0, setCRout, pad_sink_2, in]
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_correlationSyncDemod_0, setSF]
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_deinterleave_0, setSF]
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_grayEncode_0, setSF]
