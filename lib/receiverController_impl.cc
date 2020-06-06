@@ -28,8 +28,6 @@
 #include <LibreLoRa/calculateHeaderChecksum.h>
 #include <LibreLoRa/utilities.h>
 
-#define DEBUG
-
 #ifdef DEBUG
 #include <iostream>
 #endif

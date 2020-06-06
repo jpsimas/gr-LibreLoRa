@@ -25,8 +25,6 @@
 #include <gnuradio/io_signature.h>
 #include "deinterleave_impl.h"
 
-#define DEBUG
-
 #ifdef DEBUG
 #include <iostream>
 #endif

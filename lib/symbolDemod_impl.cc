@@ -29,8 +29,6 @@
 
 #include <cmath>
 
-#define DEBUG
-
 #ifdef DEBUG
 #include <iostream>
 #endif

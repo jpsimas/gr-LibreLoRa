@@ -28,8 +28,6 @@
 #include <gnuradio/block_detail.h>
 #include <gnuradio/runtime_types.h>
 
-#define DEBUG
-
 #ifdef DEBUG
 #include <iostream>
 #endif
