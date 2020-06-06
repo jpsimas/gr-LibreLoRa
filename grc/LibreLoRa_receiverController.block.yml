@@ -10,9 +10,7 @@ parameters:
   dtype: raw
 - id: lowDataRate
   label: lowDataRate
-  dtype: enum
-  options: ['True', 'False']
-  option_labels: ['Yes', 'No']
+  dtype: bool
 inputs:
 - label: nibblesIn
   domain: stream

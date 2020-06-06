@@ -97,7 +97,7 @@ namespace gr {
       //setSFcurrent(SF-2);
 
 #ifdef DEBUG
-      std::cout << "Turbo Encabulator Started. Low Data Rate? " << (lowDataRate? "YES" : "NO") << std::endl;
+      std::cout << "receiverController: constructed. Low Data Rate? " << (lowDataRate? "YES" : "NO") << std::endl;
 #endif
     }
 
