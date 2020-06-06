@@ -25,7 +25,7 @@
 #include <gnuradio/io_signature.h>
 #include "deinterleave_impl.h"
 
-#ifdef DEBUG
+#ifndef NDEBUG
 #include <iostream>
 #endif
 
@@ -50,7 +50,7 @@ namespace gr {
 			   gr::io_signature::make(1, 1, sizeof(uint16_t)),
 			   gr::io_signature::make(1, 1, sizeof(uint8_t)))
     {
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "ENCABULATION STABILIZER 1500 enabled!" << std::endl;
 #endif
 
@@ -72,7 +72,7 @@ namespace gr {
     deinterleave_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
      {
        ninput_items_required[0] = codeLength*((noutput_items + SF - 1)/SF);
-#ifdef DEBUG
+#ifndef NDEBUG
        //std::cout << "deinterleave: forecast called: ninput_items_required[0] = " << ninput_items_required[0] << ", noutput_items = " << noutput_items << std::endl;
 #endif
      }
@@ -86,13 +86,13 @@ namespace gr {
       const uint16_t *in = (const uint16_t *) input_items[0];
       uint8_t *out = (uint8_t *) output_items[0];
 
-#ifdef DEBUG
+#ifndef NDEBUG
       //std::cout << "deinterleave: work called: noutput_items = " << noutput_items << std::endl;
 #endif
       
       const size_t blocksToProduce = (noutput_items + SF - 1)/SF;
       
-#ifdef DEBUG
+#ifndef NDEBUG
       if(blocksToProduce != 0) {
 	std::cout << "deinterleave: producing: " << blocksToProduce << " blocks (" << "nouput_items = " << noutput_items << ", SF = " << SF << ")" << std::endl;
 	
@@ -105,7 +105,7 @@ namespace gr {
 
       for(size_t i = 0; i < blocksToProduce; i++){
 
-#ifdef DEBUG
+#ifndef NDEBUG
 	std::cout << "deinterleave: deinterleaving symbols: ";
 	for(size_t j = 0; j < codeLength; j++)
 	  std::cout << std::hex << in[i*codeLength + j] << " ";

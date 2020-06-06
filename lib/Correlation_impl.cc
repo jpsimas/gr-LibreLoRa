@@ -45,7 +45,9 @@ namespace gr {
 		       gr::io_signature::make(2, 2, sizeof(float))),
 	symbol(symbol) {
       set_history(symbol.size());
-      std::cout << "symbol size:" << symbol.size() << std::endl;
+#ifndef NDEBUG
+      std::cout << "Correlation: symbol size:" << symbol.size() << std::endl;
+#endif
     }
     
     /*

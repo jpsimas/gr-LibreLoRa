@@ -28,7 +28,7 @@
 #include <complex>
 #include <volk/volk.h>
 
-#ifdef DEBUG
+#ifndef NDEBUG
 #include <iostream>
 #endif
 
@@ -53,7 +53,7 @@ namespace gr {
 	mu(mu),
 	wStep(std::polar<float>(1, -2*M_PI*1.0/((1 << SF)*OSF*OSF))),
 	w(1.0) {
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << ":DDD" << std::endl;
 #endif
     }

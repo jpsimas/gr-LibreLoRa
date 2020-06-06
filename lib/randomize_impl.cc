@@ -27,7 +27,7 @@
 
 #include <LibreLoRa/utilities.h>
 
-#ifdef DEBUG
+#ifndef NDEBUG
 #include <iostream>
 #endif
 
@@ -73,7 +73,7 @@ namespace gr {
       for(size_t i = 0; i < noutput_items; i++) {
 	out[i] = in[i] ^ lfsrState;
 
-#ifdef DEBUG
+#ifndef NDEBUG
 	std::cout << "randomize: in = " << std::hex << unsigned(in[i]) << ", out = " << unsigned(out[i]) << ", state = " << unsigned(lfsrState) << std::endl;
 #endif
 	

@@ -28,9 +28,7 @@
 #include <complex>
 #include <volk/volk.h>
 
-#define DEBUG
-
-#ifdef DEBUG
+#ifndef NDEBUG
 #include <iostream>
 #endif
 
@@ -55,9 +53,10 @@ namespace gr {
 	window(window),
 	windowedSig(window.size()),
 	mu(mu),
+	OSF(OSF),
 	w(1.0){
       set_history(window.size());
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "frequencyTrackerN: constructed. window size:" << window.size() << std::endl;
       
 #endif
@@ -86,10 +85,10 @@ namespace gr {
 	  windowedSig[j] = in[i + j]*window[j];
 
 	gr_complex prod;
-	volk_32fc_x2_conjugate_dot_prod_32fc(&prod, windowedSig.data() + 1, windowedSig.data(), window.size() - 1);
+	volk_32fc_x2_conjugate_dot_prod_32fc(&prod, windowedSig.data() + OSF, windowedSig.data(), window.size() - OSF);
 	w = (1 - mu)*w + mu*prod/(std::abs(prod) + 1e-6f);
 	
-	out[i] = std::arg(w)/(2*M_PI);
+	out[i] = std::arg(w)/(2*M_PI*OSF);
       }
 
       // Tell runtime system how many output items we produced.

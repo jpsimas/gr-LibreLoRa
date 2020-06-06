@@ -29,7 +29,7 @@
 
 #include <cmath>
 
-#ifdef DEBUG
+#ifndef NDEBUG
 #include <iostream>
 #endif
 
@@ -59,7 +59,7 @@ namespace gr {
       twoUpchirps = getSymbol(0, SF, (symbolSize >> SF));
       twoUpchirps.insert(twoUpchirps.end(), twoUpchirps.begin(), twoUpchirps.end());
 
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "TURBO ENCABULATOR 1000 activated!" << std::endl;
 #endif
 
@@ -91,7 +91,7 @@ namespace gr {
       const float *dataIn = (const float *) input_items[0];
       uint16_t *dataOut = (uint16_t *) output_items[0];
 
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "demodulating " << noutput_items <<  " symbols, SF = " << SF << std::endl;
 #endif
       if(started) {
@@ -109,7 +109,7 @@ namespace gr {
 	    }
 	  }
 	  dataOut[i] = uint16_t(round(jMax*(1 << SF)/float(symbolSize)))%uint16_t(1 << SF);
-#ifdef DEBUG
+#ifndef NDEBUG
 	  std::cout << "demodulated symbol: " << std::dec << dataOut[i] << ", SF = " << SF << std::endl;
 #endif
 	}

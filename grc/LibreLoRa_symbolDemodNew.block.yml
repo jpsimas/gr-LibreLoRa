@@ -1,0 +1,31 @@
+id: LibreLoRa_symbolDemodNew
+label: symbolDemodNew
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.symbolDemodNew(${SF}, ${symbolSize}, ${OSF})
+  callbacks:
+  - setSF(${SF})
+parameters:
+- id: SF
+  label: Sf
+  dtype: raw
+- id: symbolSize
+  label: Symbolsize
+  dtype: raw
+- id: OSF
+  label: Osf
+  dtype: raw
+inputs:
+- label: in
+  domain: stream
+  dtype: float
+  vlen: ${ symbolSize }
+- domain: message
+  id: setSF
+  optional: true
+outputs:
+- label: out
+  domain: stream
+  dtype: short
+file_format: 1

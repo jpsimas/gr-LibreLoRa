@@ -25,7 +25,7 @@
 #include <gnuradio/io_signature.h>
 #include "grayEncode_impl.h"
 
-#ifdef DEBUG
+#ifndef NDEBUG
 #include <iostream>
 #endif
 
@@ -74,7 +74,7 @@ namespace gr {
       const uint16_t *in = (const uint16_t *) input_items[0];
       uint16_t *out = (uint16_t *) output_items[0];
 
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "grayEncode: work called: noutput_items = " << noutput_items << std::endl;
 #endif
       

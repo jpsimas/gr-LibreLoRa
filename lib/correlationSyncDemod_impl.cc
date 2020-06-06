@@ -28,7 +28,7 @@
 #include <gnuradio/block_detail.h>
 #include <gnuradio/runtime_types.h>
 
-#ifdef DEBUG
+#ifndef NDEBUG
 #include <iostream>
 #endif
 
@@ -67,7 +67,7 @@ namespace gr {
 	deSyncAfterDone(false),
 	preambleConsumed(false) {
 
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "correlationSyncDemod: Constructed" << std::endl;
 #endif
       
@@ -77,7 +77,7 @@ namespace gr {
       message_port_register_in(pmt::mp("setNOutputItemsToProduce"));
       set_msg_handler(pmt::mp("setNOutputItemsToProduce"),
 		      [this](pmt::pmt_t msg) {
-#ifdef DEBUG
+#ifndef NDEBUG
 			std::cout << "correlationSyncDemod: setting n to " << int(pmt::to_long(msg)) << std::endl;
 #endif
 			setNOutputItemsToProduce(int(pmt::to_long(msg)));
@@ -85,7 +85,7 @@ namespace gr {
       message_port_register_in(pmt::mp("reset"));
       set_msg_handler(pmt::mp("reset"),
 		      [this](pmt::pmt_t msg) {
-#ifdef DEBUG
+#ifndef NDEBUG
 			std::cout << "correlationSyncDemod: reset" << std::endl;
 #endif
 			reset();
@@ -121,7 +121,7 @@ namespace gr {
       const float *corr = (const float *) input_items[1];
       uint16_t* data_out = (uint16_t*) output_items[0];
 
-#ifdef DEBUG
+#ifndef NDEBUG
 #endif
       
       // Do <+signal processing+>
@@ -138,12 +138,12 @@ namespace gr {
     	      consume_each(maxPos);
     	      syncd = true;
 	      preambleConsumed = false;
-#ifdef DEBUG
+#ifndef NDEBUG
     	      std::cout << "correlationSyncDemod: sync'd" << std::endl;
 #endif
 	      
 	      message_port_pub(syncPort, pmt::PMT_NIL);
-#ifdef DEBUG
+#ifndef NDEBUG
     	      std::cout << "correlationSyncDemod: produced syncd signal" << std::endl;
 #endif
 	      return 0;
@@ -173,7 +173,7 @@ namespace gr {
 
 	  consume_each(preambleSize - minPreSize);
 
-#ifdef DEBUG
+#ifndef NDEBUG
 	  std::cout << "correlationSyncDemod: preambleSize - minPreSize = " << std::dec << preambleSize - minPreSize << std::endl;
 	  std::cout << "correlationSyncDemod: minPreSize = " << std::dec << minPreSize << std::endl;
 #endif
@@ -184,7 +184,7 @@ namespace gr {
 	  
 	  deltaF = (deltaF1 + deltaF2)/2.0;
 
-#ifdef DEBUG
+#ifndef NDEBUG
 	  std::cout << "correlationSyncDemod: calculated frequency offset 1: " << deltaF1 << std::endl;
 	  std::cout << "correlationSyncDemod: calculated frequency offset 2: " << deltaF2 << std::endl;
 	  std::cout << "correlationSyncDemod: calculated mean frequency offset: " << deltaF << std::endl;
@@ -200,7 +200,7 @@ namespace gr {
 	for(size_t j = 0; j < n; j++) {
 	  data_out[j] = (uint16_t(std::round((data_in[symbolSize*j + symbolSize/2]- deltaF)*(OSF << SF))))%uint16_t(1 << SF);
 	  
-#ifdef DEBUG
+#ifndef NDEBUG
 	  std::cout << "correlationSyncDemod: demodulated symbol, SF = " << std::dec << SF << ": " << data_out[j] << std::endl;
 #endif
 	}
@@ -209,7 +209,7 @@ namespace gr {
 	
 	if(fixedModeEnabled())
 	  nOutputItemsToProduce -= n;
-#ifdef DEBUG
+#ifndef NDEBUG
 	if(n != 0)
 	  std::cout << "correlationSyncDemod: produced " << n << " synced symbols" << std::endl;
 #endif

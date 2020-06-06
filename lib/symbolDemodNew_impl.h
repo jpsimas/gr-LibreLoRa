@@ -18,26 +18,25 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_FREQUENCYTRACKERN_IMPL_H
-#define INCLUDED_LIBRELORA_FREQUENCYTRACKERN_IMPL_H
+#ifndef INCLUDED_LIBRELORA_SYMBOLDEMODNEW_IMPL_H
+#define INCLUDED_LIBRELORA_SYMBOLDEMODNEW_IMPL_H
 
-#include <LibreLoRa/frequencyTrackerN.h>
+#include <LibreLoRa/symbolDemodNew.h>
 
 namespace gr {
   namespace LibreLoRa {
 
-    class frequencyTrackerN_impl : public frequencyTrackerN
+    class symbolDemodNew_impl : public symbolDemodNew
     {
      private:
-      // Nothing to declare in this block.
-      const std::vector<gr_complex> window;
-      std::vector<gr_complex> windowedSig;
-      float mu;
-      gr_complex w;
+      std::vector<float> twoUpchirps;
+      const size_t symbolSize;
+      size_t SF;
       size_t OSF;
+
      public:
-      frequencyTrackerN_impl(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window);
-      ~frequencyTrackerN_impl();
+      symbolDemodNew_impl(size_t SF, size_t symbolSize, size_t OSF);
+      ~symbolDemodNew_impl();
 
       // Where all the action really happens
       int work(
@@ -45,10 +44,12 @@ namespace gr {
               gr_vector_const_void_star &input_items,
               gr_vector_void_star &output_items
       );
+
+      void setSF(size_t SFNew) {SF = SFNew;};
     };
 
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_FREQUENCYTRACKERN_IMPL_H */
+#endif /* INCLUDED_LIBRELORA_SYMBOLDEMODNEW_IMPL_H */
 

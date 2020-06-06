@@ -28,7 +28,7 @@
 #include <LibreLoRa/calculateHeaderChecksum.h>
 #include <LibreLoRa/utilities.h>
 
-#ifdef DEBUG
+#ifndef NDEBUG
 #include <iostream>
 #endif
 
@@ -94,7 +94,7 @@ namespace gr {
       
       //setSFcurrent(SF-2);
 
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "receiverController: constructed. Low Data Rate? " << (lowDataRate? "YES" : "NO") << std::endl;
 #endif
     }
@@ -138,7 +138,7 @@ namespace gr {
       // const bool *syncdIn = (const bool *) input_items[1];
       uint8_t *nibblesOut = (uint8_t *) output_items[0];
 
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "receiverController: work called: noutput_items = " << noutput_items << std::endl;
 #endif
       
@@ -164,7 +164,7 @@ namespace gr {
 	if(!headerCheckSumValid || CR == 0 || CR > 4) {
 	  stopRx();
 	} else {
-#ifdef DEBUG
+#ifndef NDEBUG
 	  std::cout << std::dec;
 	  std::cout << "Got Valid Header" << ": ";
 	  std::cout << "length: " << unsigned(payloadLength) << ", ";	  
@@ -188,7 +188,7 @@ namespace gr {
 	  if(nibblesToRead > (SF - 7))
 	     extraNibblesToConsume = (SFcurrent - (nibblesToRead - (SF - 7))%SFcurrent)%SFcurrent;
 
-#ifdef DEBUG
+#ifndef NDEBUG
 	    std::cout << "nibbles to read: " << payloadNibblesToRead << ", SF = " << SF << std::endl;
 	    std::cout << "extra nibbles: " << extraNibblesToConsume << ", SF = " << SF << std::endl;
 #endif
@@ -208,7 +208,7 @@ namespace gr {
 	for(size_t i = 0; i < payloadNibblesToRead; i++) {
 	  nibblesOut[i] = nibblesIn[i];
 
-#ifdef DEBUG
+#ifndef NDEBUG
 	  std::cout << "receiverController: produced data nibble:" << std::hex << unsigned(nibblesOut[i]) << std::endl;
 #endif
 	  
@@ -219,7 +219,7 @@ namespace gr {
 	if(payloadCRCPresent) {
 	  uint16_t CRC = nibbles2bytes<uint16_t>(*((uint32_t*)(nibblesIn + payloadNibblesToRead)));
 
-#ifdef DEBUG
+#ifndef NDEBUG
 	  std::cout << "receiverController: read CRC: " << unsigned(CRC) << std::endl;
 #endif
 	  
@@ -227,7 +227,7 @@ namespace gr {
 
 	}
 
-#ifdef DEBUG
+#ifndef NDEBUG
 	for(size_t i = 0 ; i < extraNibblesToConsume; i++)
 	  std::cout << "receiverController: extra nibble:" << std::hex << unsigned(nibblesIn[payloadNibblesToRead + (payloadCRCPresent? 2*payloadCRCSize : 0) + i]) << std::endl;
 #endif
@@ -251,7 +251,7 @@ namespace gr {
       //synchronizer->setNOutputItemsToProduce(8);
       message_port_pub(synchronizerSetNPort, pmt::from_long(8));
 
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "starting RX" << std::endl;
 #endif
       
@@ -264,7 +264,7 @@ namespace gr {
       message_port_pub(synchronizerResetPort, pmt::PMT_NIL);
       // demodulator->disable();
 
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "stopping RX" << std::endl;
 #endif
       
@@ -286,7 +286,7 @@ namespace gr {
     }
     
     void receiverController_impl::readHeader(const uint8_t* nibbles, uint8_t* dataOut) {
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "reading header" << std::endl;
       std::cout << "nibbles: ";
       
@@ -297,26 +297,26 @@ namespace gr {
       
       payloadLength = (nibbles[0] << 4)|(nibbles[1]);
 
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "length: " << unsigned(payloadLength) << std::endl;
 #endif
       
       payloadCRCPresent = nibbles[2] & 0x01;
 
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "Checksum present: " << (payloadCRCPresent? "yes" : "no") << std::endl;
 #endif
       
       setCR(nibbles[2] >> 1);
 
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "CR: " << unsigned(CR) << std::endl;
 #endif
       
       uint8_t headerCheckSum = (nibbles[3] << 4)|nibbles[4];
       uint8_t headerCheckSumCalculated = calculateHeaderChecksum((*(uint32_t*) nibbles));
 
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "checksum: " << std::hex << unsigned(headerCheckSum) << std::endl;
       std::cout << "calculated checksum: " << std::hex << unsigned(headerCheckSumCalculated) << std::endl;
 #endif

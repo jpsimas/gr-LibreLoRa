@@ -54,5 +54,6 @@ install(FILES
     NibblesToBytes.h
     CRC16.h
     slidingDFTMax.h
-    frequencyTrackerN.h DESTINATION include/LibreLoRa
+    frequencyTrackerN.h
+    symbolDemodNew.h DESTINATION include/LibreLoRa
 )

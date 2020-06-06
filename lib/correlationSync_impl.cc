@@ -28,7 +28,7 @@
 #include <gnuradio/block_detail.h>
 #include <gnuradio/runtime_types.h>
 
-#ifdef DEBUG
+#ifndef NDEBUG
 #include <iostream>
 #endif
 
@@ -69,7 +69,7 @@ namespace gr {
       message_port_register_in(pmt::mp("setNOutputItemsToProduce"));
       set_msg_handler(pmt::mp("setNOutputItemsToProduce"),
 		      [this](pmt::pmt_t msg) {
-#ifdef DEBUG
+#ifndef NDEBUG
 			std::cout << "correlationSync: setting n to " << int(pmt::to_long(msg)) << std::endl;
 #endif
 			setNOutputItemsToProduce(int(pmt::to_long(msg)));
@@ -77,7 +77,7 @@ namespace gr {
       message_port_register_in(pmt::mp("reset"));
       set_msg_handler(pmt::mp("reset"),
 		      [this](pmt::pmt_t msg) {
-#ifdef DEBUG
+#ifndef NDEBUG
 			std::cout << "correlationSync: reset" << std::endl;
 #endif
 			reset();
@@ -111,7 +111,7 @@ namespace gr {
       float* data_out = (float*) output_items[0];
       // bool* syncd_out = (bool*) output_items[1];
 
-#ifdef DEBUG
+#ifndef NDEBUG
       // std::cout << "correlationSync: work called: noutput_items = " << noutput_items << std::endl;
 #endif
       
@@ -131,7 +131,7 @@ namespace gr {
     	      consume_each(maxPos);
     	      syncd = true;
 	      preambleConsumed = false;
-#ifdef DEBUG
+#ifndef NDEBUG
     	      std::cout << "correlationSync: sync'd" << std::endl;
 #endif
     	      // *syncd_out = true;
@@ -139,7 +139,7 @@ namespace gr {
 	      // return WORK_CALLED_PRODUCE;
 	      
 	      message_port_pub(syncPort, pmt::PMT_NIL);
-#ifdef DEBUG
+#ifndef NDEBUG
     	      std::cout << "correlationSync: produced syncd signal" << std::endl;
 #endif
 	      return 0;
@@ -182,7 +182,7 @@ namespace gr {
 	
 	if(fixedModeEnabled())
 	  nOutputItemsToProduce -= n;
-#ifdef DEBUG
+#ifndef NDEBUG
 	if(n != 0)
 	  std::cout << "produced " << n << " synced symbols" << std::endl;
 #endif

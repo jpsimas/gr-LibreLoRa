@@ -27,7 +27,7 @@
 
 #include <LibreLoRa/getPairityMatrix.h>
 
-#ifdef DEBUG
+#ifndef NDEBUG
 #include <iostream>
 #endif
 
@@ -51,7 +51,7 @@ namespace gr {
 		       gr::io_signature::make(1, 1, sizeof(uint8_t))) {
       setCR(CR);
 
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "BENILOSCOPE v2 ACTIVATED" << std::endl;
 #endif
       
@@ -83,7 +83,7 @@ namespace gr {
       const uint8_t *in = (const uint8_t *) input_items[0];
       uint8_t *out = (uint8_t *) output_items[0];
 
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "decode: work called: noutput_items = " << noutput_items << std::endl;
 #endif
       
@@ -92,7 +92,7 @@ namespace gr {
 	uint8_t syndrome = calculatePairity(in[i], pairityMatrix) ^ in[i];
 	out[i] = (in[i] ^ cosetLeader[syndrome]) & 0x0f;
 
-#ifdef DEBUG
+#ifndef NDEBUG
 	std::cout << std::hex << "decoded: in: " << unsigned(in[i]) << ", out: "<<  std::hex << unsigned(out[i]) << ", CR = " << CR << std::endl;
 #endif
 	

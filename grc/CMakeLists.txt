@@ -44,5 +44,6 @@ install(FILES
     LibreLoRa_NibblesToBytes.block.yml
     LibreLoRa_CRC16.block.yml
     LibreLoRa_slidingDFTMax.block.yml
-    LibreLoRa_frequencyTrackerN.block.yml DESTINATION share/gnuradio/grc/blocks
+    LibreLoRa_frequencyTrackerN.block.yml
+    LibreLoRa_symbolDemodNew.block.yml DESTINATION share/gnuradio/grc/blocks
 )

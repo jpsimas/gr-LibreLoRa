@@ -53,7 +53,8 @@ list(APPEND LibreLoRa_sources
     NibblesToBytes_impl.cc
     CRC16_impl.cc
     slidingDFTMax_impl.cc
-    frequencyTrackerN_impl.cc )
+    frequencyTrackerN_impl.cc
+    symbolDemodNew_impl.cc )
 
 set(LibreLoRa_sources "${LibreLoRa_sources}" PARENT_SCOPE)
 if(NOT LibreLoRa_sources)

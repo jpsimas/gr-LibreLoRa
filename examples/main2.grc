@@ -72,12 +72,12 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '7'
+    value: '8'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [328, 20.0]
+    coordinate: [320, 20.0]
     rotation: 0
     state: enabled
 - name: chirpWindow
@@ -120,7 +120,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 2*BW
+    value: 250e3
   states:
     bus_sink: false
     bus_source: false
@@ -144,7 +144,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '0x00'
+    value: '0'
   states:
     bus_sink: false
     bus_source: false
@@ -290,6 +290,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
+    lowDataRate: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_rate: samp_rate/decimation
@@ -298,7 +299,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [688, 172.0]
+    coordinate: [720, 132.0]
     rotation: 0
     state: enabled
 - name: analog_const_source_x_0
@@ -355,7 +356,7 @@ blocks:
     bus_structure: null
     coordinate: [88, 844.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: blocks_int_to_float_0
   id: blocks_int_to_float
   parameters:
@@ -457,7 +458,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [960, 304.0]
+    coordinate: [992, 184.0]
     rotation: 0
     state: enabled
 - name: blocks_null_sink_2
@@ -492,7 +493,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [968, 180.0]
+    coordinate: [968, 108.0]
     rotation: 0
     state: enabled
 - name: blocks_throttle_0
@@ -513,7 +514,7 @@ blocks:
     bus_structure: null
     coordinate: [328, 884.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: fft_vxx_0
   id: fft_vxx
   parameters:
@@ -1029,7 +1030,7 @@ blocks:
     bus_structure: null
     coordinate: [360, 268.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: rtlsdr_source_0
   id: rtlsdr_source
   parameters:
@@ -1386,7 +1387,7 @@ blocks:
     bus_structure: null
     coordinate: [16, 164.0]
     rotation: 0
-    state: enabled
+    state: disabled
 
 connections:
 - [LibreLoRa_ArgMaxAbs_0, '0', blocks_int_to_float_0, '0']

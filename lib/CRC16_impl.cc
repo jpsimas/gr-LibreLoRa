@@ -27,7 +27,7 @@
 
 #include <LibreLoRa/utilities.h>
 
-#ifdef DEBUG
+#ifndef NDEBUG
 #include <iostream>
 #endif
 
@@ -57,7 +57,7 @@ namespace gr {
       
       message_port_register_in(pmt::mp("setXorOut"));
       set_msg_handler(pmt::mp("setXorOut"), [this](pmt::pmt_t msg) {setXorOut(uint16_t(pmt::to_long(msg)));});
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "gyro-controlled sine-wave director calibration started." << std::endl;
 #endif
     }
@@ -85,7 +85,7 @@ namespace gr {
       const uint8_t *in = (const uint8_t *) input_items[0];
       uint16_t *out = (uint16_t *) output_items[0];
 
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << std::dec << "CRC16: work called, noutput_items = " << noutput_items << ", payloadSize = " << payloadSize << std::endl;
 #endif
       
@@ -100,7 +100,7 @@ namespace gr {
 	
 	out[j] = crc^xorOut;
 
-#ifdef DEBUG
+#ifndef NDEBUG
 	std::cout << std::hex << "CRC16: calculated CRC: " << unsigned(out[j]) << std::endl;
 #endif
       }
@@ -113,14 +113,14 @@ namespace gr {
     }
     
     void CRC16_impl::setXorOut(uint16_t newXorOut) {
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << std::hex << "CRC16: set xorOut to:" << newXorOut << std::endl;
 #endif
       xorOut = newXorOut;
     }
     
     void CRC16_impl::setPayloadSize(size_t newSize) {
-#ifdef DEBUG
+#ifndef NDEBUG
       std::cout << "CRC16: set payloadSize to:" << newSize << std::endl;
 #endif
       payloadSize = newSize;
