@@ -25,6 +25,9 @@ cmake_minimum_required(VERSION 3.8)
 project(gr-LibreLoRa CXX C)
 enable_testing()
 
+# Define release mode that does not suppress debug messages
+set(CMAKE_CXX_FLAGS_RELEASEDEBUGMSGS "-O2")
+
 # Install to PyBOMBS target prefix if defined
 if(DEFINED ENV{PYBOMBS_PREFIX})
     set(CMAKE_INSTALL_PREFIX $ENV{PYBOMBS_PREFIX})
