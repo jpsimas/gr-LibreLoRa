@@ -32,10 +32,11 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
+    template<typename T>
     class LIBRELORA_API symbolDemod : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<symbolDemod> sptr;
+      typedef boost::shared_ptr<symbolDemod<T>> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::symbolDemod.
@@ -51,6 +52,8 @@ namespace gr {
       virtual void disable() = 0;
     };
 
+    typedef symbolDemod<float> symbolDemod_ff;
+    typedef symbolDemod<gr_complex> symbolDemod_cc;
   } // namespace LibreLoRa
 } // namespace gr
 

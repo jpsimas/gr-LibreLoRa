@@ -28,23 +28,25 @@
 namespace gr {
   namespace LibreLoRa {
 
-    Correlation::sptr
-    Correlation::make(const std::vector<float>& symbol)
+    template<typename T>
+    typename Correlation<T>::sptr
+    Correlation<T>::make(const std::vector<T>& symbol)
     {
       return gnuradio::get_initial_sptr
-        (new Correlation_impl(symbol));
+        (new Correlation_impl<T>(symbol));
     }
 
 
     /*
      * The private constructor
      */
-    Correlation_impl::Correlation_impl(const std::vector<float>& symbol)
+    template<typename T>
+    Correlation_impl<T>::Correlation_impl(const std::vector<T>& symbol)
       : gr::sync_block("Correlation",
-		       gr::io_signature::make(1, 1, sizeof(float)),
-		       gr::io_signature::make(2, 2, sizeof(float))),
+		       gr::io_signature::make(1, 1, sizeof(T)),
+		       gr::io_signature::make(2, 2, sizeof(T))),
 	symbol(symbol) {
-      set_history(symbol.size());
+      this->set_history(symbol.size());
 #ifndef NDEBUG
       std::cout << "Correlation: symbol size:" << symbol.size() << std::endl;
 #endif
@@ -53,14 +55,16 @@ namespace gr {
     /*
      * Our virtual destructor.
      */
-    Correlation_impl::~Correlation_impl()
+    template<typename T>
+    Correlation_impl<T>::~Correlation_impl()
     {
     }
 
+    template<>
     int
-    Correlation_impl::work(int noutput_items,
-        gr_vector_const_void_star &input_items,
-        gr_vector_void_star &output_items)
+    Correlation_impl<float>::work(int noutput_items,
+				  gr_vector_const_void_star &input_items,
+				  gr_vector_void_star &output_items)
     {
       const float *in = (const float *) input_items[0];
       float *corr_out = (float *) output_items[0];
@@ -100,6 +104,55 @@ namespace gr {
       return noutput_items;
     }
 
+    template<>
+    int
+    Correlation_impl<gr_complex>::work(int noutput_items,
+				       gr_vector_const_void_star &input_items,
+				       gr_vector_void_star &output_items)
+    {
+      const gr_complex *in = (const gr_complex *) input_items[0];
+      gr_complex *corr_out = (gr_complex *) output_items[0];
+      gr_complex *data_out = (gr_complex *) output_items[1];
+
+      // Do <+signal processing+>
+
+      gr_complex corr;
+      float sumSq;
+      gr_complex sum = gr_complex(0 ,0);
+
+      const gr_complex* samples = in;
+      volk_32fc_x2_conjugate_dot_prod_32fc(&corr, samples, symbol.data(), symbol.size());
+      gr_complex sumSqCompl;
+      volk_32fc_x2_conjugate_dot_prod_32fc(&sumSqCompl, samples, samples, symbol.size());
+      sumSq = sumSqCompl.real();
+      //volk_32fc_accumulator_s32fc(&sum, samples, symbol.size());
+      for(auto k = 0; k < symbol.size(); k++)
+	sum += samples[k];
+
+      corr_out[0] = corr/sqrt(sumSq - std::norm(sum)/symbol.size());
+      data_out[0] = samples[0];
+
+      for(size_t k = 1; k < noutput_items; k++) {
+      	sumSq -= std::norm(samples[0]);
+      	sum -= samples[0];
+	  
+      	samples++;
+
+      	sumSq += std::norm(samples[symbol.size() - 1]);
+      	sum += samples[symbol.size() - 1];
+
+      	volk_32fc_x2_conjugate_dot_prod_32fc(&corr, samples, symbol.data(), symbol.size());
+
+      	corr_out[k] = corr/sqrt(sumSq - std::norm(sum)/symbol.size());
+	data_out[k] = samples[0];
+      }
+
+      
+      // Tell runtime system how many output items we produced.
+      return noutput_items;
+    }
+
+    template class Correlation<float>;
+    template class Correlation<gr_complex>;
   } /* namespace LibreLoRa */
 } /* namespace gr */
-

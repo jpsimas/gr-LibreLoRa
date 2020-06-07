@@ -35,21 +35,23 @@
 namespace gr {
   namespace LibreLoRa {
 
-    frequencyTracker::sptr
-    frequencyTracker::make(float mu, size_t SF, size_t OSF)
+    template<typename T>
+    typename frequencyTracker<T>::sptr
+    frequencyTracker<T>::make(float mu, size_t SF, size_t OSF)
     {
       return gnuradio::get_initial_sptr
-        (new frequencyTracker_impl(mu, SF, OSF));
+        (new frequencyTracker_impl<T>(mu, SF, OSF));
     }
 
 
     /*
      * The private constructor
      */
-    frequencyTracker_impl::frequencyTracker_impl(float mu, size_t SF, size_t OSF)
+    template<typename T>
+    frequencyTracker_impl<T>::frequencyTracker_impl(float mu, size_t SF, size_t OSF)
       : gr::block("frequencyTracker",
 		  gr::io_signature::make(1, 1, sizeof(gr_complex)),
-		  gr::io_signature::make(1, 1, sizeof(float))),
+		  gr::io_signature::make(1, 1, sizeof(T))),
 	mu(mu),
 	wStep(std::polar<float>(1, -2*M_PI*1.0/((1 << SF)*OSF*OSF))),
 	w(1.0) {
@@ -61,24 +63,37 @@ namespace gr {
     /*
      * Our virtual destructor.
      */
-    frequencyTracker_impl::~frequencyTracker_impl()
+    template<typename T>
+    frequencyTracker_impl<T>::~frequencyTracker_impl()
     {
     }
 
+    template<typename T>
     void
-    frequencyTracker_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
+    frequencyTracker_impl<T>::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
       ninput_items_required[0] = noutput_items + 1;
     }
 
-    int
-    frequencyTracker_impl::general_work (int noutput_items,
+    template <>
+    float frequencyTracker_impl<float>::calcFreq(gr_complex w) {
+      return -std::arg(w)/(2*M_PI);
+    }
+
+    template <>
+    gr_complex frequencyTracker_impl<gr_complex>::calcFreq(gr_complex w) {
+      return std::conj(w);
+    }
+    
+    template<typename T>
+    int 
+    frequencyTracker_impl<T>::general_work (int noutput_items,
 					 gr_vector_int &ninput_items,
 					 gr_vector_const_void_star &input_items,
 					 gr_vector_void_star &output_items)
     {
       const gr_complex *in = (const gr_complex *) input_items[0];
-      float *out = (float *) output_items[0];
+      T *out = (T *) output_items[0];
 
       // Do <+signal processing+>
 
@@ -87,18 +102,20 @@ namespace gr {
 	
 	w = (1 - mu)*w + mu*std::conj(in[i + 1]/(in[i] + 1e-6f));
 	
-	out[i] = -std::arg(w)/(2*M_PI);
+	out[i] = calcFreq(w);
       }
 
       
       // Tell runtime system how many input items we consumed on
       // each input stream.
-      consume_each (noutput_items);
+      this->consume_each (noutput_items);
 
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }
 
+    template class frequencyTracker<float>;
+    template class frequencyTracker<gr_complex>;
   } /* namespace LibreLoRa */
 } /* namespace gr */
 

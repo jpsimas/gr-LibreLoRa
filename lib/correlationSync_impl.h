@@ -26,7 +26,8 @@
 namespace gr {
   namespace LibreLoRa {
 
-    class correlationSync_impl : public correlationSync
+    template<typename T>
+    class correlationSync_impl : public correlationSync<T>
     {
      private:
       // Nothing to declare in this block.
@@ -35,6 +36,8 @@ namespace gr {
       const size_t symbolSize;
       const size_t preambleSize;
 
+      T corrMax;
+      
       bool syncd;
       // enum syncState {initial, foundFirstPt, syncd};
       // syncState currState;
@@ -47,7 +50,10 @@ namespace gr {
       bool deSyncAfterDone;
 
       bool preambleConsumed;
+      
       pmt::pmt_t syncPort;
+
+      inline float norm(T x);
      public:
       correlationSync_impl(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize);
       ~correlationSync_impl();

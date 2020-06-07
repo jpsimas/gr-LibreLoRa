@@ -1,22 +1,34 @@
 id: LibreLoRa_Correlation
 label: Correlation
 category: '[Librelora]'
-templates:
-  imports: import LibreLoRa
-  make: LibreLoRa.Correlation(${symbol})
 parameters:
+- id: type
+  label: Type
+  dtype: enum
+  options: [float, complex]
+  option_attributes:
+    fcn: [ff, cc]
+    taps: [real_vector, complex_vector]
+  hide: part
 - id: symbol
   label: Symbol
-  dtype: real_vector
+  dtype: ${ type.taps }
 inputs:
 - label: in
   domain: stream
-  dtype: float
+  dtype: ${ type }
 outputs:
 - label: corrOut
   domain: stream
-  dtype: float
+  dtype: ${ type }
 - label: dataOut
   domain: stream
-  dtype: float
+  dtype: ${ type }
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.Correlation_${type.fcn}(${symbol})
+cpp_templates:
+  includes: ['#include <LibreLoRa/Correlation.h>']
+  declarations: 'LibreLoRa::Correlation_${type.fcn}::sptr ${id};'
+  make: 'this->${id} = LibreloRa::Correlation_${type.fcn}::make(${symbol});'
 file_format: 1

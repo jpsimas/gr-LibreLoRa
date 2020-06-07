@@ -32,10 +32,11 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
+    template<typename T>
     class LIBRELORA_API Correlation : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<Correlation> sptr;
+      typedef boost::shared_ptr<Correlation<T>> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::Correlation.
@@ -45,9 +46,12 @@ namespace gr {
        * class. LibreLoRa::Correlation::make is the public interface for
        * creating new instances.
        */
-      static sptr make(const std::vector<float>& symbol);
+      static sptr make(const std::vector<T>& symbol);
     };
 
+    typedef Correlation<float> Correlation_ff;
+    typedef Correlation<gr_complex> Correlation_cc;
+    
   } // namespace LibreLoRa
 } // namespace gr
 

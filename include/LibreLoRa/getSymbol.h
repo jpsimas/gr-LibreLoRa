@@ -23,6 +23,7 @@
 
 #include <LibreLoRa/api.h>
 #include <vector>
+#include <complex>
 
 namespace gr {
   namespace LibreLoRa {
@@ -31,8 +32,10 @@ namespace gr {
      * \brief <+description+>
      *
      */
-    LIBRELORA_API std::vector<float> getSymbol(size_t symbolNum, size_t SF, size_t OSF);
-
+    template <typename T = float>
+    LIBRELORA_API std::vector<T>
+    getSymbol(size_t symbolNum, size_t SF, size_t OSF);
+    
   } // namespace LibreLoRa
 } // namespace gr
 

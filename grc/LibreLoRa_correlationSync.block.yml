@@ -1,10 +1,14 @@
 id: LibreLoRa_correlationSync
 label: correlationSync
 category: '[Librelora]'
-templates:
-  imports: import LibreLoRa
-  make: LibreLoRa.correlationSync(${corrMin}, ${corrStop}, ${symbolSize}, ${preambleSize})
 parameters:
+- id: type
+  label: Type
+  dtype: enum
+  options: [float, complex]
+  option_attributes:
+    fcn: [ff, cc]
+  hide: part
 - id: corrMin
   label: Corrmin
   dtype: float
@@ -18,10 +22,12 @@ parameters:
   label: preambleSize
   dtype: raw
 inputs:
-- label: in
+- label: datain
   domain: stream
-  dtype: float
-  multiplicity: '2'
+  dtype: ${ type }
+- label: corrin
+  domain: stream
+  dtype: ${ type }
 - domain: message
   id: setNOutputItemsToProduce
   optional: true
@@ -31,7 +37,7 @@ inputs:
 outputs:
 - label: out
   domain: stream
-  dtype: float
+  dtype: ${ type }
   vlen: ${ symbolSize }
 # - label: out
 #   domain: stream
@@ -39,4 +45,13 @@ outputs:
 - domain: message
   id: sync
   optional: true
+
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.correlationSync_${type.fcn}(${corrMin}, ${corrStop}, ${symbolSize}, ${preambleSize})
+    
+cpp_templates:
+  includes: ['#include <LibreLoRa/correlationSync.h>']
+  declarations: 'LibreLoRa::correlationSync_${type.fcn}::sptr ${id};'
+  make: 'this->${id} = LibreloRa::correlationSync_${type.fcn}::make(${corrMin}, ${corrStop}, ${symbolSize}, ${preambleSize});'
 file_format: 1

@@ -33,7 +33,8 @@ GR_PYTHON_INSTALL(
     FILES
     __init__.py
     getChirpWindow.py
-    getPreambleFrequency.py DESTINATION ${GR_PYTHON_DIR}/LibreLoRa
+    getPreambleFrequency.py
+    getNormalizedPreambleFrequency.py DESTINATION ${GR_PYTHON_DIR}/LibreLoRa
 )
 
 ########################################################################

@@ -41,7 +41,8 @@
   %}
   
 %include "LibreLoRa/frequencyTracker.h"
-GR_SWIG_BLOCK_MAGIC2(LibreLoRa, frequencyTracker);
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, frequencyTracker_ff, frequencyTracker<float>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, frequencyTracker_cc, frequencyTracker<gr_complex>);
 %include "LibreLoRa/symbolCorrelator.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, symbolCorrelator);
 %include "LibreLoRa/hier_test2.h"
@@ -51,9 +52,12 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, preambleDetector);
 %include "LibreLoRa/normalizeCorrelation.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, normalizeCorrelation);
 %include "LibreLoRa/correlationSync.h"
-GR_SWIG_BLOCK_MAGIC2(LibreLoRa, correlationSync);
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, correlationSync_ff, correlationSync<float>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, correlationSync_cc, correlationSync<gr_complex>);
 %include "LibreLoRa/symbolDemod.h"
-GR_SWIG_BLOCK_MAGIC2(LibreLoRa, symbolDemod);
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, symbolDemod_ff, symbolDemod<float>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, symbolDemod_cc, symbolDemod<gr_complex>);
+
 %include "LibreLoRa/grayEncode.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, grayEncode);
 %include "LibreLoRa/deinterleave.h"
@@ -87,11 +91,18 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, slidingDFT);
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, ArgMaxAbs);
 
 %include "LibreLoRa/getSymbol.h"
+%template(getSymbol) gr::LibreLoRa::getSymbol<float>;
+
 %include "LibreLoRa/readHeader.h"
 
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, readHeader);
+// %include "LibreLoRa/Correlation.h"
+// GR_SWIG_BLOCK_MAGIC2(LibreLoRa, Correlation);
+
 %include "LibreLoRa/Correlation.h"
-GR_SWIG_BLOCK_MAGIC2(LibreLoRa, Correlation);
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, Correlation_ff, Correlation<float>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, Correlation_cc, Correlation<gr_complex>);
+
 %include "LibreLoRa/convolution.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, convolution);
 %include "LibreLoRa/correlationSyncDemod.h"

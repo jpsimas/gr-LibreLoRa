@@ -28,13 +28,14 @@
 namespace gr {
   namespace LibreLoRa {
 
-    class Correlation_impl : public Correlation
+    template<typename T>
+    class Correlation_impl : public Correlation<T>
     {
      private:
       // Nothing to declare in this block.
-      const std::vector<float> symbol;
+      const std::vector<T> symbol;
      public:
-      Correlation_impl(const std::vector<float>& symbol);
+      Correlation_impl(const std::vector<T>& symbol);
       ~Correlation_impl();
 
       // Where all the action really happens

@@ -32,10 +32,11 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
+    template<typename T>
     class LIBRELORA_API frequencyTracker : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<frequencyTracker> sptr;
+      typedef boost::shared_ptr<frequencyTracker<T>> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::frequencyTracker.
@@ -48,6 +49,9 @@ namespace gr {
       static sptr make(float mu, size_t SF, size_t OSF);
     };
 
+    typedef frequencyTracker<float> frequencyTracker_ff;
+    typedef frequencyTracker<gr_complex> frequencyTracker_cc;
+    
   } // namespace LibreLoRa
 } // namespace gr
 

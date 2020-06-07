@@ -32,10 +32,11 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
+    template<typename T>
     class LIBRELORA_API correlationSync : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<correlationSync> sptr;
+      typedef boost::shared_ptr<correlationSync<T>> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::correlationSync.
@@ -50,6 +51,9 @@ namespace gr {
       virtual void setNOutputItemsToProduce(int noutput_items) = 0;
     };
 
+    typedef correlationSync<float> correlationSync_ff;
+    typedef correlationSync<gr_complex> correlationSync_cc;
+    
   } // namespace LibreLoRa
 } // namespace gr
 

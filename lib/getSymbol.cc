@@ -22,12 +22,15 @@
 #include "config.h"
 #endif
 
-#include <gnuradio/io_signature.h>
 #include <LibreLoRa/getSymbol.h>
+
+#include <complex>
+#include <cmath>
 
 namespace gr {
   namespace LibreLoRa {
 
+    template<>
     std::vector<float> getSymbol(size_t symbolNum, size_t SF, size_t OSF) {
       const size_t symbolSize = (1 << SF)*OSF;
       std::vector<float> symbol(symbolSize);
@@ -38,6 +41,16 @@ namespace gr {
       return symbol;
     }
 
+    template<>
+    std::vector<std::complex<float>> getSymbol(size_t symbolNum, size_t SF, size_t OSF) {
+      const auto symbolFreq = getSymbol<float>(symbolNum, SF, OSF);
+      std::vector<std::complex<float>> symbol(symbolFreq.size());
+      for(auto i = 0; i < symbol.size(); i++)
+	symbol[i] = std::polar<float>(1.0, 2*M_PI*symbolFreq[i]);
+
+      return symbol;
+    }
+    
   } /* namespace LibreLoRa */
 } /* namespace gr */
 

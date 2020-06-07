@@ -27,11 +27,12 @@
 namespace gr {
   namespace LibreLoRa {
 
-    class symbolDemod_impl : public symbolDemod
+    template<typename T>
+    class symbolDemod_impl : public symbolDemod<T>
     {
      private:
       // Nothing to declare in this block.
-      std::vector<float> twoUpchirps;
+      std::vector<T> upchirps;
       const size_t symbolSize;
       size_t SF;
       bool implicit;

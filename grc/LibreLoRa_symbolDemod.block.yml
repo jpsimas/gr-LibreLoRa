@@ -1,12 +1,14 @@
 id: LibreLoRa_symbolDemod
 label: symbolDemod
 category: '[Librelora]'
-templates:
-  imports: import LibreLoRa
-  make: LibreLoRa.symbolDemod(${SF}, ${symbolSize}, ${implicit})
-  callbacks:
-  - setSF(${SF})
 parameters:
+- id: type
+  label: Type
+  dtype: enum
+  options: [float, complex]
+  option_attributes:
+    fcn: [ff, cc]
+  hide: part
 - id: SF
   label: Sf
   dtype: raw
@@ -21,7 +23,7 @@ parameters:
 inputs:
 - label: in
   domain: stream
-  dtype: float
+  dtype: ${ type }
   vlen: ${ symbolSize }
 - domain: message
   id: setSF
@@ -30,4 +32,16 @@ outputs:
 - label: out
   domain: stream
   dtype: short
+
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.symbolDemod_${type.fcn}(${SF}, ${symbolSize}, ${implicit})
+  callbacks:
+    - setSF(${SF})
+
+cpp_templates:
+  includes: ['#include <LibreLoRa/symbolDemod.h>']
+  declarations: 'LibreLoRa::symbolDemod_${type.fcn}::sptr ${id};'
+  make: 'this->${id} = LibreloRa::symbolDemod_${type.fcn}::make(${SF}, ${symbolSize}, ${implicit});'
+  
 file_format: 1

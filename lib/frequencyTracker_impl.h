@@ -26,12 +26,15 @@
 namespace gr {
   namespace LibreLoRa {
 
-    class frequencyTracker_impl : public frequencyTracker {
+    template<typename T>
+    class frequencyTracker_impl : public frequencyTracker<T> {
      protected:
       // Nothing to declare in this block.
       float mu;
       gr_complex w;
       const gr_complex wStep;
+
+      inline T calcFreq(gr_complex x);
      public:
       frequencyTracker_impl(float mu, size_t SF, size_t OSF);
       ~frequencyTracker_impl();
