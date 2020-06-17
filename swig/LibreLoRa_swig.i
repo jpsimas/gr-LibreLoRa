@@ -117,6 +117,7 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, CRC16);
 %include "LibreLoRa/slidingDFTMax.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, slidingDFTMax);
 %include "LibreLoRa/frequencyTrackerN.h"
-GR_SWIG_BLOCK_MAGIC2(LibreLoRa, frequencyTrackerN);
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, frequencyTrackerN_ff, frequencyTrackerN<float>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, frequencyTrackerN_cc, frequencyTrackerN<gr_complex>);
 %include "LibreLoRa/symbolDemodNew.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, symbolDemodNew);

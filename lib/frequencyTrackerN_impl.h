@@ -26,7 +26,8 @@
 namespace gr {
   namespace LibreLoRa {
 
-    class frequencyTrackerN_impl : public frequencyTrackerN
+    template<typename T>
+    class frequencyTrackerN_impl : public frequencyTrackerN<T>
     {
      private:
       // Nothing to declare in this block.
@@ -35,6 +36,8 @@ namespace gr {
       float mu;
       gr_complex w;
       size_t OSF;
+
+      inline T calcFreq(gr_complex x);
      public:
       frequencyTrackerN_impl(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window);
       ~frequencyTrackerN_impl();

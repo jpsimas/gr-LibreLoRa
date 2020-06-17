@@ -1,10 +1,14 @@
 id: LibreLoRa_frequencyTrackerN
 label: frequencyTrackerN
 category: '[Librelora]'
-templates:
-  imports: import LibreLoRa
-  make: LibreLoRa.frequencyTrackerN(${mu}, ${SF}, ${OSF}, ${window})
 parameters:
+- id: type
+  label: Type
+  dtype: enum
+  options: [float, complex]
+  option_attributes:
+    fcn: [ff, cc]
+  hide: part
 - id: mu
   label: Mu
   dtype: float
@@ -24,5 +28,12 @@ inputs:
 outputs:
 - label: out
   domain: stream
-  dtype: float
+  dtype: ${ type }
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.frequencyTrackerN_${type.fcn}(${mu}, ${SF}, ${OSF}, ${window})
+cpp_templates:
+  includes: ['#include <LibreLoRa/frequencyTrackerN.h>']
+  declarations: 'LibreLoRa::frequencyTrackerN_${type.fcn}::sptr ${id};'
+  make: 'this->${id} = LibreloRa::frequencyTrackerN_${type.fcn}::make(${mu}, ${SF}, ${OSF});'
 file_format: 1

@@ -35,27 +35,29 @@
 namespace gr {
   namespace LibreLoRa {
 
-    frequencyTrackerN::sptr
-    frequencyTrackerN::make(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window)
+    template<typename T>
+    typename frequencyTrackerN<T>::sptr
+    frequencyTrackerN<T>::make(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window)
     {
       return gnuradio::get_initial_sptr
-        (new frequencyTrackerN_impl(mu, SF, OSF, window));
+        (new frequencyTrackerN_impl<T>(mu, SF, OSF, window));
     }
 
 
     /*
      * The private constructor
      */
-    frequencyTrackerN_impl::frequencyTrackerN_impl(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window)
+    template<typename T>
+    frequencyTrackerN_impl<T>::frequencyTrackerN_impl(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window)
       : gr::sync_block("frequencyTrackerN",
 		  gr::io_signature::make(1, 1, sizeof(gr_complex)),
-		  gr::io_signature::make(1, 1, sizeof(float))),
+		  gr::io_signature::make(1, 1, sizeof(T))),
 	window(window),
 	windowedSig(window.size()),
 	mu(mu),
 	OSF(OSF),
 	w(1.0){
-      set_history(window.size());
+      this->set_history(window.size());
 #ifndef NDEBUG
       std::cout << "frequencyTrackerN: constructed. window size:" << window.size() << std::endl;
       
@@ -65,36 +67,52 @@ namespace gr {
     /*
      * Our virtual destructor.
      */
-    frequencyTrackerN_impl::~frequencyTrackerN_impl()
+    template<typename T>
+    frequencyTrackerN_impl<T>::~frequencyTrackerN_impl()
     {
     }
 
+    template <>
+    float frequencyTrackerN_impl<float>::calcFreq(gr_complex w) {
+      return -std::arg(w)/(2*M_PI*OSF);
+    }
+
+    template <>
+    gr_complex frequencyTrackerN_impl<gr_complex>::calcFreq(gr_complex w) {
+      //return std::polar<float>(1.0, std::arg(w)/OSF);
+      return w;
+    }
+    
+    template<typename T>
     int
-    frequencyTrackerN_impl::work (int noutput_items,
+    frequencyTrackerN_impl<T>::work (int noutput_items,
 					 gr_vector_const_void_star &input_items,
 					 gr_vector_void_star &output_items)
     {
       const gr_complex *in = (const gr_complex *) input_items[0];
-      float *out = (float *) output_items[0];
+      T *out = (T *) output_items[0];
 
       // Do <+signal processing+>
 
       for(int i = 0; i < noutput_items; i++) {
 
-	for(auto j = 0; j < window.size(); j++)
-	  windowedSig[j] = in[i + j]*window[j];
-
+	// for(auto j = 0; j < window.size(); j++)
+	//   windowedSig[j] = in[i + j]*window[j];
+	volk_32fc_x2_multiply_32fc(windowedSig.data(), in + i, window.data(), window.size());
+	
 	gr_complex prod;
-	volk_32fc_x2_conjugate_dot_prod_32fc(&prod, windowedSig.data() + OSF, windowedSig.data(), window.size() - OSF);
+	volk_32fc_x2_conjugate_dot_prod_32fc(&prod, windowedSig.data() + OSF, windowedSig.data(), windowedSig.size() - OSF);
 	w = (1 - mu)*w + mu*prod/(std::abs(prod) + 1e-6f);
 	
-	out[i] = std::arg(w)/(2*M_PI*OSF);
+	out[i] = calcFreq(w);
       }
 
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }
 
+    template class frequencyTrackerN<float>;
+    template class frequencyTrackerN<gr_complex>;
   } /* namespace LibreLoRa */
 } /* namespace gr */
 
