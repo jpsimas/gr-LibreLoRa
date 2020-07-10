@@ -74,13 +74,14 @@ namespace gr {
 
     template <>
     float frequencyTrackerN_impl<float>::calcFreq(gr_complex w) {
-      return -std::arg(w)/(2*M_PI*OSF);
+      //return std::arg(w)/(2*M_PI*OSF);
+      return std::arg(w)/(2*M_PI);
     }
 
     template <>
     gr_complex frequencyTrackerN_impl<gr_complex>::calcFreq(gr_complex w) {
-      //return std::polar<float>(1.0, std::arg(w)/OSF);
-      return w;
+      return std::polar<float>(1.0, std::arg(w)*OSF);
+      //return w;
     }
     
     template<typename T>
@@ -101,7 +102,9 @@ namespace gr {
 	volk_32fc_x2_multiply_32fc(windowedSig.data(), in + i, window.data(), window.size());
 	
 	gr_complex prod;
-	volk_32fc_x2_conjugate_dot_prod_32fc(&prod, windowedSig.data() + OSF, windowedSig.data(), windowedSig.size() - OSF);
+	//volk_32fc_x2_conjugate_dot_prod_32fc(&prod, windowedSig.data() + OSF, windowedSig.data(), windowedSig.size() - OSF);
+	volk_32fc_x2_conjugate_dot_prod_32fc(&prod, windowedSig.data() + 1, windowedSig.data(), windowedSig.size() - 1);
+	
 	w = (1 - mu)*w + mu*prod/(std::abs(prod) + 1e-6f);
 	
 	out[i] = calcFreq(w);
