@@ -46,7 +46,7 @@ namespace gr {
        * class. LibreLoRa::symbolDemod::make is the public interface for
        * creating new instances.
        */
-      static sptr make(size_t SF, size_t symbolSize, bool implicit);
+      static sptr make(size_t SF, size_t symbolSize, bool implicit, size_t symbolDemod);
       virtual void setSF(size_t SF) = 0;
       virtual void enable() = 0;
       virtual void disable() = 0;
