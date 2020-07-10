@@ -54,7 +54,8 @@ list(APPEND LibreLoRa_sources
     CRC16_impl.cc
     slidingDFTMax_impl.cc
     frequencyTrackerN_impl.cc
-    symbolDemodNew_impl.cc )
+    symbolDemodNew_impl.cc
+    PowerDetector_impl.cc )
 
 set(LibreLoRa_sources "${LibreLoRa_sources}" PARENT_SCOPE)
 if(NOT LibreLoRa_sources)

@@ -1,0 +1,31 @@
+id: LibreLoRa_MatrixSink
+label: MatrixSink
+category: '[LibreLoRa]'
+
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.MatrixSink(${nRows}, ${nCols}, ${minVal}, ${maxVal}, self)
+parameters:
+- id: nRows
+  label: nrows
+  dtype: raw
+- id: nCols
+  label: ncols
+  dtype: raw
+- id: minVal
+  label: minval
+  dtype: float
+- id: maxVal
+  label: maxval
+  dtype: float  
+inputs:
+- label: in
+  domain: stream
+  dtype: float
+  multiplicity: ${nRows}
+  vlen: ${nCols}
+outputs:
+
+#  'file_format' specifies the version of the GRC yml format used in the file
+#  and should usually not be changed.
+file_format: 1

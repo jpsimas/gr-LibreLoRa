@@ -41,7 +41,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [496, 380.0]
+    coordinate: [720, 408.0]
     rotation: 0
     state: enabled
 - name: OSF
@@ -65,7 +65,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [320, 428.0]
+    coordinate: [544, 456.0]
     rotation: 0
     state: enabled
 - name: lowDataRateRequired
@@ -150,7 +150,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [496, 460.0]
+    coordinate: [720, 488.0]
     rotation: 0
     state: enabled
 - name: BW
@@ -183,7 +183,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [384, 624.0]
+    coordinate: [608, 648.0]
     rotation: 0
     state: disabled
 - name: LibreLoRa_CRC16_0
@@ -200,7 +200,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2256, 520.0]
+    coordinate: [2480, 544.0]
     rotation: 0
     state: true
 - name: LibreLoRa_Correlation_0
@@ -217,7 +217,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [408, 192.0]
+    coordinate: [640, 216.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_Correlation_0_0
@@ -234,7 +234,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [424, 304.0]
+    coordinate: [656, 328.0]
     rotation: 0
     state: disabled
 - name: LibreLoRa_NibblesToBytes_0
@@ -249,7 +249,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1872, 352.0]
+    coordinate: [2096, 376.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_correlationSyncDemod_0
@@ -270,7 +270,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [712, 288.0]
+    coordinate: [944, 312.0]
     rotation: 0
     state: disabled
 - name: LibreLoRa_correlationSync_0
@@ -290,7 +290,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [680, 144.0]
+    coordinate: [912, 168.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_decode_0
@@ -306,7 +306,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1536, 240.0]
+    coordinate: [1760, 264.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_deinterleave_0
@@ -323,7 +323,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1328, 224.0]
+    coordinate: [1552, 248.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_frequencyTrackerN_0
@@ -343,7 +343,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [144, 308.0]
+    coordinate: [368, 328.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_frequencyTracker_0
@@ -362,7 +362,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [176, 196.0]
+    coordinate: [400, 224.0]
     rotation: 0
     state: disabled
 - name: LibreLoRa_grayEncode_0
@@ -378,7 +378,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1136, 240.0]
+    coordinate: [1360, 264.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_randomize_0
@@ -393,7 +393,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2128, 336.0]
+    coordinate: [2352, 360.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_receiverController_0
@@ -410,7 +410,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1608, 360.0]
+    coordinate: [1840, 384.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_streamToHistoryVector_0
@@ -427,7 +427,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [152, 476.0]
+    coordinate: [384, 496.0]
     rotation: 0
     state: disabled
 - name: LibreLoRa_symbolDemodNew_0
@@ -445,7 +445,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [960, 300.0]
+    coordinate: [1184, 320.0]
     rotation: 0
     state: disabled
 - name: LibreLoRa_symbolDemod_0
@@ -465,7 +465,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [904, 156.0]
+    coordinate: [1136, 184.0]
     rotation: 0
     state: enabled
 - name: SF
@@ -499,7 +499,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [712, 604.0]
+    coordinate: [944, 624.0]
     rotation: 0
     state: disabled
 - name: blocks_complex_to_arg_0
@@ -515,7 +515,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1136, 688.0]
+    coordinate: [1360, 712.0]
     rotation: 0
     state: disabled
 - name: blocks_int_to_float_0
@@ -532,7 +532,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [584, 604.0]
+    coordinate: [816, 624.0]
     rotation: 0
     state: disabled
 - name: blocks_magphase_to_complex_0
@@ -548,7 +548,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [912, 640.0]
+    coordinate: [1136, 664.0]
     rotation: 0
     state: disabled
 - name: blocks_multiply_const_vxx_0
@@ -566,7 +566,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [160, 548.0]
+    coordinate: [384, 568.0]
     rotation: 0
     state: disabled
 - name: blocks_multiply_const_vxx_1
@@ -584,7 +584,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [752, 668.0]
+    coordinate: [976, 688.0]
     rotation: 0
     state: disabled
 - name: blocks_multiply_const_vxx_1_0
@@ -602,7 +602,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1280, 668.0]
+    coordinate: [1504, 688.0]
     rotation: 0
     state: disabled
 - name: blocks_null_sink_2
@@ -619,7 +619,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [568, 656.0]
+    coordinate: [800, 680.0]
     rotation: 0
     state: disabled
 - name: fft_vxx_0
@@ -640,7 +640,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [144, 620.0]
+    coordinate: [368, 644.0]
     rotation: 0
     state: disabled
 - name: import_0
@@ -701,7 +701,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2488, 340.0]
+    coordinate: [2720, 360.0]
     rotation: 0
     state: true
 - name: pad_sink_1
@@ -719,7 +719,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2456, 548.0]
+    coordinate: [2688, 568.0]
     rotation: 0
     state: true
 - name: pad_sink_2
@@ -737,7 +737,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1992, 452.0]
+    coordinate: [2224, 472.0]
     rotation: 0
     state: true
 - name: pad_sink_2_0
@@ -755,7 +755,25 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1984, 508.0]
+    coordinate: [2248, 540.0]
+    rotation: 0
+    state: true
+- name: pad_sink_3
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: reset
+    num_streams: '1'
+    optional: 'True'
+    type: message
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2128, 508.0]
     rotation: 0
     state: true
 - name: pad_source_0
@@ -855,6 +873,7 @@ connections:
   reset]
 - [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_correlationSync_0,
   reset]
+- [LibreLoRa_receiverController_0, synchronizerReset, pad_sink_3, in]
 - [LibreLoRa_receiverController_0, synchronizerSetN, LibreLoRa_correlationSyncDemod_0,
   setNOutputItemsToProduce]
 - [LibreLoRa_receiverController_0, synchronizerSetN, LibreLoRa_correlationSync_0,

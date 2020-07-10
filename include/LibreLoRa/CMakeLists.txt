@@ -55,5 +55,6 @@ install(FILES
     CRC16.h
     slidingDFTMax.h
     frequencyTrackerN.h
-    symbolDemodNew.h DESTINATION include/LibreLoRa
+    symbolDemodNew.h
+    PowerDetector.h DESTINATION include/LibreLoRa
 )

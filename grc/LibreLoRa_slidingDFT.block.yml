@@ -3,17 +3,14 @@ label: slidingDFT
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.slidingDFT(${DFTLength}, ${SF}, ${symbolSize})
+  make: LibreLoRa.slidingDFT(${DFTLength}, ${beta})
 parameters:
 - id: DFTLength
   label: Dftlength
   dtype: raw
-- id: SF
-  label: SF
-  dtype: raw
-- id: symbolSize
-  label: symbolSize
-  dtype: raw
+- id: beta
+  label: beta
+  dtype: float
 inputs:
 - label: in
   domain: stream

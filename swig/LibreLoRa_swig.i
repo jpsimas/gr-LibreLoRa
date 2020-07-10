@@ -38,7 +38,8 @@
 #include "LibreLoRa/slidingDFTMax.h"
 #include "LibreLoRa/frequencyTrackerN.h"
 #include "LibreLoRa/symbolDemodNew.h"
-  %}
+#include "LibreLoRa/PowerDetector.h"
+%}
   
 %include "LibreLoRa/frequencyTracker.h"
 GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, frequencyTracker_ff, frequencyTracker<float>);
@@ -121,3 +122,7 @@ GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, frequencyTrackerN_ff, frequencyTrackerN<flo
 GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, frequencyTrackerN_cc, frequencyTrackerN<gr_complex>);
 %include "LibreLoRa/symbolDemodNew.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, symbolDemodNew);
+
+%include "LibreLoRa/PowerDetector.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, PowerDetector);
+

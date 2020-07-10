@@ -35,4 +35,6 @@ except ImportError:
 from .getChirpWindow import getChirpWindow
 from .getPreambleFrequency import getPreambleFrequency
 from .getNormalizedPreambleFrequency import getNormalizedPreambleFrequency
+from .DCFT import DCFT
+from .MatrixSink import MatrixSink
 #

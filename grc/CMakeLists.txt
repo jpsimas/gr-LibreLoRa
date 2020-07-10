@@ -45,5 +45,8 @@ install(FILES
     LibreLoRa_CRC16.block.yml
     LibreLoRa_slidingDFTMax.block.yml
     LibreLoRa_frequencyTrackerN.block.yml
-    LibreLoRa_symbolDemodNew.block.yml DESTINATION share/gnuradio/grc/blocks
+    LibreLoRa_symbolDemodNew.block.yml
+    LibreLoRa_DCFT.block.yml
+    LibreLoRa_MatrixSink.block.yml
+    LibreLoRa_PowerDetector.block.yml DESTINATION share/gnuradio/grc/blocks
 )
