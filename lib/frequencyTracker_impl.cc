@@ -52,6 +52,7 @@ namespace gr {
       : gr::block("frequencyTracker",
 		  gr::io_signature::make(1, 1, sizeof(gr_complex)),
 		  gr::io_signature::make(1, 1, sizeof(T))),
+	OSF(OSF),
 	mu(mu),
 	wStep(std::polar<float>(1, -2*M_PI*1.0/((1 << SF)*OSF*OSF))),
 	w(1.0) {
@@ -82,7 +83,8 @@ namespace gr {
 
     template <>
     gr_complex frequencyTracker_impl<gr_complex>::calcFreq(gr_complex w) {
-      return std::conj(w);
+      //return std::conj(w);
+      return std::polar(1.0f/*std::abs(w)*/, -float(OSF)*std::arg(w));
     }
     
     template<typename T>

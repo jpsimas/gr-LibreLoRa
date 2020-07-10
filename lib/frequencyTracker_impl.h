@@ -29,7 +29,7 @@ namespace gr {
     template<typename T>
     class frequencyTracker_impl : public frequencyTracker<T> {
      protected:
-      // Nothing to declare in this block.
+      const size_t OSF;
       float mu;
       gr_complex w;
       const gr_complex wStep;
