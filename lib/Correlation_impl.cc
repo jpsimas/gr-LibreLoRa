@@ -118,32 +118,27 @@ namespace gr {
 
       gr_complex corr;
       float sumSq;
-      gr_complex sum = gr_complex(0 ,0);
+      // gr_complex sum = gr_complex(0 ,0);
 
       const gr_complex* samples = in;
       volk_32fc_x2_conjugate_dot_prod_32fc(&corr, samples, symbol.data(), symbol.size());
       gr_complex sumSqCompl;
       volk_32fc_x2_conjugate_dot_prod_32fc(&sumSqCompl, samples, samples, symbol.size());
       sumSq = sumSqCompl.real();
-      //volk_32fc_accumulator_s32fc(&sum, samples, symbol.size());
-      for(auto k = 0; k < symbol.size(); k++)
-	sum += samples[k];
 
-      corr_out[0] = corr/sqrt(sumSq - std::norm(sum)/symbol.size());
+      corr_out[0] = corr/sqrt(sumSq);
       data_out[0] = samples[0];
 
       for(size_t k = 1; k < noutput_items; k++) {
-      	sumSq -= std::norm(samples[0]);
-      	sum -= samples[0];
+	sumSq -= std::norm(samples[0]);
 	  
       	samples++;
 
       	sumSq += std::norm(samples[symbol.size() - 1]);
-      	sum += samples[symbol.size() - 1];
-
+	
       	volk_32fc_x2_conjugate_dot_prod_32fc(&corr, samples, symbol.data(), symbol.size());
 
-      	corr_out[k] = corr/sqrt(sumSq - std::norm(sum)/symbol.size());
+	corr_out[k] = corr/sqrt(sumSq);
 	data_out[k] = samples[0];
       }
 
