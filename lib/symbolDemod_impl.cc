@@ -38,10 +38,10 @@ namespace gr {
 
     template<typename T>
     typename symbolDemod<T>::sptr
-    symbolDemod<T>::make(size_t SF, size_t symbolSize, bool implicit)
+    symbolDemod<T>::make(size_t SF, size_t symbolSize, bool implicit, size_t windowSize)
     {
       return gnuradio::get_initial_sptr
-        (new symbolDemod_impl<T>(SF, symbolSize, implicit));
+        (new symbolDemod_impl<T>(SF, symbolSize, implicit, windowSize));
     }
 
 
@@ -49,10 +49,12 @@ namespace gr {
      * The private constructor
      */
     template<typename T>
-    symbolDemod_impl<T>::symbolDemod_impl(size_t SF, size_t symbolSize, bool implicit)
+    symbolDemod_impl<T>::symbolDemod_impl(size_t SF, size_t symbolSize, bool implicit, size_t windowSize)
       :	SF(SF),
 	symbolSize(symbolSize),
 	implicit(implicit),
+	windowSize(windowSize),
+	startingIndex((symbolSize - windowSize)/2),
 	started(true),
 	gr::block("symbolDemod",
 		       gr::io_signature::make(1, 1, symbolSize*sizeof(T)), 
@@ -62,7 +64,9 @@ namespace gr {
       upchirps.insert(upchirps.end(), upchirps.begin(), upchirps.end());
 
 #ifndef NDEBUG
-      std::cout << "TURBO ENCABULATOR 1000 activated!" << std::endl;
+      std::cout << "symbolDemod: constructed" << std::endl;
+      std::cout << "symbolDemod: window size: " << windowSize << std::endl;
+      std::cout << "symbolDemod: starting index: " << startingIndex << std::endl;
 #endif
 
       this->message_port_register_in(pmt::mp("setSF"));
@@ -149,7 +153,7 @@ namespace gr {
 
       for(size_t i = 0; i < noutput_items; i++) {
 	gr_complex corr;
-	volk_32fc_x2_conjugate_dot_prod_32fc(&corr, dataIn + i*symbolSize, upchirps.data(), symbolSize);
+	volk_32fc_x2_conjugate_dot_prod_32fc(&corr, dataIn + i*symbolSize + startingIndex, upchirps.data() + startingIndex, windowSize);
 
 	float freq = std::arg(corr)/(2.0*M_PI) + 1.0;
 	
