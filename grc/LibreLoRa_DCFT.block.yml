@@ -1,0 +1,47 @@
+id: DCFT
+label: DCFT
+category: '[LibreLora]'
+
+parameters:
+-   id: DFTSize
+    label: DFTSize
+    dtype: raw
+    default: '2048'
+    hide: none
+-   id: chirpRate
+    label: chirpRate
+    dtype: raw
+    default: 2**(-11)
+    hide: none
+-   id: samp_rate
+    label: samp_rate
+    dtype: raw
+    default: 1e6
+    hide: none
+-   id: windowSize
+    label: windowSize
+    dtype: raw
+    default: '32'
+    hide: none
+
+inputs:
+-   label: in
+    dtype: complex
+    vlen: 1
+
+outputs:
+-   label: out
+    dtype: complex
+    vlen: ${ DFTSize }
+
+templates:
+    imports: 'from LibreLoRa import DCFT'
+    make: "DCFT(\n    DFTSize=${ DFTSize },\n    chirpRate=${ chirpRate },\n    samp_rate=${\
+        \ samp_rate },\n    windowSize=${ windowSize },\n)"
+    callbacks:
+    - set_DFTSize(${ DFTSize })
+    - set_chirpRate(${ chirpRate })
+    - set_samp_rate(${ samp_rate })
+    - set_windowSize(${ windowSize })
+
+file_format: 1

@@ -20,6 +20,9 @@ parameters:
   dtype: enum
   options: ['True', 'False']
   option_labels: ['Yes', 'No']
+- id: windowSize
+  label: Windowsize
+  dtype: raw
 inputs:
 - label: in
   domain: stream
@@ -35,13 +38,13 @@ outputs:
 
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.symbolDemod_${type.fcn}(${SF}, ${symbolSize}, ${implicit})
+  make: LibreLoRa.symbolDemod_${type.fcn}(${SF}, ${symbolSize}, ${implicit}, ${windowSize})
   callbacks:
     - setSF(${SF})
 
 cpp_templates:
   includes: ['#include <LibreLoRa/symbolDemod.h>']
   declarations: 'LibreLoRa::symbolDemod_${type.fcn}::sptr ${id};'
-  make: 'this->${id} = LibreloRa::symbolDemod_${type.fcn}::make(${SF}, ${symbolSize}, ${implicit});'
+  make: 'this->${id} = LibreloRa::symbolDemod_${type.fcn}::make(${SF}, ${symbolSize}, ${implicit}, ${windowSize});'
   
 file_format: 1
