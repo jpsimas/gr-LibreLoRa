@@ -34,11 +34,14 @@ namespace gr {
       // Nothing to declare in this block.
       std::vector<T> upchirps;
       const size_t symbolSize;
+      const size_t windowSize;
+      const size_t startingIndex;
       size_t SF;
       bool implicit;
       bool started;
      public:
-      symbolDemod_impl(size_t SF, size_t symbolSize, bool implicit);
+      symbolDemod_impl(size_t SF, size_t symbolSize, bool implicit, size_t windowSize);
+      
       ~symbolDemod_impl();
 
       // Where all the action really happens
