@@ -33,24 +33,25 @@ namespace gr {
   namespace LibreLoRa {
 
     slidingDFT::sptr
-    slidingDFT::make(size_t DFTLength, size_t SF, size_t symbolSize)
+    slidingDFT::make(size_t DFTLength, float beta)
     {
       return gnuradio::get_initial_sptr
-        (new slidingDFT_impl(DFTLength, SF, symbolSize));
+        (new slidingDFT_impl(DFTLength, beta));
     }
 
 
     /*
      * The private constructor
      */
-    slidingDFT_impl::slidingDFT_impl(size_t DFTLength, size_t SF, size_t symbolSize)
+    slidingDFT_impl::slidingDFT_impl(size_t DFTLength, float beta)
       : gr::sync_block("slidingDFT",
               gr::io_signature::make(1, 1, sizeof(gr_complex)),
 		       gr::io_signature::make(1, 1, DFTLength*sizeof(gr_complex))),
 	length(DFTLength),
 	alpha(0.8),
 	alphaN(pow(alpha, length)),
-	beta(float(1 << SF)*2*M_PI/(symbolSize*symbolSize)),
+	//beta(float(1 << SF)*2*M_PI/(symbolSize*symbolSize)),
+	beta(beta),
 	step(std::polar<float>(1.0, beta)),
 	stepN(1.0),
 	index(0){

@@ -48,7 +48,7 @@ namespace gr {
 
       gr_complex a;
      public:
-      slidingDFT_impl(size_t DFTLength, size_t SF, size_t symbolSize);
+      slidingDFT_impl(size_t DFTLength, float beta);
       ~slidingDFT_impl();
 
       // Where all the action really happens
