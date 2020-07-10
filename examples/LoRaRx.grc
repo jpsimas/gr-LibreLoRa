@@ -41,7 +41,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [336, 804.0]
+    coordinate: [496, 380.0]
     rotation: 0
     state: enabled
 - name: OSF
@@ -65,7 +65,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [528, 820.0]
+    coordinate: [320, 428.0]
     rotation: 0
     state: enabled
 - name: lowDataRateRequired
@@ -89,14 +89,27 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [984, 100.0]
+    coordinate: [1032, 92.0]
+    rotation: 0
+    state: true
+- name: preambleComplex
+  id: variable
+  parameters:
+    comment: ''
+    value: numpy.exp(1j*2*numpy.pi*OSF*LibreLoRa.getPreambleFrequency(SF, symbolSize,
+      nUpchirps, syncwordNumber))
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1200, 100.0]
     rotation: 0
     state: true
 - name: preambleNormalized
   id: variable
   parameters:
     comment: ''
-    value: LibreLoRa.getPreambleFrequency(SF, symbolSize, nUpchirps, syncwordNumber)
+    value: LibreLoRa.getNormalizedPreambleFrequency(SF, symbolSize, nUpchirps, syncwordNumber)
   states:
     bus_sink: false
     bus_source: false
@@ -137,7 +150,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [176, 804.0]
+    coordinate: [496, 460.0]
     rotation: 0
     state: enabled
 - name: BW
@@ -199,13 +212,31 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     symbol: preambleNormalized
+    type: float
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [392, 224.0]
+    coordinate: [408, 192.0]
     rotation: 0
     state: enabled
+- name: LibreLoRa_Correlation_0_0
+  id: LibreLoRa_Correlation
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    symbol: preambleComplex/numpy.sqrt(preambleComplex.size)
+    type: complex
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [424, 304.0]
+    rotation: 0
+    state: disabled
 - name: LibreLoRa_NibblesToBytes_0
   id: LibreLoRa_NibblesToBytes
   parameters:
@@ -254,11 +285,12 @@ blocks:
     minoutbuf: '0'
     preambleSize: preambleNormalized.size
     symbolSize: symbolSize
+    type: float
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [720, 144.0]
+    coordinate: [680, 144.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_decode_0
@@ -305,14 +337,15 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     mu: 1/(2*OSF)
+    type: float
     window: chirpWindow
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [176, 308.0]
+    coordinate: [144, 308.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: LibreLoRa_frequencyTracker_0
   id: LibreLoRa_frequencyTracker
   parameters:
@@ -324,13 +357,14 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     mu: 1/(2*OSF)
+    type: float
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [192, 212.0]
+    coordinate: [176, 196.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_grayEncode_0
   id: LibreLoRa_grayEncode
   parameters:
@@ -425,11 +459,13 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     symbolSize: (2**SF)*OSF
+    type: float
+    windowSize: int(symbolSize)
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [936, 164.0]
+    coordinate: [904, 156.0]
     rotation: 0
     state: enabled
 - name: SF
@@ -785,6 +821,8 @@ connections:
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSync_0, '1']
 - [LibreLoRa_Correlation_0, '1', LibreLoRa_correlationSyncDemod_0, '0']
 - [LibreLoRa_Correlation_0, '1', LibreLoRa_correlationSync_0, '0']
+- [LibreLoRa_Correlation_0_0, '0', LibreLoRa_correlationSync_0, '1']
+- [LibreLoRa_Correlation_0_0, '1', LibreLoRa_correlationSync_0, '0']
 - [LibreLoRa_NibblesToBytes_0, '0', LibreLoRa_randomize_0, '0']
 - [LibreLoRa_correlationSyncDemod_0, '0', LibreLoRa_grayEncode_0, '0']
 - [LibreLoRa_correlationSyncDemod_0, sync, LibreLoRa_receiverController_0, sync]
@@ -794,7 +832,9 @@ connections:
 - [LibreLoRa_decode_0, '0', LibreLoRa_receiverController_0, '0']
 - [LibreLoRa_deinterleave_0, '0', LibreLoRa_decode_0, '0']
 - [LibreLoRa_frequencyTrackerN_0, '0', LibreLoRa_Correlation_0, '0']
+- [LibreLoRa_frequencyTrackerN_0, '0', LibreLoRa_Correlation_0_0, '0']
 - [LibreLoRa_frequencyTracker_0, '0', LibreLoRa_Correlation_0, '0']
+- [LibreLoRa_frequencyTracker_0, '0', LibreLoRa_Correlation_0_0, '0']
 - [LibreLoRa_grayEncode_0, '0', LibreLoRa_deinterleave_0, '0']
 - [LibreLoRa_randomize_0, '0', LibreLoRa_CRC16_0, '0']
 - [LibreLoRa_randomize_0, '0', pad_sink_0, '0']
