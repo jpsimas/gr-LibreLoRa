@@ -30,13 +30,15 @@ namespace gr {
     class correlationSync_impl : public correlationSync<T>
     {
      private:
-      // Nothing to declare in this block.
       const float corrMin;
       const float corrStop;
       const size_t symbolSize;
       const size_t preambleSize;
 
       T corrMax;
+
+      T offset;
+      inline void estimateOffset(const T *preamble);
       
       bool syncd;
       // enum syncState {initial, foundFirstPt, syncd};

@@ -32,6 +32,10 @@
 #include <iostream>
 #endif
 
+#include <volk/volk.h>
+
+#include <LibreLoRa/getSymbol.h>
+
 namespace gr {
   namespace LibreLoRa {
 
@@ -114,7 +118,44 @@ namespace gr {
 	gr_complex conj(gr_complex x) {
 	return std::conj(x);
       }
+
+      template<typename T>
+	T correctOffset(T x, T offset) {
+	return x;
+      }
+
+      template<>
+	gr_complex correctOffset(gr_complex x, gr_complex offset) {
+	return x*offset;
+      }
+
+      constexpr size_t log2(size_t num, size_t count = 0) {
+	return (num == 1)? count : log2(num >> 1, count + 1);
+      }
+    }
+
+    template<typename T>
+    void
+    correlationSync_impl<T>::estimateOffset(const T *preamble) {
+    }
+
+    template<>
+    void
+    correlationSync_impl<gr_complex>::estimateOffset(const gr_complex *preamble){
+      //size_t minPreSize = 4*symbolSize + symbolSize/4 - (symbolSize >> (SF + 2));
+	
+      auto downchirp = getSymbol<gr_complex>(0, log2(symbolSize), 1);
+      for(auto& x : downchirp)
+	x = std::conj(x);
+
+      gr_complex corr;
+      volk_32fc_x2_conjugate_dot_prod_32fc(&corr, downchirp.data(), preamble + preambleSize - (3*symbolSize/2 + preambleSize%symbolSize), symbolSize);
       
+      offset = -corr/(std::abs(corr) + 1e-6f);
+      
+#ifndef NDEBUG
+	  std::cout << "correlationSync: estimated offset: " << offset << std::endl;
+#endif	
     }
     
     template<typename T>
@@ -148,7 +189,7 @@ namespace gr {
     	    if(norm(corr[i]) <= corrStop) {
 	      corrMax = conj<T>(corrMax)/std::abs(corrMax);
     	      foundFirstPt = false;
-    	      this->consume_each(maxPos);
+	      this->consume_each(maxPos);
     	      syncd = true;
 	      preambleConsumed = false;
 #ifndef NDEBUG
@@ -188,6 +229,7 @@ namespace gr {
     	return 0;
       } else {
 	if(!preambleConsumed) {
+	  estimateOffset(data_in);  
 	  this->consume_each(preambleSize);
 	  preambleConsumed = true;
 	  return 0;
@@ -196,8 +238,11 @@ namespace gr {
 	size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
 	
 	for(size_t j = 0; j < n; j++)
-	  for(size_t i = 0; i < symbolSize; i++)
-	    data_out[i + symbolSize*j] = corrMax*data_in[i + symbolSize*j];
+	  for(size_t i = 0; i < symbolSize; i++){
+	    ///data_out[i + symbolSize*j] = correctOffset<T>(data_in[i + symbolSize*j], corrMax);
+	    data_out[i + symbolSize*j] = correctOffset<T>(data_in[i + symbolSize*j], offset);
+	    //data_out[i + symbolSize*j] = corrMax*data_in[i + symbolSize*j];
+	  }
 
 	this->consume_each (symbolSize*n);
 	
@@ -205,7 +250,7 @@ namespace gr {
 	  nOutputItemsToProduce -= n;
 #ifndef NDEBUG
 	if(n != 0)
-	  std::cout << "produced " << n << " synced symbols" << std::endl;
+	  std::cout << "correlationSync: produced " << n << " synced symbols" << std::endl;
 #endif
 
 	if(nOutputItemsToProduce == 0 && deSyncAfterDone) {
