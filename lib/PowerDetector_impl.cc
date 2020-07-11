@@ -44,12 +44,12 @@ namespace gr {
 		  gr::io_signature::make2(2, 2, sizeof(gr_complex), sizeof(float)),
 		  gr::io_signature::make(1, 1, sizeof(gr_complex))),
 	threshold(threshold), 
-	started(false)
+	state(detection)
     {
       this->message_port_register_in(pmt::mp("reset"));
       this->set_msg_handler(pmt::mp("reset"),
 			    [this](pmt::pmt_t msg) {
-			      if(started) {
+			      if(state == started) {
 #ifndef NDEBUG
 				std::cout << "PowerDetector: reset" << std::endl;
 #endif
@@ -81,12 +81,12 @@ namespace gr {
       const float *powerIn = (const float *) input_items[1];
       gr_complex *out = (gr_complex *) output_items[0];
 
-
-      if(!started) {
-	size_t i;
+      size_t i;
+      switch(state) {
+      case detection:
 	for(i = 0; i < noutput_items; i++) {
 	  if(powerIn[i] > threshold) {
-	    started = true;
+	    state = started;
 #ifndef NDEBUG
 	    std::cout << "PowerDetector: started" << std::endl;
 #endif
@@ -96,18 +96,29 @@ namespace gr {
 
 	consume_each(i);
 	return 0;
-      }
-     
-      for(auto i = 0; i < noutput_items; i++)
-	out[i] = in[i];
 	
-      consume_each (noutput_items);
-      return noutput_items;
+      case started:
+	for(auto i = 0; i < noutput_items; i++)
+	  out[i] = in[i];
+	
+	consume_each (noutput_items);
+	return noutput_items;
+      case waiting:
+	for(i = 0; i < noutput_items; i++) {
+	  if(powerIn[i] < threshold) {
+	    state = detection;
+	    break;
+	  }
+	}
+
+	consume_each(i);
+	return 0;
+      }
     }
 
     void
     PowerDetector_impl::reset() {
-      started = false;
+      state = waiting;
     }
     
   } /* namespace LibreLoRa */

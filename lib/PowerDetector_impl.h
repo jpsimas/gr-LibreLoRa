@@ -30,8 +30,8 @@ namespace gr {
     {
      private:
       const float threshold;
-      bool started;
-      
+      enum state_t {detection, started, waiting};
+      state_t state;
      public:
       PowerDetector_impl(float threshold);
       ~PowerDetector_impl();
