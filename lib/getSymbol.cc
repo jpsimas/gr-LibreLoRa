@@ -31,12 +31,15 @@ namespace gr {
   namespace LibreLoRa {
 
     template<>
-    std::vector<float> getSymbol(size_t symbolNum, size_t SF, size_t OSF) {
-      const size_t symbolSize = (1 << SF)*OSF;
+    // std::vector<float> getSymbol(size_t symbolNum, size_t SF, size_t OSF) {
+    std::vector<float> getSymbol(size_t symbolNum, size_t SF, size_t symbolSize) {
+      // const size_t symbolSize = (1 << SF)*OSF;
       std::vector<float> symbol(symbolSize);
+      const float OSF = symbolSize/float(1 << SF);
       
       for(size_t i = 0; i < symbolSize; i++) {
-	auto k = (symbolNum*OSF + i)%symbolSize;
+	// auto k = (symbolNum*OSF + i)%symbolSize;
+	auto k = fmod(symbolNum*OSF + i, symbolSize);
 	//symbol[i] = (k - (symbolSize - 1)/2.0)/(OSF*(symbolSize - 1));
 	symbol[i] = (k - (symbolSize - 1)/2.0)/(OSF*symbolSize);
       }
@@ -44,8 +47,10 @@ namespace gr {
     }
 
     template<>
-    std::vector<std::complex<float>> getSymbol(size_t symbolNum, size_t SF, size_t OSF) {
-      const auto symbolFreq = getSymbol<float>(symbolNum, SF, OSF);
+    // std::vector<std::complex<float>> getSymbol(size_t symbolNum, size_t SF, size_t OSF) {
+    std::vector<std::complex<float>> getSymbol(size_t symbolNum, size_t SF, size_t symbolSize) {
+      // const auto symbolFreq = getSymbol<float>(symbolNum, SF, OSF);
+      const auto symbolFreq = getSymbol<float>(symbolNum, SF, symbolSize);
       std::vector<std::complex<float>> symbol(symbolFreq.size());
       for(auto i = 0; i < symbol.size(); i++)
 	symbol[i] = std::polar<float>(1.0, 2*M_PI*symbolFreq[i]);

@@ -37,10 +37,10 @@ namespace gr {
 
     template<typename T>
     typename frequencyTracker<T>::sptr
-    frequencyTracker<T>::make(float mu, size_t SF, size_t OSF)
+    frequencyTracker<T>::make(float mu, size_t SF, size_t OSF, size_t decimation)
     {
       return gnuradio::get_initial_sptr
-        (new frequencyTracker_impl<T>(mu, SF, OSF));
+        (new frequencyTracker_impl<T>(mu, SF, OSF, decimation));
     }
 
 
@@ -48,16 +48,17 @@ namespace gr {
      * The private constructor
      */
     template<typename T>
-    frequencyTracker_impl<T>::frequencyTracker_impl(float mu, size_t SF, size_t OSF)
+    frequencyTracker_impl<T>::frequencyTracker_impl(float mu, size_t SF, size_t OSF, size_t decimation)
       : gr::block("frequencyTracker",
 		  gr::io_signature::make(1, 1, sizeof(gr_complex)),
 		  gr::io_signature::make(1, 1, sizeof(T))),
 	OSF(OSF),
 	mu(mu),
 	wStep(std::polar<float>(1, -2*M_PI*1.0/((1 << SF)*OSF*OSF))),
-	w(1.0) {
+	w(1.0),
+	decimation(decimation){
 #ifndef NDEBUG
-      std::cout << ":DDD" << std::endl;
+      std::cout << "frequencyTracker: constructed. decimation: " << decimation << std::endl;
 #endif
     }
 
@@ -73,7 +74,7 @@ namespace gr {
     void
     frequencyTracker_impl<T>::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      ninput_items_required[0] = noutput_items + 1;
+      ninput_items_required[0] = decimation*noutput_items + 1;
     }
 
     template <>
@@ -99,18 +100,19 @@ namespace gr {
 
       // Do <+signal processing+>
 
-      for(int i = 0; i < noutput_items; i++) {
+      for(int i = 0; i < noutput_items*decimation; i++) {
 	w *= wStep;
 	
 	w = (1 - mu)*w + mu*std::conj(in[i + 1]/(in[i] + 1e-6f));
-	
-	out[i] = calcFreq(w);
+
+	if(i%decimation == 0)
+	  out[i/decimation] = calcFreq(w);
       }
 
       
       // Tell runtime system how many input items we consumed on
       // each input stream.
-      this->consume_each (noutput_items);
+      this->consume_each (noutput_items*decimation);
 
       // Tell runtime system how many output items we produced.
       return noutput_items;

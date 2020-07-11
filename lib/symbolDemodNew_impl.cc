@@ -52,7 +52,8 @@ namespace gr {
 	gr::sync_block("symbolDemodNew",
 		  gr::io_signature::make(1, 1, symbolSize*sizeof(float)), 
 		  gr::io_signature::make(1, 1, sizeof(uint16_t))) {
-      twoUpchirps = getSymbol(0, SF, (symbolSize >> SF));
+      // twoUpchirps = getSymbol(0, SF, (symbolSize >> SF));
+      twoUpchirps = getSymbol(0, SF, symbolSize);
       
       twoUpchirps.insert(twoUpchirps.end(), twoUpchirps.begin(), twoUpchirps.end());
 

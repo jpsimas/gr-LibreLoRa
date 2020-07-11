@@ -60,7 +60,8 @@ namespace gr {
 		       gr::io_signature::make(1, 1, symbolSize*sizeof(T)), 
 		       gr::io_signature::make(1, 1, sizeof(uint16_t))) {
       //set_relative_rate(1.0/symbolSize);
-      upchirps = getSymbol<T>(0, SF, (symbolSize >> SF));
+      // upchirps = getSymbol<T>(0, SF, (symbolSize >> SF));
+      upchirps = getSymbol<T>(0, SF, symbolSize);
       upchirps.insert(upchirps.end(), upchirps.begin(), upchirps.end());
 
 #ifndef NDEBUG
@@ -112,6 +113,7 @@ namespace gr {
 	  for(size_t j = 0; j < symbolSize; j++) {
 	    float corrJ;
 	    volk_32f_x2_dot_prod_32f(&corrJ, dataIn + i*symbolSize, upchirps.data() + j, symbolSize);
+	    // volk_32f_x2_dot_prod_32f(&corrJ, dataIn + i*symbolSize + startingIndex, upchirps.data() + j + startingIndex, windowSize);
 	    if(corrJ >= corrMax) {
 	      corrMax = corrJ;
 	      jMax = j;

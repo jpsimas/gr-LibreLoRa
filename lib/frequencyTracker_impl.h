@@ -33,10 +33,11 @@ namespace gr {
       float mu;
       gr_complex w;
       const gr_complex wStep;
+      size_t decimation;
 
       inline T calcFreq(gr_complex x);
      public:
-      frequencyTracker_impl(float mu, size_t SF, size_t OSF);
+      frequencyTracker_impl(float mu, size_t SF, size_t OSF, size_t decimation);
       ~frequencyTracker_impl();
 
       // Where all the action really happens

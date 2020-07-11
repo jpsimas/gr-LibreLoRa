@@ -144,7 +144,8 @@ namespace gr {
     correlationSync_impl<gr_complex>::estimateOffset(const gr_complex *preamble){
       //size_t minPreSize = 4*symbolSize + symbolSize/4 - (symbolSize >> (SF + 2));
 	
-      auto downchirp = getSymbol<gr_complex>(0, log2(symbolSize), 1);
+      // auto downchirp = getSymbol<gr_complex>(0, log2(symbolSize), 1);
+      auto downchirp = getSymbol<gr_complex>(0, log2(symbolSize), symbolSize);
       for(auto& x : downchirp)
 	x = std::conj(x);
 
@@ -258,91 +259,9 @@ namespace gr {
 	  syncd = false;
 	}
 
-	// produce(0, n);
-	// return WORK_CALLED_PRODUCE;
 	return n;
       }
     }
-
-    // template<typename T>
-    // void
-    // correlationSync_impl<T>::forecast (int noutput_items, gr_vector_int &ninput_items_required)
-    // { 
-    // ninput_items_required[0] = noutput_items*symbolSize;
-      
-    // ninput_items_required[1] = ninput_items_required[0];
-    // }
-
-    // template<typename T>
-    // int
-    // correlationSync_impl<T>::general_work (int noutput_items,
-    // 					gr_vector_int &ninput_items,
-    // 					gr_vector_const_void_star &input_items,
-    // 					gr_vector_void_star &output_items)
-    // {
-    //   const float *data_in = (const float *) input_items[0];
-    //   const float *corr = (const float *) input_items[1];
-    //   float* data_out = (float*) output_items[0];
-    //   bool* syncd_out = (bool*) output_items[1];
-
-    //   std::cout << "correlationSync: work called: noutput_items = " << noutput_items << std::endl;
-      
-    //   *syncd_out = false;
-    //   // Do <+signal processing+>
-    //   size_t maxPos = 0;
-    //   size_t consumed = 0;
-      
-    //   for(size_t i = 0; i < noutput_items*symbolSize - consumed; i++) {
-    // 	size_t m = i - consumed;
-    // 	switch(currState) {
-    // 	case initial:
-    // 	  if(corr[m] >= corrMin) {
-    // 	    currState = foundFirstPt;
-    // 	    corrMax = corr[m];
-    // 	  }
-    // 	  break;
-    // 	case foundFirstPt:
-    // 	  if(corr[m] <= corrStop) {
-    // 	    this->consume_each(maxPos);
-    // 	    consumed += maxPos;
-    // 	    currState = syncd;
-    // 	    std::cout << "correlationSync: sync'd" << std::endl;
-    // 	    *syncd_out = true;
-    // 	    produce(1, 1);
-    // 	    std::cout << "correlationSync: produced syncd signal" << std::endl;
-    // 	  } else if(corr[m] > corrMax) {
-    // 	    corrMax = corr[m];
-    // 	    maxPos = i;
-    // 	  }
-	  
-    // 	  break;
-    // 	case syncd:
-    // 	  size_t n = ((nOutputItemsToProduce < noutput_items)? nOutputItemsToProduce : noutput_items);
-	
-    // 	  for(size_t j = 0; j < n; j++)
-    // 	    for(size_t k = 0; k < symbolSize; k++)
-    // 	      data_out[k + symbolSize*j] = data_in[k + symbolSize*j];
-
-    // 	  this->consume_each (symbolSize*n);
-    // 	  consumed += symbolSize*n;
-	
-    // 	  nOutputItemsToProduce -= n;
-
-    // 	  std::cout << "produced " << n << " synced symbols" << std::endl;
-	
-    // 	  produce(0, n);
-	  
-    // 	  if(nOutputItemsToProduce == 0)
-    // 	    currState = initial;
-    // 	  break;
-    // 	}
-    //   }
-
-    //   if(currState == foundFirstPt)
-    // 	this->consume_each(maxPos);
-	
-    //   return WORK_CALLED_PRODUCE;
-    // }
     
     template<typename T>    
     void correlationSync_impl<T>::reset() {
