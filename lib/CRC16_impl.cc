@@ -51,7 +51,7 @@ namespace gr {
 		  gr::io_signature::make(1, 1, sizeof(uint16_t))),
 	polynomial(polynomial),
 	xorOut(xorOut),
-	payloadSize(2) {
+	payloadSize(0) {
       message_port_register_in(pmt::mp("setPayloadSize"));
       set_msg_handler(pmt::mp("setPayloadSize"), [this](pmt::pmt_t msg) {setPayloadSize(size_t(pmt::to_long(msg)));});
       
@@ -73,7 +73,7 @@ namespace gr {
     CRC16_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
       /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
-      ninput_items_required[0] = noutput_items*payloadSize;
+      ninput_items_required[0] = (payloadSize == 0)? noutput_items : noutput_items*payloadSize;
     }
 
     int
@@ -88,6 +88,11 @@ namespace gr {
 #ifndef NDEBUG
       std::cout << std::dec << "CRC16: work called, noutput_items = " << noutput_items << ", payloadSize = " << payloadSize << std::endl;
 #endif
+
+      if(payloadSize == 0){
+	consume_each(noutput_items);
+	return 0;
+      }
       
       for(size_t j = 0; j < noutput_items; j++) {
 	const uint8_t* inJ = in + j*payloadSize;
@@ -106,8 +111,9 @@ namespace gr {
       }
       // Tell runtime system how many input items we consumed on
       // each input stream.
-      consume_each (noutput_items*payloadSize);
+      consume_each (payloadSize);
 
+      payloadSize = 0;
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }

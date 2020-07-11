@@ -114,7 +114,7 @@ namespace gr {
       switch(currentState) {
       case waitingForSync:
 	//no samples are really needed, but this avoinds work being called when it is not necessary
-	ninput_items_required[0] = SFcurrent;//0;
+	ninput_items_required[0] = 1;//SFcurrent;//0;
 	// ninput_items_required[1] = 1;
 	break;
       case readingHeader:
@@ -151,6 +151,7 @@ namespace gr {
 	//   startRx();
 	
 	// consume(1, 1);
+	consume_each(1);
 	break;
 
       case readingHeader:
@@ -186,17 +187,17 @@ namespace gr {
 	  setSFcurrent(lowDataRate? (SF - 2) : SF);
 	    //setSFcurrent(SF);
 	  if(nibblesToRead > (SF - 7))
-	     extraNibblesToConsume = (SFcurrent - (nibblesToRead - (SF - 7))%SFcurrent)%SFcurrent;
+	    extraNibblesToConsume = (SFcurrent - (nibblesToRead - (SF - 7))%SFcurrent)%SFcurrent;
 
 #ifndef NDEBUG
-	    std::cout << "nibbles to read: " << payloadNibblesToRead << ", SF = " << SF << std::endl;
-	    std::cout << "extra nibbles: " << extraNibblesToConsume << ", SF = " << SF << std::endl;
+	  std::cout << "nibbles to read: " << nibblesToRead << ", SF = " << SF << std::endl;
+	  std::cout << "extra nibbles: " << extraNibblesToConsume << ", SF = " << SF << std::endl;
 #endif
 
 	    currentState = sendingPayload;
 	    // synchronizer->setNOutputItemsToProduce((extraNibblesToConsume + nibblesToRead)*(CR + 4)/SF);
 	    if(nibblesToRead + extraNibblesToConsume > (SF - 7))	    
-	      message_port_pub(synchronizerSetNPort, pmt::from_long((extraNibblesToConsume + nibblesToRead - (SF - 7))*(CR + 4)/SF));
+	      message_port_pub(synchronizerSetNPort, pmt::from_long((extraNibblesToConsume + nibblesToRead - (SF - 7))*(CR + 4)/SFcurrent));
 	    // message_port_pub(synchronizerResetPort, pmt::PMT_NIL);
 	    // randomizer->reset();
 	  // }
