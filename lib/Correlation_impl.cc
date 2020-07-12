@@ -47,6 +47,7 @@ namespace gr {
 		       gr::io_signature::make(2, 2, sizeof(T))),
 	symbol(symbol) {
       this->set_history(symbol.size());
+      this->set_min_output_buffer(symbol.size());
 #ifndef NDEBUG
       std::cout << "Correlation: symbol size:" << symbol.size() << std::endl;
 #endif
@@ -71,6 +72,10 @@ namespace gr {
       float *data_out = (float *) output_items[1];
 
       // Do <+signal processing+>
+
+#ifndef NDEBUG
+      ///std::cout << "Correlation: work called. noutput_items: " << noutput_items << std::endl;
+#endif
 
       float corr;
       float sumSq;
