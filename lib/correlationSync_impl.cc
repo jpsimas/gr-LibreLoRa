@@ -67,8 +67,12 @@ namespace gr {
 	fixedMode(true),
 	nOutputItemsToProduce(0),
 	deSyncAfterDone(false),
-	preambleConsumed(false) {
+	preambleConsumed(false),
+	preambleSamplesToConsume(preambleSize) {
 
+      this->set_min_output_buffer(preambleSize/symbolSize);
+      // this->set_fixed_rate(true);
+      
       syncPort = pmt::string_to_symbol("sync");
       this->message_port_register_out(syncPort);
       
@@ -103,7 +107,8 @@ namespace gr {
     correlationSync_impl<T>::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
       const size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
-      ninput_items_required[0] = (syncd? (preambleConsumed? (symbolSize*n) : preambleSize) : 2*symbolSize);
+      ninput_items_required[0] = (syncd? (preambleConsumed? (symbolSize*n) : std::min((size_t(1 << 14) - 1), preambleSamplesToConsume)) : 2*symbolSize);
+      // ninput_items_required[0] = fixed_rate_noutput_to_ninput(noutput_items);
       
       ninput_items_required[1] = ninput_items_required[0];
     }
@@ -193,6 +198,7 @@ namespace gr {
 	      this->consume_each(maxPos);
     	      syncd = true;
 	      preambleConsumed = false;
+	      preambleSamplesToConsume = preambleSize;
 #ifndef NDEBUG
     	      std::cout << "correlationSync: sync'd" << std::endl;
 #endif
@@ -230,9 +236,18 @@ namespace gr {
     	return 0;
       } else {
 	if(!preambleConsumed) {
-	  estimateOffset(data_in);  
-	  this->consume_each(preambleSize);
-	  preambleConsumed = true;
+	  // estimateOffset(data_in);  
+	  // this->consume_each(preambleSize);
+	  size_t nSamples = std::min((size_t(1 << 14) - 1), preambleSamplesToConsume);
+
+#ifndef NDEBUG
+	  std::cout << "correlationSync: consuming " << nSamples << " preamble samples out of " << preambleSamplesToConsume<< std::endl;
+#endif
+	  
+	  this->consume_each(nSamples);
+	  preambleSamplesToConsume -= nSamples;
+	  if(preambleSamplesToConsume == 0)
+	    preambleConsumed = true;
 	  return 0;
 	}
 	
@@ -241,8 +256,8 @@ namespace gr {
 	for(size_t j = 0; j < n; j++)
 	  for(size_t i = 0; i < symbolSize; i++){
 	    ///data_out[i + symbolSize*j] = correctOffset<T>(data_in[i + symbolSize*j], corrMax);
-	    data_out[i + symbolSize*j] = correctOffset<T>(data_in[i + symbolSize*j], offset);
-	    //data_out[i + symbolSize*j] = corrMax*data_in[i + symbolSize*j];
+	    // data_out[i + symbolSize*j] = correctOffset<T>(data_in[i + symbolSize*j], offset);
+	    data_out[i + symbolSize*j] = corrMax*data_in[i + symbolSize*j];
 	  }
 
 	this->consume_each (symbolSize*n);

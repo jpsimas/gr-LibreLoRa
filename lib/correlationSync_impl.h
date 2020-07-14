@@ -52,6 +52,7 @@ namespace gr {
       bool deSyncAfterDone;
 
       bool preambleConsumed;
+      size_t preambleSamplesToConsume;
       
       pmt::pmt_t syncPort;
 
@@ -75,6 +76,19 @@ namespace gr {
 	return fixedMode;
 	//return nOutputItemsToProduce != fixedModeDisabled;};
       };
+
+
+      // int fixed_rate_ninput_to_noutput(int ninput_items)
+      // {
+      // 	const size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < ninput_items))? nOutputItemsToProduce : ninput_items);
+      // 	return syncd? (preambleConsumed? n : 0) : 0;
+      // }
+
+      // int fixed_rate_noutput_to_ninput(int noutput_items)
+      // {
+      // 	const size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
+      // 	return (syncd? (preambleConsumed? (symbolSize*n) : std::min((size_t(1 << 14) - 1), preambleSamplesToConsume)) : 2*symbolSize);
+      // }
     };
   } // namespace LibreLoRa
 } // namespace gr
