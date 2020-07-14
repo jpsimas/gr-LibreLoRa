@@ -77,7 +77,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1280, 36.0]
+    coordinate: [655, 124]
     rotation: 0
     state: true
 - name: decimation
@@ -92,23 +92,35 @@ blocks:
     coordinate: [296, 84.0]
     rotation: 0
     state: true
-- name: powerThreshold
+- name: maxFrameTime
   id: variable
   parameters:
     comment: ''
-    value: 1e-3
+    value: (2**(SF)/BW)*(8 + 257*2*8/SF)
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1392, 36.0]
+    coordinate: [982, 131]
+    rotation: 0
+    state: true
+- name: powerThreshold
+  id: variable
+  parameters:
+    comment: ''
+    value: 5e-3
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [810, 128]
     rotation: 0
     state: true
 - name: samp_rate
   id: variable
   parameters:
     comment: ''
-    value: 250e3
+    value: 1e6
   states:
     bus_sink: false
     bus_source: false
@@ -140,20 +152,21 @@ blocks:
     coordinate: [968, 20.0]
     rotation: 0
     state: true
-- name: LibreLoRa_PowerDetector_0
+- name: LibreLoRa_PowerDetector_0_0
   id: LibreLoRa_PowerDetector
   parameters:
     affinity: ''
     alias: ''
     comment: ''
     maxoutbuf: '0'
-    minoutbuf: '0'
+    minoutbuf: int(maxFrameTime*samp_rate)
     threshold: powerThreshold
+    timeout: 100*symbolSize/samp_rate
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1008, 248.0]
+    coordinate: [1029, 231]
     rotation: 0
     state: true
 - name: LoRaRx_0
@@ -651,12 +664,13 @@ blocks:
     state: enabled
 
 connections:
-- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0, '0']
+- [LibreLoRa_PowerDetector_0_0, '0', LoRaRx_0, '0']
 - [LoRaRx_0, '0', blocks_tcp_server_sink_0, '0']
 - [LoRaRx_0, '1', blocks_null_sink_0, '0']
+- [LoRaRx_0, reset, LibreLoRa_PowerDetector_0_0, reset]
 - [blocks_complex_to_mag_squared_0_1, '0', iir_filter_xxx_0, '0']
-- [iir_filter_xxx_0, '0', LibreLoRa_PowerDetector_0, '1']
-- [rational_resampler_xxx_0, '0', LibreLoRa_PowerDetector_0, '0']
+- [iir_filter_xxx_0, '0', LibreLoRa_PowerDetector_0_0, '1']
+- [rational_resampler_xxx_0, '0', LibreLoRa_PowerDetector_0_0, '0']
 - [rational_resampler_xxx_0, '0', blocks_complex_to_mag_squared_0_1, '0']
 - [rtlsdr_source_0, '0', rational_resampler_xxx_0, '0']
 

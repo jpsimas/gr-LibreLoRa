@@ -68,6 +68,30 @@ blocks:
     coordinate: [544, 456.0]
     rotation: 0
     state: enabled
+- name: decimation
+  id: variable
+  parameters:
+    comment: ''
+    value: 1 if (OSF*2**(SF + 1) <= 2**13) else int(OSF*2**(SF + 1 - 13))
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [80, 108.0]
+    rotation: 0
+    state: disabled
+- name: decimation
+  id: variable
+  parameters:
+    comment: ''
+    value: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [96, 180.0]
+    rotation: 0
+    state: enabled
 - name: lowDataRateRequired
   id: variable
   parameters:
@@ -77,9 +101,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [560, 84.0]
+    coordinate: [536, 92.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: nUpchirps
   id: variable
   parameters:
@@ -96,8 +120,8 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: numpy.exp(1j*2*numpy.pi*OSF*LibreLoRa.getPreambleFrequency(SF, symbolSize,
-      nUpchirps, syncwordNumber))
+    value: numpy.exp(1j*2*numpy.pi*OSF*decimation*LibreLoRa.getPreambleFrequency(SF,
+      symbolSize, nUpchirps, syncwordNumber))
   states:
     bus_sink: false
     bus_source: false
@@ -121,7 +145,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: (2**SF)*OSF
+    value: int(((2**SF)*OSF)/decimation)
   states:
     bus_sink: false
     bus_source: false
@@ -133,7 +157,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: numpy.asarray(LibreLoRa.getSymbol(0, SF, OSF))
+    value: numpy.asarray(LibreLoRa.getSymbol(0, SF, symbolSize))
   states:
     bus_sink: false
     bus_source: false
@@ -336,16 +360,16 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    mu: 1/(2*OSF)
+    mu: 1/(2*OSF) if OSF < 4 else 2/OSF
     type: float
     window: chirpWindow
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [368, 328.0]
+    coordinate: [369, 328]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_frequencyTracker_0
   id: LibreLoRa_frequencyTracker
   parameters:
@@ -354,9 +378,10 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
+    decimation: decimation
     maxoutbuf: '0'
     minoutbuf: '0'
-    mu: 1/(2*OSF)
+    mu: 1/(2*OSF) if OSF < 4 else 2/OSF
     type: float
   states:
     bus_sink: false
@@ -364,7 +389,7 @@ blocks:
     bus_structure: null
     coordinate: [400, 224.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: LibreLoRa_grayEncode_0
   id: LibreLoRa_grayEncode
   parameters:
@@ -458,9 +483,9 @@ blocks:
     implicit: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    symbolSize: (2**SF)*OSF
+    symbolSize: symbolSize
     type: float
-    windowSize: int(symbolSize)
+    windowSize: int(symbolSize/2)
   states:
     bus_sink: false
     bus_source: false

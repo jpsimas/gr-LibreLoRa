@@ -41,19 +41,19 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [184, 84.0]
+    coordinate: [208, 84.0]
     rotation: 0
     state: enabled
 - name: DFTSize
   id: variable
   parameters:
     comment: ''
-    value: 2*symbolSize
+    value: symbolSize
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2384, 900.0]
+    coordinate: [1367, 1628]
     rotation: 0
     state: enabled
 - name: OSF
@@ -72,7 +72,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '8'
+    value: '7'
   states:
     bus_sink: false
     bus_source: false
@@ -89,7 +89,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1256, 20.0]
+    coordinate: [768, 180.0]
     rotation: 0
     state: true
 - name: chirpWindow
@@ -101,7 +101,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2416, 996.0]
+    coordinate: [1288, 1724.0]
     rotation: 0
     state: enabled
 - name: decimation
@@ -116,16 +116,28 @@ blocks:
     coordinate: [296, 84.0]
     rotation: 0
     state: true
-- name: powerThreshold
+- name: maxFrameTime
   id: variable
   parameters:
     comment: ''
-    value: 1e-3
+    value: (2**(SF)/BW)*(8 + 257*2*8/SF)
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1368, 12.0]
+    coordinate: [437, 96]
+    rotation: 0
+    state: true
+- name: powerThreshold
+  id: variable
+  parameters:
+    comment: ''
+    value: 5e-3
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [896, 164]
     rotation: 0
     state: true
 - name: preambleComplex
@@ -157,12 +169,12 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 250e3
+    value: 1e6
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [184, 16.0]
+    coordinate: [208, 12.0]
     rotation: 0
     state: enabled
 - name: symbolSize
@@ -198,7 +210,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2256, 900.0]
+    coordinate: [1240, 1628.0]
     rotation: 0
     state: enabled
 - name: LibreLoRa_ArgMaxAbs_0
@@ -231,7 +243,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1920, 1024.0]
+    coordinate: [1920, 1024]
     rotation: 0
     state: disabled
 - name: LibreLoRa_Correlation_0_0
@@ -265,7 +277,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1800, 1368.0]
+    coordinate: [1888, 1352.0]
     rotation: 0
     state: disabled
 - name: LibreLoRa_Correlation_0_0_0_0
@@ -309,15 +321,33 @@ blocks:
     alias: ''
     comment: ''
     maxoutbuf: '0'
-    minoutbuf: '0'
+    minoutbuf: int(maxFrameTime*samp_rate)
     threshold: powerThreshold
+    timeout: 100*symbolSize/samp_rate
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1072, 152.0]
+    coordinate: [1092, 148]
     rotation: 0
     state: true
+- name: LibreLoRa_chirpSource_0
+  id: LibreLoRa_chirpSource
+  parameters:
+    SF: '8'
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    symbolSize: symbolSize*8
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [33, 1134]
+    rotation: 0
+    state: disabled
 - name: LibreLoRa_frequencyTrackerN_0_0
   id: LibreLoRa_frequencyTrackerN
   parameters:
@@ -348,14 +378,14 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    mu: 1/(2*OSF)
+    mu: (1/(4*OSF) if OSF < 4 else 2/OSF)*(2**(-(SF - 7)))
     type: float
     window: chirpWindow
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1584, 1596.0]
+    coordinate: [1584, 1602]
     rotation: 0
     state: disabled
 - name: LibreLoRa_frequencyTracker_0
@@ -366,9 +396,10 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
+    decimation: '1'
     maxoutbuf: '0'
-    minoutbuf: '0'
-    mu: 1/(4*OSF)
+    minoutbuf: 10*symbolSize
+    mu: (1/(2*OSF) if OSF < 4 else 2/OSF)*(2**(-(SF - 7)))
     type: float
   states:
     bus_sink: false
@@ -385,6 +416,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
+    decimation: '1'
     maxoutbuf: '0'
     minoutbuf: '0'
     mu: 1/(4*OSF)
@@ -448,6 +480,24 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [1128, 1008.0]
+    rotation: 0
+    state: disabled
+- name: blocks_add_xx_0
+  id: blocks_add_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [218, 975]
     rotation: 0
     state: disabled
 - name: blocks_complex_to_arg_0
@@ -543,9 +593,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [672, 288.0]
+    coordinate: [648, 268.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: blocks_file_source_0
   id: blocks_file_source
   parameters:
@@ -553,19 +603,19 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: /home/jp/gnuradio/out_sdr_OSF_1_a_SF_7_crcon_CR_1.raw
+    file: /home/jp/gnuradio/out_sdr_OSF_1_255as_SF_7_crcon_CR_1.raw
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
     offset: '0'
-    repeat: 'False'
+    repeat: 'True'
     type: complex
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [88, 844.0]
+    coordinate: [6, 833]
     rotation: 0
     state: disabled
 - name: blocks_int_to_float_0
@@ -691,6 +741,42 @@ blocks:
     coordinate: [2096, 1564.0]
     rotation: 0
     state: disabled
+- name: blocks_multiply_const_vxx_3
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 5e-2
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [254, 1087]
+    rotation: 0
+    state: disabled
+- name: blocks_nlog10_ff_0
+  id: blocks_nlog10_ff
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    k: '10'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    n: '1'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [964, 369]
+    rotation: 0
+    state: true
 - name: blocks_null_sink_0
   id: blocks_null_sink
   parameters:
@@ -793,7 +879,7 @@ blocks:
     fftaps: (1 - alphaPower)
     maxoutbuf: '0'
     minoutbuf: '0'
-    oldstyle: 'True'
+    oldstyle: 'False'
     type: ffd
   states:
     bus_sink: false
@@ -1116,7 +1202,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2080, 1348.0]
+    coordinate: [2296, 1348.0]
     rotation: 0
     state: disabled
 - name: qtgui_time_sink_x_0_0_0_0
@@ -1399,17 +1485,17 @@ blocks:
     width7: '1'
     width8: '1'
     width9: '1'
-    ylabel: Amplitude
-    ymax: '1'
-    ymin: '-1'
+    ylabel: Power (dB something)
+    ymax: '20'
+    ymin: '-10'
     yunit: '""'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1240, 828.0]
+    coordinate: [1090, 360]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: qtgui_waterfall_sink_x_0
   id: qtgui_waterfall_sink_x
   parameters:
@@ -1471,6 +1557,67 @@ blocks:
     coordinate: [704, 360.0]
     rotation: 0
     state: enabled
+- name: qtgui_waterfall_sink_x_0_0
+  id: qtgui_waterfall_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    axislabels: 'True'
+    bw: samp_rate
+    color1: '0'
+    color10: '0'
+    color2: '0'
+    color3: '0'
+    color4: '0'
+    color5: '0'
+    color6: '0'
+    color7: '0'
+    color8: '0'
+    color9: '0'
+    comment: ''
+    fc: '0'
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    int_max: '0'
+    int_min: '-140'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    showports: 'False'
+    type: complex
+    update_time: '0.10'
+    wintype: firdes.WIN_RECTANGULAR
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1344, 296.0]
+    rotation: 0
+    state: enabled
 - name: rational_resampler_xxx_0
   id: rational_resampler_xxx
   parameters:
@@ -1478,17 +1625,17 @@ blocks:
     alias: ''
     comment: ''
     decim: decimation
-    fbw: '0.49'
+    fbw: '0'
     interp: '1'
     maxoutbuf: '0'
     minoutbuf: '0'
-    taps: ''
+    taps: '[1]'
     type: ccc
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [432, 236.0]
+    coordinate: [432, 220.0]
     rotation: 0
     state: enabled
 - name: rtlsdr_source_0
@@ -1634,7 +1781,7 @@ blocks:
     corr7: '0'
     corr8: '0'
     corr9: '0'
-    dc_offset_mode0: '2'
+    dc_offset_mode0: '0'
     dc_offset_mode1: '0'
     dc_offset_mode10: '0'
     dc_offset_mode11: '0'
@@ -1845,7 +1992,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [16, 164.0]
+    coordinate: [15, 164]
     rotation: 0
     state: enabled
 
@@ -1862,7 +2009,14 @@ connections:
 - [LibreLoRa_Correlation_0_0_0_0, '1', blocks_complex_to_arg_1, '0']
 - [LibreLoRa_Correlation_0_0_0_1, '0', qtgui_time_sink_x_0_0_0_1, '0']
 - [LibreLoRa_Correlation_0_0_0_1, '1', qtgui_time_sink_x_0_0_0_1, '1']
+- [LibreLoRa_PowerDetector_0, '0', LibreLoRa_frequencyTrackerN_0_0, '0']
+- [LibreLoRa_PowerDetector_0, '0', LibreLoRa_frequencyTrackerN_0_0_0, '0']
+- [LibreLoRa_PowerDetector_0, '0', LibreLoRa_frequencyTracker_0, '0']
+- [LibreLoRa_PowerDetector_0, '0', LibreLoRa_frequencyTracker_0_0, '0']
+- [LibreLoRa_PowerDetector_0, '0', LibreLoRa_streamToHistoryVector_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0, '0']
+- [LibreLoRa_PowerDetector_0, '0', qtgui_waterfall_sink_x_0_0, '0']
+- [LibreLoRa_chirpSource_0, '0', blocks_multiply_const_vxx_3, '0']
 - [LibreLoRa_frequencyTrackerN_0_0, '0', LibreLoRa_Correlation_0_0, '0']
 - [LibreLoRa_frequencyTrackerN_0_0_0, '0', LibreLoRa_Correlation_0_0_0_1, '0']
 - [LibreLoRa_frequencyTracker_0, '0', LibreLoRa_Correlation_0_0_0, '0']
@@ -1872,34 +2026,28 @@ connections:
 - [LoRaRx_0, '1', blocks_null_sink_0, '0']
 - [LoRaRx_0, reset, LibreLoRa_PowerDetector_0, reset]
 - [analog_const_source_x_0, '0', blocks_magphase_to_complex_0, '0']
+- [blocks_add_xx_0, '0', blocks_throttle_0, '0']
 - [blocks_complex_to_arg_0, '0', blocks_multiply_const_vxx_1_0, '0']
 - [blocks_complex_to_arg_1, '0', blocks_multiply_const_vxx_2_0, '0']
 - [blocks_complex_to_arg_1_0, '0', blocks_multiply_const_vxx_2, '0']
 - [blocks_complex_to_mag_squared_0, '0', qtgui_time_sink_x_0_0_0_0, '0']
 - [blocks_complex_to_mag_squared_0_0, '0', qtgui_time_sink_x_0_0, '0']
 - [blocks_complex_to_mag_squared_0_1, '0', iir_filter_xxx_0, '0']
-- [blocks_file_source_0, '0', blocks_throttle_0, '0']
+- [blocks_file_source_0, '0', blocks_add_xx_0, '0']
 - [blocks_int_to_float_0, '0', blocks_multiply_const_vxx_1, '0']
-- [blocks_int_to_float_0, '0', qtgui_time_sink_x_1, '0']
 - [blocks_magphase_to_complex_0, '0', blocks_complex_to_arg_0, '0']
 - [blocks_multiply_const_vxx_0, '0', fft_vxx_0, '0']
 - [blocks_multiply_const_vxx_1, '0', blocks_magphase_to_complex_0, '1']
 - [blocks_multiply_const_vxx_1_0, '0', LibreLoRa_Correlation_0, '0']
 - [blocks_multiply_const_vxx_2, '0', qtgui_time_sink_x_0_0, '1']
 - [blocks_multiply_const_vxx_2_0, '0', qtgui_time_sink_x_0_0_0_0, '1']
-- [blocks_throttle_0, '0', LibreLoRa_frequencyTrackerN_0_0, '0']
-- [blocks_throttle_0, '0', LibreLoRa_frequencyTracker_0, '0']
-- [blocks_throttle_0, '0', LibreLoRa_streamToHistoryVector_0, '0']
-- [blocks_throttle_0, '0', LoRaRx_0, '0']
-- [blocks_throttle_0, '0', qtgui_waterfall_sink_x_0, '0']
+- [blocks_multiply_const_vxx_3, '0', blocks_add_xx_0, '1']
+- [blocks_nlog10_ff_0, '0', qtgui_time_sink_x_1, '0']
+- [blocks_throttle_0, '0', rational_resampler_xxx_0, '0']
 - [fft_vxx_0, '0', LibreLoRa_ArgMaxAbs_0, '0']
 - [iir_filter_xxx_0, '0', LibreLoRa_PowerDetector_0, '1']
+- [iir_filter_xxx_0, '0', blocks_nlog10_ff_0, '0']
 - [rational_resampler_xxx_0, '0', LibreLoRa_PowerDetector_0, '0']
-- [rational_resampler_xxx_0, '0', LibreLoRa_frequencyTrackerN_0_0, '0']
-- [rational_resampler_xxx_0, '0', LibreLoRa_frequencyTrackerN_0_0_0, '0']
-- [rational_resampler_xxx_0, '0', LibreLoRa_frequencyTracker_0, '0']
-- [rational_resampler_xxx_0, '0', LibreLoRa_frequencyTracker_0_0, '0']
-- [rational_resampler_xxx_0, '0', LibreLoRa_streamToHistoryVector_0, '0']
 - [rational_resampler_xxx_0, '0', blocks_complex_to_mag_squared_0_1, '0']
 - [rational_resampler_xxx_0, '0', qtgui_waterfall_sink_x_0, '0']
 - [rtlsdr_source_0, '0', rational_resampler_xxx_0, '0']
