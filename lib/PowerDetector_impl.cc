@@ -29,22 +29,23 @@ namespace gr {
   namespace LibreLoRa {
 
     PowerDetector::sptr
-    PowerDetector::make(float threshold)
+    PowerDetector::make(float threshold, float timeoutSeconds)
     {
       return gnuradio::get_initial_sptr
-        (new PowerDetector_impl(threshold));
+        (new PowerDetector_impl(threshold, timeoutSeconds));
     }
 
 
     /*
      * The private constructor
      */
-    PowerDetector_impl::PowerDetector_impl(float threshold)
+    PowerDetector_impl::PowerDetector_impl(float threshold, float timeoutSeconds)
       : gr::block("PowerDetector",
 		  gr::io_signature::make2(2, 2, sizeof(gr_complex), sizeof(float)),
 		  gr::io_signature::make(1, 1, sizeof(gr_complex))),
 	threshold(threshold), 
-	state(detection)
+	state(detection),
+	timeout(timeoutSeconds*CLOCKS_PER_SEC)
     {
       this->message_port_register_in(pmt::mp("reset"));
       this->set_msg_handler(pmt::mp("reset"),
@@ -87,6 +88,7 @@ namespace gr {
 	for(i = 0; i < noutput_items; i++) {
 	  if(powerIn[i] > threshold) {
 	    state = started;
+	    time = clock();
 #ifndef NDEBUG
 	    std::cout << "PowerDetector: started" << std::endl;
 #endif
@@ -98,8 +100,12 @@ namespace gr {
 	return 0;
 	
       case started:
-	for(auto i = 0; i < noutput_items; i++)
+	for(auto i = 0; i < noutput_items; i++) {
 	  out[i] = in[i];
+	  if(clock() > time + timeout) {
+	    state = waiting;
+	  }
+	}
 	
 	consume_each (noutput_items);
 	return noutput_items;
@@ -107,6 +113,9 @@ namespace gr {
 	for(i = 0; i < noutput_items; i++) {
 	  if(powerIn[i] < threshold) {
 	    state = detection;
+#ifndef NDEBUG
+	    std::cout << "PowerDetector: stopped (timeout)" << std::endl;
+#endif
 	    break;
 	  }
 	}
@@ -114,6 +123,7 @@ namespace gr {
 	consume_each(i);
 	return 0;
       }
+      return 0;
     }
 
     void

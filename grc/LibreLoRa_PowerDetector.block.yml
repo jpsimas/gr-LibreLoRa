@@ -3,10 +3,13 @@ label: PowerDetector
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.PowerDetector(${threshold})
+  make: LibreLoRa.PowerDetector(${threshold}, ${timeout})
 parameters:
 - id: threshold
   label: Threshold
+  dtype: float
+- id: timeout
+  label: Timeout
   dtype: float
 inputs:
 - label: in

@@ -22,6 +22,7 @@
 #define INCLUDED_LIBRELORA_POWERDETECTOR_IMPL_H
 
 #include <LibreLoRa/PowerDetector.h>
+#include <time.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -32,8 +33,10 @@ namespace gr {
       const float threshold;
       enum state_t {detection, started, waiting};
       state_t state;
+      clock_t timeout;
+      clock_t time;
      public:
-      PowerDetector_impl(float threshold);
+      PowerDetector_impl(float threshold, float timeoutSeconds);
       ~PowerDetector_impl();
 
       // Where all the action really happens
