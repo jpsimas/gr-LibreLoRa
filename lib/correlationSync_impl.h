@@ -34,6 +34,7 @@ namespace gr {
       const float corrStop;
       const size_t symbolSize;
       const size_t preambleSize;
+      const size_t SF;
 
       T corrMax;
 
@@ -58,7 +59,7 @@ namespace gr {
 
       inline float norm(T x);
      public:
-      correlationSync_impl(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize);
+      correlationSync_impl(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize, size_t SF);
       ~correlationSync_impl();
 
       // Where all the action really happens

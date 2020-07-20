@@ -1,0 +1,59 @@
+id: LibreLoRa_ChirpDetector
+label: ChirpDetector
+category: '[LibreLoRa]'
+
+parameters:
+-   id: samp_rate
+    label: samp_rate
+    dtype: raw
+    default: 'samp_rate'
+    hide: none
+-   id: BW
+    label: bw
+    dtype: raw
+    default: 'BW'
+    hide: none
+-   id: SF
+    label: SF
+    dtype: raw
+    default: 'SF'
+    hide: none
+-   id: DFTSize
+    label: DFTSize
+    dtype: raw
+    default: 'None'
+    hide: none
+-   id: threshold
+    label: threshold
+    dtype: raw
+    default: '0.2'
+    hide: none
+-   id: timeout
+    label: timeout
+    dtype: raw
+    default: '5'
+    hide: none
+
+inputs:
+-   label: in
+    dtype: complex
+    vlen: 1
+
+outputs:
+-   label: out
+    dtype: complex
+    vlen: 1
+-   domain: message
+    id: detectOut
+    optional: true
+    
+templates:
+    imports: 'from LibreLoRa import ChirpDetector'
+    make: "ChirpDetector(\n    samp_rate=${ samp_rate },\n    BW=${ BW },\n    SF=${ SF },\n    DFTSize=${ DFTSize }, \n    threshold=${ threshold },\n    timeout=${ timeout },\n)"
+    callbacks:
+    - set_BW(${ BW })
+    - set_DFTSize(${ DFTSize })
+    - set_SF(${ SF })
+    - set_threshold(${ threshold })
+    - set_timeout(${ timeout })
+file_format: 1

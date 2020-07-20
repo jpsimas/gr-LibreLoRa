@@ -19,6 +19,10 @@ import LibreLoRa
 import numpy
 import threading
 
+
+
+
+
 class DCFT(gr.hier_block2):
     def __init__(self, DFTSize=2048, chirpRate=2**(-11), samp_rate=1e6, windowSize=32):
         gr.hier_block2.__init__(
@@ -40,7 +44,7 @@ class DCFT(gr.hier_block2):
         ##################################################
         # Variables
         ##################################################
-        self.chirpWindow = chirpWindow = numpy.real(LibreLoRa.getChirpWindow(DFTSize, windowSize, 1, numpy.sqrt(1/chirpRate)))
+        self.chirpWindow = chirpWindow = numpy.real(LibreLoRa.getChirpWindow(DFTSize, windowSize,0, numpy.sqrt(1/chirpRate)))*numpy.sqrt(DFTSize/windowSize)
 
         ##################################################
         # Blocks
@@ -66,7 +70,7 @@ class DCFT(gr.hier_block2):
     def set_DFTSize(self, DFTSize):
         with self._lock:
             self.DFTSize = DFTSize
-            self.set_chirpWindow(numpy.real(LibreLoRa.getChirpWindow(self.DFTSize, self.windowSize, 1, numpy.sqrt(1/self.chirpRate))))
+            self.set_chirpWindow(numpy.real(LibreLoRa.getChirpWindow(self.DFTSize, self.windowSize,0, numpy.sqrt(1/self.chirpRate)))*numpy.sqrt(self.DFTSize/self.windowSize))
 
     def get_chirpRate(self):
         return self.chirpRate
@@ -74,7 +78,7 @@ class DCFT(gr.hier_block2):
     def set_chirpRate(self, chirpRate):
         with self._lock:
             self.chirpRate = chirpRate
-            self.set_chirpWindow(numpy.real(LibreLoRa.getChirpWindow(self.DFTSize, self.windowSize, 1, numpy.sqrt(1/self.chirpRate))))
+            self.set_chirpWindow(numpy.real(LibreLoRa.getChirpWindow(self.DFTSize, self.windowSize,0, numpy.sqrt(1/self.chirpRate)))*numpy.sqrt(self.DFTSize/self.windowSize))
 
     def get_samp_rate(self):
         return self.samp_rate
@@ -89,7 +93,7 @@ class DCFT(gr.hier_block2):
     def set_windowSize(self, windowSize):
         with self._lock:
             self.windowSize = windowSize
-            self.set_chirpWindow(numpy.real(LibreLoRa.getChirpWindow(self.DFTSize, self.windowSize, 1, numpy.sqrt(1/self.chirpRate))))
+            self.set_chirpWindow(numpy.real(LibreLoRa.getChirpWindow(self.DFTSize, self.windowSize,0, numpy.sqrt(1/self.chirpRate)))*numpy.sqrt(self.DFTSize/self.windowSize))
 
     def get_chirpWindow(self):
         return self.chirpWindow

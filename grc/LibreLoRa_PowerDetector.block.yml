@@ -3,7 +3,7 @@ label: PowerDetector
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.PowerDetector(${threshold}, ${timeout})
+  make: LibreLoRa.PowerDetector(${threshold}, ${timeout}, ${decimation}, ${message})
 parameters:
 - id: threshold
   label: Threshold
@@ -11,6 +11,13 @@ parameters:
 - id: timeout
   label: Timeout
   dtype: float
+- id: decimation
+  label: Decimation
+  dtype: float
+- id: message
+  label: Message
+  dtype: raw
+  default: pmt.PMT_NIL
 inputs:
 - label: in
   domain: stream
@@ -25,4 +32,7 @@ outputs:
 - label: out
   domain: stream
   dtype: complex
+- domain: message
+  id: detectOut
+  optional: true
 file_format: 1

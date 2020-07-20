@@ -18,16 +18,16 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_FREQUENCYTRACKERN_IMPL_H
-#define INCLUDED_LIBRELORA_FREQUENCYTRACKERN_IMPL_H
+#ifndef INCLUDED_LIBRELORA_FREQUENCYTRACKERNMODE_IMPL_H
+#define INCLUDED_LIBRELORA_FREQUENCYTRACKERNMODE_IMPL_H
 
-#include <LibreLoRa/frequencyTrackerN.h>
+#include <LibreLoRa/frequencyTrackerNMode.h>
 
 namespace gr {
   namespace LibreLoRa {
 
     template<typename T>
-    class frequencyTrackerN_impl : public frequencyTrackerN<T>
+    class frequencyTrackerNMode_impl : public frequencyTrackerNMode<T>
     {
      private:
       // Nothing to declare in this block.
@@ -36,13 +36,16 @@ namespace gr {
       const float mu;
       gr_complex w;
       const size_t OSF;
+      const size_t SF;
 
       const gr_complex wStep;
 
+      std::vector<size_t> count;
+      
       inline T calcFreq(gr_complex x);
      public:
-      frequencyTrackerN_impl(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window);
-      ~frequencyTrackerN_impl();
+      frequencyTrackerNMode_impl(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window);
+      ~frequencyTrackerNMode_impl();
 
       // Where all the action really happens
       int work(
@@ -55,5 +58,5 @@ namespace gr {
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_FREQUENCYTRACKERN_IMPL_H */
+#endif /* INCLUDED_LIBRELORA_FREQUENCYTRACKERNMODE_IMPL_H */
 

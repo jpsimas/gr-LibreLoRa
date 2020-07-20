@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2020 Joao Pedro de O. Simas.
+ * Copyright 2020 Joao Pedro de O Simas.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,42 +18,36 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_FREQUENCYTRACKERN_IMPL_H
-#define INCLUDED_LIBRELORA_FREQUENCYTRACKERN_IMPL_H
+#ifndef INCLUDED_LIBRELORA_TONEDETECTOR_IMPL_H
+#define INCLUDED_LIBRELORA_TONEDETECTOR_IMPL_H
 
-#include <LibreLoRa/frequencyTrackerN.h>
+#include <LibreLoRa/ToneDetector.h>
+#include <time.h>
+#include <volk/volk.h>
 
 namespace gr {
   namespace LibreLoRa {
 
-    template<typename T>
-    class frequencyTrackerN_impl : public frequencyTrackerN<T>
+    class ToneDetector_impl : public ToneDetector
     {
      private:
-      // Nothing to declare in this block.
-      const std::vector<gr_complex> window;
-      std::vector<gr_complex> windowedSig;
-      const float mu;
-      gr_complex w;
-      const size_t OSF;
-
-      const gr_complex wStep;
-
-      inline T calcFreq(gr_complex x);
+      const size_t DFTSize;
+      static const pmt::pmt_t tagKey;
+      
      public:
-      frequencyTrackerN_impl(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window);
-      ~frequencyTrackerN_impl();
+      ToneDetector_impl(size_t DFTSize);
+      ~ToneDetector_impl();
 
       // Where all the action really happens
-      int work(
-              int noutput_items,
-              gr_vector_const_void_star &input_items,
-              gr_vector_void_star &output_items
-      );
+
+      int work(int noutput_items,
+           gr_vector_const_void_star &input_items,
+           gr_vector_void_star &output_items);
+
     };
 
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_FREQUENCYTRACKERN_IMPL_H */
+#endif /* INCLUDED_LIBRELORA_TONEDETECTOR_IMPL_H */
 

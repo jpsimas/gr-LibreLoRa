@@ -39,6 +39,10 @@ namespace gr {
       size_t SF;
       bool implicit;
       bool started;
+
+      size_t step;
+
+      T offset;
      public:
       symbolDemod_impl(size_t SF, size_t symbolSize, bool implicit, size_t windowSize);
       

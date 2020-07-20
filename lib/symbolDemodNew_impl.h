@@ -34,6 +34,8 @@ namespace gr {
       size_t SF;
       size_t OSF;
 
+      std::vector<size_t> count;
+      std::vector<float> estimate;
      public:
       symbolDemodNew_impl(size_t SF, size_t symbolSize, size_t OSF);
       ~symbolDemodNew_impl();

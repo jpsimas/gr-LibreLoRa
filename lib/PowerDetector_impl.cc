@@ -29,23 +29,25 @@ namespace gr {
   namespace LibreLoRa {
 
     PowerDetector::sptr
-    PowerDetector::make(float threshold, float timeoutSeconds)
+    PowerDetector::make(float threshold, float timeoutSeconds, size_t decimation, pmt::pmt_t message)
     {
       return gnuradio::get_initial_sptr
-        (new PowerDetector_impl(threshold, timeoutSeconds));
+        (new PowerDetector_impl(threshold, timeoutSeconds, decimation, message));
     }
 
 
     /*
      * The private constructor
      */
-    PowerDetector_impl::PowerDetector_impl(float threshold, float timeoutSeconds)
+    PowerDetector_impl::PowerDetector_impl(float threshold, float timeoutSeconds, size_t decimation, pmt::pmt_t message)
       : gr::block("PowerDetector",
 		  gr::io_signature::make2(2, 2, sizeof(gr_complex), sizeof(float)),
 		  gr::io_signature::make(1, 1, sizeof(gr_complex))),
 	threshold(threshold), 
 	state(detection),
-	timeout(timeoutSeconds*CLOCKS_PER_SEC)
+	timeout(timeoutSeconds*CLOCKS_PER_SEC),
+	decimation(decimation),
+	message(message)
     {
       this->message_port_register_in(pmt::mp("reset"));
       this->set_msg_handler(pmt::mp("reset"),
@@ -57,6 +59,9 @@ namespace gr {
 				reset();
 			      }
 			    });
+
+      detectOutPort = pmt::string_to_symbol("detectOut");
+      message_port_register_out(detectOutPort);
     }
 
     /*
@@ -69,7 +74,8 @@ namespace gr {
     void
     PowerDetector_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      ninput_items_required[0] = ninput_items_required[1] = noutput_items;
+      ninput_items_required[0] = ((noutput_items + decimation - 1)/decimation)*decimation;
+      ninput_items_required[1] = (noutput_items + decimation - 1)/decimation;
     }
 
     int
@@ -85,10 +91,18 @@ namespace gr {
       size_t i;
       switch(state) {
       case detection:
-	for(i = 0; i < noutput_items; i++) {
+	for(i = 0; i < (noutput_items + decimation - 1)/decimation; i++) {
 	  if(powerIn[i] > threshold) {
 	    state = started;
 	    time = clock();
+
+	    std::vector<gr::tag_t> tags;
+	    auto nr =  nitems_read(1);
+	    get_tags_in_range(tags, 1, nr + i, nr + i + 1);
+	    if(tags.size() != 0)
+	      message_port_pub(detectOutPort, pmt::make_tuple(message, tags[0].value));
+	    else
+	      message_port_pub(detectOutPort, message);
 #ifndef NDEBUG
 	    std::cout << "PowerDetector: started" << std::endl;
 #endif
@@ -96,21 +110,24 @@ namespace gr {
 	  }
 	}
 
-	consume_each(i);
+	consume(0, i*decimation);
+	consume(1, i);
+	
 	return 0;
 	
       case started:
-	for(auto i = 0; i < noutput_items; i++) {
+	for(auto i = 0; i < ((noutput_items + decimation - 1)/decimation)*decimation; i++) {
 	  out[i] = in[i];
 	  if(clock() > time + timeout) {
 	    state = waiting;
 	  }
 	}
 	
-	consume_each (noutput_items);
-	return noutput_items;
+	consume(0, ((noutput_items + decimation - 1)/decimation)*decimation);
+	consume(1, (noutput_items + decimation - 1)/decimation);
+	return ((noutput_items + decimation - 1)/decimation)*decimation;
       case waiting:
-	for(i = 0; i < noutput_items; i++) {
+	for(i = 0; i < ((noutput_items + decimation - 1)/decimation)*decimation; i++) {
 	  if(powerIn[i] < threshold) {
 	    state = detection;
 #ifndef NDEBUG
@@ -119,8 +136,9 @@ namespace gr {
 	    break;
 	  }
 	}
-
-	consume_each(i);
+	
+	consume(0, i*decimation);
+	consume(1, i);
 	return 0;
       }
       return 0;

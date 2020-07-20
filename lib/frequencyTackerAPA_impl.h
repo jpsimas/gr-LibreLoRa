@@ -18,31 +18,40 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_FREQUENCYTRACKERN_IMPL_H
-#define INCLUDED_LIBRELORA_FREQUENCYTRACKERN_IMPL_H
+#ifndef INCLUDED_LIBRELORA_FREQUENCYTACKERAPA_IMPL_H
+#define INCLUDED_LIBRELORA_FREQUENCYTACKERAPA_IMPL_H
 
-#include <LibreLoRa/frequencyTrackerN.h>
+#include <LibreLoRa/frequencyTackerAPA.h>
+
+#include <eigen3/Eigen/Dense>
+#include <eigen3/Eigen/Eigenvalues> 
+
+//#include <eigen3/unsupported/Eigen/Polynomials>
 
 namespace gr {
   namespace LibreLoRa {
 
-    template<typename T>
-    class frequencyTrackerN_impl : public frequencyTrackerN<T>
+    template<size_t N>
+    class frequencyTackerAPA_impl : public frequencyTackerAPA<N>
     {
      private:
       // Nothing to declare in this block.
+      using Vect = Eigen::Matrix<gr_complex, N, 1>;
+      using VectD = Eigen::Matrix<gr_complex, Eigen::Dynamic, 1>;//K
+      const size_t K;
+
+      //Eigen::PolynomialSolver<double, Eigen::Matrix<gr_complex, N, 1>> solver;
+
+      Eigen::Matrix<gr_complex, N, N> Pmatr;
+      //Vect w;
+      float mu;
+      
       const std::vector<gr_complex> window;
-      std::vector<gr_complex> windowedSig;
-      const float mu;
-      gr_complex w;
-      const size_t OSF;
-
-      const gr_complex wStep;
-
-      inline T calcFreq(gr_complex x);
+      
+      Eigen::Matrix<gr_complex, N, Eigen::Dynamic> U;
      public:
-      frequencyTrackerN_impl(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window);
-      ~frequencyTrackerN_impl();
+      frequencyTackerAPA_impl(float mu, const std::vector<gr_complex>& window);
+      ~frequencyTackerAPA_impl();
 
       // Where all the action really happens
       int work(
@@ -50,10 +59,12 @@ namespace gr {
               gr_vector_const_void_star &input_items,
               gr_vector_void_star &output_items
       );
+
+      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
     };
 
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_FREQUENCYTRACKERN_IMPL_H */
+#endif /* INCLUDED_LIBRELORA_FREQUENCYTACKERAPA_IMPL_H */
 

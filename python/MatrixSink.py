@@ -28,6 +28,8 @@ from matplotlib.figure import Figure
 from PyQt5 import QtWidgets
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
+import matplotlib.animation as animation
+
 class MatrixSink(gr.basic_block, FigureCanvas):
     """
     docstring for block MatrixSink

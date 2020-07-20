@@ -36,7 +36,8 @@ GR_PYTHON_INSTALL(
     getPreambleFrequency.py
     getNormalizedPreambleFrequency.py
     DCFT.py
-    MatrixSink.py DESTINATION ${GR_PYTHON_DIR}/LibreLoRa
+    MatrixSink.py
+    ChirpDetector.py DESTINATION ${GR_PYTHON_DIR}/LibreLoRa
 )
 
 ########################################################################

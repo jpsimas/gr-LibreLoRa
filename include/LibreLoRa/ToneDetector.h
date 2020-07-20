@@ -18,11 +18,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_POWERDETECTOR_H
-#define INCLUDED_LIBRELORA_POWERDETECTOR_H
+#ifndef INCLUDED_LIBRELORA_TONEDETECTOR_H
+#define INCLUDED_LIBRELORA_TONEDETECTOR_H
 
 #include <LibreLoRa/api.h>
-#include <gnuradio/block.h>
+#include <gnuradio/sync_block.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -32,24 +32,24 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
-    class LIBRELORA_API PowerDetector : virtual public gr::block
+    class LIBRELORA_API ToneDetector : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<PowerDetector> sptr;
+      typedef boost::shared_ptr<ToneDetector> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of LibreLoRa::PowerDetector.
+       * \brief Return a shared_ptr to a new instance of LibreLoRa::ToneDetector.
        *
-       * To avoid accidental use of raw pointers, LibreLoRa::PowerDetector's
+       * To avoid accidental use of raw pointers, LibreLoRa::ToneDetector's
        * constructor is in a private implementation
-       * class. LibreLoRa::PowerDetector::make is the public interface for
+       * class. LibreLoRa::ToneDetector::make is the public interface for
        * creating new instances.
        */
-      static sptr make(float threshold, float timeoutSeconds, size_t decimation, pmt::pmt_t message);
+      static sptr make(size_t DFTSize);
     };
 
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_POWERDETECTOR_H */
+#endif /* INCLUDED_LIBRELORA_TONEDETECTOR_H */
 

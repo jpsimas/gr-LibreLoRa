@@ -1,6 +1,6 @@
 /* -*- c++ -*- */
 /*
- * Copyright 2020 Joao Pedro de O Simas.
+ * Copyright 2020 Joao Pedro de O. Simas.
  *
  * This is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,11 +18,11 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_POWERDETECTOR_H
-#define INCLUDED_LIBRELORA_POWERDETECTOR_H
+#ifndef INCLUDED_LIBRELORA_FREQUENCYTRACKERNMODE_H
+#define INCLUDED_LIBRELORA_FREQUENCYTRACKERNMODE_H
 
 #include <LibreLoRa/api.h>
-#include <gnuradio/block.h>
+#include <gnuradio/sync_block.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -32,24 +32,28 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
-    class LIBRELORA_API PowerDetector : virtual public gr::block
+    template<typename T>
+    class LIBRELORA_API frequencyTrackerNMode : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<PowerDetector> sptr;
+      typedef boost::shared_ptr<frequencyTrackerNMode<T>> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of LibreLoRa::PowerDetector.
+       * \brief Return a shared_ptr to a new instance of LibreLoRa::frequencyTrackerNMode.
        *
-       * To avoid accidental use of raw pointers, LibreLoRa::PowerDetector's
+       * To avoid accidental use of raw pointers, LibreLoRa::frequencyTrackerNMode's
        * constructor is in a private implementation
-       * class. LibreLoRa::PowerDetector::make is the public interface for
+       * class. LibreLoRa::frequencyTrackerNMode::make is the public interface for
        * creating new instances.
        */
-      static sptr make(float threshold, float timeoutSeconds, size_t decimation, pmt::pmt_t message);
+      static sptr make(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window);
     };
 
+    typedef frequencyTrackerNMode<float> frequencyTrackerNMode_ff;
+    typedef frequencyTrackerNMode<gr_complex> frequencyTrackerNMode_cc;
+    
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_POWERDETECTOR_H */
+#endif /* INCLUDED_LIBRELORA_FREQUENCYTRACKERNMODE_H */
 

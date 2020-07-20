@@ -1,0 +1,22 @@
+id: LibreLoRa_DetectionCount
+label: DetectionCount
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.DetectionCount(${BW}, ${nChannels})
+parameters:
+- id: BW
+  label: Bw
+  dtype: float
+- id: nChannels
+  label: Nchannels
+  dtype: raw
+inputs:
+- domain: message
+  id: detectionMessage
+  optional: true  
+outputs:
+- domain: message
+  id: count
+  optional: true
+file_format: 1

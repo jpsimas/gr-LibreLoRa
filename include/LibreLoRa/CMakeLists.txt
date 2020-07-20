@@ -56,5 +56,9 @@ install(FILES
     slidingDFTMax.h
     frequencyTrackerN.h
     symbolDemodNew.h
-    PowerDetector.h DESTINATION include/LibreLoRa
+    PowerDetector.h
+    frequencyTackerAPA.h
+    frequencyTrackerNMode.h
+    ToneDetector.h
+    DetectionCount.h DESTINATION include/LibreLoRa
 )

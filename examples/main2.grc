@@ -15,7 +15,7 @@ options:
     output_language: python
     placement: (0,0)
     qt_qss_theme: ''
-    realtime_scheduling: ''
+    realtime_scheduling: '1'
     run: 'True'
     run_command: '{python} -u {filename}'
     run_options: prompt
@@ -48,7 +48,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: symbolSize
+    value: int(symbolSize/4)
   states:
     bus_sink: false
     bus_source: false
@@ -65,19 +65,19 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [424, 20.0]
+    coordinate: [424, 22]
     rotation: 0
     state: enabled
 - name: SF
   id: variable
   parameters:
     comment: ''
-    value: '7'
+    value: '10'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [320, 20.0]
+    coordinate: [321, 18]
     rotation: 0
     state: enabled
 - name: alphaPower
@@ -89,7 +89,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [768, 180.0]
+    coordinate: [770, 176]
     rotation: 0
     state: true
 - name: chirpWindow
@@ -120,12 +120,24 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: (2**(SF)/BW)*(8 + 257*2*8/SF)
+    value: (2**(SF)/BW)*(5 + 8 + 257*2*8/SF)
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [437, 96]
+    coordinate: [439, 96]
+    rotation: 0
+    state: true
+- name: powerDecim
+  id: variable
+  parameters:
+    comment: ''
+    value: '10'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [654, 160]
     rotation: 0
     state: true
 - name: powerThreshold
@@ -174,7 +186,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [208, 12.0]
+    coordinate: [208, 12]
     rotation: 0
     state: enabled
 - name: symbolSize
@@ -210,7 +222,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1240, 1628.0]
+    coordinate: [1240, 1628]
     rotation: 0
     state: enabled
 - name: LibreLoRa_ArgMaxAbs_0
@@ -229,6 +241,27 @@ blocks:
     coordinate: [808, 1016.0]
     rotation: 0
     state: disabled
+- name: LibreLoRa_ChirpDetector_0
+  id: LibreLoRa_ChirpDetector
+  parameters:
+    BW: BW
+    DFTSize: symbolSize
+    SF: SF
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    threshold: '0.2'
+    timeout: maxFrameTime
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1046, 182]
+    rotation: 0
+    state: true
 - name: LibreLoRa_Correlation_0
   id: LibreLoRa_Correlation
   parameters:
@@ -279,7 +312,7 @@ blocks:
     bus_structure: null
     coordinate: [1888, 1352.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: LibreLoRa_Correlation_0_0_0_0
   id: LibreLoRa_Correlation
   parameters:
@@ -294,7 +327,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1792, 1496.0]
+    coordinate: [1792, 1496]
     rotation: 0
     state: disabled
 - name: LibreLoRa_Correlation_0_0_0_1
@@ -314,23 +347,42 @@ blocks:
     coordinate: [1776, 1680.0]
     rotation: 0
     state: disabled
+- name: LibreLoRa_Correlation_0_0_0_1_0
+  id: LibreLoRa_Correlation
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    symbol: preambleNormalized
+    type: float
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1790, 1812]
+    rotation: 0
+    state: disabled
 - name: LibreLoRa_PowerDetector_0
   id: LibreLoRa_PowerDetector
   parameters:
     affinity: ''
     alias: ''
     comment: ''
+    decimation: powerDecim
     maxoutbuf: '0'
-    minoutbuf: int(maxFrameTime*samp_rate)
+    message: pmt.PMT_NIL
+    minoutbuf: 2*int(maxFrameTime*samp_rate)
     threshold: powerThreshold
-    timeout: 100*symbolSize/samp_rate
+    timeout: maxFrameTime*1.5
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1092, 148]
+    coordinate: [1056, 82]
     rotation: 0
-    state: true
+    state: disabled
 - name: LibreLoRa_chirpSource_0
   id: LibreLoRa_chirpSource
   parameters:
@@ -346,6 +398,26 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [33, 1134]
+    rotation: 0
+    state: disabled
+- name: LibreLoRa_frequencyTrackerNMode_0
+  id: LibreLoRa_frequencyTrackerNMode
+  parameters:
+    OSF: OSF
+    SF: SF
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mu: '1'
+    type: float
+    window: chirpWindow
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1590, 1730]
     rotation: 0
     state: disabled
 - name: LibreLoRa_frequencyTrackerN_0_0
@@ -378,7 +450,7 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    mu: (1/(4*OSF) if OSF < 4 else 2/OSF)*(2**(-(SF - 7)))
+    mu: 1/(2*OSF) if OSF < 4 else 2/OSF
     type: float
     window: chirpWindow
   states:
@@ -398,16 +470,16 @@ blocks:
     comment: ''
     decimation: '1'
     maxoutbuf: '0'
-    minoutbuf: 10*symbolSize
-    mu: (1/(2*OSF) if OSF < 4 else 2/OSF)*(2**(-(SF - 7)))
+    minoutbuf: '0'
+    mu: 1/(2*OSF) if OSF < 4 else 2/OSF
     type: float
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1576, 1360.0]
+    coordinate: [1576, 1360]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: LibreLoRa_frequencyTracker_0_0
   id: LibreLoRa_frequencyTracker
   parameters:
@@ -595,7 +667,7 @@ blocks:
     bus_structure: null
     coordinate: [648, 268.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_file_source_0
   id: blocks_file_source
   parameters:
@@ -651,6 +723,19 @@ blocks:
     coordinate: [1336, 1032.0]
     rotation: 0
     state: disabled
+- name: blocks_message_debug_0
+  id: blocks_message_debug
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1497, 323]
+    rotation: 0
+    state: true
 - name: blocks_multiply_const_vxx_0
   id: blocks_multiply_const_vxx
   parameters:
@@ -666,7 +751,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [584, 952.0]
+    coordinate: [589, 952]
     rotation: 0
     state: disabled
 - name: blocks_multiply_const_vxx_1
@@ -776,7 +861,7 @@ blocks:
     bus_structure: null
     coordinate: [964, 369]
     rotation: 0
-    state: true
+    state: disabled
 - name: blocks_null_sink_0
   id: blocks_null_sink
   parameters:
@@ -887,7 +972,7 @@ blocks:
     bus_structure: null
     coordinate: [848, 260.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: import_0
   id: import
   parameters:
@@ -912,6 +997,19 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [824, 28.0]
+    rotation: 0
+    state: true
+- name: import_1
+  id: import
+  parameters:
+    alias: ''
+    comment: ''
+    imports: import pmt
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [828, 70]
     rotation: 0
     state: true
 - name: qtgui_time_sink_x_0
@@ -1202,9 +1300,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2296, 1348.0]
+    coordinate: [2184, 1336]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: qtgui_time_sink_x_0_0_0_0
   id: qtgui_time_sink_x
   parameters:
@@ -1399,6 +1497,200 @@ blocks:
     coordinate: [2056, 1668.0]
     rotation: 0
     state: disabled
+- name: qtgui_time_sink_x_0_0_0_1_0
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: blue
+    color10: dark blue
+    color2: red
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'True'
+    entags: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label1: Signal 1
+    label10: Signal 10
+    label2: Signal 2
+    label3: Signal 3
+    label4: Signal 4
+    label5: Signal 5
+    label6: Signal 6
+    label7: Signal 7
+    label8: Signal 8
+    label9: Signal 9
+    legend: 'True'
+    marker1: '-1'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: '"frequencyTrackerN<float> output"'
+    nconnections: '2'
+    size: int((4 + 1/4 + 2**(-SF)  + 5)*symbolSize)
+    srate: samp_rate
+    stemplot: 'False'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.8'
+    tr_mode: qtgui.TRIG_MODE_AUTO
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: float
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: Amplitude
+    ymax: '1'
+    ymin: '-1'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2057, 1813]
+    rotation: 0
+    state: disabled
+- name: qtgui_time_sink_x_0_0_0_2
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: blue
+    color10: dark blue
+    color2: red
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'True'
+    entags: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label1: Signal 1
+    label10: Signal 10
+    label2: Signal 2
+    label3: Signal 3
+    label4: Signal 4
+    label5: Signal 5
+    label6: Signal 6
+    label7: Signal 7
+    label8: Signal 8
+    label9: Signal 9
+    legend: 'True'
+    marker1: '-1'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: '"frequencyTracker<float> output"'
+    nconnections: '4'
+    size: int((4 + 1/4 + 2**(-SF)  + 5)*symbolSize)
+    srate: samp_rate
+    stemplot: 'False'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.9'
+    tr_mode: qtgui.TRIG_MODE_AUTO
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: float
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: Amplitude
+    ymax: '1'
+    ymin: '-1'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2483, 1530]
+    rotation: 0
+    state: disabled
 - name: qtgui_time_sink_x_1
   id: qtgui_time_sink_x
   parameters:
@@ -1495,7 +1787,7 @@ blocks:
     bus_structure: null
     coordinate: [1090, 360]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_waterfall_sink_x_0
   id: qtgui_waterfall_sink_x
   parameters:
@@ -1615,7 +1907,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1344, 296.0]
+    coordinate: [1273, 418]
     rotation: 0
     state: enabled
 - name: rational_resampler_xxx_0
@@ -1635,9 +1927,29 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [432, 220.0]
+    coordinate: [286, 206]
     rotation: 0
     state: enabled
+- name: rational_resampler_xxx_1
+  id: rational_resampler_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    decim: powerDecim
+    fbw: '0'
+    interp: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    taps: '[1]'
+    type: ccc
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [490, 242]
+    rotation: 0
+    state: disabled
 - name: rtlsdr_source_0
   id: rtlsdr_source
   parameters:
@@ -1813,7 +2125,7 @@ blocks:
     dc_offset_mode7: '0'
     dc_offset_mode8: '0'
     dc_offset_mode9: '0'
-    freq0: 433e6
+    freq0: '433e6 '
     freq1: 100e6
     freq10: 100e6
     freq11: 100e6
@@ -1999,16 +2311,26 @@ blocks:
 connections:
 - [LibreLoRa_ArgMaxAbs_0, '0', blocks_int_to_float_0, '0']
 - [LibreLoRa_ArgMaxAbs_0, '1', blocks_null_sink_2, '0']
+- [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_frequencyTracker_0, '0']
+- [LibreLoRa_ChirpDetector_0, '0', LoRaRx_0, '0']
+- [LibreLoRa_ChirpDetector_0, detectOut, blocks_message_debug_0, print]
 - [LibreLoRa_Correlation_0, '0', qtgui_time_sink_x_0, '0']
 - [LibreLoRa_Correlation_0, '1', qtgui_time_sink_x_0, '1']
 - [LibreLoRa_Correlation_0_0, '0', blocks_complex_to_mag_squared_0_0, '0']
 - [LibreLoRa_Correlation_0_0, '1', blocks_complex_to_arg_1_0, '0']
 - [LibreLoRa_Correlation_0_0_0, '0', qtgui_time_sink_x_0_0_0, '0']
+- [LibreLoRa_Correlation_0_0_0, '0', qtgui_time_sink_x_0_0_0_2, '0']
 - [LibreLoRa_Correlation_0_0_0, '1', qtgui_time_sink_x_0_0_0, '1']
+- [LibreLoRa_Correlation_0_0_0, '1', qtgui_time_sink_x_0_0_0_2, '1']
 - [LibreLoRa_Correlation_0_0_0_0, '0', blocks_complex_to_mag_squared_0, '0']
 - [LibreLoRa_Correlation_0_0_0_0, '1', blocks_complex_to_arg_1, '0']
 - [LibreLoRa_Correlation_0_0_0_1, '0', qtgui_time_sink_x_0_0_0_1, '0']
+- [LibreLoRa_Correlation_0_0_0_1, '0', qtgui_time_sink_x_0_0_0_2, '2']
 - [LibreLoRa_Correlation_0_0_0_1, '1', qtgui_time_sink_x_0_0_0_1, '1']
+- [LibreLoRa_Correlation_0_0_0_1, '1', qtgui_time_sink_x_0_0_0_2, '3']
+- [LibreLoRa_Correlation_0_0_0_1_0, '0', qtgui_time_sink_x_0_0_0_1_0, '0']
+- [LibreLoRa_Correlation_0_0_0_1_0, '1', qtgui_time_sink_x_0_0_0_1_0, '1']
+- [LibreLoRa_PowerDetector_0, '0', LibreLoRa_frequencyTrackerNMode_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', LibreLoRa_frequencyTrackerN_0_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', LibreLoRa_frequencyTrackerN_0_0_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', LibreLoRa_frequencyTracker_0, '0']
@@ -2017,6 +2339,7 @@ connections:
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', qtgui_waterfall_sink_x_0_0, '0']
 - [LibreLoRa_chirpSource_0, '0', blocks_multiply_const_vxx_3, '0']
+- [LibreLoRa_frequencyTrackerNMode_0, '0', LibreLoRa_Correlation_0_0_0_1_0, '0']
 - [LibreLoRa_frequencyTrackerN_0_0, '0', LibreLoRa_Correlation_0_0, '0']
 - [LibreLoRa_frequencyTrackerN_0_0_0, '0', LibreLoRa_Correlation_0_0_0_1, '0']
 - [LibreLoRa_frequencyTracker_0, '0', LibreLoRa_Correlation_0_0_0, '0']
@@ -2047,9 +2370,11 @@ connections:
 - [fft_vxx_0, '0', LibreLoRa_ArgMaxAbs_0, '0']
 - [iir_filter_xxx_0, '0', LibreLoRa_PowerDetector_0, '1']
 - [iir_filter_xxx_0, '0', blocks_nlog10_ff_0, '0']
+- [rational_resampler_xxx_0, '0', LibreLoRa_ChirpDetector_0, '0']
 - [rational_resampler_xxx_0, '0', LibreLoRa_PowerDetector_0, '0']
-- [rational_resampler_xxx_0, '0', blocks_complex_to_mag_squared_0_1, '0']
 - [rational_resampler_xxx_0, '0', qtgui_waterfall_sink_x_0, '0']
+- [rational_resampler_xxx_0, '0', rational_resampler_xxx_1, '0']
+- [rational_resampler_xxx_1, '0', blocks_complex_to_mag_squared_0_1, '0']
 - [rtlsdr_source_0, '0', rational_resampler_xxx_0, '0']
 
 metadata:

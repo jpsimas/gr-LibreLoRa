@@ -30,10 +30,10 @@ namespace gr {
     class frequencyTracker_impl : public frequencyTracker<T> {
      protected:
       const size_t OSF;
-      float mu;
+      const float mu;
       gr_complex w;
       const gr_complex wStep;
-      size_t decimation;
+      const size_t decimation;
 
       inline T calcFreq(gr_complex x);
      public:

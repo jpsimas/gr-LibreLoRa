@@ -8,14 +8,14 @@ options:
     description: ''
     gen_cmake: 'On'
     gen_linking: dynamic
-    generate_options: no_gui
+    generate_options: qt_gui
     hier_block_src_path: '.:'
-    id: main_nogui
+    id: LoRaDetector
     max_nouts: '0'
     output_language: python
     placement: (0,0)
     qt_qss_theme: ''
-    realtime_scheduling: '1'
+    realtime_scheduling: ''
     run: 'True'
     run_command: '{python} -u {filename}'
     run_options: prompt
@@ -41,81 +41,21 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [184, 84.0]
+    coordinate: [471, 12]
     rotation: 0
-    state: enabled
+    state: true
 - name: OSF
   id: variable
   parameters:
     comment: ''
-    value: round(samp_rate/(BW*decimation))
+    value: round(samp_rate/(BW))
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [424, 20.0]
+    coordinate: [292, 147]
     rotation: 0
     state: enabled
-- name: SF
-  id: variable
-  parameters:
-    comment: ''
-    value: '8'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [320, 20.0]
-    rotation: 0
-    state: enabled
-- name: alphaPower
-  id: variable
-  parameters:
-    comment: ''
-    value: '0.1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [655, 124]
-    rotation: 0
-    state: true
-- name: decimation
-  id: variable
-  parameters:
-    comment: ''
-    value: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [296, 84.0]
-    rotation: 0
-    state: true
-- name: maxFrameTime
-  id: variable
-  parameters:
-    comment: ''
-    value: (2**(SF)/BW)*(8 + 257*2*8/SF)
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [982, 131]
-    rotation: 0
-    state: true
-- name: powerThreshold
-  id: variable
-  parameters:
-    comment: ''
-    value: 5e-3
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [810, 128]
-    rotation: 0
-    state: true
 - name: samp_rate
   id: variable
   parameters:
@@ -125,84 +65,163 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [184, 16.0]
+    coordinate: [176, 12.0]
     rotation: 0
     state: enabled
-- name: symbolSize
-  id: variable
+- name: LibreLoRa_ChirpDetector_0
+  id: LibreLoRa_ChirpDetector
   parameters:
-    comment: ''
-    value: (2**SF)*OSF
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [528, 20.0]
-    rotation: 0
-    state: true
-- name: syncwordNumber
-  id: variable
-  parameters:
-    comment: ''
-    value: '0'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [968, 20.0]
-    rotation: 0
-    state: true
-- name: LibreLoRa_PowerDetector_0_0
-  id: LibreLoRa_PowerDetector
-  parameters:
+    BW: 125e3
+    DFTSize: None
+    SF: '7'
     affinity: ''
     alias: ''
     comment: ''
     maxoutbuf: '0'
-    minoutbuf: int(maxFrameTime*samp_rate)
-    threshold: powerThreshold
-    timeout: 100*symbolSize/samp_rate
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    threshold: '0.2'
+    timeout: '5'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1029, 231]
+    coordinate: [591, 463]
     rotation: 0
     state: true
-- name: LoRaRx_0
-  id: LoRaRx
+- name: LibreLoRa_ChirpDetector_0_0
+  id: LibreLoRa_ChirpDetector
+  parameters:
+    BW: 125e3
+    DFTSize: None
+    SF: '8'
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    threshold: '0.2'
+    timeout: '5'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [595, 589]
+    rotation: 0
+    state: true
+- name: LibreLoRa_ChirpDetector_1
+  id: LibreLoRa_ChirpDetector
   parameters:
     BW: BW
-    SF: SF
+    DFTSize: None
+    SF: '9'
     affinity: ''
     alias: ''
     comment: ''
-    lowDataRate: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    samp_rate: samp_rate/decimation
-    syncwordNumber: syncwordNumber
+    samp_rate: samp_rate
+    threshold: '0.2'
+    timeout: '5'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1232, 168.0]
+    coordinate: [599, 720]
     rotation: 0
-    state: enabled
-- name: blocks_complex_to_mag_squared_0_1
-  id: blocks_complex_to_mag_squared
+    state: true
+- name: LibreLoRa_ChirpDetector_2
+  id: LibreLoRa_ChirpDetector
+  parameters:
+    BW: BW
+    DFTSize: None
+    SF: '10'
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    threshold: '0.2'
+    timeout: '5'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [599, 851]
+    rotation: 0
+    state: true
+- name: LibreLoRa_ChirpDetector_2_0
+  id: LibreLoRa_ChirpDetector
+  parameters:
+    BW: BW
+    DFTSize: None
+    SF: '11'
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    threshold: '0.2'
+    timeout: '5'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [599, 982]
+    rotation: 0
+    state: true
+- name: LibreLoRa_ChirpDetector_2_0_0
+  id: LibreLoRa_ChirpDetector
+  parameters:
+    BW: BW
+    DFTSize: None
+    SF: '12'
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    threshold: '0.2'
+    timeout: '5'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [597, 1117]
+    rotation: 0
+    state: true
+- name: LibreLoRa_DetectionCount_0
+  id: LibreLoRa_DetectionCount
+  parameters:
+    BW: BW
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nChannels: '3'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [968, 680]
+    rotation: 0
+    state: true
+- name: blocks_message_debug_0
+  id: blocks_message_debug
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [528, 328.0]
+    coordinate: [904, 557]
     rotation: 0
     state: true
 - name: blocks_null_sink_0
@@ -213,52 +232,100 @@ blocks:
     bus_structure_sink: '[[0,],]'
     comment: ''
     num_inputs: '1'
-    type: short
+    type: complex
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1536, 232.0]
+    coordinate: [787, 496]
     rotation: 0
-    state: enabled
-- name: blocks_tcp_server_sink_0
-  id: blocks_tcp_server_sink
+    state: true
+- name: blocks_null_sink_1
+  id: blocks_null_sink
   parameters:
     affinity: ''
     alias: ''
+    bus_structure_sink: '[[0,],]'
     comment: ''
-    ipaddr: 127.0.0.1
-    noblock: 'True'
-    port: '1202'
-    type: byte
+    num_inputs: '1'
+    type: complex
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1456, 148.0]
+    coordinate: [781, 615]
     rotation: 0
-    state: enabled
-- name: iir_filter_xxx_0
-  id: iir_filter_xxx
+    state: true
+- name: blocks_null_sink_1_0
+  id: blocks_null_sink
   parameters:
     affinity: ''
     alias: ''
+    bus_structure_sink: '[[0,],]'
     comment: ''
-    fbtaps: (1, -alphaPower)
-    fftaps: (1 - alphaPower)
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    oldstyle: 'True'
-    type: ffd
+    num_inputs: '1'
+    type: complex
+    vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [720, 316.0]
+    coordinate: [771, 748]
     rotation: 0
-    state: enabled
+    state: true
+- name: blocks_null_sink_1_0_0
+  id: blocks_null_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    bus_structure_sink: '[[0,],]'
+    comment: ''
+    num_inputs: '1'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [801, 878]
+    rotation: 0
+    state: true
+- name: blocks_null_sink_1_0_0_0
+  id: blocks_null_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    bus_structure_sink: '[[0,],]'
+    comment: ''
+    num_inputs: '1'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [777, 1010]
+    rotation: 0
+    state: true
+- name: blocks_null_sink_1_0_0_0_0
+  id: blocks_null_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    bus_structure_sink: '[[0,],]'
+    comment: ''
+    num_inputs: '1'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [767, 1145]
+    rotation: 0
+    state: true
 - name: import_0
   id: import
   parameters:
@@ -269,7 +336,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [712, 28.0]
+    coordinate: [671, 18]
     rotation: 0
     state: true
 - name: import_0_0
@@ -282,29 +349,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [824, 28.0]
+    coordinate: [280, 12.0]
     rotation: 0
     state: true
-- name: rational_resampler_xxx_0
-  id: rational_resampler_xxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    decim: decimation
-    fbw: '0'
-    interp: '1'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    taps: '[1]'
-    type: ccc
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [360, 220.0]
-    rotation: 0
-    state: enabled
 - name: rtlsdr_source_0
   id: rtlsdr_source
   parameters:
@@ -659,20 +706,35 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [16, 164.0]
+    coordinate: [94, 424]
     rotation: 0
     state: enabled
 
 connections:
-- [LibreLoRa_PowerDetector_0_0, '0', LoRaRx_0, '0']
-- [LoRaRx_0, '0', blocks_tcp_server_sink_0, '0']
-- [LoRaRx_0, '1', blocks_null_sink_0, '0']
-- [LoRaRx_0, reset, LibreLoRa_PowerDetector_0_0, reset]
-- [blocks_complex_to_mag_squared_0_1, '0', iir_filter_xxx_0, '0']
-- [iir_filter_xxx_0, '0', LibreLoRa_PowerDetector_0_0, '1']
-- [rational_resampler_xxx_0, '0', LibreLoRa_PowerDetector_0_0, '0']
-- [rational_resampler_xxx_0, '0', blocks_complex_to_mag_squared_0_1, '0']
-- [rtlsdr_source_0, '0', rational_resampler_xxx_0, '0']
+- [LibreLoRa_ChirpDetector_0, '0', blocks_null_sink_0, '0']
+- [LibreLoRa_ChirpDetector_0, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
+- [LibreLoRa_ChirpDetector_0, detectOut, blocks_message_debug_0, print]
+- [LibreLoRa_ChirpDetector_0_0, '0', blocks_null_sink_1, '0']
+- [LibreLoRa_ChirpDetector_0_0, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
+- [LibreLoRa_ChirpDetector_0_0, detectOut, blocks_message_debug_0, print]
+- [LibreLoRa_ChirpDetector_1, '0', blocks_null_sink_1_0, '0']
+- [LibreLoRa_ChirpDetector_1, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
+- [LibreLoRa_ChirpDetector_1, detectOut, blocks_message_debug_0, print]
+- [LibreLoRa_ChirpDetector_2, '0', blocks_null_sink_1_0_0, '0']
+- [LibreLoRa_ChirpDetector_2, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
+- [LibreLoRa_ChirpDetector_2, detectOut, blocks_message_debug_0, print]
+- [LibreLoRa_ChirpDetector_2_0, '0', blocks_null_sink_1_0_0_0, '0']
+- [LibreLoRa_ChirpDetector_2_0, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
+- [LibreLoRa_ChirpDetector_2_0_0, '0', blocks_null_sink_1_0_0_0_0, '0']
+- [LibreLoRa_ChirpDetector_2_0_0, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
+- [LibreLoRa_ChirpDetector_2_0_0, detectOut, blocks_message_debug_0, print]
+- [LibreLoRa_DetectionCount_0, count, blocks_message_debug_0, print]
+- [rtlsdr_source_0, '0', LibreLoRa_ChirpDetector_0, '0']
+- [rtlsdr_source_0, '0', LibreLoRa_ChirpDetector_0_0, '0']
+- [rtlsdr_source_0, '0', LibreLoRa_ChirpDetector_1, '0']
+- [rtlsdr_source_0, '0', LibreLoRa_ChirpDetector_2, '0']
+- [rtlsdr_source_0, '0', LibreLoRa_ChirpDetector_2_0, '0']
+- [rtlsdr_source_0, '0', LibreLoRa_ChirpDetector_2_0_0, '0']
 
 metadata:
   file_format: 1

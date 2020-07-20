@@ -21,6 +21,9 @@ parameters:
 - id: preambleSize
   label: preambleSize
   dtype: raw
+- id: SF
+  label: SF
+  dtype: raw
 inputs:
 - label: datain
   domain: stream
@@ -48,7 +51,7 @@ outputs:
 
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.correlationSync_${type.fcn}(${corrMin}, ${corrStop}, ${symbolSize}, ${preambleSize})
+  make: LibreLoRa.correlationSync_${type.fcn}(${corrMin}, ${corrStop}, ${symbolSize}, ${preambleSize}, ${SF})
     
 cpp_templates:
   includes: ['#include <LibreLoRa/correlationSync.h>']

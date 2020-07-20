@@ -46,7 +46,7 @@ namespace gr {
        * class. LibreLoRa::correlationSync::make is the public interface for
        * creating new instances.
        */
-      static sptr make(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize);
+      static sptr make(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize, size_t SF);
       virtual void reset() = 0;
       virtual void setNOutputItemsToProduce(int noutput_items) = 0;
     };

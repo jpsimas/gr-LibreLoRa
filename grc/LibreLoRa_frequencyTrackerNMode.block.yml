@@ -1,0 +1,39 @@
+id: LibreLoRa_frequencyTrackerNMode
+label: frequencyTrackerNMode
+category: '[Librelora]'
+parameters:
+- id: type
+  label: Type
+  dtype: enum
+  options: [float, complex]
+  option_attributes:
+    fcn: [ff, cc]
+  hide: part
+- id: mu
+  label: Mu
+  dtype: float
+- id: SF
+  label: Sf
+  dtype: raw
+- id: OSF
+  label: Osf
+  dtype: raw
+- id: window
+  label: Window
+  dtype: complex_vector
+inputs:
+- label: in
+  domain: stream
+  dtype: complex
+outputs:
+- label: out
+  domain: stream
+  dtype: ${ type }
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.frequencyTrackerNMode_${type.fcn}(${mu}, ${SF}, ${OSF}, ${window})
+cpp_templates:
+  includes: ['#include <LibreLoRa/frequencyTrackerNMode.h>']
+  declarations: 'LibreLoRa::frequencyTrackerNMode_${type.fcn}::sptr ${id};'
+  make: 'this->${id} = LibreloRa::frequencyTrackerNMode_${type.fcn}::make(${mu}, ${SF}, ${OSF});'
+file_format: 1

@@ -41,10 +41,10 @@ namespace gr {
 
     template<typename T>
     typename correlationSync<T>::sptr
-    correlationSync<T>::make(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize)
+    correlationSync<T>::make(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize, size_t SF)
     {
       return gnuradio::get_initial_sptr
-        (new correlationSync_impl<T>(corrMin, corrStop, symbolSize, preambleSize));
+        (new correlationSync_impl<T>(corrMin, corrStop, symbolSize, preambleSize, SF));
     }
 
 
@@ -52,7 +52,7 @@ namespace gr {
      * The private constructor
      */
     template<typename T>
-    correlationSync_impl<T>::correlationSync_impl(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize)
+    correlationSync_impl<T>::correlationSync_impl(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize, size_t SF)
       : gr::block("correlationSync",
 		  gr::io_signature::make(2, 2, sizeof(T)),
 		  // gr::io_signature::make2(2, 2, symbolSize*sizeof(float), sizeof(bool))
@@ -62,6 +62,7 @@ namespace gr {
 	corrStop(corrStop),
 	symbolSize(symbolSize),
 	preambleSize(preambleSize),
+	SF(SF),
 	syncd(false),
 	// currState(initial),
 	fixedMode(true),
@@ -70,7 +71,7 @@ namespace gr {
 	preambleConsumed(false),
 	preambleSamplesToConsume(preambleSize) {
 
-      this->set_min_output_buffer(preambleSize/symbolSize);
+      this->set_min_output_buffer(8);
       // this->set_fixed_rate(true);
       
       syncPort = pmt::string_to_symbol("sync");
@@ -107,7 +108,8 @@ namespace gr {
     correlationSync_impl<T>::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
       const size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
-      ninput_items_required[0] = (syncd? (preambleConsumed? (symbolSize*n) : std::min((size_t(1 << 14) - 1), preambleSamplesToConsume)) : 2*symbolSize);
+      // ninput_items_required[0] = (syncd? (preambleConsumed? (symbolSize*n) : std::min((size_t(1 << 14) - 1), preambleSamplesToConsume)) : 2*symbolSize);
+      ninput_items_required[0] = (syncd? (preambleConsumed? (symbolSize*n) : preambleSize) : 2*symbolSize);
       // ninput_items_required[0] = fixed_rate_noutput_to_ninput(noutput_items);
       
       ninput_items_required[1] = ninput_items_required[0];
@@ -126,6 +128,7 @@ namespace gr {
 
       template<typename T>
 	T correctOffset(T x, T offset) {
+	return x - offset;
 	return x;
       }
 
@@ -142,6 +145,46 @@ namespace gr {
     template<typename T>
     void
     correlationSync_impl<T>::estimateOffset(const T *preamble) {
+      // T sum;
+      // volk_32f_accumulator_s32f(&sum, preamble + preambleSize - (2*symbolSize + preambleSize%symbolSize), 2*symbolSize);
+
+      //It's minus because it is estimated using the downchirps
+      // offset = sum/(2*symbolSize);
+      const T* downchirps = preamble + (preambleSize - (2*symbolSize + preambleSize%symbolSize));
+      auto twoDownchirps = getSymbol<T>(0, SF, symbolSize);
+      for(auto& x : twoDownchirps)
+	x = -x;
+      
+      twoDownchirps.insert(twoDownchirps.end(), twoDownchirps.begin(), twoDownchirps.end());
+
+      static std::vector<size_t> count(1 << SF);
+      for(auto& x : count)
+	x = 0;
+      
+      for(size_t j = 0; j < 2*symbolSize; j++){
+	auto decision = int16_t(std::round(symbolSize*(downchirps[j] - twoDownchirps[j] + 2.0f)))%int16_t(1 << SF);
+	count[decision]++;
+      }
+	
+      int16_t maxK = 0;
+      size_t maxCount = 0;
+      for(auto k = 0; k < (1<<SF); k++)
+	if(count[k] > maxCount){
+	  maxK = k;
+	  maxCount = count[k];
+	}
+      
+      maxK = int16_t(maxK + (1 << (SF - 1)))%int16_t(1 << SF) - int16_t(1 << (SF - 1));
+      
+      offset = float(maxK)/(symbolSize);
+
+#ifndef NDEBUG
+      std::cout << "correlationSync: estimated offset: " << std::dec << offset << " (" << maxK << ")" << std::endl;
+     // std::cout << "correlationSync: counts: ";
+     // for(auto x : count)
+     //   std::cout << x << ", ";
+     // std::cout << std::endl;
+#endif	
     }
 
     template<>
@@ -236,18 +279,18 @@ namespace gr {
     	return 0;
       } else {
 	if(!preambleConsumed) {
-	  // estimateOffset(data_in);  
-	  // this->consume_each(preambleSize);
-	  size_t nSamples = std::min((size_t(1 << 14) - 1), preambleSamplesToConsume);
+	  estimateOffset(data_in);  
+	  this->consume_each(preambleSize);
+// 	  size_t nSamples = std::min((size_t(1 << 14) - 1), preambleSamplesToConsume);
 
-#ifndef NDEBUG
-	  std::cout << "correlationSync: consuming " << nSamples << " preamble samples out of " << preambleSamplesToConsume<< std::endl;
-#endif
+// #ifndef NDEBUG
+// 	  std::cout << "correlationSync: consuming " << nSamples << " preamble samples out of " << preambleSamplesToConsume<< std::endl;
+// #endif
 	  
-	  this->consume_each(nSamples);
-	  preambleSamplesToConsume -= nSamples;
-	  if(preambleSamplesToConsume == 0)
-	    preambleConsumed = true;
+// 	  this->consume_each(nSamples);
+// 	  preambleSamplesToConsume -= nSamples;
+// 	  if(preambleSamplesToConsume == 0)
+	  preambleConsumed = true;
 	  return 0;
 	}
 	
@@ -256,8 +299,9 @@ namespace gr {
 	for(size_t j = 0; j < n; j++)
 	  for(size_t i = 0; i < symbolSize; i++){
 	    ///data_out[i + symbolSize*j] = correctOffset<T>(data_in[i + symbolSize*j], corrMax);
-	    // data_out[i + symbolSize*j] = correctOffset<T>(data_in[i + symbolSize*j], offset);
-	    data_out[i + symbolSize*j] = corrMax*data_in[i + symbolSize*j];
+	    data_out[i + symbolSize*j] = correctOffset<T>(data_in[i + symbolSize*j], offset);
+	    //data_out[i + symbolSize*j] = corrMax*data_in[i + symbolSize*j];
+	    //data_out[i + symbolSize*j] = data_in[i + symbolSize*j];
 	  }
 
 	this->consume_each (symbolSize*n);

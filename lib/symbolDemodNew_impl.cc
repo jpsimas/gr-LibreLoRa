@@ -49,11 +49,12 @@ namespace gr {
       :	SF(SF),
 	OSF(OSF),
 	symbolSize(symbolSize),
+	count((1 << SF)),
+	estimate(symbolSize),
 	gr::sync_block("symbolDemodNew",
 		  gr::io_signature::make(1, 1, symbolSize*sizeof(float)), 
 		  gr::io_signature::make(1, 1, sizeof(uint16_t))) {
-      // twoUpchirps = getSymbol(0, SF, (symbolSize >> SF));
-      twoUpchirps = getSymbol(0, SF, symbolSize);
+      twoUpchirps = getSymbol<float>(0, SF, symbolSize);
       
       twoUpchirps.insert(twoUpchirps.end(), twoUpchirps.begin(), twoUpchirps.end());
 
@@ -82,15 +83,48 @@ namespace gr {
 
       // Do <+signal processing+>
       for(size_t i = 0; i < noutput_items; i++) {
-	gr_complex mean = 0; 
-	for(size_t j = 0; j < symbolSize; j++)
-	  mean += std::polar<float>(1.0, 2*M_PI*OSF*(dataIn[i*symbolSize + j] - twoUpchirps[j]));;
 
-	dataOut[i] = uint16_t(round((1 << SF)*std::arg(mean)/(2.0*M_PI)))%uint16_t(1 << SF);
+	// size_t minErr = (1 << SF);
+	// size_t minSym = 0;
+	// for(size_t sym = 0; sym < (1 << SF); sym++) {
+	  //gr_complex mean = 0;
+
+	  for(auto& x : count)
+	    x = 0;
+	  
+	  for(size_t j = 0; j < symbolSize; j++){
+	    // mean += std::polar<float>(1.0, 2*M_PI*OSF*(dataIn[i*symbolSize + j] - twoUpchirps[j]));;
+	     auto decision = int16_t(std::round((1 << SF)*OSF*(dataIn[i*symbolSize + j] - twoUpchirps[j] + 2.0f)))%int16_t(1 << SF);
+	    // int16_t decision = 2*(1 << SF) - int16_t(std::round(symbolSize*(std::abs(dataIn[i*symbolSize + j] - twoUpchirps[j + sym*OSF]))))%int16_t(2*(1 << SF));
+	    count[decision]++;
+	  }
+	  
+
+	  // dataOut[i] = uint16_t(round((1 << SF)*std::arg(mean)/(2.0*M_PI)))%uint16_t(1 << SF);
+	  size_t maxK = 0;
+	  size_t maxCount = 0;
+	  for(auto k = 0; k < count.size(); k++)
+	    if(count[k] > maxCount){
+	      maxK = k;
+	      maxCount = count[k];
+	    }
+
+	  dataOut[i] = maxK;
+// #ifndef NDEBUG
+// 	  std::cout << "err: " << maxK << std::endl;
+// #endif
+	//   if(maxK < minErr){
+	//     minSym = sym;
+	//     minErr = maxK;
+	//   }
+	// }
+
+	// dataOut[i] = minSym;
 #ifndef NDEBUG
-	std::cout << "symbolDemodNew: demodulated symbol: " << std::dec << dataOut[i] << ", SF = " << SF << std::endl;
+	std::cout << "demodulated symbol: " << std::dec << dataOut[i] << ", SF = " << SF << std::endl;
 #endif
       }
+      
 
       // Tell runtime system how many output items we produced.
       return noutput_items;

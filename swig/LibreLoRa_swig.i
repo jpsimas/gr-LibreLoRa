@@ -39,6 +39,10 @@
 #include "LibreLoRa/frequencyTrackerN.h"
 #include "LibreLoRa/symbolDemodNew.h"
 #include "LibreLoRa/PowerDetector.h"
+#include "LibreLoRa/frequencyTackerAPA.h"
+#include "LibreLoRa/frequencyTrackerNMode.h"
+#include "LibreLoRa/ToneDetector.h"
+#include "LibreLoRa/DetectionCount.h"
 %}
   
 %include "LibreLoRa/frequencyTracker.h"
@@ -126,3 +130,17 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, symbolDemodNew);
 %include "LibreLoRa/PowerDetector.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, PowerDetector);
 
+%include "LibreLoRa/frequencyTackerAPA.h"
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, frequencyTackerAPA_single, frequencyTackerAPA<1>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, frequencyTackerAPA_double, frequencyTackerAPA<2>);
+
+%include "LibreLoRa/frequencyTrackerNMode.h"
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, frequencyTrackerNMode_ff, frequencyTrackerNMode<float>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, frequencyTrackerNMode_cc, frequencyTrackerNMode<gr_complex>);
+%include "LibreLoRa/ToneDetector.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, ToneDetector);
+
+
+
+%include "LibreLoRa/DetectionCount.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, DetectionCount);

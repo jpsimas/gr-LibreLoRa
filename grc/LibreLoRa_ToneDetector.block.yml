@@ -1,0 +1,20 @@
+id: LibreLoRa_ToneDetector
+label: ToneDetector
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.ToneDetector(${dftsize})
+parameters:
+- id: dftsize
+  label: DFTSize
+  dtype: raw
+inputs:
+- label: powerIn
+  domain: stream
+  dtype: float
+  vlen: ${ dftsize }
+outputs:
+- label: out
+  domain: stream
+  dtype: float
+file_format: 1

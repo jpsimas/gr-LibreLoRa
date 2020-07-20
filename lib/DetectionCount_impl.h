@@ -18,31 +18,28 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_FREQUENCYTRACKERN_IMPL_H
-#define INCLUDED_LIBRELORA_FREQUENCYTRACKERN_IMPL_H
+#ifndef INCLUDED_LIBRELORA_DETECTIONCOUNT_IMPL_H
+#define INCLUDED_LIBRELORA_DETECTIONCOUNT_IMPL_H
 
-#include <LibreLoRa/frequencyTrackerN.h>
+#include <LibreLoRa/DetectionCount.h>
 
 namespace gr {
   namespace LibreLoRa {
 
-    template<typename T>
-    class frequencyTrackerN_impl : public frequencyTrackerN<T>
+    class DetectionCount_impl : public DetectionCount
     {
      private:
-      // Nothing to declare in this block.
-      const std::vector<gr_complex> window;
-      std::vector<gr_complex> windowedSig;
-      const float mu;
-      gr_complex w;
-      const size_t OSF;
+      float BW;
+      size_t nChannels;
+      void readMessage(pmt::pmt_t msg);
+      static constexpr size_t SFMin = 7;
+      static constexpr size_t SFMax = 12;
+      std::vector<unsigned> count;
 
-      const gr_complex wStep;
-
-      inline T calcFreq(gr_complex x);
+      pmt::pmt_t countPort;
      public:
-      frequencyTrackerN_impl(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window);
-      ~frequencyTrackerN_impl();
+      DetectionCount_impl(float BW, size_t nChannels);
+      ~DetectionCount_impl();
 
       // Where all the action really happens
       int work(
@@ -55,5 +52,5 @@ namespace gr {
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_FREQUENCYTRACKERN_IMPL_H */
+#endif /* INCLUDED_LIBRELORA_DETECTIONCOUNT_IMPL_H */
 

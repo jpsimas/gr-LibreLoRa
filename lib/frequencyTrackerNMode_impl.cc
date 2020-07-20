@@ -23,7 +23,7 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include "frequencyTrackerN_impl.h"
+#include "frequencyTrackerNMode_impl.h"
 #include <cmath>
 #include <complex>
 #include <volk/volk.h>
@@ -36,11 +36,11 @@ namespace gr {
   namespace LibreLoRa {
 
     template<typename T>
-    typename frequencyTrackerN<T>::sptr
-    frequencyTrackerN<T>::make(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window)
+    typename frequencyTrackerNMode<T>::sptr
+    frequencyTrackerNMode<T>::make(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window)
     {
       return gnuradio::get_initial_sptr
-        (new frequencyTrackerN_impl<T>(mu, SF, OSF, window));
+        (new frequencyTrackerNMode_impl<T>(mu, SF, OSF, window));
     }
 
 
@@ -48,20 +48,22 @@ namespace gr {
      * The private constructor
      */
     template<typename T>
-    frequencyTrackerN_impl<T>::frequencyTrackerN_impl(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window)
-      : gr::sync_block("frequencyTrackerN",
+    frequencyTrackerNMode_impl<T>::frequencyTrackerNMode_impl(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window)
+      : gr::sync_block("frequencyTrackerNMode",
 		  gr::io_signature::make(1, 1, sizeof(gr_complex)),
 		  gr::io_signature::make(1, 1, sizeof(T))),
 	window(window),
 	windowedSig(window.size()),
 	mu(mu),
 	OSF(OSF),
+	SF(SF),
 	wStep(std::polar<float>(1, 2*M_PI*1.0/((1 << SF)*OSF*OSF))),
-	w(1.0)
+	w(1.0),
+	count((1 << SF)*OSF)
     {
       this->set_history(window.size());
 #ifndef NDEBUG
-      std::cout << "frequencyTrackerN: constructed. window size:" << window.size() << std::endl;
+      std::cout << "frequencyTrackerNMode: constructed. window size:" << window.size() << std::endl;
       
 #endif
     }
@@ -70,25 +72,25 @@ namespace gr {
      * Our virtual destructor.
      */
     template<typename T>
-    frequencyTrackerN_impl<T>::~frequencyTrackerN_impl()
+    frequencyTrackerNMode_impl<T>::~frequencyTrackerNMode_impl()
     {
     }
 
     template <>
-    float frequencyTrackerN_impl<float>::calcFreq(gr_complex w) {
+    float frequencyTrackerNMode_impl<float>::calcFreq(gr_complex w) {
       //return std::arg(w)/(2*M_PI*OSF);
       return std::arg(w)/(2*M_PI);
     }
 
     template <>
-    gr_complex frequencyTrackerN_impl<gr_complex>::calcFreq(gr_complex w) {
+    gr_complex frequencyTrackerNMode_impl<gr_complex>::calcFreq(gr_complex w) {
       return std::polar<float>(1.0, std::arg(w)*OSF);
       //return w;
     }
     
     template<typename T>
     int
-    frequencyTrackerN_impl<T>::work (int noutput_items,
+    frequencyTrackerNMode_impl<T>::work (int noutput_items,
 					 gr_vector_const_void_star &input_items,
 					 gr_vector_void_star &output_items)
     {
@@ -98,25 +100,25 @@ namespace gr {
       // Do <+signal processing+>
 
       for(int i = 0; i < noutput_items; i++) {
-	// w *= wStep; 
-
-	// for(auto j = 0; j < window.size(); j++)
-	//   windowedSig[j] = in[i + j]*window[j];
 	volk_32fc_x2_multiply_32fc(windowedSig.data(), in + i, window.data(), window.size());
-	
-	gr_complex prod;
-	//volk_32fc_x2_conjugate_dot_prod_32fc(&prod, windowedSig.data() + OSF, windowedSig.data(), windowedSig.size() - OSF);
-	volk_32fc_x2_conjugate_dot_prod_32fc(&prod, windowedSig.data() + 1, windowedSig.data(), windowedSig.size() - 1);
-	
-	//gr_complex normSq;
-	//volk_32fc_x2_conjugate_dot_prod_32fc(&normSq, windowedSig.data(), windowedSig.data(), windowedSig.size() - 1);
-	
-	w = (1 - mu)*w + mu*prod/(std::abs(prod) + 1e-6f);
-	//w = (1 - mu)*w + mu*prod/(normSq + 1e-6f);
-	// for(auto k = 0; k < windowedSig.size() - 1; k++)
-	//w = (1 - mu)*w + mu*(windowedSig[k + 1]/(windowedSig[k] + 1e-6f));
 
-	//w *= wStep*wStep;//correction
+	for(auto& x : count)
+	  x = 0;
+	for(auto i = 0; i < windowedSig.size() - 1; i++) {
+	  int16_t estimate = int16_t(std::round(((1 << SF)*OSF)*(std::arg(std::conj(windowedSig[i])*windowedSig[i + 1])/(2*M_PI) + 1.0f)))%int16_t((1 << SF)*OSF);
+	  count[estimate]++;
+	}
+
+	
+	size_t maxK = 0;
+	size_t maxCount = 0;
+	for(auto k = 0; k < (1 << SF)*OSF; k++)
+	  if(count[k] > maxCount){
+	    maxK = k;
+	    maxCount = count[k];
+	  }
+	  
+	w = (1 - mu)*w + mu*std::polar<float>(1.0f, 2*M_PI*float(maxK)/((1 << SF)*OSF));
 	
 	out[i] = calcFreq(w);
       }
@@ -125,8 +127,8 @@ namespace gr {
       return noutput_items;
     }
 
-    template class frequencyTrackerN<float>;
-    template class frequencyTrackerN<gr_complex>;
+    template class frequencyTrackerNMode<float>;
+    template class frequencyTrackerNMode<gr_complex>;
   } /* namespace LibreLoRa */
 } /* namespace gr */
 

@@ -31,12 +31,16 @@ namespace gr {
     {
      private:
       const float threshold;
+      const size_t decimation;
       enum state_t {detection, started, waiting};
       state_t state;
       clock_t timeout;
       clock_t time;
+
+      pmt::pmt_t detectOutPort;
+      pmt::pmt_t message;
      public:
-      PowerDetector_impl(float threshold, float timeoutSeconds);
+      PowerDetector_impl(float threshold, float timeoutSeconds, size_t decimation, pmt::pmt_t message);
       ~PowerDetector_impl();
 
       // Where all the action really happens

@@ -1,0 +1,351 @@
+options:
+  parameters:
+    author: jp
+    category: '[LibreLoRa]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: hb
+    hier_block_src_path: '.:'
+    id: ChirpDetector
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: ChirpDetector
+    window_size: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 7]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: chirpRate
+  id: variable
+  parameters:
+    comment: ''
+    value: ((BW/samp_rate)**2)*(2**(-SF ))
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [715, 105]
+    rotation: 0
+    state: true
+- name: chirpWindow
+  id: variable
+  parameters:
+    comment: ''
+    value: numpy.real(LibreLoRa.getChirpWindow(DFTSize, windowSize,0, numpy.sqrt(1/chirpRate)))*numpy.sqrt(DFTSize/windowSize)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [256, 163]
+    rotation: 0
+    state: enabled
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: 1e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [263, 13]
+    rotation: 0
+    state: enabled
+- name: windowSize
+  id: variable
+  parameters:
+    comment: ''
+    value: DFTSize
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [361, 98]
+    rotation: 0
+    state: true
+- name: BW
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: bw
+    short_id: ''
+    type: ''
+    value: 125e3
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [748, 13]
+    rotation: 0
+    state: true
+- name: DFTSize
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: ''
+    short_id: ''
+    type: ''
+    value: '2048'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [256, 103]
+    rotation: 0
+    state: true
+- name: LibreLoRa_PowerDetector_0
+  id: LibreLoRa_PowerDetector
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    decimation: DFTSize
+    maxoutbuf: '0'
+    minoutbuf: int(timeout*samp_rate)
+    threshold: threshold
+    timeout: timeout
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [749, 260]
+    rotation: 0
+    state: true
+- name: LibreLoRa_ToneDetector_0
+  id: LibreLoRa_ToneDetector
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    dftsize: DFTSize
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [665, 436]
+    rotation: 0
+    state: enabled
+- name: SF
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: SF
+    short_id: ''
+    type: ''
+    value: '7'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [365, 13]
+    rotation: 0
+    state: true
+- name: blocks_complex_to_mag_squared_0
+  id: blocks_complex_to_mag_squared
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '32'
+    vlen: DFTSize
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [476, 468]
+    rotation: 0
+    state: enabled
+- name: blocks_multiply_const_vxx_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: chirpWindow
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: DFTSize
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [263, 450]
+    rotation: 0
+    state: enabled
+- name: blocks_stream_to_vector_0
+  id: blocks_stream_to_vector
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: DFTSize
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [264, 388]
+    rotation: 0
+    state: enabled
+- name: fft_vxx_0
+  id: fft_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    fft_size: DFTSize
+    forward: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nthreads: '1'
+    shift: 'False'
+    type: complex
+    window: numpy.ones(DFTSize)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [480, 316]
+    rotation: 0
+    state: enabled
+- name: import_0
+  id: import
+  parameters:
+    alias: ''
+    comment: ''
+    imports: import numpy
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [493, 20]
+    rotation: 0
+    state: true
+- name: import_0_0
+  id: import
+  parameters:
+    alias: ''
+    comment: ''
+    imports: import LibreLoRa
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [597, 20]
+    rotation: 0
+    state: true
+- name: pad_sink_0
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: out
+    num_streams: '1'
+    optional: 'False'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [953, 290]
+    rotation: 0
+    state: true
+- name: pad_source_0
+  id: pad_source
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: in
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_streams: '1'
+    optional: 'False'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [47, 314]
+    rotation: 0
+    state: true
+- name: threshold
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: ''
+    short_id: ''
+    type: ''
+    value: '0.5'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [503, 73]
+    rotation: 0
+    state: true
+- name: timeout
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: ''
+    short_id: ''
+    type: ''
+    value: '5'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [550, 152]
+    rotation: 0
+    state: true
+
+connections:
+- [LibreLoRa_PowerDetector_0, '0', pad_sink_0, '0']
+- [LibreLoRa_ToneDetector_0, '0', LibreLoRa_PowerDetector_0, '1']
+- [blocks_complex_to_mag_squared_0, '0', LibreLoRa_ToneDetector_0, '0']
+- [blocks_multiply_const_vxx_0, '0', fft_vxx_0, '0']
+- [blocks_stream_to_vector_0, '0', blocks_multiply_const_vxx_0, '0']
+- [fft_vxx_0, '0', blocks_complex_to_mag_squared_0, '0']
+- [pad_source_0, '0', LibreLoRa_PowerDetector_0, '0']
+- [pad_source_0, '0', blocks_stream_to_vector_0, '0']
+
+metadata:
+  file_format: 1

@@ -37,4 +37,5 @@ from .getPreambleFrequency import getPreambleFrequency
 from .getNormalizedPreambleFrequency import getNormalizedPreambleFrequency
 from .DCFT import DCFT
 from .MatrixSink import MatrixSink
+from .ChirpDetector import ChirpDetector
 #
