@@ -24,6 +24,9 @@ parameters:
 - id: SF
   label: SF
   dtype: raw
+- id: syncWordNumber
+  label: syncWordNumber
+  dtype: raw
 inputs:
 - label: datain
   domain: stream
@@ -51,10 +54,10 @@ outputs:
 
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.correlationSync_${type.fcn}(${corrMin}, ${corrStop}, ${symbolSize}, ${preambleSize}, ${SF})
+  make: LibreLoRa.correlationSync_${type.fcn}(${corrMin}, ${corrStop}, ${symbolSize}, ${preambleSize}, ${SF}, ${syncWordNumber})
     
 cpp_templates:
   includes: ['#include <LibreLoRa/correlationSync.h>']
   declarations: 'LibreLoRa::correlationSync_${type.fcn}::sptr ${id};'
-  make: 'this->${id} = LibreloRa::correlationSync_${type.fcn}::make(${corrMin}, ${corrStop}, ${symbolSize}, ${preambleSize});'
+  make: 'this->${id} = LibreloRa::correlationSync_${type.fcn}::make(${corrMin}, ${corrStop}, ${symbolSize}, ${preambleSize}, ${SF}, ${syncWordNumber});'
 file_format: 1

@@ -94,9 +94,9 @@ namespace gr {
 	  
 	  for(size_t j = 0; j < symbolSize; j++){
 	    // mean += std::polar<float>(1.0, 2*M_PI*OSF*(dataIn[i*symbolSize + j] - twoUpchirps[j]));;
-	     auto decision = int16_t(std::round((1 << SF)*OSF*(dataIn[i*symbolSize + j] - twoUpchirps[j] + 2.0f)))%int16_t(1 << SF);
+	    int16_t decision = int32_t(std::round((1 << SF)*OSF*(dataIn[i*symbolSize + j] - twoUpchirps[j] + 2.0f)))%int32_t(1 << SF);
 	    // int16_t decision = 2*(1 << SF) - int16_t(std::round(symbolSize*(std::abs(dataIn[i*symbolSize + j] - twoUpchirps[j + sym*OSF]))))%int16_t(2*(1 << SF));
-	    count[decision]++;
+	    count.at(decision)++;
 	  }
 	  
 

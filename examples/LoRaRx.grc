@@ -36,7 +36,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 2*int(symbolSize)
+    value: int(symbolSize/4)
   states:
     bus_sink: false
     bus_source: false
@@ -343,6 +343,7 @@ blocks:
     minoutbuf: '0'
     preambleSize: preambleNormalized.size
     symbolSize: symbolSize
+    syncWordNumber: syncwordNumber
     type: float
   states:
     bus_sink: false
@@ -403,7 +404,7 @@ blocks:
     bus_structure: null
     coordinate: [373, 327]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: LibreLoRa_frequencyTracker_0
   id: LibreLoRa_frequencyTracker
   parameters:
@@ -423,7 +424,7 @@ blocks:
     bus_structure: null
     coordinate: [366, 217]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_grayEncode_0
   id: LibreLoRa_grayEncode
   parameters:
@@ -506,7 +507,7 @@ blocks:
     bus_structure: null
     coordinate: [1184, 320.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: LibreLoRa_symbolDemod_0
   id: LibreLoRa_symbolDemod
   parameters:
@@ -526,7 +527,7 @@ blocks:
     bus_structure: null
     coordinate: [1136, 184]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: SF
   id: parameter
   parameters:

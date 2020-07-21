@@ -41,10 +41,10 @@ namespace gr {
 
     template<typename T>
     typename correlationSync<T>::sptr
-    correlationSync<T>::make(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize, size_t SF)
+    correlationSync<T>::make(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize, size_t SF, uint16_t syncWordNumber)
     {
       return gnuradio::get_initial_sptr
-        (new correlationSync_impl<T>(corrMin, corrStop, symbolSize, preambleSize, SF));
+        (new correlationSync_impl<T>(corrMin, corrStop, symbolSize, preambleSize, SF, syncWordNumber));
     }
 
 
@@ -52,7 +52,7 @@ namespace gr {
      * The private constructor
      */
     template<typename T>
-    correlationSync_impl<T>::correlationSync_impl(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize, size_t SF)
+    correlationSync_impl<T>::correlationSync_impl(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize, size_t SF, uint16_t syncWordNumber)
       : gr::block("correlationSync",
 		  gr::io_signature::make(2, 2, sizeof(T)),
 		  // gr::io_signature::make2(2, 2, symbolSize*sizeof(float), sizeof(bool))
@@ -63,13 +63,16 @@ namespace gr {
 	symbolSize(symbolSize),
 	preambleSize(preambleSize),
 	SF(SF),
+	syncWordNum1((syncWordNumber >> 4) << 3),
+	syncWordNum2((syncWordNumber & 0xf) << 3),
 	syncd(false),
 	// currState(initial),
 	fixedMode(true),
 	nOutputItemsToProduce(0),
 	deSyncAfterDone(false),
 	preambleConsumed(false),
-	preambleSamplesToConsume(preambleSize) {
+	preambleSamplesToConsume(preambleSize),
+	detectionCount((1 << SF)) {
 
       this->set_min_output_buffer(8);
       // this->set_fixed_rate(true);
@@ -93,6 +96,14 @@ namespace gr {
 #endif
 			reset();
 		      });
+
+      //generate expected sync word
+      syncWordExpected = getSymbol<T>(syncWordNum1, SF, symbolSize);
+      auto syncSym2 = getSymbol<T>(syncWordNum2, SF, symbolSize);
+      syncWordExpected.insert(syncWordExpected.end(), syncSym2.begin(), syncSym2.end());
+#ifndef NDEBUG
+      std::cout << "correlationSync: syncWord size: " << syncWordExpected.size() << std::endl;
+#endif
     }
 
     /*
@@ -129,7 +140,7 @@ namespace gr {
       template<typename T>
 	T correctOffset(T x, T offset) {
 	return x - offset;
-	return x;
+	// return x;
       }
 
       template<>
@@ -145,45 +156,49 @@ namespace gr {
     template<typename T>
     void
     correlationSync_impl<T>::estimateOffset(const T *preamble) {
-      // T sum;
-      // volk_32f_accumulator_s32f(&sum, preamble + preambleSize - (2*symbolSize + preambleSize%symbolSize), 2*symbolSize);
-
-      //It's minus because it is estimated using the downchirps
-      // offset = sum/(2*symbolSize);
-      const T* downchirps = preamble + (preambleSize - (2*symbolSize + preambleSize%symbolSize));
-      auto twoDownchirps = getSymbol<T>(0, SF, symbolSize);
-      for(auto& x : twoDownchirps)
-	x = -x;
+      // const T* downchirps = preamble + (preambleSize - (2*symbolSize + preambleSize%symbolSize));
+      // auto twoDownchirps = getSymbol<T>(0, SF, symbolSize);
+      // for(auto& x : twoDownchirps)
+      // 	x = -x;
       
-      twoDownchirps.insert(twoDownchirps.end(), twoDownchirps.begin(), twoDownchirps.end());
+      // twoDownchirps.insert(twoDownchirps.end(), twoDownchirps.begin(), twoDownchirps.end());
 
-      static std::vector<size_t> count(1 << SF);
-      for(auto& x : count)
+      // static std::vector<size_t> detectionCount((1 << SF));
+      // for(auto& x : detectionCount)
+      // 	x = 0;
+      
+      // for(size_t j = 0; j < 2*symbolSize; j++){
+      // 	 auto decision = int16_t(std::round(symbolSize*(downchirps[j] - twoDownchirps[j] + 2.0f)))%int16_t((1 << SF));
+      // 	detectionCount[decision]++;
+      // }
+      const T* syncWord = preamble;
+      
+      for(auto& x : detectionCount)
 	x = 0;
       
       for(size_t j = 0; j < 2*symbolSize; j++){
-	auto decision = int16_t(std::round(symbolSize*(downchirps[j] - twoDownchirps[j] + 2.0f)))%int16_t(1 << SF);
-	count[decision]++;
+	int16_t decision = int32_t(std::round(float(symbolSize)*(syncWord[j] - syncWordExpected[j] + 2.0f)))%int32_t((1 << SF));
+	detectionCount.at(decision)++;
       }
-	
+      
       int16_t maxK = 0;
       size_t maxCount = 0;
-      for(auto k = 0; k < (1<<SF); k++)
-	if(count[k] > maxCount){
+      for(auto k = 0; k < detectionCount.size(); k++)
+	if(detectionCount[k] > maxCount){
 	  maxK = k;
-	  maxCount = count[k];
+	  maxCount = detectionCount[k];
 	}
       
-      maxK = int16_t(maxK + (1 << (SF - 1)))%int16_t(1 << SF) - int16_t(1 << (SF - 1));
+      maxK = int16_t(maxK + (1 << (SF - 1)))%int16_t((1 << SF)) - int16_t((1 << (SF - 1)));
       
       offset = float(maxK)/(symbolSize);
-
+      
 #ifndef NDEBUG
-      std::cout << "correlationSync: estimated offset: " << std::dec << offset << " (" << maxK << ")" << std::endl;
-     // std::cout << "correlationSync: counts: ";
-     // for(auto x : count)
-     //   std::cout << x << ", ";
-     // std::cout << std::endl;
+	std::cout << "correlationSync: estimated offset: " << std::dec << offset << " (" << maxK << ")" << std::endl;
+      // std::cout << "correlationSync: counts: ";
+      // for(auto x : detectionCount)
+      // 	std::cout << x << ", ";
+      // std::cout << std::endl;
 #endif	
     }
 
@@ -301,7 +316,7 @@ namespace gr {
 	    ///data_out[i + symbolSize*j] = correctOffset<T>(data_in[i + symbolSize*j], corrMax);
 	    data_out[i + symbolSize*j] = correctOffset<T>(data_in[i + symbolSize*j], offset);
 	    //data_out[i + symbolSize*j] = corrMax*data_in[i + symbolSize*j];
-	    //data_out[i + symbolSize*j] = data_in[i + symbolSize*j];
+	    // data_out[i + symbolSize*j] = data_in[i + symbolSize*j];
 	  }
 
 	this->consume_each (symbolSize*n);

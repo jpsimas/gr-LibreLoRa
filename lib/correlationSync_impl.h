@@ -36,6 +36,9 @@ namespace gr {
       const size_t preambleSize;
       const size_t SF;
 
+      const uint8_t syncWordNum1;
+      const uint8_t syncWordNum2;
+      
       T corrMax;
 
       T offset;
@@ -58,8 +61,12 @@ namespace gr {
       pmt::pmt_t syncPort;
 
       inline float norm(T x);
+
+      //for estimateOffset
+      std::vector<T> syncWordExpected;
+      std::vector<size_t> detectionCount;
      public:
-      correlationSync_impl(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize, size_t SF);
+      correlationSync_impl(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize, size_t SF, uint16_t syncWordNumber);
       ~correlationSync_impl();
 
       // Where all the action really happens
