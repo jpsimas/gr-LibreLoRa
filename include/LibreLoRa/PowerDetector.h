@@ -45,7 +45,7 @@ namespace gr {
        * class. LibreLoRa::PowerDetector::make is the public interface for
        * creating new instances.
        */
-      static sptr make(float threshold, float timeoutSeconds, size_t decimation, pmt::pmt_t message);
+      static sptr make(float sampRate, float threshold, float timeoutSeconds, size_t decimation, pmt::pmt_t message);
     };
 
   } // namespace LibreLoRa

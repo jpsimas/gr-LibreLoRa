@@ -68,6 +68,18 @@ blocks:
     coordinate: [176, 12.0]
     rotation: 0
     state: enabled
+- name: threshold
+  id: variable
+  parameters:
+    comment: ''
+    value: '100'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [643, 162]
+    rotation: 0
+    state: true
 - name: LibreLoRa_ChirpDetector_0
   id: LibreLoRa_ChirpDetector
   parameters:
@@ -80,15 +92,15 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_rate: samp_rate
-    threshold: '0.2'
+    threshold: threshold
     timeout: '5'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [591, 463]
+    coordinate: [695, 427]
     rotation: 0
-    state: true
+    state: enabled
 - name: LibreLoRa_ChirpDetector_0_0
   id: LibreLoRa_ChirpDetector
   parameters:
@@ -101,15 +113,15 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_rate: samp_rate
-    threshold: '0.2'
+    threshold: threshold
     timeout: '5'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [595, 589]
+    coordinate: [699, 553]
     rotation: 0
-    state: true
+    state: enabled
 - name: LibreLoRa_ChirpDetector_1
   id: LibreLoRa_ChirpDetector
   parameters:
@@ -122,15 +134,15 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_rate: samp_rate
-    threshold: '0.2'
+    threshold: threshold
     timeout: '5'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [599, 720]
+    coordinate: [703, 684]
     rotation: 0
-    state: true
+    state: enabled
 - name: LibreLoRa_ChirpDetector_2
   id: LibreLoRa_ChirpDetector
   parameters:
@@ -143,15 +155,15 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_rate: samp_rate
-    threshold: '0.2'
+    threshold: threshold
     timeout: '5'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [599, 851]
+    coordinate: [703, 815]
     rotation: 0
-    state: true
+    state: enabled
 - name: LibreLoRa_ChirpDetector_2_0
   id: LibreLoRa_ChirpDetector
   parameters:
@@ -164,15 +176,15 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_rate: samp_rate
-    threshold: '0.2'
+    threshold: threshold
     timeout: '5'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [599, 982]
+    coordinate: [703, 946]
     rotation: 0
-    state: true
+    state: enabled
 - name: LibreLoRa_ChirpDetector_2_0_0
   id: LibreLoRa_ChirpDetector
   parameters:
@@ -185,15 +197,15 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     samp_rate: samp_rate
-    threshold: '0.2'
+    threshold: threshold
     timeout: '5'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [597, 1117]
+    coordinate: [701, 1081]
     rotation: 0
-    state: true
+    state: enabled
 - name: LibreLoRa_DetectionCount_0
   id: LibreLoRa_DetectionCount
   parameters:
@@ -208,9 +220,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [968, 680]
+    coordinate: [1072, 644]
     rotation: 0
-    state: true
+    state: enabled
 - name: blocks_message_debug_0
   id: blocks_message_debug
   parameters:
@@ -221,111 +233,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [904, 557]
+    coordinate: [1008, 521]
     rotation: 0
-    state: true
-- name: blocks_null_sink_0
-  id: blocks_null_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    bus_structure_sink: '[[0,],]'
-    comment: ''
-    num_inputs: '1'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [787, 496]
-    rotation: 0
-    state: true
-- name: blocks_null_sink_1
-  id: blocks_null_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    bus_structure_sink: '[[0,],]'
-    comment: ''
-    num_inputs: '1'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [781, 615]
-    rotation: 0
-    state: true
-- name: blocks_null_sink_1_0
-  id: blocks_null_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    bus_structure_sink: '[[0,],]'
-    comment: ''
-    num_inputs: '1'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [771, 748]
-    rotation: 0
-    state: true
-- name: blocks_null_sink_1_0_0
-  id: blocks_null_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    bus_structure_sink: '[[0,],]'
-    comment: ''
-    num_inputs: '1'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [801, 878]
-    rotation: 0
-    state: true
-- name: blocks_null_sink_1_0_0_0
-  id: blocks_null_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    bus_structure_sink: '[[0,],]'
-    comment: ''
-    num_inputs: '1'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [777, 1010]
-    rotation: 0
-    state: true
-- name: blocks_null_sink_1_0_0_0_0
-  id: blocks_null_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    bus_structure_sink: '[[0,],]'
-    comment: ''
-    num_inputs: '1'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [767, 1145]
-    rotation: 0
-    state: true
+    state: enabled
 - name: import_0
   id: import
   parameters:
@@ -350,6 +260,128 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [280, 12.0]
+    rotation: 0
+    state: true
+- name: qtgui_waterfall_sink_x_0
+  id: qtgui_waterfall_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    axislabels: 'True'
+    bw: samp_rate
+    color1: '0'
+    color10: '0'
+    color2: '0'
+    color3: '0'
+    color4: '0'
+    color5: '0'
+    color6: '0'
+    color7: '0'
+    color8: '0'
+    color9: '0'
+    comment: ''
+    fc: '0'
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    int_max: '10'
+    int_min: '-140'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    showports: 'False'
+    type: complex
+    update_time: '0.10'
+    wintype: firdes.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [485, 323]
+    rotation: 0
+    state: true
+- name: qtgui_waterfall_sink_x_1
+  id: qtgui_waterfall_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    axislabels: 'True'
+    bw: samp_rate
+    color1: '0'
+    color10: '0'
+    color2: '0'
+    color3: '0'
+    color4: '0'
+    color5: '0'
+    color6: '0'
+    color7: '0'
+    color8: '0'
+    color9: '0'
+    comment: ''
+    fc: '0'
+    fftsize: '1024'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    int_max: '10'
+    int_min: '-140'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    showports: 'False'
+    type: complex
+    update_time: '0.10'
+    wintype: firdes.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1089, 1088]
     rotation: 0
     state: true
 - name: rtlsdr_source_0
@@ -559,7 +591,7 @@ blocks:
     freq7: 100e6
     freq8: 100e6
     freq9: 100e6
-    gain0: '20'
+    gain0: '30'
     gain1: '10'
     gain10: '10'
     gain11: '10'
@@ -706,26 +738,21 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [94, 424]
+    coordinate: [-7, 469]
     rotation: 0
     state: enabled
 
 connections:
-- [LibreLoRa_ChirpDetector_0, '0', blocks_null_sink_0, '0']
 - [LibreLoRa_ChirpDetector_0, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
 - [LibreLoRa_ChirpDetector_0, detectOut, blocks_message_debug_0, print]
-- [LibreLoRa_ChirpDetector_0_0, '0', blocks_null_sink_1, '0']
 - [LibreLoRa_ChirpDetector_0_0, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
 - [LibreLoRa_ChirpDetector_0_0, detectOut, blocks_message_debug_0, print]
-- [LibreLoRa_ChirpDetector_1, '0', blocks_null_sink_1_0, '0']
 - [LibreLoRa_ChirpDetector_1, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
 - [LibreLoRa_ChirpDetector_1, detectOut, blocks_message_debug_0, print]
-- [LibreLoRa_ChirpDetector_2, '0', blocks_null_sink_1_0_0, '0']
 - [LibreLoRa_ChirpDetector_2, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
 - [LibreLoRa_ChirpDetector_2, detectOut, blocks_message_debug_0, print]
-- [LibreLoRa_ChirpDetector_2_0, '0', blocks_null_sink_1_0_0_0, '0']
 - [LibreLoRa_ChirpDetector_2_0, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
-- [LibreLoRa_ChirpDetector_2_0_0, '0', blocks_null_sink_1_0_0_0_0, '0']
+- [LibreLoRa_ChirpDetector_2_0_0, '0', qtgui_waterfall_sink_x_1, '0']
 - [LibreLoRa_ChirpDetector_2_0_0, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
 - [LibreLoRa_ChirpDetector_2_0_0, detectOut, blocks_message_debug_0, print]
 - [LibreLoRa_DetectionCount_0, count, blocks_message_debug_0, print]
@@ -735,6 +762,7 @@ connections:
 - [rtlsdr_source_0, '0', LibreLoRa_ChirpDetector_2, '0']
 - [rtlsdr_source_0, '0', LibreLoRa_ChirpDetector_2_0, '0']
 - [rtlsdr_source_0, '0', LibreLoRa_ChirpDetector_2_0_0, '0']
+- [rtlsdr_source_0, '0', qtgui_waterfall_sink_x_0, '0']
 
 metadata:
   file_format: 1

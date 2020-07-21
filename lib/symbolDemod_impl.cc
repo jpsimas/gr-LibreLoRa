@@ -56,7 +56,7 @@ namespace gr {
 	windowSize(windowSize),
 	startingIndex((symbolSize - windowSize)/2),
 	started(true),
-	offset(0.0f),
+	// offset(0.0f),
 	gr::block("symbolDemod",
 		       gr::io_signature::make(1, 1, symbolSize*sizeof(T)), 
 		       gr::io_signature::make(1, 1, sizeof(uint16_t))) {
@@ -114,9 +114,9 @@ namespace gr {
 	  float corrMax = 0;
 	  size_t jMax = 0;
 	  
-	  for(size_t j = 0; j < symbolSize; j++) {
+	  for(size_t j = 0; j < /*symbolSize*/(1 << SF); j++) {
 	    float corrJ;
-	    volk_32f_x2_dot_prod_32f(&corrJ, dataIn + i*symbolSize, upchirps.data() + j, symbolSize);
+	    volk_32f_x2_dot_prod_32f(&corrJ, dataIn + i*symbolSize, upchirps.data() + j*(symbolSize >> SF), symbolSize);
 
 	    //volk_32f_x2_dot_prod_32f(&corrJ, dataIn + i*symbolSize, getSymbol<float>(j, SF, symbolSize).data(), symbolSize);
 	    
@@ -126,11 +126,12 @@ namespace gr {
 	    }
 	  }
 
-	  float err = jMax - (symbolSize >> SF)*std::round(float(jMax)/(symbolSize >> SF));
-	  offset += 0.1*err;
+	  // float err = jMax - (symbolSize >> SF)*std::round(float(jMax)/(symbolSize >> SF));
+	  // offset += 0.1*err;
 	  
-	  dataOut[i] = uint16_t(std::round((jMax + std::round(offset))*(1 << SF)/float(symbolSize)))%uint16_t(1 << SF);
-	  //dataOut[i] = jMax;
+	  // dataOut[i] = uint16_t(std::round((jMax /*- std::round(offset)*/)*(1 << SF)/float(symbolSize)))%uint16_t(1 << SF);
+	  
+	  dataOut[i] = jMax;
 #ifndef NDEBUG
 	  std::cout << "demodulated symbol: " << std::dec << dataOut[i] << ", SF = " << SF << std::endl;
 #endif
@@ -187,6 +188,7 @@ namespace gr {
     template<typename T>
     void symbolDemod_impl<T>::setSF(size_t SFNew) {
       SF = SFNew;
+      // offset = 0;
     }
 
   template class symbolDemod<float>;

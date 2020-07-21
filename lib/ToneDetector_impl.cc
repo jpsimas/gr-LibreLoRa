@@ -72,7 +72,8 @@ namespace gr {
 	
 	add_item_tag(0, nitems_written(0) + i, tagKey, pmt::from_float(fmod(float(maxInd)/DFTSize + 0.5f, 1.0f) - 0.5f));
 	
-	out[i] = vect[maxInd]/meanPower;
+	// out[i] = vect[maxInd]/meanPower;
+	out[i] = (DFTSize - 1)*vect[maxInd]/(meanPower - vect[maxInd]);
       }
 
       return noutput_items;

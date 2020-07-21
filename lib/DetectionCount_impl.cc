@@ -45,6 +45,7 @@ namespace gr {
 		       gr::io_signature::make(0, 0, 0)),
 	BW(BW),
 	nChannels(nChannels),
+	channelWidth(1.6*BW),//make this a constructor parameter
 	count((SFMax - SFMin + 1)*nChannels){
       message_port_register_in(pmt::mp("detectionMessage"));
       set_msg_handler(pmt::mp("detectionMessage"), [this](pmt::pmt_t msg) {readMessage(msg);});
@@ -113,7 +114,7 @@ namespace gr {
       if(!offsetMsg->is_number())
 	return;
       float offset = pmt::to_float(offsetMsg);
-      int channel = int(std::round(nChannels/2 + offset*sampRateRead/BW));
+      int channel = int(std::round(nChannels/2 + offset*sampRateRead/channelWidth));
       if(channel < 0 || channel > (nChannels - 1))
 	return;
 

@@ -22,7 +22,7 @@
 #define INCLUDED_LIBRELORA_POWERDETECTOR_IMPL_H
 
 #include <LibreLoRa/PowerDetector.h>
-#include <time.h>
+// #include <time.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -34,13 +34,16 @@ namespace gr {
       const size_t decimation;
       enum state_t {detection, started, waiting};
       state_t state;
-      clock_t timeout;
-      clock_t time;
+      //clock_t timeout;
+      //clock_t time;
 
+      const size_t maxSamplesToRead;
+      size_t samplesToRead;
+      
       pmt::pmt_t detectOutPort;
       pmt::pmt_t message;
      public:
-      PowerDetector_impl(float threshold, float timeoutSeconds, size_t decimation, pmt::pmt_t message);
+      PowerDetector_impl(float sampRate, float threshold, float timeoutSeconds, size_t decimation, pmt::pmt_t message);
       ~PowerDetector_impl();
 
       // Where all the action really happens

@@ -43,6 +43,7 @@ outputs:
 -   label: out
     dtype: complex
     vlen: 1
+    optional: true
 -   domain: message
     id: detectOut
     optional: true

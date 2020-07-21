@@ -144,3 +144,4 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, ToneDetector);
 
 %include "LibreLoRa/DetectionCount.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, DetectionCount);
+

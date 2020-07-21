@@ -3,8 +3,13 @@ label: PowerDetector
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.PowerDetector(${threshold}, ${timeout}, ${decimation}, ${message})
+  imports: import pmt
+  make: LibreLoRa.PowerDetector(${samp_rate}, ${threshold}, ${timeout}, ${decimation}, ${message})
 parameters:
+- id: samp_rate
+  label: samp_rate
+  dtype: raw
+  default: 'samp_rate'
 - id: threshold
   label: Threshold
   dtype: float
@@ -32,6 +37,7 @@ outputs:
 - label: out
   domain: stream
   dtype: complex
+  optional: true
 - domain: message
   id: detectOut
   optional: true

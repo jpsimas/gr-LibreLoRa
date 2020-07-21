@@ -36,7 +36,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: int(symbolSize/4)
+    value: 2*int(symbolSize)
   states:
     bus_sink: false
     bus_source: false
@@ -77,7 +77,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [80, 108.0]
+    coordinate: [46, 109]
     rotation: 0
     state: disabled
 - name: decimation
@@ -89,21 +89,33 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [96, 180.0]
+    coordinate: [49, 181]
     rotation: 0
     state: enabled
 - name: lowDataRateRequired
   id: variable
   parameters:
     comment: ''
-    value: ((BW*(2**(-SF))) < 62.5)
+    value: ((BW*(2**(-SF))) < 62.5) and (not ignoreLowDataRateRequired)
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [536, 92.0]
+    coordinate: [701, 83]
     rotation: 0
     state: enabled
+- name: maxFrameTime
+  id: variable
+  parameters:
+    comment: ''
+    value: (2**(SF)/BW)*(5 + 8 + 257*2*8/SF)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [42, 325]
+    rotation: 0
+    state: true
 - name: nUpchirps
   id: variable
   parameters:
@@ -227,6 +239,27 @@ blocks:
     coordinate: [2480, 544.0]
     rotation: 0
     state: true
+- name: LibreLoRa_ChirpDetector_0
+  id: LibreLoRa_ChirpDetector
+  parameters:
+    BW: BW
+    DFTSize: symbolSize
+    SF: SF
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    threshold: detectorThreshold
+    timeout: maxFrameTime
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [171, 230]
+    rotation: 0
+    state: enabled
 - name: LibreLoRa_Correlation_0
   id: LibreLoRa_Correlation
   parameters:
@@ -648,6 +681,23 @@ blocks:
     coordinate: [800, 680.0]
     rotation: 0
     state: disabled
+- name: detectorThreshold
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: detectorThreshold
+    short_id: ''
+    type: ''
+    value: '100'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [171, 154]
+    rotation: 0
+    state: true
 - name: fft_vxx_0
   id: fft_vxx
   parameters:
@@ -669,6 +719,23 @@ blocks:
     coordinate: [368, 644.0]
     rotation: 0
     state: disabled
+- name: ignoreLowDataRateRequired
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: ''
+    short_id: ''
+    type: ''
+    value: 'False'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [496, 91]
+    rotation: 0
+    state: true
 - name: import_0
   id: import
   parameters:
@@ -853,7 +920,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [208, 108.0]
+    coordinate: [208, 97]
     rotation: 0
     state: true
 
@@ -861,6 +928,9 @@ connections:
 - [LibreLoRa_ArgMaxAbs_0, '0', blocks_int_to_float_0, '0']
 - [LibreLoRa_ArgMaxAbs_0, '1', blocks_null_sink_2, '0']
 - [LibreLoRa_CRC16_0, '0', pad_sink_1, '0']
+- [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_frequencyTrackerN_0, '0']
+- [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_frequencyTracker_0, '0']
+- [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_streamToHistoryVector_0, '0']
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSyncDemod_0, '1']
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSync_0, '1']
 - [LibreLoRa_Correlation_0, '1', LibreLoRa_correlationSyncDemod_0, '0']
@@ -915,9 +985,7 @@ connections:
 - [blocks_multiply_const_vxx_1, '0', blocks_magphase_to_complex_0, '1']
 - [blocks_multiply_const_vxx_1_0, '0', LibreLoRa_Correlation_0, '0']
 - [fft_vxx_0, '0', LibreLoRa_ArgMaxAbs_0, '0']
-- [pad_source_0, '0', LibreLoRa_frequencyTrackerN_0, '0']
-- [pad_source_0, '0', LibreLoRa_frequencyTracker_0, '0']
-- [pad_source_0, '0', LibreLoRa_streamToHistoryVector_0, '0']
+- [pad_source_0, '0', LibreLoRa_ChirpDetector_0, '0']
 
 metadata:
   file_format: 1

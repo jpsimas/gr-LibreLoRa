@@ -72,7 +72,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '10'
+    value: '12'
   states:
     bus_sink: false
     bus_source: false
@@ -144,7 +144,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 5e-3
+    value: 1e-3
   states:
     bus_sink: false
     bus_source: false
@@ -162,7 +162,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1872, 812.0]
+    coordinate: [2632, 1352]
     rotation: 0
     state: true
 - name: preambleNormalized
@@ -174,7 +174,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1624, 804.0]
+    coordinate: [2384, 1344]
     rotation: 0
     state: true
 - name: samp_rate
@@ -241,27 +241,6 @@ blocks:
     coordinate: [808, 1016.0]
     rotation: 0
     state: disabled
-- name: LibreLoRa_ChirpDetector_0
-  id: LibreLoRa_ChirpDetector
-  parameters:
-    BW: BW
-    DFTSize: symbolSize
-    SF: SF
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    samp_rate: samp_rate
-    threshold: '0.2'
-    timeout: maxFrameTime
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1046, 182]
-    rotation: 0
-    state: true
 - name: LibreLoRa_Correlation_0
   id: LibreLoRa_Correlation
   parameters:
@@ -312,7 +291,7 @@ blocks:
     bus_structure: null
     coordinate: [1888, 1352.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_Correlation_0_0_0_0
   id: LibreLoRa_Correlation
   parameters:
@@ -374,13 +353,14 @@ blocks:
     maxoutbuf: '0'
     message: pmt.PMT_NIL
     minoutbuf: 2*int(maxFrameTime*samp_rate)
+    samp_rate: samp_rate
     threshold: powerThreshold
     timeout: maxFrameTime*1.5
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1056, 82]
+    coordinate: [1008, 72]
     rotation: 0
     state: disabled
 - name: LibreLoRa_chirpSource_0
@@ -479,7 +459,7 @@ blocks:
     bus_structure: null
     coordinate: [1576, 1360]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_frequencyTracker_0_0
   id: LibreLoRa_frequencyTracker
   parameters:
@@ -525,6 +505,8 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
+    detectorThreshold: '100'
+    ignoreLowDataRateRequired: 'True'
     lowDataRate: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -534,7 +516,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1264, 112.0]
+    coordinate: [1264, 112]
     rotation: 0
     state: enabled
 - name: analog_const_source_x_0
@@ -723,19 +705,6 @@ blocks:
     coordinate: [1336, 1032.0]
     rotation: 0
     state: disabled
-- name: blocks_message_debug_0
-  id: blocks_message_debug
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1497, 323]
-    rotation: 0
-    state: true
 - name: blocks_multiply_const_vxx_0
   id: blocks_multiply_const_vxx
   parameters:
@@ -1302,7 +1271,7 @@ blocks:
     bus_structure: null
     coordinate: [2184, 1336]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_0_0_0_0
   id: qtgui_time_sink_x
   parameters:
@@ -1947,7 +1916,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [490, 242]
+    coordinate: [465, 266]
     rotation: 0
     state: disabled
 - name: rtlsdr_source_0
@@ -1988,7 +1957,7 @@ blocks:
     ant8: ''
     ant9: ''
     args: '""'
-    bb_gain0: '20'
+    bb_gain0: '10'
     bb_gain1: '20'
     bb_gain10: '20'
     bb_gain11: '20'
@@ -2221,7 +2190,7 @@ blocks:
     gain_mode7: 'False'
     gain_mode8: 'False'
     gain_mode9: 'False'
-    if_gain0: '20'
+    if_gain0: '10'
     if_gain1: '20'
     if_gain10: '20'
     if_gain11: '20'
@@ -2311,9 +2280,6 @@ blocks:
 connections:
 - [LibreLoRa_ArgMaxAbs_0, '0', blocks_int_to_float_0, '0']
 - [LibreLoRa_ArgMaxAbs_0, '1', blocks_null_sink_2, '0']
-- [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_frequencyTracker_0, '0']
-- [LibreLoRa_ChirpDetector_0, '0', LoRaRx_0, '0']
-- [LibreLoRa_ChirpDetector_0, detectOut, blocks_message_debug_0, print]
 - [LibreLoRa_Correlation_0, '0', qtgui_time_sink_x_0, '0']
 - [LibreLoRa_Correlation_0, '1', qtgui_time_sink_x_0, '1']
 - [LibreLoRa_Correlation_0_0, '0', blocks_complex_to_mag_squared_0_0, '0']
@@ -2330,14 +2296,7 @@ connections:
 - [LibreLoRa_Correlation_0_0_0_1, '1', qtgui_time_sink_x_0_0_0_2, '3']
 - [LibreLoRa_Correlation_0_0_0_1_0, '0', qtgui_time_sink_x_0_0_0_1_0, '0']
 - [LibreLoRa_Correlation_0_0_0_1_0, '1', qtgui_time_sink_x_0_0_0_1_0, '1']
-- [LibreLoRa_PowerDetector_0, '0', LibreLoRa_frequencyTrackerNMode_0, '0']
-- [LibreLoRa_PowerDetector_0, '0', LibreLoRa_frequencyTrackerN_0_0, '0']
-- [LibreLoRa_PowerDetector_0, '0', LibreLoRa_frequencyTrackerN_0_0_0, '0']
-- [LibreLoRa_PowerDetector_0, '0', LibreLoRa_frequencyTracker_0, '0']
-- [LibreLoRa_PowerDetector_0, '0', LibreLoRa_frequencyTracker_0_0, '0']
-- [LibreLoRa_PowerDetector_0, '0', LibreLoRa_streamToHistoryVector_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0, '0']
-- [LibreLoRa_PowerDetector_0, '0', qtgui_waterfall_sink_x_0_0, '0']
 - [LibreLoRa_chirpSource_0, '0', blocks_multiply_const_vxx_3, '0']
 - [LibreLoRa_frequencyTrackerNMode_0, '0', LibreLoRa_Correlation_0_0_0_1_0, '0']
 - [LibreLoRa_frequencyTrackerN_0_0, '0', LibreLoRa_Correlation_0_0, '0']
@@ -2368,10 +2327,10 @@ connections:
 - [blocks_nlog10_ff_0, '0', qtgui_time_sink_x_1, '0']
 - [blocks_throttle_0, '0', rational_resampler_xxx_0, '0']
 - [fft_vxx_0, '0', LibreLoRa_ArgMaxAbs_0, '0']
-- [iir_filter_xxx_0, '0', LibreLoRa_PowerDetector_0, '1']
+- [iir_filter_xxx_0, '0', LibreLoRa_PowerDetector_0, '0']
 - [iir_filter_xxx_0, '0', blocks_nlog10_ff_0, '0']
-- [rational_resampler_xxx_0, '0', LibreLoRa_ChirpDetector_0, '0']
-- [rational_resampler_xxx_0, '0', LibreLoRa_PowerDetector_0, '0']
+- [rational_resampler_xxx_0, '0', LibreLoRa_PowerDetector_0, '1']
+- [rational_resampler_xxx_0, '0', LoRaRx_0, '0']
 - [rational_resampler_xxx_0, '0', qtgui_waterfall_sink_x_0, '0']
 - [rational_resampler_xxx_0, '0', rational_resampler_xxx_1, '0']
 - [rational_resampler_xxx_1, '0', blocks_complex_to_mag_squared_0_1, '0']

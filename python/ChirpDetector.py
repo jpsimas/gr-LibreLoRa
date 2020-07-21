@@ -60,8 +60,8 @@ class ChirpDetector(gr.hier_block2):
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(DFTSize)
         self.blocks_complex_to_mag_squared_0.set_min_output_buffer(int(timeout*samp_rate/DFTSize))
         self.LibreLoRa_ToneDetector_0 = LibreLoRa.ToneDetector(DFTSize)
-        self.LibreLoRa_PowerDetector_0 = LibreLoRa.PowerDetector(threshold, timeout, DFTSize, pmt.to_pmt((SF, BW, samp_rate)))
-        self.LibreLoRa_PowerDetector_0.set_min_output_buffer(int(1.5*timeout*samp_rate))
+        self.LibreLoRa_PowerDetector_0 = LibreLoRa.PowerDetector(samp_rate, threshold, timeout, DFTSize, pmt.to_pmt((SF, BW, samp_rate)))
+        self.LibreLoRa_PowerDetector_0.set_min_output_buffer(int(numpy.ceil(timeout*samp_rate)))
 
 
 

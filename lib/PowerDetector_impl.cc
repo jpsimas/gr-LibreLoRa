@@ -29,23 +29,24 @@ namespace gr {
   namespace LibreLoRa {
 
     PowerDetector::sptr
-    PowerDetector::make(float threshold, float timeoutSeconds, size_t decimation, pmt::pmt_t message)
+    PowerDetector::make(float sampRate, float threshold, float timeoutSeconds, size_t decimation, pmt::pmt_t message)
     {
       return gnuradio::get_initial_sptr
-        (new PowerDetector_impl(threshold, timeoutSeconds, decimation, message));
+        (new PowerDetector_impl(sampRate, threshold, timeoutSeconds, decimation, message));
     }
 
 
     /*
      * The private constructor
      */
-    PowerDetector_impl::PowerDetector_impl(float threshold, float timeoutSeconds, size_t decimation, pmt::pmt_t message)
+    PowerDetector_impl::PowerDetector_impl(float sampRate, float threshold, float timeoutSeconds, size_t decimation, pmt::pmt_t message)
       : gr::block("PowerDetector",
 		  gr::io_signature::make2(2, 2, sizeof(gr_complex), sizeof(float)),
-		  gr::io_signature::make(1, 1, sizeof(gr_complex))),
+		  gr::io_signature::make(0, 1, sizeof(gr_complex))),
 	threshold(threshold), 
 	state(detection),
-	timeout(timeoutSeconds*CLOCKS_PER_SEC),
+	// timeout(timeoutSeconds*CLOCKS_PER_SEC),
+	maxSamplesToRead(int(std::ceil(timeoutSeconds*sampRate))),
 	decimation(decimation),
 	message(message)
     {
@@ -86,7 +87,9 @@ namespace gr {
     {
       const gr_complex *in = (const gr_complex *) input_items[0];
       const float *powerIn = (const float *) input_items[1];
-      gr_complex *out = (gr_complex *) output_items[0];
+      gr_complex *out;
+      if(output_items.size() > 0)
+	out = (gr_complex *) output_items[0];
 
       size_t i;
       switch(state) {
@@ -94,7 +97,8 @@ namespace gr {
 	for(i = 0; i < (noutput_items + decimation - 1)/decimation; i++) {
 	  if(powerIn[i] > threshold) {
 	    state = started;
-	    time = clock();
+	    samplesToRead = maxSamplesToRead;
+	    // time = clock();
 
 	    std::vector<gr::tag_t> tags;
 	    auto nr =  nitems_read(1);
@@ -116,16 +120,27 @@ namespace gr {
 	return 0;
 	
       case started:
-	for(auto i = 0; i < ((noutput_items + decimation - 1)/decimation)*decimation; i++) {
-	  out[i] = in[i];
-	  if(clock() > time + timeout) {
+	for(i = 0; i < ((noutput_items + decimation - 1)/decimation)*decimation; i++) {
+	  samplesToRead--;
+	  if(output_items.size() > 0)
+	    out[i] = in[i];
+	  
+	  //if(clock() > time + timeout) {
+	  if(samplesToRead == 0) {
 	    state = waiting;
+	    break;
 	  }
 	}
 	
-	consume(0, ((noutput_items + decimation - 1)/decimation)*decimation);
-	consume(1, (noutput_items + decimation - 1)/decimation);
-	return ((noutput_items + decimation - 1)/decimation)*decimation;
+	// consume(0, ((noutput_items + decimation - 1)/decimation)*decimation);
+	// consume(1, (noutput_items + decimation - 1)/decimation);
+	consume(0, i);
+	consume(1, i/decimation);
+	if(output_items.size() > 0)
+	  // return ((noutput_items + decimation - 1)/decimation)*decimation;
+	  return i;
+	else
+	  return 0;
       case waiting:
 	for(i = 0; i < ((noutput_items + decimation - 1)/decimation)*decimation; i++) {
 	  if(powerIn[i] < threshold) {

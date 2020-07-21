@@ -58,8 +58,8 @@ namespace gr {
 	preambleSize(preambleSize),
 	SF(SF - 2),
 	OSF(symbolSize >> SF),
-	syncWordNum1((syncWordNumber >> 4) << (SF - 4)),
-	syncWordNum2((syncWordNumber & 0xf) << (SF - 4)),
+	syncWordNum1((syncWordNumber >> 4) << 3),
+	syncWordNum2((syncWordNumber & 0xf) << 3),
 	syncd(false),
 	// currState(initial),
 	fixedMode(true),
@@ -198,10 +198,10 @@ namespace gr {
 	size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
 	
 	for(size_t j = 0; j < n; j++) {
-	  data_out[j] = (uint16_t(std::round((data_in[symbolSize*j + symbolSize/2]- deltaF)*(OSF << SF))))%uint16_t(1 << SF);
+	  data_out[j] = uint16_t(std::round((1 << SF)*OSF*(data_in[symbolSize*j + symbolSize/2]- deltaF)*float(OSF)*float(1 << SF)))%uint16_t(1 << SF);
 	  
 #ifndef NDEBUG
-	  std::cout << "correlationSyncDemod: demodulated symbol, SF = " << std::dec << SF << ": " << data_out[j] << std::endl;
+	  std::cout << "correlationSyncDemod: demodulated symbol: " << std::dec  << data_out[j] << ", SF = " << SF << std::endl;
 #endif
 	}
 	  
@@ -233,9 +233,12 @@ namespace gr {
     }
 
     void correlationSyncDemod_impl::setSF(size_t SFNew) {
-      if(nOutputItemsToProduce == 0 && !deSyncAfterDone)
+      if(nOutputItemsToProduce == 0 && !deSyncAfterDone) {
 	SF = SFNew;
-      else
+#ifndef NDEBUG
+	std::cout << "correlationSyncDemod: set SF to: " << SFNew << std::endl;
+#endif
+      } else
 	SFAfterDone = SFNew;
     }
   } /* namespace LibreLoRa */

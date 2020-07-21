@@ -34,6 +34,7 @@ namespace gr {
       void readMessage(pmt::pmt_t msg);
       static constexpr size_t SFMin = 7;
       static constexpr size_t SFMax = 12;
+      const float channelWidth;
       std::vector<unsigned> count;
 
       pmt::pmt_t countPort;

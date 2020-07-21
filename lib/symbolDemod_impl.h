@@ -42,7 +42,7 @@ namespace gr {
 
       size_t step;
 
-      T offset;
+      // T offset;
      public:
       symbolDemod_impl(size_t SF, size_t symbolSize, bool implicit, size_t windowSize);
       
