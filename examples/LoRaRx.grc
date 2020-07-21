@@ -869,6 +869,24 @@ blocks:
     coordinate: [2128, 508.0]
     rotation: 0
     state: true
+- name: pad_sink_4
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: detectionOut
+    num_streams: '1'
+    optional: 'True'
+    type: message
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [350, 312]
+    rotation: 0
+    state: true
 - name: pad_source_0
   id: pad_source
   parameters:
@@ -931,6 +949,7 @@ connections:
 - [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_frequencyTrackerN_0, '0']
 - [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_frequencyTracker_0, '0']
 - [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_streamToHistoryVector_0, '0']
+- [LibreLoRa_ChirpDetector_0, detectOut, pad_sink_4, in]
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSyncDemod_0, '1']
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSync_0, '1']
 - [LibreLoRa_Correlation_0, '1', LibreLoRa_correlationSyncDemod_0, '0']

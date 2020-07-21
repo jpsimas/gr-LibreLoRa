@@ -705,6 +705,19 @@ blocks:
     coordinate: [1336, 1032.0]
     rotation: 0
     state: disabled
+- name: blocks_message_debug_0
+  id: blocks_message_debug
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1673, 362]
+    rotation: 0
+    state: true
 - name: blocks_multiply_const_vxx_0
   id: blocks_multiply_const_vxx
   parameters:
@@ -2306,6 +2319,7 @@ connections:
 - [LibreLoRa_streamToHistoryVector_0, '0', blocks_multiply_const_vxx_0, '0']
 - [LoRaRx_0, '0', blocks_tcp_server_sink_0, '0']
 - [LoRaRx_0, '1', blocks_null_sink_0, '0']
+- [LoRaRx_0, detectionOut, blocks_message_debug_0, print]
 - [LoRaRx_0, reset, LibreLoRa_PowerDetector_0, reset]
 - [analog_const_source_x_0, '0', blocks_magphase_to_complex_0, '0']
 - [blocks_add_xx_0, '0', blocks_throttle_0, '0']
