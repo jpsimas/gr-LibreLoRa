@@ -79,13 +79,13 @@ namespace gr {
 
     template <>
     float frequencyTracker_impl<float>::calcFreq(gr_complex w) {
-      return -std::arg(w)/(2*M_PI);
+      return std::arg(w)/(2*M_PI);
     }
 
     template <>
     gr_complex frequencyTracker_impl<gr_complex>::calcFreq(gr_complex w) {
       //return std::conj(w);
-      return std::polar(1.0f/*std::abs(w)*/, -float(OSF)*std::arg(w));
+      return std::polar(1.0f/*std::abs(w)*/, float(OSF)*std::arg(w));
     }
     
     template<typename T>
@@ -97,18 +97,15 @@ namespace gr {
     {
       const gr_complex *in = (const gr_complex *) input_items[0];
       T *out = (T *) output_items[0];
-
-      // Do <+signal processing+>
-
+      
       for(int i = 0; i < noutput_items*decimation; i++) {
 	w *= wStep;
 	
-	w = (1 - mu)*w + mu*std::conj(in[i + 1]/(in[i] + 1e-6f));
+	w = (1 - mu)*w + mu*(in[i + 1]/(in[i] + 1e-6f));
 
 	if(i%decimation == 0)
 	  out[i/decimation] = calcFreq(w);
-      }
-
+      }	
       
       // Tell runtime system how many input items we consumed on
       // each input stream.
@@ -117,7 +114,7 @@ namespace gr {
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }
-
+    
     template class frequencyTracker<float>;
     template class frequencyTracker<gr_complex>;
   } /* namespace LibreLoRa */

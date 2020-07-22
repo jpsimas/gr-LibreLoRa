@@ -578,6 +578,41 @@ blocks:
     coordinate: [1445, 658]
     rotation: 0
     state: disabled
+- name: blocks_complex_to_arg_2
+  id: blocks_complex_to_arg
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [119, 678]
+    rotation: 0
+    state: disabled
+- name: blocks_delay_0
+  id: blocks_delay
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    delay: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_ports: '1'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [109, 831]
+    rotation: 0
+    state: disabled
 - name: blocks_int_to_float_0
   id: blocks_int_to_float
   parameters:
@@ -609,6 +644,22 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [1181, 658]
+    rotation: 0
+    state: disabled
+- name: blocks_multiply_conjugate_cc_0
+  id: blocks_multiply_conjugate_cc
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [105, 762]
     rotation: 0
     state: disabled
 - name: blocks_multiply_const_vxx_1
@@ -645,6 +696,24 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [1582, 681]
+    rotation: 0
+    state: disabled
+- name: blocks_multiply_const_vxx_4
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 1/(2*OSF) if OSF < 4 else 2/OSF
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [114, 634]
     rotation: 0
     state: disabled
 - name: blocks_null_sink_2
@@ -907,6 +976,24 @@ blocks:
     coordinate: [192, 12.0]
     rotation: 0
     state: true
+- name: single_pole_iir_filter_xx_0
+  id: single_pole_iir_filter_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha: 2/OSF
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [106, 716]
+    rotation: 0
+    state: disabled
 - name: syncwordNumber
   id: parameter
   parameters:
@@ -932,6 +1019,8 @@ connections:
 - [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_frequencyTrackerN_0, '0']
 - [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_frequencyTracker_0, '0']
 - [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_streamToHistoryVector_0, '0']
+- [LibreLoRa_ChirpDetector_0, '0', blocks_delay_0, '0']
+- [LibreLoRa_ChirpDetector_0, '0', blocks_multiply_conjugate_cc_0, '0']
 - [LibreLoRa_ChirpDetector_0, detectOut, pad_sink_4, in]
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSyncDemod_0, '1']
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSync_0, '1']
@@ -944,6 +1033,7 @@ connections:
 - [LibreLoRa_correlationSyncDemod_0, sync, LibreLoRa_receiverController_0, sync]
 - [LibreLoRa_correlationSync_0, '0', LibreLoRa_symbolDemodNew_0, '0']
 - [LibreLoRa_correlationSync_0, '0', LibreLoRa_symbolDemod_0, '0']
+- [LibreLoRa_correlationSync_0, sync, LibreLoRa_Correlation_0, reset]
 - [LibreLoRa_correlationSync_0, sync, LibreLoRa_receiverController_0, sync]
 - [LibreLoRa_decode_0, '0', LibreLoRa_receiverController_0, '0']
 - [LibreLoRa_deinterleave_0, '0', LibreLoRa_decode_0, '0']
@@ -968,6 +1058,7 @@ connections:
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_symbolDemodNew_0, setSF]
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_symbolDemod_0, setSF]
 - [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_ChirpDetector_0, reset]
+- [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_Correlation_0, enable]
 - [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_correlationSyncDemod_0,
   reset]
 - [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_correlationSync_0,
@@ -982,12 +1073,17 @@ connections:
 - [LibreLoRa_symbolDemod_0, '0', LibreLoRa_grayEncode_0, '0']
 - [analog_const_source_x_0, '0', blocks_magphase_to_complex_0, '0']
 - [blocks_complex_to_arg_0, '0', blocks_multiply_const_vxx_1_0, '0']
+- [blocks_complex_to_arg_2, '0', blocks_multiply_const_vxx_4, '0']
+- [blocks_delay_0, '0', blocks_multiply_conjugate_cc_0, '1']
 - [blocks_int_to_float_0, '0', blocks_multiply_const_vxx_1, '0']
 - [blocks_magphase_to_complex_0, '0', blocks_complex_to_arg_0, '0']
+- [blocks_multiply_conjugate_cc_0, '0', single_pole_iir_filter_xx_0, '0']
 - [blocks_multiply_const_vxx_1, '0', blocks_magphase_to_complex_0, '1']
 - [blocks_multiply_const_vxx_1_0, '0', LibreLoRa_Correlation_0, '0']
+- [blocks_multiply_const_vxx_4, '0', LibreLoRa_Correlation_0, '0']
 - [fft_vxx_0, '0', LibreLoRa_ArgMaxAbs_0, '0']
 - [pad_source_0, '0', LibreLoRa_ChirpDetector_0, '0']
+- [single_pole_iir_filter_xx_0, '0', blocks_complex_to_arg_2, '0']
 
 metadata:
   file_format: 1

@@ -45,11 +45,31 @@ namespace gr {
       : gr::sync_block("Correlation",
 		       gr::io_signature::make(1, 1, sizeof(T)),
 		       gr::io_signature::make(2, 2, sizeof(T))),
-	symbol(symbol) {
+	symbol(symbol),
+	enabled(true) {
       this->set_history(symbol.size());
       this->set_min_output_buffer(symbol.size());
+
+      this->message_port_register_in(pmt::mp("enable"));
+      this->set_msg_handler(pmt::mp("enable"),
+			    [this](pmt::pmt_t msg) {
+			      enabled = true;
 #ifndef NDEBUG
-      std::cout << "Correlation: symbol size:" << symbol.size() << std::endl;
+			      std::cout << "Correlation: enabled." << std::endl;
+#endif
+			    });
+      
+      this->message_port_register_in(pmt::mp("reset"));
+      this->set_msg_handler(pmt::mp("reset"),
+			    [this](pmt::pmt_t msg) {
+			      enabled = false;
+#ifndef NDEBUG
+			      std::cout << "Correlation: reset." << std::endl;
+#endif
+			    });
+      
+#ifndef NDEBUG
+      std::cout << "Correlation: constructed. symbol size:" << symbol.size() << std::endl;
 #endif
     }
     
@@ -76,33 +96,41 @@ namespace gr {
 #ifndef NDEBUG
       ///std::cout << "Correlation: work called. noutput_items: " << noutput_items << std::endl;
 #endif
+      
+      if(enabled) {
+	float corr;
+	float sumSq;
+	float sum;
+	const float* samples = in;
+	
+	volk_32f_x2_dot_prod_32f(&corr, samples, symbol.data(), symbol.size());
+	volk_32f_x2_dot_prod_32f(&sumSq, samples, samples, symbol.size());
+	volk_32f_accumulator_s32f(&sum, samples, symbol.size());
 
-      float corr;
-      float sumSq;
-      float sum;
+	corr_out[0] = corr/sqrt(sumSq - sum*sum/symbol.size());
+	// data_out[0] = samples[0];
 
-      const float* samples = in;
-      volk_32f_x2_dot_prod_32f(&corr, samples, symbol.data(), symbol.size());
-      volk_32f_x2_dot_prod_32f(&sumSq, samples, samples, symbol.size());
-      volk_32f_accumulator_s32f(&sum, samples, symbol.size());
-
-      corr_out[0] = corr/sqrt(sumSq - sum*sum/symbol.size());
-      data_out[0] = samples[0];
-
-      for(size_t k = 1; k < noutput_items; k++) {
-      	sumSq -= samples[0]*samples[0];
-      	sum -= samples[0];
+	for(size_t k = 1; k < noutput_items; k++) {
+	  sumSq -= samples[0]*samples[0];
+	  sum -= samples[0];
 	  
-      	samples++;
+	  samples++;
 
-      	sumSq += samples[symbol.size() - 1]*samples[symbol.size() - 1];
-      	sum += samples[symbol.size() - 1];
+	  sumSq += samples[symbol.size() - 1]*samples[symbol.size() - 1];
+	  sum += samples[symbol.size() - 1];
 
-      	volk_32f_x2_dot_prod_32f(&corr, samples, symbol.data(), symbol.size());
+	  volk_32f_x2_dot_prod_32f(&corr, samples, symbol.data(), symbol.size());
 
-      	corr_out[k] = corr/sqrt(sumSq - sum*sum/symbol.size());
-	data_out[k] = samples[0];
+	  corr_out[k] = corr/sqrt(sumSq - sum*sum/symbol.size());
+	  // data_out[k] = samples[0];
+	}
+      } else {
+	for(auto k = 0; k < noutput_items; k++)
+	  corr_out[k] = 0;
       }
+      
+      for(auto k = 0; k < noutput_items; k++)
+	data_out[k] = in[k];
 
       
       // Tell runtime system how many output items we produced.
@@ -120,33 +148,39 @@ namespace gr {
       gr_complex *data_out = (gr_complex *) output_items[1];
 
       // Do <+signal processing+>
+      if(enabled) {
+	gr_complex corr;
+	float sumSq;
+	// gr_complex sum = gr_complex(0 ,0);
 
-      gr_complex corr;
-      float sumSq;
-      // gr_complex sum = gr_complex(0 ,0);
+	const gr_complex* samples = in;
+	volk_32fc_x2_conjugate_dot_prod_32fc(&corr, samples, symbol.data(), symbol.size());
+	gr_complex sumSqCompl;
+	volk_32fc_x2_conjugate_dot_prod_32fc(&sumSqCompl, samples, samples, symbol.size());
+	sumSq = sumSqCompl.real();
 
-      const gr_complex* samples = in;
-      volk_32fc_x2_conjugate_dot_prod_32fc(&corr, samples, symbol.data(), symbol.size());
-      gr_complex sumSqCompl;
-      volk_32fc_x2_conjugate_dot_prod_32fc(&sumSqCompl, samples, samples, symbol.size());
-      sumSq = sumSqCompl.real();
+	corr_out[0] = corr/sqrt(sumSq);
+	// data_out[0] = samples[0];
 
-      corr_out[0] = corr/sqrt(sumSq);
-      data_out[0] = samples[0];
-
-      for(size_t k = 1; k < noutput_items; k++) {
-	sumSq -= std::norm(samples[0]);
+	for(size_t k = 1; k < noutput_items; k++) {
+	  sumSq -= std::norm(samples[0]);
 	  
-      	samples++;
+	  samples++;
 
-      	sumSq += std::norm(samples[symbol.size() - 1]);
+	  sumSq += std::norm(samples[symbol.size() - 1]);
 	
-      	volk_32fc_x2_conjugate_dot_prod_32fc(&corr, samples, symbol.data(), symbol.size());
+	  volk_32fc_x2_conjugate_dot_prod_32fc(&corr, samples, symbol.data(), symbol.size());
 
-	corr_out[k] = corr/sqrt(sumSq);
-	data_out[k] = samples[0];
+	  corr_out[k] = corr/sqrt(sumSq);
+	  // data_out[k] = samples[0];
+	}
+      } else {
+	for(auto k = 0; k < noutput_items; k++)
+	  corr_out[k] = 0;
       }
-
+      
+      for(auto k = 0; k < noutput_items; k++)
+	data_out[k] = in[k];
       
       // Tell runtime system how many output items we produced.
       return noutput_items;

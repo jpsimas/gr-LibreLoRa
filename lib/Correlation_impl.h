@@ -32,8 +32,8 @@ namespace gr {
     class Correlation_impl : public Correlation<T>
     {
      private:
-      // Nothing to declare in this block.
       const std::vector<T> symbol;
+      bool enabled;
      public:
       Correlation_impl(const std::vector<T>& symbol);
       ~Correlation_impl();
