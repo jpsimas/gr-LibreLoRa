@@ -23,7 +23,7 @@ import pmt
 
 
 class ChirpDetector(gr.hier_block2):
-    def __init__(self, samp_rate, BW=125e3, SF=7, DFTSize=None, threshold=0.2, timeout=5):
+    def __init__(self, samp_rate, BW=125e3, SF=7, DFTSize=None, threshold=200, timeout=5):
         gr.hier_block2.__init__(
             self, "ChirpDetector",
                 gr.io_signature(1, 1, gr.sizeof_gr_complex*1),
@@ -31,7 +31,8 @@ class ChirpDetector(gr.hier_block2):
         )
         if (DFTSize == None):
             self.DFTSize = DFTSize = int((1 << SF)*(samp_rate/BW))
-            
+
+        self.message_port_register_hier_in("reset")
         self.message_port_register_hier_out("detectOut")
         
         ##################################################
@@ -69,6 +70,7 @@ class ChirpDetector(gr.hier_block2):
         # Connections
         ##################################################
         self.msg_connect((self.LibreLoRa_PowerDetector_0, 'detectOut'), (self, 'detectOut'))
+        self.msg_connect((self, 'reset'), (self.LibreLoRa_PowerDetector_0, 'reset'))
         self.connect((self.LibreLoRa_PowerDetector_0, 0), (self, 0))
         self.connect((self.LibreLoRa_ToneDetector_0, 0), (self.LibreLoRa_PowerDetector_0, 1))
         self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.LibreLoRa_ToneDetector_0, 0))

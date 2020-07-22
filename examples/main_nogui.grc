@@ -48,12 +48,12 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: round(samp_rate/(BW*decimation))
+    value: round(samp_rate/(BW))
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [424, 20.0]
+    coordinate: [424, 20]
     rotation: 0
     state: enabled
 - name: SF
@@ -68,52 +68,16 @@ blocks:
     coordinate: [320, 20.0]
     rotation: 0
     state: enabled
-- name: alphaPower
+- name: ip_address
   id: variable
   parameters:
     comment: ''
-    value: '0.1'
+    value: '''127.0.0.1'''
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [655, 124]
-    rotation: 0
-    state: true
-- name: decimation
-  id: variable
-  parameters:
-    comment: ''
-    value: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [296, 84.0]
-    rotation: 0
-    state: true
-- name: maxFrameTime
-  id: variable
-  parameters:
-    comment: ''
-    value: (2**(SF)/BW)*(8 + 257*2*8/SF)
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [982, 131]
-    rotation: 0
-    state: true
-- name: powerThreshold
-  id: variable
-  parameters:
-    comment: ''
-    value: 5e-3
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [810, 128]
+    coordinate: [933, 153]
     rotation: 0
     state: true
 - name: samp_rate
@@ -152,23 +116,6 @@ blocks:
     coordinate: [968, 20.0]
     rotation: 0
     state: true
-- name: LibreLoRa_PowerDetector_0_0
-  id: LibreLoRa_PowerDetector
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: int(maxFrameTime*samp_rate)
-    threshold: powerThreshold
-    timeout: 100*symbolSize/samp_rate
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1029, 231]
-    rotation: 0
-    state: true
 - name: LoRaRx_0
   id: LoRaRx
   parameters:
@@ -177,34 +124,20 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
+    detectorThreshold: '100'
+    ignoreLowDataRateRequired: 'False'
     lowDataRate: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    samp_rate: samp_rate/decimation
+    samp_rate: samp_rate
     syncwordNumber: syncwordNumber
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1232, 168.0]
+    coordinate: [391, 181]
     rotation: 0
     state: enabled
-- name: blocks_complex_to_mag_squared_0_1
-  id: blocks_complex_to_mag_squared
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [528, 328.0]
-    rotation: 0
-    state: true
 - name: blocks_null_sink_0
   id: blocks_null_sink
   parameters:
@@ -219,7 +152,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1536, 232.0]
+    coordinate: [695, 245]
     rotation: 0
     state: enabled
 - name: blocks_tcp_server_sink_0
@@ -228,7 +161,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    ipaddr: 127.0.0.1
+    ipaddr: ip_address
     noblock: 'True'
     port: '1202'
     type: byte
@@ -237,26 +170,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1456, 148.0]
-    rotation: 0
-    state: enabled
-- name: iir_filter_xxx_0
-  id: iir_filter_xxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    fbtaps: (1, -alphaPower)
-    fftaps: (1 - alphaPower)
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    oldstyle: 'True'
-    type: ffd
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [720, 316.0]
+    coordinate: [686, 151]
     rotation: 0
     state: enabled
 - name: import_0
@@ -285,26 +199,6 @@ blocks:
     coordinate: [824, 28.0]
     rotation: 0
     state: true
-- name: rational_resampler_xxx_0
-  id: rational_resampler_xxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    decim: decimation
-    fbw: '0'
-    interp: '1'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    taps: '[1]'
-    type: ccc
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [360, 220.0]
-    rotation: 0
-    state: enabled
 - name: rtlsdr_source_0
   id: rtlsdr_source
   parameters:
@@ -664,15 +558,9 @@ blocks:
     state: enabled
 
 connections:
-- [LibreLoRa_PowerDetector_0_0, '0', LoRaRx_0, '0']
 - [LoRaRx_0, '0', blocks_tcp_server_sink_0, '0']
 - [LoRaRx_0, '1', blocks_null_sink_0, '0']
-- [LoRaRx_0, reset, LibreLoRa_PowerDetector_0_0, reset]
-- [blocks_complex_to_mag_squared_0_1, '0', iir_filter_xxx_0, '0']
-- [iir_filter_xxx_0, '0', LibreLoRa_PowerDetector_0_0, '1']
-- [rational_resampler_xxx_0, '0', LibreLoRa_PowerDetector_0_0, '0']
-- [rational_resampler_xxx_0, '0', blocks_complex_to_mag_squared_0_1, '0']
-- [rtlsdr_source_0, '0', rational_resampler_xxx_0, '0']
+- [rtlsdr_source_0, '0', LoRaRx_0, '0']
 
 metadata:
   file_format: 1

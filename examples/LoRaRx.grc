@@ -36,12 +36,12 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: int(symbolSize/4)
+    value: int(symbolSize)
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [269, 384]
+    coordinate: [222, 477]
     rotation: 0
     state: enabled
 - name: OSF
@@ -186,7 +186,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [135, 491]
+    coordinate: [101, 485]
     rotation: 0
     state: enabled
 - name: BW
@@ -337,7 +337,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    corrMin: '0.9'
+    corrMin: '0.8'
     corrStop: '0.7'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -404,7 +404,7 @@ blocks:
     bus_structure: null
     coordinate: [373, 327]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_frequencyTracker_0
   id: LibreLoRa_frequencyTracker
   parameters:
@@ -424,7 +424,7 @@ blocks:
     bus_structure: null
     coordinate: [366, 217]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: LibreLoRa_grayEncode_0
   id: LibreLoRa_grayEncode
   parameters:
@@ -507,7 +507,7 @@ blocks:
     bus_structure: null
     coordinate: [1184, 320.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_symbolDemod_0
   id: LibreLoRa_symbolDemod
   parameters:
@@ -527,7 +527,7 @@ blocks:
     bus_structure: null
     coordinate: [1136, 184]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: SF
   id: parameter
   parameters:
@@ -575,7 +575,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1360, 712.0]
+    coordinate: [1445, 658]
     rotation: 0
     state: disabled
 - name: blocks_int_to_float_0
@@ -608,25 +608,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1136, 664.0]
-    rotation: 0
-    state: disabled
-- name: blocks_multiply_const_vxx_0
-  id: blocks_multiply_const_vxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    const: chirpWindow
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: complex
-    vlen: DFTSize
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [384, 568.0]
+    coordinate: [1181, 658]
     rotation: 0
     state: disabled
 - name: blocks_multiply_const_vxx_1
@@ -662,7 +644,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1504, 688.0]
+    coordinate: [1582, 681]
     rotation: 0
     state: disabled
 - name: blocks_null_sink_2
@@ -679,7 +661,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [800, 680.0]
+    coordinate: [807, 701]
     rotation: 0
     state: disabled
 - name: detectorThreshold
@@ -709,15 +691,15 @@ blocks:
     forward: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
-    nthreads: '1'
+    nthreads: '4'
     shift: 'False'
     type: complex
-    window: numpy.ones(DFTSize)
+    window: chirpWindow
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [368, 644.0]
+    coordinate: [368, 619]
     rotation: 0
     state: disabled
 - name: ignoreLowDataRateRequired
@@ -867,7 +849,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2128, 508.0]
+    coordinate: [2122, 518]
     rotation: 0
     state: true
 - name: pad_sink_4
@@ -885,7 +867,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [350, 312]
+    coordinate: [391, 439]
     rotation: 0
     state: true
 - name: pad_source_0
@@ -985,6 +967,7 @@ connections:
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_grayEncode_0, setSF]
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_symbolDemodNew_0, setSF]
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_symbolDemod_0, setSF]
+- [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_ChirpDetector_0, reset]
 - [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_correlationSyncDemod_0,
   reset]
 - [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_correlationSync_0,
@@ -994,14 +977,13 @@ connections:
   setNOutputItemsToProduce]
 - [LibreLoRa_receiverController_0, synchronizerSetN, LibreLoRa_correlationSync_0,
   setNOutputItemsToProduce]
-- [LibreLoRa_streamToHistoryVector_0, '0', blocks_multiply_const_vxx_0, '0']
+- [LibreLoRa_streamToHistoryVector_0, '0', fft_vxx_0, '0']
 - [LibreLoRa_symbolDemodNew_0, '0', LibreLoRa_grayEncode_0, '0']
 - [LibreLoRa_symbolDemod_0, '0', LibreLoRa_grayEncode_0, '0']
 - [analog_const_source_x_0, '0', blocks_magphase_to_complex_0, '0']
 - [blocks_complex_to_arg_0, '0', blocks_multiply_const_vxx_1_0, '0']
 - [blocks_int_to_float_0, '0', blocks_multiply_const_vxx_1, '0']
 - [blocks_magphase_to_complex_0, '0', blocks_complex_to_arg_0, '0']
-- [blocks_multiply_const_vxx_0, '0', fft_vxx_0, '0']
 - [blocks_multiply_const_vxx_1, '0', blocks_magphase_to_complex_0, '1']
 - [blocks_multiply_const_vxx_1_0, '0', LibreLoRa_Correlation_0, '0']
 - [fft_vxx_0, '0', LibreLoRa_ArgMaxAbs_0, '0']

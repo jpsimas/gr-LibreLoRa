@@ -48,13 +48,14 @@ namespace gr {
               gr::io_signature::make(1, 1, sizeof(gr_complex)),
 		       gr::io_signature::make(1, 1, DFTLength*sizeof(gr_complex))),
 	length(DFTLength),
-	alpha(0.8),
+	alpha(0.99),
 	alphaN(pow(alpha, length)),
 	//beta(float(1 << SF)*2*M_PI/(symbolSize*symbolSize)),
-	beta(beta),
-	step(std::polar<float>(1.0, beta)),
-	stepN(1.0),
-	index(0){
+	beta(beta)//,
+	// step(std::polar<float>(1.0, beta)),
+	// stepN(1.0),
+	// index(0)
+    {
 
       std::cout << "WIENERSHLIEDEN ENGAGED. SCHLIDENESS = " << beta << std::endl;
       std::cout << "COMPLEX SCHLIDENESS = " << step << std::endl;
@@ -77,7 +78,7 @@ namespace gr {
 	exponents[i] = std::polar<float>(alpha, (2.0*M_PI/length)*i);
       }
 
-      a = 1.0;
+      // a = 1.0;
     }
 
     /*
@@ -108,12 +109,12 @@ namespace gr {
       
       for(auto i = 0; i < noutput_items; i++) {
 	// for(size_t j = 0; j < length; j++)	
-	a *= std::polar<float>(1.0, std::arg(exponents[0]));
+	// a *= std::polar<float>(1.0, std::arg(exponents[0]));
 	volk_32fc_x2_multiply_32fc(DFT, exponents, DFT, length);
 
 	// const auto delta = in[i + length]*exponents[0];
-	const auto delta = /*- a*in[i]*alphaN*/ + in[i + length];
-	// const auto delta = - in[i] + in[i + length]*alphaN;
+	// const auto delta = - a*in[i]*alphaN + in[i + length];
+	const auto delta = - in[i] + in[i + length]*alphaN;
 
 	 for(auto j = 0; j < length; j++)
 	   //DFT[j] = DFT[j] + in[i + length];

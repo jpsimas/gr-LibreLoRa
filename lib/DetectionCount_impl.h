@@ -39,7 +39,7 @@ namespace gr {
 
       pmt::pmt_t countPort;
      public:
-      DetectionCount_impl(float BW, size_t nChannels);
+      DetectionCount_impl(float BW, size_t nChannels, float channelWidth);
       ~DetectionCount_impl();
 
       // Where all the action really happens

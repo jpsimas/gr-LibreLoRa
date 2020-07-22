@@ -104,9 +104,9 @@ namespace gr {
 
 	for(auto& x : count)
 	  x = 0;
-	for(auto i = 0; i < windowedSig.size() - 1; i++) {
-	  int16_t estimate = int16_t(std::round(((1 << SF)*OSF)*(std::arg(std::conj(windowedSig[i])*windowedSig[i + 1])/(2*M_PI) + 1.0f)))%int16_t((1 << SF)*OSF);
-	  count[estimate]++;
+	for(auto j = 0; j < windowedSig.size() - 1; j++) {
+	  int16_t estimate = int32_t(std::round(((1 << SF)*OSF)*(std::arg(std::conj(windowedSig[j])*windowedSig[j + 1])/(2*M_PI) + 1.0f)))%int32_t((1 << SF)*OSF);
+	  count.at(estimate)++;
 	}
 
 	

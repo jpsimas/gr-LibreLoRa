@@ -45,7 +45,7 @@ namespace gr {
        * class. LibreLoRa::DetectionCount::make is the public interface for
        * creating new instances.
        */
-      static sptr make(float BW, size_t nChannels);
+      static sptr make(float BW, size_t nChannels, float channelWidth);
     };
 
   } // namespace LibreLoRa

@@ -38,7 +38,9 @@ inputs:
 -   label: in
     dtype: complex
     vlen: 1
-
+-   domain: message
+    id: reset
+    optional: true
 outputs:
 -   label: out
     dtype: complex

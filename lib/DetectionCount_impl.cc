@@ -29,23 +29,23 @@ namespace gr {
   namespace LibreLoRa {
 
     DetectionCount::sptr
-    DetectionCount::make(float BW, size_t nChannels)
+    DetectionCount::make(float BW, size_t nChannels, float channelWidth)
     {
       return gnuradio::get_initial_sptr
-        (new DetectionCount_impl(BW, nChannels));
+        (new DetectionCount_impl(BW, nChannels, channelWidth));
     }
 
 
     /*
      * The private constructor
      */
-    DetectionCount_impl::DetectionCount_impl(float BW, size_t nChannels)
+    DetectionCount_impl::DetectionCount_impl(float BW, size_t nChannels, float channelWidth)
       : gr::sync_block("DetectionCount",
 				gr::io_signature::make(0, 0, 0),
 		       gr::io_signature::make(0, 0, 0)),
 	BW(BW),
 	nChannels(nChannels),
-	channelWidth(1.6*BW),//make this a constructor parameter
+	channelWidth(channelWidth),//make this a constructor parameter
 	count((SFMax - SFMin + 1)*nChannels){
       message_port_register_in(pmt::mp("detectionMessage"));
       set_msg_handler(pmt::mp("detectionMessage"), [this](pmt::pmt_t msg) {readMessage(msg);});

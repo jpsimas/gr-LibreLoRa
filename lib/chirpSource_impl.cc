@@ -26,6 +26,8 @@
 #include <cmath>
 #include "chirpSource_impl.h"
 
+#include <LibreLoRa/getSymbol.h>
+
 namespace gr {
   namespace LibreLoRa {
 
@@ -48,10 +50,9 @@ namespace gr {
 	delta(float(1 << SF)*M_PI/(symbolSize*symbolSize)),
 	index(0)
     {
-      size_t ucSize = symbolSize*symbolSize >> SF - 1;
-      upchirp = std::vector<gr_complex>(ucSize);
+      upchirp = std::vector<gr_complex>(symbolSize);
       for(size_t i = 0; i < upchirp.size(); i++){
-	float t = i - upchirp.size()/2.0;
+	float t = i - (upchirp.size() - 1)/2.0;
 	upchirp.at(i) = std::polar<float>(1.0, delta*t*t);
       }
     }

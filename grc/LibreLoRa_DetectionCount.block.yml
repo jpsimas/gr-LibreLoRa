@@ -3,13 +3,16 @@ label: DetectionCount
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.DetectionCount(${BW}, ${nChannels})
+  make: LibreLoRa.DetectionCount(${BW}, ${nChannels}, ${channelWidth})
 parameters:
 - id: BW
   label: Bw
   dtype: float
 - id: nChannels
   label: Nchannels
+  dtype: raw
+- id: channelWidth
+  label: ChannelWidth
   dtype: raw
 inputs:
 - domain: message
