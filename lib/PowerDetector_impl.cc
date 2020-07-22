@@ -161,6 +161,9 @@ namespace gr {
 
     void
     PowerDetector_impl::reset() {
+#ifndef NDEBUG
+	    std::cout << "PowerDetector: reset" << std::endl;
+#endif
       state = waiting;
     }
     

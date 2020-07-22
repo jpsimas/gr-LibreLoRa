@@ -337,7 +337,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    corrMin: '0.8'
+    corrMin: '0.9'
     corrStop: '0.7'
     maxoutbuf: '0'
     minoutbuf: '0'
