@@ -56,6 +56,18 @@ blocks:
     coordinate: [424, 22]
     rotation: 0
     state: enabled
+- name: alphaPower
+  id: variable
+  parameters:
+    comment: ''
+    value: '0.1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [431, 357]
+    rotation: 0
+    state: true
 - name: ip_address
   id: variable
   parameters:
@@ -66,6 +78,42 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [1450, 34]
+    rotation: 0
+    state: true
+- name: maxFrameTime
+  id: variable
+  parameters:
+    comment: ''
+    value: (2**(12)/BW)*(5 + 8 + 257*2*8/12)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [681, 289]
+    rotation: 0
+    state: true
+- name: powerDecim
+  id: variable
+  parameters:
+    comment: ''
+    value: '10'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [315, 341]
+    rotation: 0
+    state: true
+- name: powerThreshold
+  id: variable
+  parameters:
+    comment: ''
+    value: 1e-3
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [557, 345]
     rotation: 0
     state: true
 - name: samp_rate
@@ -104,6 +152,26 @@ blocks:
     coordinate: [440, 90]
     rotation: 0
     state: true
+- name: LibreLoRa_PowerDetector_0
+  id: LibreLoRa_PowerDetector
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    decimation: powerDecim
+    maxoutbuf: '0'
+    message: pmt.PMT_NIL
+    minoutbuf: 2*int(maxFrameTime*samp_rate)
+    samp_rate: samp_rate
+    threshold: powerThreshold
+    timeout: maxFrameTime*1.5
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [706, 412]
+    rotation: 0
+    state: enabled
 - name: LoRaRx_0
   id: LoRaRx
   parameters:
@@ -234,6 +302,22 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [927, 1104]
+    rotation: 0
+    state: enabled
+- name: blocks_complex_to_mag_squared_0_1
+  id: blocks_complex_to_mag_squared
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [309, 449]
     rotation: 0
     state: enabled
 - name: blocks_message_debug_0
@@ -459,6 +543,25 @@ blocks:
     coordinate: [1266, 1036]
     rotation: 0
     state: enabled
+- name: iir_filter_xxx_0
+  id: iir_filter_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    fbtaps: (1, -alphaPower)
+    fftaps: (1 - alphaPower)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    oldstyle: 'False'
+    type: ffd
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [509, 441]
+    rotation: 0
+    state: enabled
 - name: import_0
   id: import
   parameters:
@@ -498,6 +601,26 @@ blocks:
     coordinate: [828, 70]
     rotation: 0
     state: true
+- name: rational_resampler_xxx_1
+  id: rational_resampler_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    decim: powerDecim
+    fbw: '0'
+    interp: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    taps: '[1]'
+    type: ccc
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [126, 447]
+    rotation: 0
+    state: enabled
 - name: rtlsdr_source_0
   id: rtlsdr_source
   parameters:
@@ -872,6 +995,12 @@ blocks:
     state: true
 
 connections:
+- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0, '0']
+- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0, '0']
+- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0, '0']
+- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0_0, '0']
+- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0_0_0, '0']
+- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0_0_0_0, '0']
 - [LoRaRx_0, '0', blocks_tcp_server_sink_0, '0']
 - [LoRaRx_0, '1', blocks_null_sink_0, '0']
 - [LoRaRx_0, detectionOut, blocks_message_debug_0, print]
@@ -896,12 +1025,11 @@ connections:
 - [LoRaRx_0_0_0_0_0_0, '1', blocks_null_sink_0_0_0_0_0_0, '0']
 - [LoRaRx_0_0_0_0_0_0, detectionOut, blocks_message_debug_0, print]
 - [LoRaRx_0_0_0_0_0_0, detectionOut, zeromq_pub_msg_sink_0, in]
-- [rtlsdr_source_0, '0', LoRaRx_0, '0']
-- [rtlsdr_source_0, '0', LoRaRx_0_0, '0']
-- [rtlsdr_source_0, '0', LoRaRx_0_0_0, '0']
-- [rtlsdr_source_0, '0', LoRaRx_0_0_0_0, '0']
-- [rtlsdr_source_0, '0', LoRaRx_0_0_0_0_0, '0']
-- [rtlsdr_source_0, '0', LoRaRx_0_0_0_0_0_0, '0']
+- [blocks_complex_to_mag_squared_0_1, '0', iir_filter_xxx_0, '0']
+- [iir_filter_xxx_0, '0', LibreLoRa_PowerDetector_0, '1']
+- [rational_resampler_xxx_1, '0', blocks_complex_to_mag_squared_0_1, '0']
+- [rtlsdr_source_0, '0', LibreLoRa_PowerDetector_0, '0']
+- [rtlsdr_source_0, '0', rational_resampler_xxx_1, '0']
 
 metadata:
   file_format: 1

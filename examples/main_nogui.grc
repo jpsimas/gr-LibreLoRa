@@ -77,7 +77,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [933, 153]
+    coordinate: [1044, 139]
     rotation: 0
     state: true
 - name: samp_rate
@@ -135,7 +135,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [391, 181]
+    coordinate: [312, 175]
     rotation: 0
     state: enabled
 - name: blocks_null_sink_0
@@ -152,7 +152,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [695, 245]
+    coordinate: [616, 239]
     rotation: 0
     state: enabled
 - name: blocks_tcp_server_sink_0
@@ -170,7 +170,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [686, 151]
+    coordinate: [607, 145]
     rotation: 0
     state: enabled
 - name: import_0

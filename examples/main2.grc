@@ -127,7 +127,7 @@ blocks:
     bus_structure: null
     coordinate: [439, 96]
     rotation: 0
-    state: true
+    state: enabled
 - name: powerDecim
   id: variable
   parameters:
@@ -387,9 +387,9 @@ blocks:
 - name: LibreLoRa_chirpSource_0
   id: LibreLoRa_chirpSource
   parameters:
-    SF: '8'
     affinity: ''
     alias: ''
+    chirpRate: ''
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -399,6 +399,23 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [33, 1134]
+    rotation: 0
+    state: disabled
+- name: LibreLoRa_chirpSource_0_0
+  id: LibreLoRa_chirpSource
+  parameters:
+    affinity: ''
+    alias: ''
+    chirpRate: -(2**SF)/(symbolSize*symbolSize)
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    symbolSize: symbolSize*OSF
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1426, 906]
     rotation: 0
     state: disabled
 - name: LibreLoRa_convolution_0
@@ -467,7 +484,7 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    mu: 1e-3
+    mu: 1/OSF
     type: float
     window: chirpWindow
   states:
@@ -515,6 +532,25 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [1560, 1476.0]
+    rotation: 0
+    state: disabled
+- name: LibreLoRa_slidingDFTMax_0_0
+  id: LibreLoRa_slidingDFTMax
+  parameters:
+    DFTLength: int(symbolSize/4)
+    SF: SF
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    symbolSize: symbolSize
+    windowSize: int(symbolSize/4)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2178, 821]
     rotation: 0
     state: disabled
 - name: LibreLoRa_slidingDFT_0
@@ -918,6 +954,24 @@ blocks:
     coordinate: [254, 1087]
     rotation: 0
     state: disabled
+- name: blocks_multiply_xx_0
+  id: blocks_multiply_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1903, 880]
+    rotation: 0
+    state: disabled
 - name: blocks_nlog10_ff_0
   id: blocks_nlog10_ff
   parameters:
@@ -1023,6 +1077,25 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [328, 884.0]
+    rotation: 0
+    state: disabled
+- name: blocks_throttle_0_0
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: samp_rate
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1987, 829]
     rotation: 0
     state: disabled
 - name: blocks_throttle_1
@@ -1165,7 +1238,7 @@ blocks:
     label7: Signal 7
     label8: Signal 8
     label9: Signal 9
-    legend: 'True'
+    legend: 'False'
     marker1: '-1'
     marker10: '-1'
     marker2: '-1'
@@ -1605,7 +1678,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2056, 1668.0]
+    coordinate: [2055, 1668]
     rotation: 0
     state: disabled
 - name: qtgui_time_sink_x_0_0_0_1_0
@@ -2439,6 +2512,7 @@ connections:
 - [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_frequencyTracker_0, '0']
 - [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_slidingDFT_0, '0']
 - [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_streamToHistoryVector_0, '0']
+- [LibreLoRa_ChirpDetector_0, '0', blocks_multiply_xx_0, '0']
 - [LibreLoRa_Correlation_0, '0', qtgui_time_sink_x_0, '0']
 - [LibreLoRa_Correlation_0, '1', qtgui_time_sink_x_0, '1']
 - [LibreLoRa_Correlation_0_0, '0', blocks_complex_to_mag_squared_0_0, '0']
@@ -2457,6 +2531,7 @@ connections:
 - [LibreLoRa_Correlation_0_0_0_1_0, '1', qtgui_time_sink_x_0_0_0_1_0, '1']
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0, '0']
 - [LibreLoRa_chirpSource_0, '0', blocks_multiply_const_vxx_3, '0']
+- [LibreLoRa_chirpSource_0_0, '0', blocks_multiply_xx_0, '1']
 - [LibreLoRa_convolution_0, '0', LibreLoRa_ArgMaxAbs_0, '0']
 - [LibreLoRa_convolution_0, '0', blocks_complex_to_mag_squared_1, '0']
 - [LibreLoRa_frequencyTrackerNMode_0, '0', LibreLoRa_Correlation_0_0_0_1_0, '0']
@@ -2464,6 +2539,7 @@ connections:
 - [LibreLoRa_frequencyTrackerN_0_0_0, '0', LibreLoRa_Correlation_0_0_0_1, '0']
 - [LibreLoRa_frequencyTracker_0, '0', LibreLoRa_Correlation_0_0_0, '0']
 - [LibreLoRa_frequencyTracker_0_0, '0', LibreLoRa_Correlation_0_0_0_0, '0']
+- [LibreLoRa_slidingDFTMax_0_0, '0', LibreLoRa_Correlation_0, '0']
 - [LibreLoRa_slidingDFT_0, '0', LibreLoRa_convolution_0, '0']
 - [LibreLoRa_streamToHistoryVector_0, '0', blocks_multiply_const_vxx_0, '0']
 - [LoRaRx_0, '0', blocks_tcp_server_sink_0, '0']
@@ -2489,9 +2565,11 @@ connections:
 - [blocks_multiply_const_vxx_2, '0', qtgui_time_sink_x_0_0, '1']
 - [blocks_multiply_const_vxx_2_0, '0', qtgui_time_sink_x_0_0_0_0, '1']
 - [blocks_multiply_const_vxx_3, '0', blocks_add_xx_0, '1']
+- [blocks_multiply_xx_0, '0', blocks_throttle_0_0, '0']
 - [blocks_nlog10_ff_0, '0', qtgui_time_sink_x_1, '0']
 - [blocks_nlog10_ff_1, '0', qtgui_vector_sink_f_0, '0']
 - [blocks_throttle_0, '0', rational_resampler_xxx_0, '0']
+- [blocks_throttle_0_0, '0', LibreLoRa_slidingDFTMax_0_0, '0']
 - [blocks_throttle_1, '0', rational_resampler_xxx_0, '0']
 - [fft_vxx_0, '0', LibreLoRa_ArgMaxAbs_0, '0']
 - [fft_vxx_0, '0', LibreLoRa_convolution_0, '0']
