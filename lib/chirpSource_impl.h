@@ -36,7 +36,7 @@ namespace gr {
       size_t index;
       std::vector<gr_complex> upchirp;
      public:
-      chirpSource_impl(size_t SF, size_t symbolSize);
+      chirpSource_impl(float chirpRate, size_t symbolSize);
       ~chirpSource_impl();
 
       // Where all the action really happens

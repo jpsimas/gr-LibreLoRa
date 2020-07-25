@@ -45,7 +45,7 @@ namespace gr {
        * class. LibreLoRa::chirpSource::make is the public interface for
        * creating new instances.
        */
-      static sptr make(size_t SF, size_t symbolSize);
+      static sptr make(float chirpRate, size_t symbolSize);
     };
 
   } // namespace LibreLoRa

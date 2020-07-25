@@ -32,22 +32,22 @@ namespace gr {
   namespace LibreLoRa {
 
     chirpSource::sptr
-    chirpSource::make(size_t SF, size_t symbolSize)
+    chirpSource::make(float chirpRate, size_t symbolSize)
     {
       return gnuradio::get_initial_sptr
-        (new chirpSource_impl(SF, symbolSize));
+        (new chirpSource_impl(chirpRate, symbolSize));
     }
 
 
     /*
      * The private constructor
      */
-    chirpSource_impl::chirpSource_impl(size_t SF, size_t symbolSize)
+    chirpSource_impl::chirpSource_impl(float chirpRate, size_t symbolSize)
       : gr::sync_block("chirpSource",
               gr::io_signature::make(0, 0, 0),
 		       gr::io_signature::make(1, 1, sizeof(gr_complex))),
 	symbolSize(symbolSize),
-	delta(float(1 << SF)*M_PI/(symbolSize*symbolSize)),
+	delta(chirpRate*M_PI),
 	index(0)
     {
       upchirp = std::vector<gr_complex>(symbolSize);
