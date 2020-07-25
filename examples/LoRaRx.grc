@@ -41,7 +41,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [222, 477]
+    coordinate: [367, 853]
     rotation: 0
     state: enabled
 - name: OSF
@@ -65,7 +65,19 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [89, 403]
+    coordinate: [362, 759]
+    rotation: 0
+    state: enabled
+- name: chirpWindowTracker
+  id: variable
+  parameters:
+    comment: ''
+    value: numpy.real(LibreLoRa.getChirpWindow(windowSize, windowSize, SF, symbolSize))
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [57, 403]
     rotation: 0
     state: enabled
 - name: decimation
@@ -186,7 +198,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [101, 485]
+    coordinate: [55, 476]
     rotation: 0
     state: enabled
 - name: BW
@@ -397,7 +409,7 @@ blocks:
     minoutbuf: '0'
     mu: 1/(2*OSF) if OSF < 4 else 2/OSF
     type: float
-    window: chirpWindow
+    window: chirpWindowTracker
   states:
     bus_sink: false
     bus_source: false
@@ -1021,6 +1033,7 @@ connections:
 - [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_streamToHistoryVector_0, '0']
 - [LibreLoRa_ChirpDetector_0, '0', blocks_delay_0, '0']
 - [LibreLoRa_ChirpDetector_0, '0', blocks_multiply_conjugate_cc_0, '0']
+- [LibreLoRa_ChirpDetector_0, detectOut, LibreLoRa_Correlation_0, enable]
 - [LibreLoRa_ChirpDetector_0, detectOut, pad_sink_4, in]
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSyncDemod_0, '1']
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSync_0, '1']
@@ -1058,7 +1071,6 @@ connections:
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_symbolDemodNew_0, setSF]
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_symbolDemod_0, setSF]
 - [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_ChirpDetector_0, reset]
-- [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_Correlation_0, enable]
 - [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_correlationSyncDemod_0,
   reset]
 - [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_correlationSync_0,
