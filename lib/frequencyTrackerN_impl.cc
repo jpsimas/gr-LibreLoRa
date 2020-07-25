@@ -54,10 +54,10 @@ namespace gr {
 		  gr::io_signature::make(1, 1, sizeof(T))),
 	window(window),
 	windowedSig(window.size()),
+	windowedSigNorm(window.size()),
 	mu(mu),
 	OSF(OSF),
-	wStep(std::polar<float>(1, 2*M_PI*1.0/((1 << SF)*OSF*OSF))),
-	w(1.0)
+	wStep(std::polar<float>(1, 2*M_PI*1.0/((1 << SF)*OSF*OSF)))
     {
       this->set_history(window.size());
 #ifndef NDEBUG
@@ -75,13 +75,13 @@ namespace gr {
     }
 
     template <>
-    float frequencyTrackerN_impl<float>::calcFreq(gr_complex w) {
+    float frequencyTrackerN_impl<float>::calcFreq() {
       //return std::arg(w)/(2*M_PI*OSF);
-      return std::arg(w)/(2*M_PI);
+      return -std::arg(w)/(2*M_PI);
     }
 
     template <>
-    gr_complex frequencyTrackerN_impl<gr_complex>::calcFreq(gr_complex w) {
+    gr_complex frequencyTrackerN_impl<gr_complex>::calcFreq() {
       return std::polar<float>(1.0, std::arg(w)*OSF);
       //return w;
     }
@@ -98,29 +98,16 @@ namespace gr {
       // Do <+signal processing+>
 
       for(int i = 0; i < noutput_items; i++) {
-	// w *= wStep; 
-
-	// for(auto j = 0; j < window.size(); j++)
-	//   windowedSig[j] = in[i + j]*window[j];
 	volk_32fc_x2_multiply_32fc(windowedSig.data(), in + i, window.data(), window.size());
-	
+
 	gr_complex prod;
-	//volk_32fc_x2_conjugate_dot_prod_32fc(&prod, windowedSig.data() + OSF, windowedSig.data(), windowedSig.size() - OSF);
-	volk_32fc_x2_conjugate_dot_prod_32fc(&prod, windowedSig.data() + 1, windowedSig.data(), windowedSig.size() - 1);
-	
-	//gr_complex normSq;
-	//volk_32fc_x2_conjugate_dot_prod_32fc(&normSq, windowedSig.data(), windowedSig.data(), windowedSig.size() - 1);
+	volk_32fc_x2_conjugate_dot_prod_32fc(&prod, windowedSig.data(), windowedSig.data() + 1, windowedSig.size() - 1);
 	
 	w = (1 - mu)*w + mu*prod/(std::abs(prod) + 1e-6f);
-	//w = (1 - mu)*w + mu*prod/(normSq + 1e-6f);
-	// for(auto k = 0; k < windowedSig.size() - 1; k++)
-	//w = (1 - mu)*w + mu*(windowedSig[k + 1]/(windowedSig[k] + 1e-6f));
 
-	//w *= wStep*wStep;//correction
-	
-	out[i] = calcFreq(w);
+	out[i] = calcFreq();
       }
-
+      
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }

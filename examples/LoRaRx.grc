@@ -780,7 +780,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [368, 619]
+    coordinate: [367, 620]
     rotation: 0
     state: disabled
 - name: ignoreLowDataRateRequired

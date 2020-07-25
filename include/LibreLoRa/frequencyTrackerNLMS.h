@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_FREQUENCYTACKERAPA_H
-#define INCLUDED_LIBRELORA_FREQUENCYTACKERAPA_H
+#ifndef INCLUDED_LIBRELORA_FREQUENCYTRACKERNLMS_H
+#define INCLUDED_LIBRELORA_FREQUENCYTRACKERNLMS_H
 
 #include <LibreLoRa/api.h>
 #include <gnuradio/sync_block.h>
@@ -33,26 +33,26 @@ namespace gr {
      *
      */
     template<size_t N>
-    class LIBRELORA_API frequencyTackerAPA : virtual public gr::sync_block
+    class LIBRELORA_API frequencyTrackerNLMS : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<frequencyTackerAPA> sptr;
+      typedef boost::shared_ptr<frequencyTrackerNLMS> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of LibreLoRa::frequencyTackerAPA.
+       * \brief Return a shared_ptr to a new instance of LibreLoRa::frequencyTrackerNLMS.
        *
-       * To avoid accidental use of raw pointers, LibreLoRa::frequencyTackerAPA's
+       * To avoid accidental use of raw pointers, LibreLoRa::frequencyTrackerNLMS's
        * constructor is in a private implementation
-       * class. LibreLoRa::frequencyTackerAPA::make is the public interface for
+       * class. LibreLoRa::frequencyTrackerNLMS::make is the public interface for
        * creating new instances.
        */
       static sptr make(float mu, const std::vector<gr_complex>& window);
     };
 
-    typedef frequencyTackerAPA<1> frequencyTacker_single;
-    typedef frequencyTackerAPA<2> frequencyTacker_double;
+    typedef frequencyTrackerNLMS<1> frequencyTacker_single;
+    typedef frequencyTrackerNLMS<2> frequencyTacker_double;
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_FREQUENCYTACKERAPA_H */
+#endif /* INCLUDED_LIBRELORA_FREQUENCYTRACKERNLMS_H */
 

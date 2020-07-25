@@ -23,17 +23,19 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include "frequencyTackerAPA_impl.h"
+#include "frequencyTrackerNLMS_impl.h"
+
+#include <volk/volk.h>
 
 namespace gr {
   namespace LibreLoRa {
 
     template<size_t N>
-    typename frequencyTackerAPA<N>::sptr
-    frequencyTackerAPA<N>::make(float mu, const std::vector<gr_complex>& window)
+    typename frequencyTrackerNLMS<N>::sptr
+    frequencyTrackerNLMS<N>::make(float mu, const std::vector<gr_complex>& window)
     {
       return gnuradio::get_initial_sptr
-        (new frequencyTackerAPA_impl<N>(mu, window));
+        (new frequencyTrackerNLMS_impl<N>(mu, window));
     }
 
 
@@ -41,20 +43,16 @@ namespace gr {
      * The private constructor
      */
     template<size_t N>
-    frequencyTackerAPA_impl<N>::frequencyTackerAPA_impl(float mu, const std::vector<gr_complex>& window)
-      : gr::sync_block("frequencyTackerAPA",
+    frequencyTrackerNLMS_impl<N>::frequencyTrackerNLMS_impl(float mu, const std::vector<gr_complex>& window)
+      : gr::sync_block("frequencyTrackerNLMS",
 		       gr::io_signature::make(1, 1, sizeof(gr_complex)),
 		       gr::io_signature::make(1, 1, sizeof(float))),
 		       // gr::io_signature::make(1, 1, N*sizeof(float))),
-	K(window.size()),
-	//w(Vect::Zero()),
+	w{},
 	mu(mu),
-	window(window),
-	U(N, K)
+	window(window)
     {
-      Pmatr = decltype(Pmatr)::Zero();
-      Pmatr.template block<N - 1, N - 1>(0, 1) = Eigen::Matrix<gr_complex, N - 1, N - 1>::Identity();
-
+      this->set_history(N + 1);
 #ifdef NDEBUG
       std::cout << "frequencyTrackerAPA: constructed." << std::endl;
 #endif
@@ -64,60 +62,45 @@ namespace gr {
      * Our virtual destructor.
      */
     template<size_t N> 
-    frequencyTackerAPA_impl<N>::~frequencyTackerAPA_impl()
+    frequencyTrackerNLMS_impl<N>::~frequencyTrackerNLMS_impl()
     {
-    }
-
-    template<size_t N>
-    void
-    frequencyTackerAPA_impl<N>::forecast (int noutput_items, gr_vector_int &ninput_items_required)
-    {
-      ninput_items_required[0] = noutput_items + 1 + K;
     }
 
     template<size_t N>
     int
-    frequencyTackerAPA_impl<N>::work(int noutput_items,
+    frequencyTrackerNLMS_impl<N>::work(int noutput_items,
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
       const gr_complex *in = (const gr_complex *) input_items[0];
       float *out = (float *) output_items[0];
-      
-      auto w = Pmatr.col(0);
+     
       
       for(int i = 0; i < noutput_items; i++) {
-	VectD d = Eigen::Map<VectD>(const_cast<gr_complex*>(in + i), K);
-	for(size_t j = 0; j < d.rows(); j++)
-	  U.col(j) = Eigen::Map<Vect>(const_cast<gr_complex*>(in + i + 1 + j));
+	gr_complex d = in[i + N];
+	const gr_complex* u = in + i;
 
-	gr_complex y = w.dot(U.col(U.cols()-1));
-	gr_complex err = d(d.rows()-1) - y;
+	gr_complex y;
+	volk_32fc_x2_conjugate_dot_prod_32fc(&y, u, w.data(), N);
 
-	VectD wu = U.colPivHouseholderQr().solve(w);
-	VectD bu = (U.adjoint()*U).colPivHouseholderQr().solve(d);
-  
-	w += mu*U*(bu - wu);
-
-	out[i] = std::arg(w(0))/(2*M_PI);
+	gr_complex normU;
+	volk_32fc_x2_conjugate_dot_prod_32fc(&normU, u, u, N);
 	
-	// Vect roots = Pmatr.eigenvalues();
+	for(auto j = 0; j < N; j++)
+	  w[j] += mu*std::conj(d - y)*u[j]/(normU + 1e-6f);
 
-	// size_t minK = 0;
-	// float minDist = std::numeric_limits<float>::infinity();
-
-	// for(auto k = 0; k < N; k++) {
-	//   float dist = std::abs(std::norm(roots(k)) - 1.0f);
-	//   if(dist < minDist){
-	//     minK = k;
-	//     minDist = dist;
-	//   }
-	// }
-
-	// out[i] = std::arg(roots(minK))/(2*M_PI);
-	
-	// for(auto k = 0; k < N; k++)
-	//   out[N*i + k] = -std::arg(roots(k))/(2*M_PI);
+	// out[i] = -((N == 2) ?
+	// 	   std::arg(w[1] + std::sqrt(w[1]*w[1] + 4.0f*w[0]))/(2*M_PI) :
+	// 	   std::arg(w[0])/(2*M_PI));
+	if(N == 2) {
+	  auto r1 = (w[1] + std::sqrt(w[1]*w[1] + 4.0f*w[0]))/2.0f;
+	  auto r2 = (w[1] - std::sqrt(w[1]*w[1] + 4.0f*w[0]))/2.0f;
+	  if(std::abs(std::abs(r1) - 1.0f) < std::abs(std::abs(r2) - 1.0f))
+	    out[i] = std::arg(r1)/(2*M_PI);
+	  else
+	    out[i] = std::arg(r2)/(2*M_PI);
+	} else
+	  out[i] = std::arg(w[0])/(2*M_PI);
       }
 
       this->consume_each (noutput_items);
@@ -125,8 +108,8 @@ namespace gr {
       return noutput_items;
     }
     
-    template class frequencyTackerAPA<1>;
-    template class frequencyTackerAPA<2>;
+    template class frequencyTrackerNLMS<1>;
+    template class frequencyTrackerNLMS<2>;
   } /* namespace LibreLoRa */
 } /* namespace gr */
 

@@ -56,10 +56,11 @@ list(APPEND LibreLoRa_sources
     frequencyTrackerN_impl.cc
     symbolDemodNew_impl.cc
     PowerDetector_impl.cc
-    frequencyTackerAPA_impl.cc
+    frequencyTrackerNLMS_impl.cc
     frequencyTrackerNMode_impl.cc
     ToneDetector_impl.cc
-    DetectionCount_impl.cc )
+    DetectionCount_impl.cc
+    )
 
 set(LibreLoRa_sources "${LibreLoRa_sources}" PARENT_SCOPE)
 if(NOT LibreLoRa_sources)

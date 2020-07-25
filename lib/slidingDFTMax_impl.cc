@@ -26,48 +26,63 @@
 #include "slidingDFTMax_impl.h"
 
 #include <volk/volk.h>
+#include <stdexcept>
 
 namespace gr {
   namespace LibreLoRa {
 
     slidingDFTMax::sptr
-    slidingDFTMax::make(size_t DFTLength, size_t SF, size_t symbolSize)
+    slidingDFTMax::make(size_t DFTLength, size_t windowSize, size_t SF, size_t symbolSize)
     {
       return gnuradio::get_initial_sptr
-        (new slidingDFTMax_impl(DFTLength, SF, symbolSize));
+        (new slidingDFTMax_impl(DFTLength, windowSize, SF, symbolSize));
     }
 
 
     /*
      * The private constructor
      */
-    slidingDFTMax_impl::slidingDFTMax_impl(size_t DFTLength, size_t SF, size_t symbolSize)
+    slidingDFTMax_impl::slidingDFTMax_impl(size_t DFTLength, size_t windowSize, size_t SF, size_t symbolSize)
       : gr::sync_block("slidingDFTMax",
               gr::io_signature::make(1, 1, sizeof(gr_complex)),
 		       gr::io_signature::make(1, 1, sizeof(float))),
 	length(DFTLength),
+	windowSize(windowSize),
 	beta(float(1 << SF)/(symbolSize*symbolSize)),
-	offset(beta),
-	step(std::polar<float>(1.0, -2*M_PI*beta))
+	offset(beta)//,
+	// step(1.0),
+	// stepStep(std::polar<float>(1.0, -2*M_PI*beta))
     {
+
+      if(windowSize > length)
+	throw std::logic_error("slidingDFT: Error. Invalid window length.");
       
-      set_history(length);
+      set_history(windowSize);
 
       const int alignment_multiple = volk_get_alignment()/sizeof(gr_complex);
       set_alignment(std::max(1,alignment_multiple));
       
       exponents = (gr_complex *)volk_malloc(length*sizeof(gr_complex), volk_get_alignment());
+      
+      exponentsN = (gr_complex *)volk_malloc(length*sizeof(gr_complex), volk_get_alignment());
 
       DFT = (gr_complex *)volk_malloc(length*sizeof(gr_complex), volk_get_alignment());
       float alphai = 1.0;
       for (size_t i = 0; i < length; i++) {
-	exponents[i] = alphai*std::polar<float>(1, (2.0*M_PI/length)*i);
-	alphai *= alpha;
+	// exponents[i] = alphai*std::polar<float>(1, (2.0*M_PI/length)*i);
+	// alphai *= alpha;
+	exponents[i] = alpha*std::polar<float>(1, (2.0*M_PI/length)*i);
 	DFT[i] = 1;
       }
 
-      e0 = 1.0;
-      eN = std::polar<float>(1.0, beta*length*(length + 1)/2.0);
+      for (size_t i = 0; i < length; i++){
+	exponentsN[i] = alphaN*std::polar<float>(1, (2.0*M_PI/length)*i*windowSize);
+      }
+
+      // e0 = 1.0;
+      // eN = std::polar<float>(1.0, -2*M_PI*beta*length*(length - 1)/2.0);
+
+      // std::cout << "step: " << step << std::endl;
     }
 
     /*
@@ -97,21 +112,29 @@ namespace gr {
       // Do <+signal processing+>
       
       for(size_t i = 0; i < noutput_items; i++) {
+	
 	volk_32fc_x2_multiply_32fc(DFT, exponents, DFT, length);
-	
-	const auto delta = - in[i]*alphaN*eN + in[i + length]*e0;
 
-	e0 *= step;
-	eN *= step;
+	// const auto delta = - in[i]*alphaN + in[i + windowSize];
+	const auto delta = - in[i]*exponentsN[0] + in[i + windowSize];
 	
-	for(auto j = 0; j < length; j++)
+	// const auto delta = - in[i]*alphaN*eN + in[i + length]*e0;
+
+	// step *= stepStep;
+	
+	// e0 *= step;
+	// eN *= step;
+	
+	for(auto j = 0; j < length; j++){
+	  // auto delta = - in[i]*exponentsN[i] + in[i + windowSize];
 	  DFT[j] += delta;
+	}
 
 	uint32_t indMax;
 	volk_32fc_index_max_32u(&indMax, DFT, length);
 	
-	indexOut[i] = remainder(indMax/float(length)/* + offset*/ , 1.0);
-	offset += beta;
+	indexOut[i] = std::remainder(indMax/float(length) + offset + 0.5, 1.0);
+	offset = std::remainder(offset + beta, 1.0);
       }
 
       // Tell runtime system how many output items we produced.

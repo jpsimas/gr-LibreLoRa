@@ -57,8 +57,9 @@ install(FILES
     frequencyTrackerN.h
     symbolDemodNew.h
     PowerDetector.h
-    frequencyTackerAPA.h
+    frequencyTrackerNLMS.h
     frequencyTrackerNMode.h
     ToneDetector.h
-    DetectionCount.h DESTINATION include/LibreLoRa
+    DetectionCount.h
+    DESTINATION include/LibreLoRa
 )

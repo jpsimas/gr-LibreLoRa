@@ -32,22 +32,25 @@ namespace gr {
     {
     private:
       // Nothing to declare in this block.
-      size_t length;
+      const size_t length;
+      const size_t windowSize;
       gr_complex* exponents;
+      gr_complex* exponentsN;
       gr_complex* DFT;
 
       static constexpr float alpha = 1 - 1e-6;//for stability
-      const float alphaN = pow(alpha, length);
+      const float alphaN = std::pow(alpha, windowSize);
 
       const float beta;
       
-      const gr_complex step;
-      gr_complex e0;
-      gr_complex eN;
+      // gr_complex step;
+      // const gr_complex stepStep;
+      // gr_complex e0;
+      // gr_complex eN;
 
       float offset;
     public:
-      slidingDFTMax_impl(size_t DFTLength, size_t SF, size_t symbolSize);
+      slidingDFTMax_impl(size_t DFTLength, size_t windowSize, size_t SF, size_t symbolSize);
       ~slidingDFTMax_impl();
 
       // Where all the action really happens

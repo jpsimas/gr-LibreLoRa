@@ -33,13 +33,14 @@ namespace gr {
       // Nothing to declare in this block.
       const std::vector<gr_complex> window;
       std::vector<gr_complex> windowedSig;
+      std::vector<float> windowedSigNorm;
       const float mu;
       gr_complex w;
       const size_t OSF;
 
       const gr_complex wStep;
 
-      inline T calcFreq(gr_complex x);
+      inline T calcFreq();
      public:
       frequencyTrackerN_impl(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window);
       ~frequencyTrackerN_impl();

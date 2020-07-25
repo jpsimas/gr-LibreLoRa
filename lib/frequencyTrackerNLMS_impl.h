@@ -18,40 +18,29 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_FREQUENCYTACKERAPA_IMPL_H
-#define INCLUDED_LIBRELORA_FREQUENCYTACKERAPA_IMPL_H
+#ifndef INCLUDED_LIBRELORA_FREQUENCYTRACKERNLMS_IMPL_H
+#define INCLUDED_LIBRELORA_FREQUENCYTRACKERNLMS_IMPL_H
 
-#include <LibreLoRa/frequencyTackerAPA.h>
+#include <LibreLoRa/frequencyTrackerNLMS.h>
 
-#include <eigen3/Eigen/Dense>
-#include <eigen3/Eigen/Eigenvalues> 
-
-//#include <eigen3/unsupported/Eigen/Polynomials>
+#include <array>
 
 namespace gr {
   namespace LibreLoRa {
 
     template<size_t N>
-    class frequencyTackerAPA_impl : public frequencyTackerAPA<N>
+    class frequencyTrackerNLMS_impl : public frequencyTrackerNLMS<N>
     {
      private:
-      // Nothing to declare in this block.
-      using Vect = Eigen::Matrix<gr_complex, N, 1>;
-      using VectD = Eigen::Matrix<gr_complex, Eigen::Dynamic, 1>;//K
-      const size_t K;
 
-      //Eigen::PolynomialSolver<double, Eigen::Matrix<gr_complex, N, 1>> solver;
-
-      Eigen::Matrix<gr_complex, N, N> Pmatr;
-      //Vect w;
+      std::array<gr_complex, N> w;
       float mu;
       
       const std::vector<gr_complex> window;
       
-      Eigen::Matrix<gr_complex, N, Eigen::Dynamic> U;
      public:
-      frequencyTackerAPA_impl(float mu, const std::vector<gr_complex>& window);
-      ~frequencyTackerAPA_impl();
+      frequencyTrackerNLMS_impl(float mu, const std::vector<gr_complex>& window);
+      ~frequencyTrackerNLMS_impl();
 
       // Where all the action really happens
       int work(
@@ -60,11 +49,10 @@ namespace gr {
               gr_vector_void_star &output_items
       );
 
-      void forecast (int noutput_items, gr_vector_int &ninput_items_required);
     };
 
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_FREQUENCYTACKERAPA_IMPL_H */
+#endif /* INCLUDED_LIBRELORA_FREQUENCYTRACKERNLMS_IMPL_H */
 

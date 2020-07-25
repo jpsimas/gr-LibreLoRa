@@ -49,9 +49,10 @@ install(FILES
     LibreLoRa_DCFT.block.yml
     LibreLoRa_MatrixSink.block.yml
     LibreLoRa_PowerDetector.block.yml
-    LibreLoRa_frequencyTackerAPA.block.yml
+    LibreLoRa_frequencyTrackerNLMS.block.yml
     LibreLoRa_frequencyTrackerNMode.block.yml
     LibreLoRa_ToneDetector.block.yml
     LibreLoRa_ChirpDetector.block.yml
-    LibreLoRa_DetectionCount.block.yml DESTINATION share/gnuradio/grc/blocks
+    LibreLoRa_DetectionCount.block.yml
+    DESTINATION share/gnuradio/grc/blocks
 )
