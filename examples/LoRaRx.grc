@@ -36,19 +36,19 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: int(symbolSize)
+    value: int(symbolSize*decimation)
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [367, 853]
+    coordinate: [203, 722]
     rotation: 0
     state: enabled
 - name: OSF
   id: variable
   parameters:
     comment: ''
-    value: round(samp_rate/BW)
+    value: round(samp_rate/(BW))
   states:
     bus_sink: false
     bus_source: false
@@ -60,12 +60,12 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: numpy.real(LibreLoRa.getChirpWindow(DFTSize, windowSize, SF, symbolSize))
+    value: numpy.real(LibreLoRa.getChirpWindow(DFTSize, windowSize, SF, symbolSize*decimation))
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [362, 759]
+    coordinate: [362, 784]
     rotation: 0
     state: enabled
 - name: chirpWindowTracker
@@ -77,33 +77,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [57, 403]
-    rotation: 0
-    state: enabled
-- name: decimation
-  id: variable
-  parameters:
-    comment: ''
-    value: 1 if (OSF*2**(SF + 1) <= 2**13) else int(OSF*2**(SF + 1 - 13))
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [46, 109]
+    coordinate: [56, 403]
     rotation: 0
     state: disabled
-- name: decimation
-  id: variable
-  parameters:
-    comment: ''
-    value: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [49, 181]
-    rotation: 0
-    state: enabled
 - name: lowDataRateRequired
   id: variable
   parameters:
@@ -193,12 +169,12 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: int(symbolSize/4)
+    value: int(symbolSize*decimation/4)
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [55, 476]
+    coordinate: [207, 795]
     rotation: 0
     state: enabled
 - name: BW
@@ -231,7 +207,23 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [608, 648.0]
+    coordinate: [613, 800]
+    rotation: 0
+    state: enabled
+- name: LibreLoRa_BinSearchFFT_0
+  id: LibreLoRa_BinSearchFFT
+  parameters:
+    DFTSize: DFTSize
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [677, 604]
     rotation: 0
     state: disabled
 - name: LibreLoRa_CRC16_0
@@ -248,14 +240,14 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2480, 544.0]
+    coordinate: [2104, 467]
     rotation: 0
     state: true
 - name: LibreLoRa_ChirpDetector_0
   id: LibreLoRa_ChirpDetector
   parameters:
     BW: BW
-    DFTSize: symbolSize
+    DFTSize: symbolSize*decimation
     SF: SF
     affinity: ''
     alias: ''
@@ -269,7 +261,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [171, 230]
+    coordinate: [168, 231]
     rotation: 0
     state: enabled
 - name: LibreLoRa_Correlation_0
@@ -286,7 +278,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [640, 213]
+    coordinate: [586, 212]
     rotation: 0
     state: enabled
 - name: LibreLoRa_Correlation_0_0
@@ -303,7 +295,24 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [656, 328.0]
+    coordinate: [580, 359]
+    rotation: 0
+    state: disabled
+- name: LibreLoRa_FFTMax_0
+  id: LibreLoRa_FFTMax
+  parameters:
+    DFTSize: DFTSize
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    window: chirpWindow
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [632, 471]
     rotation: 0
     state: disabled
 - name: LibreLoRa_NibblesToBytes_0
@@ -318,9 +327,74 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2096, 376.0]
+    coordinate: [1905, 305]
     rotation: 0
     state: enabled
+- name: LibreLoRa_Remainder_0
+  id: LibreLoRa_Remainder
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    divisor: '1.0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1312, 1602]
+    rotation: 0
+    state: disabled
+- name: LibreLoRa_Remainder_1
+  id: LibreLoRa_Remainder
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    divisor: '1.0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1491, 1098]
+    rotation: 0
+    state: disabled
+- name: LibreLoRa_SelectMax_0
+  id: LibreLoRa_SelectMax
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nInputs: '2'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2005, 1276]
+    rotation: 0
+    state: disabled
+- name: LibreLoRa_chirpSource_0_0_0
+  id: LibreLoRa_chirpSource
+  parameters:
+    affinity: ''
+    alias: ''
+    chirpRate: (2**SF)/(symbolSize*symbolSize)
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    symbolSize: symbolSize*OSF
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [247, 1136]
+    rotation: 0
+    state: disabled
 - name: LibreLoRa_correlationSyncDemod_0
   id: LibreLoRa_correlationSyncDemod
   parameters:
@@ -339,7 +413,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [944, 312.0]
+    coordinate: [835, 404]
     rotation: 0
     state: disabled
 - name: LibreLoRa_correlationSync_0
@@ -349,8 +423,8 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    corrMin: '0.9'
-    corrStop: '0.7'
+    corrMin: '0.8'
+    corrStop: '0.6'
     maxoutbuf: '0'
     minoutbuf: '0'
     preambleSize: preambleNormalized.size
@@ -361,7 +435,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [914, 171]
+    coordinate: [813, 219]
     rotation: 0
     state: enabled
 - name: LibreLoRa_decode_0
@@ -377,7 +451,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1760, 264.0]
+    coordinate: [1582, 343]
     rotation: 0
     state: enabled
 - name: LibreLoRa_deinterleave_0
@@ -394,7 +468,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1552, 248.0]
+    coordinate: [1420, 310]
     rotation: 0
     state: enabled
 - name: LibreLoRa_frequencyTrackerN_0
@@ -414,7 +488,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [373, 327]
+    coordinate: [333, 330]
     rotation: 0
     state: disabled
 - name: LibreLoRa_frequencyTracker_0
@@ -434,9 +508,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [366, 217]
+    coordinate: [367, 211]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_grayEncode_0
   id: LibreLoRa_grayEncode
   parameters:
@@ -450,7 +524,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1360, 264.0]
+    coordinate: [1267, 293]
     rotation: 0
     state: enabled
 - name: LibreLoRa_randomize_0
@@ -465,7 +539,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2352, 360.0]
+    coordinate: [2072, 306]
     rotation: 0
     state: enabled
 - name: LibreLoRa_receiverController_0
@@ -482,15 +556,50 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1840, 384.0]
+    coordinate: [1716, 305]
     rotation: 0
     state: enabled
+- name: LibreLoRa_slidingDFTMax_1
+  id: LibreLoRa_slidingDFTMax
+  parameters:
+    DFTLength: DFTSize
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    windowSize: windowSize
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [740, 1222]
+    rotation: 0
+    state: disabled
+- name: LibreLoRa_slidingDFTMax_1_0
+  id: LibreLoRa_slidingDFTMax
+  parameters:
+    DFTLength: DFTSize
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    windowSize: windowSize
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [736, 1100]
+    rotation: 0
+    state: disabled
 - name: LibreLoRa_streamToHistoryVector_0
   id: LibreLoRa_streamToHistoryVector
   parameters:
     affinity: ''
     alias: ''
     comment: ''
+    decimation: decimation
     maxoutbuf: '0'
     minoutbuf: '0'
     nVect: DFTSize
@@ -501,11 +610,10 @@ blocks:
     bus_structure: null
     coordinate: [384, 496.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: LibreLoRa_symbolDemodNew_0
   id: LibreLoRa_symbolDemodNew
   parameters:
-    OSF: OSF
     SF: SF
     affinity: ''
     alias: ''
@@ -517,9 +625,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1184, 320.0]
+    coordinate: [1078, 435]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: LibreLoRa_symbolDemod_0
   id: LibreLoRa_symbolDemod
   parameters:
@@ -537,9 +645,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1136, 184]
+    coordinate: [1072, 260]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: SF
   id: parameter
   parameters:
@@ -554,7 +662,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [408, 4.0]
+    coordinate: [408, 5]
     rotation: 0
     state: true
 - name: analog_const_source_x_0
@@ -573,6 +681,94 @@ blocks:
     bus_structure: null
     coordinate: [944, 624.0]
     rotation: 0
+    state: enabled
+- name: analog_const_source_x_0_2_0_0
+  id: analog_const_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1097, 1155]
+    rotation: 0
+    state: disabled
+- name: analog_const_source_x_0_2_0_0_0
+  id: analog_const_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1113, 1426]
+    rotation: 0
+    state: disabled
+- name: blocks_add_const_vxx_0_0
+  id: blocks_add_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: -int((int(symbolSize/4) -1)/2)*(2**SF)/(symbolSize*symbolSize)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [826, 1384]
+    rotation: 0
+    state: disabled
+- name: blocks_add_xx_2
+  id: blocks_add_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [993, 1101]
+    rotation: 0
+    state: disabled
+- name: blocks_add_xx_2_0
+  id: blocks_add_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [997, 1222]
+    rotation: 0
     state: disabled
 - name: blocks_complex_to_arg_0
   id: blocks_complex_to_arg
@@ -589,6 +785,38 @@ blocks:
     bus_structure: null
     coordinate: [1445, 658]
     rotation: 0
+    state: enabled
+- name: blocks_complex_to_arg_0_2_0_0
+  id: blocks_complex_to_arg
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1291, 1237]
+    rotation: 0
+    state: disabled
+- name: blocks_complex_to_arg_0_2_0_0_0
+  id: blocks_complex_to_arg
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1307, 1508]
+    rotation: 0
     state: disabled
 - name: blocks_complex_to_arg_2
   id: blocks_complex_to_arg
@@ -604,6 +832,53 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [119, 678]
+    rotation: 0
+    state: disabled
+- name: blocks_complex_to_mag_squared_2
+  id: blocks_complex_to_mag_squared
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1566, 1316]
+    rotation: 0
+    state: disabled
+- name: blocks_complex_to_mag_squared_3
+  id: blocks_complex_to_mag_squared
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1572, 1273]
+    rotation: 0
+    state: disabled
+- name: blocks_conjugate_cc_0
+  id: blocks_conjugate_cc
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [432, 1134]
     rotation: 0
     state: disabled
 - name: blocks_delay_0
@@ -639,9 +914,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [816, 624.0]
+    coordinate: [820, 620]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: blocks_magphase_to_complex_0
   id: blocks_magphase_to_complex
   parameters:
@@ -656,6 +931,38 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [1181, 658]
+    rotation: 0
+    state: enabled
+- name: blocks_magphase_to_complex_0_2_0_0
+  id: blocks_magphase_to_complex
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1287, 1156]
+    rotation: 0
+    state: disabled
+- name: blocks_magphase_to_complex_0_2_0_0_0
+  id: blocks_magphase_to_complex
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1303, 1427]
     rotation: 0
     state: disabled
 - name: blocks_multiply_conjugate_cc_0
@@ -672,6 +979,24 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [105, 762]
+    rotation: 0
+    state: disabled
+- name: blocks_multiply_const_vxx_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: chirpWindow
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: DFTSize
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [480, 616]
     rotation: 0
     state: disabled
 - name: blocks_multiply_const_vxx_1
@@ -691,8 +1016,26 @@ blocks:
     bus_structure: null
     coordinate: [976, 688.0]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: blocks_multiply_const_vxx_1_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: decimation/(2*numpy.pi)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1582, 681]
+    rotation: 0
+    state: enabled
+- name: blocks_multiply_const_vxx_1_0_3_0_0
   id: blocks_multiply_const_vxx
   parameters:
     affinity: ''
@@ -707,7 +1050,79 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1582, 681]
+    coordinate: [1293, 1284]
+    rotation: 0
+    state: disabled
+- name: blocks_multiply_const_vxx_1_0_3_0_0_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 1/(2*numpy.pi)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1309, 1555]
+    rotation: 0
+    state: disabled
+- name: blocks_multiply_const_vxx_1_3_0_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 2*numpy.pi
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1271, 1097]
+    rotation: 0
+    state: disabled
+- name: blocks_multiply_const_vxx_1_3_0_0_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: 2*numpy.pi
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1287, 1368]
+    rotation: 0
+    state: disabled
+- name: blocks_multiply_const_vxx_3_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: '-1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [834, 1334]
     rotation: 0
     state: disabled
 - name: blocks_multiply_const_vxx_4
@@ -728,23 +1143,115 @@ blocks:
     coordinate: [114, 634]
     rotation: 0
     state: disabled
-- name: blocks_null_sink_2
-  id: blocks_null_sink
+- name: blocks_multiply_xx_0_0
+  id: blocks_multiply_xx
   parameters:
     affinity: ''
     alias: ''
-    bus_structure_sink: '[[0,],]'
     comment: ''
-    num_inputs: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
     type: complex
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [807, 701]
+    coordinate: [625, 1097]
     rotation: 0
     state: disabled
+- name: blocks_multiply_xx_0_0_0
+  id: blocks_multiply_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_inputs: '2'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [620, 1222]
+    rotation: 0
+    state: disabled
+- name: blocks_streams_to_vector_0
+  id: blocks_streams_to_vector
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_streams: '2'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1746, 1205]
+    rotation: 0
+    state: disabled
+- name: blocks_streams_to_vector_1
+  id: blocks_streams_to_vector
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_streams: '2'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1742, 1271]
+    rotation: 0
+    state: disabled
+- name: blocks_vector_source_x_0_0_0
+  id: blocks_vector_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    repeat: 'True'
+    tags: '[]'
+    type: float
+    vector: LibreLoRa.getSymbol(0, SF + int(2*numpy.log2(OSF)), OSF*symbolSize)
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [809, 1438]
+    rotation: 0
+    state: disabled
+- name: decimation
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: ''
+    short_id: ''
+    type: ''
+    value: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [37, 120]
+    rotation: 0
+    state: true
 - name: detectorThreshold
   id: parameter
   parameters:
@@ -780,9 +1287,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [367, 620]
+    coordinate: [367, 670]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: ignoreLowDataRateRequired
   id: parameter
   parameters:
@@ -858,7 +1365,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2720, 360.0]
+    coordinate: [2288, 318]
     rotation: 0
     state: true
 - name: pad_sink_1
@@ -876,7 +1383,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2688, 568.0]
+    coordinate: [2297, 495]
     rotation: 0
     state: true
 - name: pad_sink_2
@@ -894,7 +1401,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2224, 472.0]
+    coordinate: [1935, 378]
     rotation: 0
     state: true
 - name: pad_sink_2_0
@@ -912,7 +1419,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2248, 540.0]
+    coordinate: [1909, 472]
     rotation: 0
     state: true
 - name: pad_sink_3
@@ -930,7 +1437,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2122, 518]
+    coordinate: [1920, 428]
     rotation: 0
     state: true
 - name: pad_sink_4
@@ -950,7 +1457,7 @@ blocks:
     bus_structure: null
     coordinate: [391, 439]
     rotation: 0
-    state: true
+    state: enabled
 - name: pad_source_0
   id: pad_source
   parameters:
@@ -968,7 +1475,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [32, 248.0]
+    coordinate: [34, 255]
     rotation: 0
     state: true
 - name: samp_rate
@@ -1026,14 +1533,18 @@ blocks:
 
 connections:
 - [LibreLoRa_ArgMaxAbs_0, '0', blocks_int_to_float_0, '0']
-- [LibreLoRa_ArgMaxAbs_0, '1', blocks_null_sink_2, '0']
+- [LibreLoRa_BinSearchFFT_0, '0', blocks_int_to_float_0, '0']
 - [LibreLoRa_CRC16_0, '0', pad_sink_1, '0']
 - [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_frequencyTrackerN_0, '0']
 - [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_frequencyTracker_0, '0']
 - [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_streamToHistoryVector_0, '0']
 - [LibreLoRa_ChirpDetector_0, '0', blocks_delay_0, '0']
 - [LibreLoRa_ChirpDetector_0, '0', blocks_multiply_conjugate_cc_0, '0']
+- [LibreLoRa_ChirpDetector_0, '0', blocks_multiply_xx_0_0, '0']
+- [LibreLoRa_ChirpDetector_0, '0', blocks_multiply_xx_0_0_0, '0']
 - [LibreLoRa_ChirpDetector_0, detectOut, LibreLoRa_Correlation_0, enable]
+- [LibreLoRa_ChirpDetector_0, detectOut, LibreLoRa_FFTMax_0, enable]
+- [LibreLoRa_ChirpDetector_0, detectOut, LibreLoRa_correlationSync_0, reset]
 - [LibreLoRa_ChirpDetector_0, detectOut, pad_sink_4, in]
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSyncDemod_0, '1']
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSync_0, '1']
@@ -1041,7 +1552,13 @@ connections:
 - [LibreLoRa_Correlation_0, '1', LibreLoRa_correlationSync_0, '0']
 - [LibreLoRa_Correlation_0_0, '0', LibreLoRa_correlationSync_0, '1']
 - [LibreLoRa_Correlation_0_0, '1', LibreLoRa_correlationSync_0, '0']
+- [LibreLoRa_FFTMax_0, '0', blocks_int_to_float_0, '0']
 - [LibreLoRa_NibblesToBytes_0, '0', LibreLoRa_randomize_0, '0']
+- [LibreLoRa_Remainder_0, '0', blocks_streams_to_vector_0, '1']
+- [LibreLoRa_Remainder_1, '0', blocks_streams_to_vector_0, '0']
+- [LibreLoRa_SelectMax_0, '0', LibreLoRa_Correlation_0, '0']
+- [LibreLoRa_chirpSource_0_0_0, '0', blocks_conjugate_cc_0, '0']
+- [LibreLoRa_chirpSource_0_0_0, '0', blocks_multiply_xx_0_0_0, '1']
 - [LibreLoRa_correlationSyncDemod_0, '0', LibreLoRa_grayEncode_0, '0']
 - [LibreLoRa_correlationSyncDemod_0, sync, LibreLoRa_receiverController_0, sync]
 - [LibreLoRa_correlationSync_0, '0', LibreLoRa_symbolDemodNew_0, '0']
@@ -1071,6 +1588,7 @@ connections:
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_symbolDemodNew_0, setSF]
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_symbolDemod_0, setSF]
 - [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_ChirpDetector_0, reset]
+- [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_FFTMax_0, reset]
 - [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_correlationSyncDemod_0,
   reset]
 - [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_correlationSync_0,
@@ -1080,19 +1598,53 @@ connections:
   setNOutputItemsToProduce]
 - [LibreLoRa_receiverController_0, synchronizerSetN, LibreLoRa_correlationSync_0,
   setNOutputItemsToProduce]
+- [LibreLoRa_slidingDFTMax_1, '0', blocks_add_xx_2_0, '0']
+- [LibreLoRa_slidingDFTMax_1, '1', blocks_complex_to_mag_squared_2, '0']
+- [LibreLoRa_slidingDFTMax_1_0, '0', blocks_add_xx_2, '0']
+- [LibreLoRa_slidingDFTMax_1_0, '1', blocks_complex_to_mag_squared_3, '0']
+- [LibreLoRa_streamToHistoryVector_0, '0', LibreLoRa_FFTMax_0, '0']
+- [LibreLoRa_streamToHistoryVector_0, '0', blocks_multiply_const_vxx_0, '0']
 - [LibreLoRa_streamToHistoryVector_0, '0', fft_vxx_0, '0']
 - [LibreLoRa_symbolDemodNew_0, '0', LibreLoRa_grayEncode_0, '0']
 - [LibreLoRa_symbolDemod_0, '0', LibreLoRa_grayEncode_0, '0']
 - [analog_const_source_x_0, '0', blocks_magphase_to_complex_0, '0']
+- [analog_const_source_x_0_2_0_0, '0', blocks_magphase_to_complex_0_2_0_0, '0']
+- [analog_const_source_x_0_2_0_0_0, '0', blocks_magphase_to_complex_0_2_0_0_0, '0']
+- [blocks_add_const_vxx_0_0, '0', blocks_add_xx_2, '1']
+- [blocks_add_const_vxx_0_0, '0', blocks_multiply_const_vxx_3_0, '0']
+- [blocks_add_xx_2, '0', LibreLoRa_Remainder_1, '0']
+- [blocks_add_xx_2, '0', blocks_multiply_const_vxx_1_3_0_0, '0']
+- [blocks_add_xx_2_0, '0', LibreLoRa_Remainder_0, '0']
+- [blocks_add_xx_2_0, '0', blocks_multiply_const_vxx_1_3_0_0_0, '0']
 - [blocks_complex_to_arg_0, '0', blocks_multiply_const_vxx_1_0, '0']
+- [blocks_complex_to_arg_0_2_0_0, '0', blocks_multiply_const_vxx_1_0_3_0_0, '0']
+- [blocks_complex_to_arg_0_2_0_0_0, '0', blocks_multiply_const_vxx_1_0_3_0_0_0, '0']
 - [blocks_complex_to_arg_2, '0', blocks_multiply_const_vxx_4, '0']
+- [blocks_complex_to_mag_squared_2, '0', blocks_streams_to_vector_1, '1']
+- [blocks_complex_to_mag_squared_3, '0', blocks_streams_to_vector_1, '0']
+- [blocks_conjugate_cc_0, '0', blocks_multiply_xx_0_0, '1']
 - [blocks_delay_0, '0', blocks_multiply_conjugate_cc_0, '1']
 - [blocks_int_to_float_0, '0', blocks_multiply_const_vxx_1, '0']
 - [blocks_magphase_to_complex_0, '0', blocks_complex_to_arg_0, '0']
+- [blocks_magphase_to_complex_0_2_0_0, '0', blocks_complex_to_arg_0_2_0_0, '0']
+- [blocks_magphase_to_complex_0_2_0_0_0, '0', blocks_complex_to_arg_0_2_0_0_0, '0']
 - [blocks_multiply_conjugate_cc_0, '0', single_pole_iir_filter_xx_0, '0']
+- [blocks_multiply_const_vxx_0, '0', LibreLoRa_BinSearchFFT_0, '0']
+- [blocks_multiply_const_vxx_0, '0', LibreLoRa_FFTMax_0, '0']
 - [blocks_multiply_const_vxx_1, '0', blocks_magphase_to_complex_0, '1']
 - [blocks_multiply_const_vxx_1_0, '0', LibreLoRa_Correlation_0, '0']
+- [blocks_multiply_const_vxx_1_0_3_0_0, '0', blocks_streams_to_vector_0, '0']
+- [blocks_multiply_const_vxx_1_0_3_0_0_0, '0', blocks_streams_to_vector_0, '1']
+- [blocks_multiply_const_vxx_1_3_0_0, '0', blocks_magphase_to_complex_0_2_0_0, '1']
+- [blocks_multiply_const_vxx_1_3_0_0_0, '0', blocks_magphase_to_complex_0_2_0_0_0,
+  '1']
+- [blocks_multiply_const_vxx_3_0, '0', blocks_add_xx_2_0, '1']
 - [blocks_multiply_const_vxx_4, '0', LibreLoRa_Correlation_0, '0']
+- [blocks_multiply_xx_0_0, '0', LibreLoRa_slidingDFTMax_1_0, '0']
+- [blocks_multiply_xx_0_0_0, '0', LibreLoRa_slidingDFTMax_1, '0']
+- [blocks_streams_to_vector_0, '0', LibreLoRa_SelectMax_0, '0']
+- [blocks_streams_to_vector_1, '0', LibreLoRa_SelectMax_0, '1']
+- [blocks_vector_source_x_0_0_0, '0', blocks_add_const_vxx_0_0, '0']
 - [fft_vxx_0, '0', LibreLoRa_ArgMaxAbs_0, '0']
 - [pad_source_0, '0', LibreLoRa_ChirpDetector_0, '0']
 - [single_pole_iir_filter_xx_0, '0', blocks_complex_to_arg_2, '0']
