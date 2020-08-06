@@ -66,7 +66,6 @@ namespace gr {
 	syncWordNum1((syncWordNumber >> 4) << 3),
 	syncWordNum2((syncWordNumber & 0xf) << 3),
 	syncd(false),
-	// currState(initial),
 	fixedMode(true),
 	nOutputItemsToProduce(0),
 	deSyncAfterDone(false),
@@ -79,6 +78,9 @@ namespace gr {
       
       syncPort = pmt::string_to_symbol("sync");
       this->message_port_register_out(syncPort);
+
+      samplesToProducePort = pmt::string_to_symbol("samplesToProduce");
+      this->message_port_register_out(samplesToProducePort);
       
       this->message_port_register_in(pmt::mp("setNOutputItemsToProduce"));
       this->set_msg_handler(pmt::mp("setNOutputItemsToProduce"),
@@ -86,7 +88,12 @@ namespace gr {
 #ifndef NDEBUG
 			std::cout << "correlationSync: setting n to " << int(pmt::to_long(msg)) << std::endl;
 #endif
-			setNOutputItemsToProduce(int(pmt::to_long(msg)));
+
+			auto nItems = pmt::to_long(msg);
+			
+			this->message_port_pub(samplesToProducePort, pmt::from_long(this->symbolSize*nItems));
+			
+			setNOutputItemsToProduce(int(nItems));
 		      });
       this->message_port_register_in(pmt::mp("reset"));
       this->set_msg_handler(pmt::mp("reset"),
@@ -118,7 +125,7 @@ namespace gr {
     void
     correlationSync_impl<T>::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
-      const size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items))? nOutputItemsToProduce : noutput_items);
+      const size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items) && (nOutputItemsToProduce != 0))? nOutputItemsToProduce : noutput_items);
       // ninput_items_required[0] = (syncd? (preambleConsumed? (symbolSize*n) : std::min((size_t(1 << 14) - 1), preambleSamplesToConsume)) : 2*symbolSize);
       ninput_items_required[0] = (syncd? (preambleConsumed? (symbolSize*n) : preambleSize) : 2*symbolSize);
       // ninput_items_required[0] = fixed_rate_noutput_to_ninput(noutput_items);
@@ -177,7 +184,7 @@ namespace gr {
 	x = 0;
       
       for(size_t j = 0; j < 2*symbolSize; j++){
-	int16_t decision = int32_t(std::round(float(symbolSize)*(syncWord[j] - syncWordExpected[j] + 2.0f)))%int32_t((1 << SF));
+	int16_t decision = (int32_t(std::round(float(symbolSize)*(syncWord[j] - syncWordExpected[j])))%int32_t((1 << SF)) + int32_t((1 << SF)))%int32_t((1 << SF));
 	detectionCount.at(decision)++;
       }
       
@@ -188,6 +195,10 @@ namespace gr {
 	  maxK = k;
 	  maxCount = detectionCount[k];
 	}
+
+      //correction to compensate for non-integer preamble size
+      if(symbolSize < (1 << SF))
+	maxK++;
       
       maxK = int16_t(maxK + (1 << (SF - 1)))%int16_t((1 << SF)) - int16_t((1 << (SF - 1)));
       
@@ -221,7 +232,8 @@ namespace gr {
 	  std::cout << "correlationSync: estimated offset: " << offset << std::endl;
 #endif	
     }
-    
+
+
     template<typename T>
     int
     correlationSync_impl<T>::general_work (int noutput_items,
@@ -248,7 +260,6 @@ namespace gr {
     	size_t maxPos = 0;
 
     	for(size_t i = 0; i < 2*symbolSize; i++) {
-    	// for(size_t i = 0; i < ninput_items[0]/*(noutput_items + 1)*symbolSize*/; i++) {
     	  if(foundFirstPt) {
     	    if(norm(corr[i]) <= corrStop) {
 	      corrMax = conj<T>(corrMax)/std::abs(corrMax);
@@ -339,14 +350,7 @@ namespace gr {
     
     template<typename T>    
     void correlationSync_impl<T>::reset() {
-      // currState = initial;
       syncd = false;
-      // if(syncd) {
-      // 	if(nOutputItemsToProduce == 0)
-      // 	  syncd = false;
-      // 	else
-      // 	  deSyncAfterDone = true;
-      // }
     }
 
     template<>
