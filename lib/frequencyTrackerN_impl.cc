@@ -54,12 +54,19 @@ namespace gr {
 		  gr::io_signature::make(1, 1, sizeof(T))),
 	window(window),
 	windowedSig(window.size()),
-	windowedSigNorm(window.size()),
+	// windowedSigNorm(window.size()),
+	exponents(window.size()),
+	exponentsTimesI(window.size()),
 	mu(mu),
 	OSF(OSF),
-	wStep(std::polar<float>(1, 2*M_PI*1.0/((1 << SF)*OSF*OSF)))
+	wStep(std::polar<float>(1, 2*M_PI*1.0/((1 << SF)*OSF*OSF))),
+	w(0.1)
     {
       this->set_history(window.size());
+      for(auto i = 0; i < window.size(); i++) {
+	exponents[i] = 1.0;
+	exponentsTimesI[i] = float(i);
+      }
 #ifndef NDEBUG
       std::cout << "frequencyTrackerN: constructed. window size:" << window.size() << std::endl;
       
@@ -98,14 +105,33 @@ namespace gr {
       // Do <+signal processing+>
 
       for(int i = 0; i < noutput_items; i++) {
+	
 	volk_32fc_x2_multiply_32fc(windowedSig.data(), in + i, window.data(), window.size());
 
 	gr_complex prod;
-	volk_32fc_x2_conjugate_dot_prod_32fc(&prod, windowedSig.data(), windowedSig.data() + 1, windowedSig.size() - 1);
-	
-	w = (1 - mu)*w + mu*prod/(std::abs(prod) + 1e-6f);
+	// volk_32fc_x2_conjugate_dot_prod_32fc(&prod, windowedSig.data(), windowedSig.data() + 1, windowedSig.size() - 1);
+	volk_32fc_x2_conjugate_dot_prod_32fc(&prod, windowedSig.data(), exponents.data(), window.size());
 
-	out[i] = calcFreq();
+	gr_complex prodI;
+	volk_32fc_x2_conjugate_dot_prod_32fc(&prodI, windowedSig.data(), exponentsTimesI.data(), window.size());	
+	
+	// w = (1 - mu)*w + mu*prod/(std::abs(prod) + 1e-6f);
+
+	// out[i] = calcFreq();
+	
+	w = w - mu*gr_complex(0, 1)*w*std::conj(prod)*prodI;
+
+	w = std::remainder(std::real(w), 2*M_PI);
+	
+	exponents[0] = std::polar<float>(1.0, -std::real(w));
+	for(auto j = 1; j < window.size(); j++)
+	  exponents[j] = exponents[j - 1]*exponents[0];
+	
+	for(auto j = 0; j < window.size(); j++)
+	  exponentsTimesI[j] = float(j)*exponents[j];
+	
+	out[i] = std::real(w)/(2*M_PI);
+	
       }
       
       // Tell runtime system how many output items we produced.

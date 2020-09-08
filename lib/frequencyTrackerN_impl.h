@@ -33,7 +33,10 @@ namespace gr {
       // Nothing to declare in this block.
       const std::vector<gr_complex> window;
       std::vector<gr_complex> windowedSig;
-      std::vector<float> windowedSigNorm;
+      // std::vector<float> windowedSigNorm;
+      std::vector<gr_complex> exponents;
+      std::vector<gr_complex> exponentsTimesI;
+      
       const float mu;
       gr_complex w;
       const size_t OSF;
