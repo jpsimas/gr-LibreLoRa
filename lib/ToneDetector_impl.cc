@@ -65,15 +65,15 @@ namespace gr {
       
       for(auto i = 0; i < noutput_items; i++) {
 	const float* vect = dftIn + i*DFTSize;
-	float meanPower;
-	volk_32f_accumulator_s32f(&meanPower, vect, DFTSize);
+	float totalPower;
+	volk_32f_accumulator_s32f(&totalPower, vect, DFTSize);
 	uint32_t maxInd;
 	volk_32f_index_max_32u(&maxInd, vect, DFTSize);
 	
 	add_item_tag(0, nitems_written(0) + i, tagKey, pmt::from_float(fmod(float(maxInd)/DFTSize + 0.5f, 1.0f) - 0.5f));
 	
-	// out[i] = vect[maxInd]/meanPower;
-	out[i] = (DFTSize - 1)*vect[maxInd]/(meanPower - vect[maxInd]);
+	// out[i] = vect[maxInd]/totalPower;
+	out[i] = (DFTSize - 1)*vect[maxInd]/(totalPower - vect[maxInd]);
       }
 
       return noutput_items;
