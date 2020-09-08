@@ -21,6 +21,9 @@ parameters:
 - id: window
   label: Window
   dtype: complex_vector
+- id: nFreqs
+  label: nFreqs
+  dtype: raw
 inputs:
 - label: in
   domain: stream
@@ -31,9 +34,9 @@ outputs:
   dtype: ${ type }
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.frequencyTrackerNMode_${type.fcn}(${mu}, ${SF}, ${OSF}, ${window})
+  make: LibreLoRa.frequencyTrackerNMode_${type.fcn}(${mu}, ${SF}, ${OSF}, ${window}, ${nFreqs})
 cpp_templates:
   includes: ['#include <LibreLoRa/frequencyTrackerNMode.h>']
   declarations: 'LibreLoRa::frequencyTrackerNMode_${type.fcn}::sptr ${id};'
-  make: 'this->${id} = LibreloRa::frequencyTrackerNMode_${type.fcn}::make(${mu}, ${SF}, ${OSF});'
+  make: 'this->${id} = LibreloRa::frequencyTrackerNMode_${type.fcn}::make(${mu}, ${SF}, ${OSF}, ${nFreqs});'
 file_format: 1

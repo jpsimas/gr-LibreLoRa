@@ -51,7 +51,9 @@ outputs:
 - domain: message
   id: sync
   optional: true
-
+- domain: message
+  id: samplesToProduce
+  optional: true
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.correlationSync_${type.fcn}(${corrMin}, ${corrStop}, ${symbolSize}, ${preambleSize}, ${SF}, ${syncWordNumber})

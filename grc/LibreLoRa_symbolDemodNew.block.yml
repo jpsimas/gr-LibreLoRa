@@ -3,7 +3,7 @@ label: symbolDemodNew
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.symbolDemodNew(${SF}, ${symbolSize}, ${OSF})
+  make: LibreLoRa.symbolDemodNew(${SF}, ${symbolSize}, ${windowSize})
   callbacks:
   - setSF(${SF})
 parameters:
@@ -13,9 +13,10 @@ parameters:
 - id: symbolSize
   label: Symbolsize
   dtype: raw
-- id: OSF
-  label: Osf
+- id: windowSize
+  label: Windowsize
   dtype: raw
+  default: symbolSize
 inputs:
 - label: in
   domain: stream

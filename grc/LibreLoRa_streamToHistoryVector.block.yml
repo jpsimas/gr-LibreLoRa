@@ -12,6 +12,9 @@ parameters:
 - id: nVect
   label: Nvect
   dtype: raw
+- id: decimation
+  label: Decimation
+  dtype: raw    
 inputs:
 - label: in
   domain: stream
@@ -23,12 +26,12 @@ outputs:
   vlen: ${ nVect }
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.streamToHistoryVector_${type.fcn}(${nVect})
+  make: LibreLoRa.streamToHistoryVector_${type.fcn}(${nVect}, ${decimation})
 
 cpp_templates:
   includes: ['#include <LibreLoRa/streamToHistoryVector.h>']
   declarations: 'LibreLoRa::streamToHistoryVector_${type.fcn}::sptr ${id};'
-  make: 'this->${id} = LibreloRa::streamToHistoryVector_${type.fcn}::make(${nVect});'
+  make: 'this->${id} = LibreloRa::streamToHistoryVector_${type.fcn}::make(${nVect}, ${decimation});'
 
 
 file_format: 1

@@ -20,4 +20,5 @@ outputs:
 - label: max
   domain: stream
   dtype: complex
+  optional: true
 file_format: 1

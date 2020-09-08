@@ -1,15 +1,7 @@
-id: LibreLoRa_frequencyTackerAPA
-label: frequencyTackerAPA
+id: LibreLoRa_frequencyTrackerNLMS
+label: frequencyTrackerNLMS
 category: '[Librelora]'
 parameters:
-- id: num
-  label: num
-  dtype: enum
-  options: [single, double]
-  option_attributes:
-    fcn: [single, double]
-    nw: [1, 2]
-  hide: part
 - id: mu
   label: Mu
   dtype: float
@@ -23,16 +15,14 @@ inputs:
 outputs:
 - label: out
   domain: stream
+  dtype: complex
+#  vlen: ${ window.size - 1 }
+- label: out_err
+  domain: stream
   dtype: float
-  # vlen: ${ num.nw }
-
+  optional: true
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.frequencyTackerAPA_${num.fcn}(${mu}, ${window})
-    
-cpp_templates:
-  includes: ['#include <LibreLoRa/frequencyTackerAPA.h>']
-  declarations: 'LibreLoRa::frequencyTackerAPA_${num.fcn}::sptr ${id};'
-  make: 'this->${id} = LibreloRa::frequencyTackerAPA_${num.fcn}::make(${mu}, ${window});'
+  make: LibreLoRa.frequencyTrackerNLMS(${mu}, ${window})
   
 file_format: 1

@@ -3,19 +3,13 @@ label: slidingDFTMax
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.slidingDFTMax(${DFTLength}, ${windowSize}, ${SF}, ${symbolSize})
+  make: LibreLoRa.slidingDFTMax(${DFTLength}, ${windowSize})
 parameters:
 - id: DFTLength
   label: Dftlength
   dtype: raw
 - id: windowSize
   label: windowSize
-  dtype: raw
-- id: SF
-  label: SF
-  dtype: raw
-- id: symbolSize
-  label: symbolSize
   dtype: raw
 inputs:
 - label: in
@@ -25,4 +19,8 @@ outputs:
 - label: indexOut
   domain: stream
   dtype: float
+- label: maxOut
+  domain: stream
+  dtype: complex
+  optional: true
 file_format: 1
