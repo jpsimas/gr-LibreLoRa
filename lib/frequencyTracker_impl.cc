@@ -49,14 +49,17 @@ namespace gr {
      */
     template<typename T>
     frequencyTracker_impl<T>::frequencyTracker_impl(float mu, size_t SF, size_t OSF, size_t decimation)
-      : gr::block("frequencyTracker",
-		  gr::io_signature::make(1, 1, sizeof(gr_complex)),
-		  gr::io_signature::make(1, 1, sizeof(T))),
+      : gr::sync_decimator("frequencyTracker",
+			   gr::io_signature::make(1, 1, sizeof(gr_complex)),
+			   gr::io_signature::make(1, 1, sizeof(T)), decimation),
 	OSF(OSF),
 	mu(mu),
 	wStep(std::polar<float>(1, -2*M_PI*1.0/((1 << SF)*OSF*OSF))),
 	w(1.0),
 	decimation(decimation){
+
+      this->set_history(1);
+      
 #ifndef NDEBUG
       std::cout << "frequencyTracker: constructed. decimation: " << decimation << std::endl;
 #endif
@@ -70,12 +73,12 @@ namespace gr {
     {
     }
 
-    template<typename T>
-    void
-    frequencyTracker_impl<T>::forecast (int noutput_items, gr_vector_int &ninput_items_required)
-    {
-      ninput_items_required[0] = decimation*noutput_items + 1;
-    }
+    // template<typename T>
+    // void
+    // frequencyTracker_impl<T>::forecast (int noutput_items, gr_vector_int &ninput_items_required)
+    // {
+    //   ninput_items_required[0] = decimation*noutput_items + 1;
+    // }
 
     template <>
     float frequencyTracker_impl<float>::calcFreq(gr_complex w) {
@@ -90,26 +93,26 @@ namespace gr {
     
     template<typename T>
     int 
-    frequencyTracker_impl<T>::general_work (int noutput_items,
-					 gr_vector_int &ninput_items,
-					 gr_vector_const_void_star &input_items,
-					 gr_vector_void_star &output_items)
+    frequencyTracker_impl<T>::work (int noutput_items,
+				    gr_vector_const_void_star &input_items,
+				    gr_vector_void_star &output_items)
     {
       const gr_complex *in = (const gr_complex *) input_items[0];
       T *out = (T *) output_items[0];
       
-      for(int i = 0; i < noutput_items*decimation; i++) {
-	w *= wStep;
+      for(int i = 0; i < noutput_items; i++) {
+	for(int j = 0; j < decimation; j++) {
+	  w *= wStep;
 	
-	w = (1 - mu)*w + mu*(in[i + 1]/(in[i] + 1e-6f));
-
-	if(i%decimation == 0)
-	  out[i/decimation] = calcFreq(w);
-      }	
+	  w = (1 - mu)*w + mu*(in[i*decimation + j + 1]/(in[i*decimation + j] + 1e-6f));
+	}
+	
+	out[i] = calcFreq(w);
+      }
       
       // Tell runtime system how many input items we consumed on
       // each input stream.
-      this->consume_each (noutput_items*decimation);
+      // this->consume_each (noutput_items*decimation);
 
       // Tell runtime system how many output items we produced.
       return noutput_items;
