@@ -37,28 +37,40 @@ namespace gr {
 
     template<typename T>
     typename frequencyTrackerNMode<T>::sptr
-    frequencyTrackerNMode<T>::make(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window)
+    frequencyTrackerNMode<T>::make(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window, size_t nFreqs)
     {
       return gnuradio::get_initial_sptr
-        (new frequencyTrackerNMode_impl<T>(mu, SF, OSF, window));
+        (new frequencyTrackerNMode_impl<T>(mu, SF, OSF, window, nFreqs));
     }
 
-
+    template<typename T>
+    constexpr const std::vector<gr_complex> frequencyTrackerNMode_impl<T>::generateExponents(size_t nFreqs, size_t N) {
+      std::vector<gr_complex> exponents(N*nFreqs);
+      for(auto j = 0; j < nFreqs; j++)
+	for(auto i = 0; i < N; i++)
+	  exponents[i + j*N] = std::polar<float>(1.0f, -(2*M_PI/nFreqs)*i*j);
+      return exponents;
+    }
+    
     /*
      * The private constructor
      */
     template<typename T>
-    frequencyTrackerNMode_impl<T>::frequencyTrackerNMode_impl(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window)
+    frequencyTrackerNMode_impl<T>::frequencyTrackerNMode_impl(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window, size_t nFreqs)
       : gr::sync_block("frequencyTrackerNMode",
 		  gr::io_signature::make(1, 1, sizeof(gr_complex)),
 		  gr::io_signature::make(1, 1, sizeof(T))),
 	window(window),
+	nFreqs(nFreqs),
 	windowedSig(window.size()),
+	projections(nFreqs),
+	exponents(generateExponents(nFreqs, window.size())),
 	mu(mu),
 	OSF(OSF),
 	SF(SF),
 	wStep(std::polar<float>(1, 2*M_PI*1.0/((1 << SF)*OSF*OSF))),
 	w(1.0),
+	freq(0.0),
 	count((1 << SF)*OSF)
     {
       this->set_history(window.size());
@@ -102,25 +114,26 @@ namespace gr {
       for(int i = 0; i < noutput_items; i++) {
 	volk_32fc_x2_multiply_32fc(windowedSig.data(), in + i, window.data(), window.size());
 
-	for(auto& x : count)
+	for(auto& x : projections)
 	  x = 0;
-	for(auto j = 0; j < windowedSig.size() - 1; j++) {
-	  int16_t estimate = int32_t(std::round(((1 << SF)*OSF)*(std::arg(std::conj(windowedSig[j])*windowedSig[j + 1])/(2*M_PI) + 1.0f)))%int32_t((1 << SF)*OSF);
-	  count.at(estimate)++;
+	
+	for(auto m = 0; m < nFreqs; m++){
+	  // for(auto k = 0; k < window.size(); k++){
+	    // projections[m] += std::polar<float>(1.0f, -(2.0*M_PI/nFreqs)*m*k)*windowedSig[k];
+	    // projections[m] += exponents[(m*k)%nFreqs]*windowedSig[k];
+	  // }
+	  volk_32fc_x2_dot_prod_32fc(projections.data() + m, windowedSig.data(), exponents.data() + m*window.size(), window.size());
 	}
 
+	uint32_t ind;
+	volk_32fc_index_max_32u(&ind, projections.data(), nFreqs);
+
+	freq = (1 - mu)*freq + mu*(float((ind + nFreqs/2)%nFreqs)/nFreqs - 0.5);
+	out[i] = freq;
 	
-	size_t maxK = 0;
-	size_t maxCount = 0;
-	for(auto k = 0; k < (1 << SF)*OSF; k++)
-	  if(count[k] > maxCount){
-	    maxK = k;
-	    maxCount = count[k];
-	  }
-	  
-	w = (1 - mu)*w + mu*std::polar<float>(1.0f, 2*M_PI*float(maxK)/((1 << SF)*OSF));
+	// w = (1 - mu)*w + mu*std::polar<float>(1.0f, 2*M_PI*float(maxK)/((1 << SF)*OSF));
 	
-	out[i] = calcFreq(w);
+	// out[i] = calcFreq(w);
       }
 
       // Tell runtime system how many output items we produced.

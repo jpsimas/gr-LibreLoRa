@@ -33,10 +33,18 @@ namespace gr {
       // Nothing to declare in this block.
       const std::vector<gr_complex> window;
       std::vector<gr_complex> windowedSig;
+      std::vector<gr_complex> projections;
+      const std::vector<gr_complex> exponents;
+
+      static constexpr const std::vector<gr_complex> generateExponents(size_t nFreqs, size_t N);
+      
       const float mu;
       gr_complex w;
+      float freq;
       const size_t OSF;
       const size_t SF;
+
+      const size_t nFreqs;
 
       const gr_complex wStep;
 
@@ -44,7 +52,7 @@ namespace gr {
       
       inline T calcFreq(gr_complex x);
      public:
-      frequencyTrackerNMode_impl(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window);
+      frequencyTrackerNMode_impl(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window, size_t nFreqs);
       ~frequencyTrackerNMode_impl();
 
       // Where all the action really happens
