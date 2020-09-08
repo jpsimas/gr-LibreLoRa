@@ -33,8 +33,8 @@ namespace gr {
      *
      */
     template <typename T = float>
-    LIBRELORA_API std::vector<T>
-    getSymbol(size_t symbolNum, size_t SF, size_t OSF);
+    LIBRELORA_API const std::vector<T>
+    getSymbol(size_t symbolNum, size_t SF, size_t symbolSize);
     
   } // namespace LibreLoRa
 } // namespace gr

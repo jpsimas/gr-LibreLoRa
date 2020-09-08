@@ -32,7 +32,7 @@ namespace gr {
 
     template<>
     // std::vector<float> getSymbol(size_t symbolNum, size_t SF, size_t OSF) {
-    std::vector<float> getSymbol(size_t symbolNum, size_t SF, size_t symbolSize) {
+    const std::vector<float> getSymbol(size_t symbolNum, size_t SF, size_t symbolSize) {
       // const size_t symbolSize = (1 << SF)*OSF;
       std::vector<float> symbol(symbolSize);
       const float OSF = symbolSize/float(1 << SF);
@@ -48,7 +48,7 @@ namespace gr {
 
     template<>
     // std::vector<std::complex<float>> getSymbol(size_t symbolNum, size_t SF, size_t OSF) {
-    std::vector<std::complex<float>> getSymbol(size_t symbolNum, size_t SF, size_t symbolSize) {
+    const std::vector<std::complex<float>> getSymbol(size_t symbolNum, size_t SF, size_t symbolSize) {
       // const auto symbolFreq = getSymbol<float>(symbolNum, SF, OSF);
       const auto symbolFreq = getSymbol<float>(symbolNum, SF, symbolSize);
       std::vector<std::complex<float>> symbol(symbolFreq.size());
