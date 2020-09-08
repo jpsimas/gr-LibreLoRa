@@ -31,13 +31,15 @@ namespace gr {
      private:
       std::vector<float> twoUpchirps;
       const size_t symbolSize;
+      const size_t windowSize;
+      const size_t startingIndex;
       size_t SF;
-      size_t OSF;
+      const float OSF;
 
       std::vector<size_t> count;
       std::vector<float> estimate;
      public:
-      symbolDemodNew_impl(size_t SF, size_t symbolSize, size_t OSF);
+      symbolDemodNew_impl(size_t SF, size_t symbolSize, size_t windowSize);
       ~symbolDemodNew_impl();
 
       // Where all the action really happens

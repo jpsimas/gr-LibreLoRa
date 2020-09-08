@@ -35,20 +35,23 @@ namespace gr {
   namespace LibreLoRa {
 
     symbolDemodNew::sptr
-    symbolDemodNew::make(size_t SF, size_t symbolSize, size_t OSF)
+    symbolDemodNew::make(size_t SF, size_t symbolSize, size_t windowSize)
     {
       return gnuradio::get_initial_sptr
-        (new symbolDemodNew_impl(SF, symbolSize, OSF));
+        (new symbolDemodNew_impl(SF, symbolSize, windowSize));
     }
 
 
     /*
      * The private constructor
      */
-    symbolDemodNew_impl::symbolDemodNew_impl(size_t SF, size_t symbolSize, size_t OSF)
+    symbolDemodNew_impl::symbolDemodNew_impl(size_t SF, size_t symbolSize, size_t windowSize)
       :	SF(SF),
-	OSF(OSF),
 	symbolSize(symbolSize),
+	windowSize(windowSize),
+	startingIndex((symbolSize - windowSize)/2),
+	// OSF((symbolSize >> SF)),
+	OSF(float(symbolSize)/float(1 << SF)),
 	count((1 << SF)),
 	estimate(symbolSize),
 	gr::sync_block("symbolDemodNew",
@@ -59,7 +62,7 @@ namespace gr {
       twoUpchirps.insert(twoUpchirps.end(), twoUpchirps.begin(), twoUpchirps.end());
 
 #ifndef NDEBUG
-      std::cout << "symbolDemodNew: contructed" << std::endl;
+      std::cout << "symbolDemodNew: constructed. OSF = " << OSF << std::endl;
 #endif
 
       message_port_register_in(pmt::mp("setSF"));
@@ -92,10 +95,14 @@ namespace gr {
 	  for(auto& x : count)
 	    x = 0;
 	  
-	  for(size_t j = 0; j < symbolSize; j++){
+	  for(size_t j = startingIndex; j < startingIndex + windowSize; j++){
 	    // mean += std::polar<float>(1.0, 2*M_PI*OSF*(dataIn[i*symbolSize + j] - twoUpchirps[j]));;
-	    int16_t decision = int32_t(std::round((1 << SF)*OSF*(dataIn[i*symbolSize + j] - twoUpchirps[j] + 2.0f)))%int32_t(1 << SF);
 	    // int16_t decision = 2*(1 << SF) - int16_t(std::round(symbolSize*(std::abs(dataIn[i*symbolSize + j] - twoUpchirps[j + sym*OSF]))))%int16_t(2*(1 << SF));
+
+	    float decisionf = std::round(float(1 << SF)*OSF*(dataIn[i*symbolSize + j] - twoUpchirps[j]));
+	    
+	    int16_t decision = (int32_t(decisionf)%int32_t(1 << SF) + int32_t(1 << SF))%int32_t(1 << SF);
+
 	    count.at(decision)++;
 	  }
 	  
@@ -121,7 +128,10 @@ namespace gr {
 
 	// dataOut[i] = minSym;
 #ifndef NDEBUG
-	std::cout << "demodulated symbol: " << std::dec << dataOut[i] << ", SF = " << SF << std::endl;
+	std::cout << "symbolDemodNew: demodulated symbol: " << std::dec << dataOut[i] << ", SF = " << SF << std::endl;
+       	// std::cout << "symbolDemodNew: counts: ";
+	// for(auto& x : count)
+	//   std::cout << x << ", ";
 #endif
       }
       
