@@ -28,15 +28,18 @@
 namespace gr {
   namespace LibreLoRa {
 
-    template<size_t N>
-    class frequencyTrackerNLMS_impl : public frequencyTrackerNLMS<N>
+    class frequencyTrackerNLMS_impl : public frequencyTrackerNLMS
     {
      private:
 
-      std::array<gr_complex, N> w;
+      std::vector<gr_complex> w;
       float mu;
+
+      gr_complex wEst;
+      gr_complex xEst;
       
       const std::vector<gr_complex> window;
+      std::vector<gr_complex> windowedSig;
       
      public:
       frequencyTrackerNLMS_impl(float mu, const std::vector<gr_complex>& window);

@@ -32,7 +32,6 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
-    template<size_t N>
     class LIBRELORA_API frequencyTrackerNLMS : virtual public gr::sync_block
     {
      public:
@@ -49,8 +48,6 @@ namespace gr {
       static sptr make(float mu, const std::vector<gr_complex>& window);
     };
 
-    typedef frequencyTrackerNLMS<1> frequencyTacker_single;
-    typedef frequencyTrackerNLMS<2> frequencyTacker_double;
   } // namespace LibreLoRa
 } // namespace gr
 

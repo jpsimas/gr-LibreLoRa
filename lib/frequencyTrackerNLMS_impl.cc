@@ -30,29 +30,35 @@
 namespace gr {
   namespace LibreLoRa {
 
-    template<size_t N>
-    typename frequencyTrackerNLMS<N>::sptr
-    frequencyTrackerNLMS<N>::make(float mu, const std::vector<gr_complex>& window)
+    typename frequencyTrackerNLMS::sptr
+    frequencyTrackerNLMS::make(float mu, const std::vector<gr_complex>& window)
     {
       return gnuradio::get_initial_sptr
-        (new frequencyTrackerNLMS_impl<N>(mu, window));
+        (new frequencyTrackerNLMS_impl(mu, window));
     }
 
 
     /*
      * The private constructor
      */
-    template<size_t N>
-    frequencyTrackerNLMS_impl<N>::frequencyTrackerNLMS_impl(float mu, const std::vector<gr_complex>& window)
+    frequencyTrackerNLMS_impl::frequencyTrackerNLMS_impl(float mu, const std::vector<gr_complex>& window)
       : gr::sync_block("frequencyTrackerNLMS",
 		       gr::io_signature::make(1, 1, sizeof(gr_complex)),
-		       gr::io_signature::make(1, 1, sizeof(float))),
-		       // gr::io_signature::make(1, 1, N*sizeof(float))),
-	w{},
+		       gr::io_signature::make2(1, 2, sizeof(gr_complex), sizeof(float))),
+		       // gr::io_signature::make2(1, 2, (window.size() - 1)*sizeof(gr_complex), sizeof(float))),
+	w(window.size() - 1),
 	mu(mu),
-	window(window)
+	window(window),
+	windowedSig(window.size()),
+	xEst(M_PI/2.0f)
     {
-      this->set_history(N + 1);
+      this->set_history(window.size());
+
+      wEst = std::polar(1.0f, std::real(xEst));
+      
+      for(auto i = 0; i < w.size(); i++)
+	w[i] = 0.0f;
+	
 #ifdef NDEBUG
       std::cout << "frequencyTrackerAPA: constructed." << std::endl;
 #endif
@@ -61,55 +67,92 @@ namespace gr {
     /*
      * Our virtual destructor.
      */
-    template<size_t N> 
-    frequencyTrackerNLMS_impl<N>::~frequencyTrackerNLMS_impl()
+    frequencyTrackerNLMS_impl::~frequencyTrackerNLMS_impl()
     {
     }
 
-    template<size_t N>
     int
-    frequencyTrackerNLMS_impl<N>::work(int noutput_items,
+    frequencyTrackerNLMS_impl::work(int noutput_items,
         gr_vector_const_void_star &input_items,
         gr_vector_void_star &output_items)
     {
       const gr_complex *in = (const gr_complex *) input_items[0];
-      float *out = (float *) output_items[0];
+      gr_complex *out = (gr_complex *) output_items[0];
+      float *out_err;
+      if(output_items.size() > 1)
+	out_err = (float *) output_items[1];
      
       
       for(int i = 0; i < noutput_items; i++) {
-	gr_complex d = in[i + N];
-	const gr_complex* u = in + i;
-
+	// gr_complex d = in[i + N];
+	// const gr_complex* u = in + i;
+	 volk_32fc_x2_multiply_32fc(windowedSig.data(), in + i, window.data(), window.size());
+	
+	const gr_complex* u = windowedSig.data();
+	const gr_complex d = windowedSig[window.size() - 1];
+	  
 	gr_complex y;
-	volk_32fc_x2_conjugate_dot_prod_32fc(&y, u, w.data(), N);
+	volk_32fc_x2_conjugate_dot_prod_32fc(&y, u, w.data(), w.size());
 
 	gr_complex normU;
-	volk_32fc_x2_conjugate_dot_prod_32fc(&normU, u, u, N);
-	
-	for(auto j = 0; j < N; j++)
-	  w[j] += mu*std::conj(d - y)*u[j]/(normU + 1e-6f);
+	volk_32fc_x2_conjugate_dot_prod_32fc(&normU, u, u, w.size());
 
-	// out[i] = -((N == 2) ?
-	// 	   std::arg(w[1] + std::sqrt(w[1]*w[1] + 4.0f*w[0]))/(2*M_PI) :
-	// 	   std::arg(w[0])/(2*M_PI));
-	if(N == 2) {
-	  auto r1 = (w[1] + std::sqrt(w[1]*w[1] + 4.0f*w[0]))/2.0f;
-	  auto r2 = (w[1] - std::sqrt(w[1]*w[1] + 4.0f*w[0]))/2.0f;
-	  if(std::abs(std::abs(r1) - 1.0f) < std::abs(std::abs(r2) - 1.0f))
-	    out[i] = std::arg(r1)/(2*M_PI);
-	  else
-	    out[i] = std::arg(r2)/(2*M_PI);
-	} else
-	  out[i] = std::arg(w[0])/(2*M_PI);
+	const auto err = std::conj(d - y);
+	
+	for(auto j = 0; j < w.size(); j++)
+	  w[j] += mu*err*windowedSig[j]/(normU + 1e-6f);
+	
+	// if(N == 2) {
+	//   auto r1 = (w[1] + std::sqrt(w[1]*w[1] + 4.0f*w[0]))/2.0f;
+	//   auto r2 = (w[1] - std::sqrt(w[1]*w[1] + 4.0f*w[0]))/2.0f;
+	//   if(std::abs(std::abs(r1) - 1.0f) < std::abs(std::abs(r2) - 1.0f))
+	//     out[i] = -std::arg(r1)/(2*M_PI);
+	//   else
+	//     out[i] = -std::arg(r2)/(2*M_PI);
+	// } else
+	//   out[i] = -std::arg(w[0])/(2*M_PI);
+
+	// wEst = windowedSig[1]/(windowedSig[0] + 1e-12f);
+	// xEst = std::arg(wEst);
+	
+	// const float muRoot = 1e-15;
+	
+	// constexpr size_t nIter = 0;//3;
+	// for(auto i = 0; i < nIter; i++) {
+	//   gr_complex p, pPrime, zi;
+	//   p = 0;
+	//   pPrime = 0;
+	//   zi = 1;
+	//   // p = -windowedSig[window.size() - 1];
+	//   for(auto j = 0; j < w.size() - 1; j++) {
+	//     p += w[j]*zi;
+	//     pPrime += float(j + 1)*w[j + 1]*zi;
+	//     zi *= wEst;
+	//   }
+	  
+	//   p += w[w.size() - 1]*zi;
+	//   pPrime += -float(w.size())*zi;
+
+	//   zi *= wEst;
+	 
+	//   p += -zi;
+	  
+	//   xEst -= muRoot*std::real(std::conj(p)*pPrime*gr_complex(0, 1));
+	//   wEst = std::polar(1.0f, std::real(xEst));
+	// }
+	
+	// out[i] = wEst;
+	out[i] = y;
+	 //memcpy(out + i*w.size(), w.data(), sizeof(gr_complex)*w.size());
+
+	if(output_items.size() > 1)
+	  out_err[i] = std::norm(err);
       }
 
-      this->consume_each (noutput_items);
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }
-    
-    template class frequencyTrackerNLMS<1>;
-    template class frequencyTrackerNLMS<2>;
+
   } /* namespace LibreLoRa */
 } /* namespace gr */
 
