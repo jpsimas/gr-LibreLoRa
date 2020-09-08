@@ -71,7 +71,9 @@ namespace gr {
 	deSyncAfterDone(false),
 	preambleConsumed(false),
 	preambleSamplesToConsume(preambleSize),
-	detectionCount((1 << SF)) {
+	detectionCount((1 << SF)),
+	offset(0),
+	timeOffset(0) {
 
       this->set_min_output_buffer(8);
       // this->set_fixed_rate(true);
@@ -108,6 +110,14 @@ namespace gr {
       syncWordExpected = getSymbol<T>(syncWordNum1, SF, symbolSize);
       auto syncSym2 = getSymbol<T>(syncWordNum2, SF, symbolSize);
       syncWordExpected.insert(syncWordExpected.end(), syncSym2.begin(), syncSym2.end());
+
+      //generate downchirps
+      downchirpsExpected = getSymbol<T>(0x00, SF, symbolSize);
+      downchirpsExpected.insert(downchirpsExpected.end(), downchirpsExpected.begin(), downchirpsExpected.end());
+
+      for(auto& x : downchirpsExpected)
+	x = -x;
+      
 #ifndef NDEBUG
       std::cout << "correlationSync: syncWord size: " << syncWordExpected.size() << std::endl;
 #endif
@@ -127,7 +137,7 @@ namespace gr {
     {
       const size_t n = ((fixedModeEnabled() && (nOutputItemsToProduce < noutput_items) && (nOutputItemsToProduce != 0))? nOutputItemsToProduce : noutput_items);
       // ninput_items_required[0] = (syncd? (preambleConsumed? (symbolSize*n) : std::min((size_t(1 << 14) - 1), preambleSamplesToConsume)) : 2*symbolSize);
-      ninput_items_required[0] = (syncd? (preambleConsumed? (symbolSize*n) : preambleSize) : 2*symbolSize);
+      ninput_items_required[0] = (syncd? (preambleConsumed? (symbolSize*n) : (preambleSize + symbolSize)) : 2*symbolSize);
       // ninput_items_required[0] = fixed_rate_noutput_to_ninput(noutput_items);
       
       ninput_items_required[1] = ninput_items_required[0];
@@ -178,15 +188,23 @@ namespace gr {
       // 	 auto decision = int16_t(std::round(symbolSize*(downchirps[j] - twoDownchirps[j] + 2.0f)))%int16_t((1 << SF));
       // 	detectionCount[decision]++;
       // }
+
+
+      //Estimate Sync Word offset
       const T* syncWord = preamble;
       
       for(auto& x : detectionCount)
 	x = 0;
+
+      const size_t windowSize = symbolSize/2;
+      const size_t startingIndex = (symbolSize - windowSize)/2;
       
-      for(size_t j = 0; j < 2*symbolSize; j++){
-	int16_t decision = (int32_t(std::round(float(symbolSize)*(syncWord[j] - syncWordExpected[j])))%int32_t((1 << SF)) + int32_t((1 << SF)))%int32_t((1 << SF));
-	detectionCount.at(decision)++;
-      }
+      for(size_t k = 0; k < 2; k++)
+	for(size_t j = startingIndex; j < startingIndex + windowSize; j++){
+	  const auto ind = j + k*symbolSize;
+	  int16_t decision = (int32_t(std::round(float(symbolSize)*(syncWord[ind] - syncWordExpected[ind])))%int32_t((1 << SF)) + int32_t((1 << SF)))%int32_t((1 << SF));
+	  detectionCount.at(decision)++;
+	}
       
       int16_t maxK = 0;
       size_t maxCount = 0;
@@ -196,20 +214,71 @@ namespace gr {
 	  maxCount = detectionCount[k];
 	}
 
+      //Estimate downchirps offset
+      const T* downchirps = preamble + syncWordExpected.size();
+      
+      for(auto& x : detectionCount)
+	x = 0;
+      
+      for(size_t k = 0; k < 2; k++)
+	for(size_t j = startingIndex; j < startingIndex + windowSize; j++){
+	  const auto ind = j + k*symbolSize;
+	  int16_t decision = (int32_t(std::round(float(symbolSize)*(downchirps[ind] - downchirpsExpected[ind])))%int32_t((1 << SF)) + int32_t((1 << SF)))%int32_t((1 << SF));
+	  detectionCount.at(decision)++;
+	}
+      
+      int16_t maxK2 = 0;
+      size_t maxCount2 = 0;
+      for(auto k = 0; k < detectionCount.size(); k++)
+	if(detectionCount[k] > maxCount2){
+	  maxK2 = k;
+	  maxCount2 = detectionCount[k];
+	}
+      
+      //correct considering neighbors
+      //float maxKf = (detectionCount[maxK]*maxK + detectionCount[(maxK - 1 + detectionCount.size())%detectionCount.size()]*(maxK - 1) + detectionCount[(maxK + 1)%detectionCount.size()]*(maxK + 1))/float(detectionCount[maxK] + detectionCount[(maxK - 1 + detectionCount.size())%detectionCount.size()] + detectionCount[(maxK + 1)%detectionCount.size()]);
+      
       //correction to compensate for non-integer preamble size
-      if(symbolSize < (1 << SF))
+      if(symbolSize < (1 << SF)) {
 	maxK++;
+	maxK2++;
+      }
       
       maxK = int16_t(maxK + (1 << (SF - 1)))%int16_t((1 << SF)) - int16_t((1 << (SF - 1)));
+
+      maxK2 = int16_t(maxK2 + (1 << (SF - 1)))%int16_t((1 << SF)) - int16_t((1 << (SF - 1)));
       
-      offset = float(maxK)/(symbolSize);
+      offset = float(maxK + maxK2)/(2.0f*symbolSize);
+
+      const float chirpRate = float(1 << SF)/(symbolSize*symbolSize);
+
+      int16_t deltaMaxK = int16_t(maxK - maxK2);
+
+      //real time offset (non-integer amount of samples
+      float timeOffsetF = float(deltaMaxK/(2.0f*symbolSize))/chirpRate;
+
+      if(timeOffsetF > 0)
+	timeOffsetF -= symbolSize;
+      
+      timeOffset = std::round(timeOffsetF);
+
+      offset += (timeOffsetF - timeOffset)*chirpRate;
+
+      //fix offset to be in correct range?
+
+      // offset = float(maxK)/symbolSize;
       
 #ifndef NDEBUG
-	std::cout << "correlationSync: estimated offset: " << std::dec << offset << " (" << maxK << ")" << std::endl;
-      // std::cout << "correlationSync: counts: ";
-      // for(auto x : detectionCount)
-      // 	std::cout << x << ", ";
-      // std::cout << std::endl;
+
+      std::cout << "correlationSync: estimated offsets: " << std::dec << maxK << ", " << maxK2 << std::endl;
+
+      std::cout << "correlationSync: estimated offset: " << std::dec << offset  << "(" << offset*float(1 << SF)<< ")"<< std::endl;
+	
+      std::cout << "correlationSync: estimated time offset: " << std::dec << timeOffset << "(" << timeOffsetF <<")" << std::endl;
+      // 	std::cout << "correlationSync: counts: ";
+      // for(auto& x : detectionCount)
+      //  	std::cout << x << ", ";
+      std::cout << std::endl;
 #endif	
     }
 
@@ -305,8 +374,8 @@ namespace gr {
     	return 0;
       } else {
 	if(!preambleConsumed) {
-	  estimateOffset(data_in);  
-	  this->consume_each(preambleSize);
+	  estimateOffset(data_in);
+	  this->consume_each(preambleSize - timeOffset);
 // 	  size_t nSamples = std::min((size_t(1 << 14) - 1), preambleSamplesToConsume);
 
 // #ifndef NDEBUG

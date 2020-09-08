@@ -42,10 +42,11 @@ namespace gr {
       T corrMax;
 
       T offset;
+      int16_t timeOffset;
       inline void estimateOffset(const T *preamble);
       
       bool syncd;
-      // enum syncState {initial, foundFirstPt, syncd};
+      // enum syncState {detection, consumePreamble, generateOutput, wait};
       // syncState currState;
       // float corrMax;
       
@@ -59,11 +60,13 @@ namespace gr {
       size_t preambleSamplesToConsume;
       
       pmt::pmt_t syncPort;
+      pmt::pmt_t samplesToProducePort;
 
       inline float norm(T x);
 
       //for estimateOffset
       std::vector<T> syncWordExpected;
+      std::vector<T> downchirpsExpected;
       std::vector<size_t> detectionCount;
      public:
       correlationSync_impl(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize, size_t SF, uint16_t syncWordNumber);
@@ -78,7 +81,8 @@ namespace gr {
 		       gr_vector_void_star &output_items);
 
       void reset();
-      void setNOutputItemsToProduce(int noutput_items) {nOutputItemsToProduce = noutput_items;};
+      void setNOutputItemsToProduce(int noutput_items) {
+	nOutputItemsToProduce = noutput_items;};
 
       constexpr bool fixedModeEnabled() {
 	return fixedMode;
