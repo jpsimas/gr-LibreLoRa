@@ -31,24 +31,31 @@ namespace gr {
     {
      private:
       // Nothing to declare in this block.
-      size_t length;
+      const size_t length;
+      const size_t windowSize;
+
+      static constexpr float alpha = 1 - 1e-6;//for stability
+      const float alphaN;
+      
       // std::vector<gr_complex> exponents;
       // std::vector<gr_complex> DFT;
-      gr_complex* exponents;
+      const gr_complex* exponents;
+      const gr_complex* exponentsN;
       gr_complex* DFT;
+      gr_complex* deltas;
 
-      const float alpha;//for stability
-      const float alphaN;
-
-      const float beta;
+      const gr_complex* generateExponents();
+      const gr_complex* generateExponentsN();
       
-      gr_complex step;
-      gr_complex stepN;
-      size_t index;
+      // const float beta;
+      
+      // gr_complex step;
+      // gr_complex stepN;
+      // size_t index;
 
-      gr_complex a;
+      // gr_complex a;
      public:
-      slidingDFT_impl(size_t DFTLength, float beta);
+      slidingDFT_impl(size_t DFTLength, size_t windowSize);
       ~slidingDFT_impl();
 
       // Where all the action really happens

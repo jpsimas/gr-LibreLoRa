@@ -32,24 +32,26 @@ namespace gr {
   namespace LibreLoRa {
 
     slidingDFTMax::sptr
-    slidingDFTMax::make(size_t DFTLength, size_t windowSize, size_t SF, size_t symbolSize)
+    slidingDFTMax::make(size_t DFTLength, size_t windowSize)
     {
       return gnuradio::get_initial_sptr
-        (new slidingDFTMax_impl(DFTLength, windowSize, SF, symbolSize));
+        (new slidingDFTMax_impl(DFTLength, windowSize));
     }
 
 
     /*
      * The private constructor
      */
-    slidingDFTMax_impl::slidingDFTMax_impl(size_t DFTLength, size_t windowSize, size_t SF, size_t symbolSize)
+    slidingDFTMax_impl::slidingDFTMax_impl(size_t DFTLength, size_t windowSize)
       : gr::sync_block("slidingDFTMax",
-              gr::io_signature::make(1, 1, sizeof(gr_complex)),
-		       gr::io_signature::make(1, 1, sizeof(float))),
+		       gr::io_signature::make(1, 1, sizeof(gr_complex)),
+		       gr::io_signature::make2(1, 2, sizeof(float), sizeof(gr_complex))),
 	length(DFTLength),
-	windowSize(windowSize),
-	beta(float(1 << SF)/(symbolSize*symbolSize)),
-	offset(beta)//,
+	windowSize(windowSize),//,
+	exponents(generateExponents()),
+	exponentsN(generateExponentsN())
+	// beta(float(1 << SF)/(symbolSize*symbolSize)),
+	// offset(beta)//,
 	// step(1.0),
 	// stepStep(std::polar<float>(1.0, -2*M_PI*beta))
     {
@@ -61,23 +63,14 @@ namespace gr {
 
       const int alignment_multiple = volk_get_alignment()/sizeof(gr_complex);
       set_alignment(std::max(1,alignment_multiple));
-      
-      exponents = (gr_complex *)volk_malloc(length*sizeof(gr_complex), volk_get_alignment());
-      
-      exponentsN = (gr_complex *)volk_malloc(length*sizeof(gr_complex), volk_get_alignment());
 
       DFT = (gr_complex *)volk_malloc(length*sizeof(gr_complex), volk_get_alignment());
-      float alphai = 1.0;
-      for (size_t i = 0; i < length; i++) {
-	// exponents[i] = alphai*std::polar<float>(1, (2.0*M_PI/length)*i);
-	// alphai *= alpha;
-	exponents[i] = alpha*std::polar<float>(1, (2.0*M_PI/length)*i);
-	DFT[i] = 1;
-      }
 
-      for (size_t i = 0; i < length; i++){
-	exponentsN[i] = alphaN*std::polar<float>(1, (2.0*M_PI/length)*i*windowSize);
-      }
+      deltas = (gr_complex *)volk_malloc(length*sizeof(gr_complex), volk_get_alignment());
+      
+      // float alphai = 1.0;
+      for (size_t i = 0; i < length; i++)
+	DFT[i] = 1;
 
       // e0 = 1.0;
       // eN = std::polar<float>(1.0, -2*M_PI*beta*length*(length - 1)/2.0);
@@ -90,7 +83,8 @@ namespace gr {
      */
     slidingDFTMax_impl::~slidingDFTMax_impl()
     {
-      free(exponents);
+      free(const_cast<gr_complex*>(exponents));
+      free(const_cast<gr_complex*>(exponentsN));
       free(DFT);
     }
 
@@ -107,40 +101,70 @@ namespace gr {
         gr_vector_void_star &output_items)
     {
       const gr_complex *in = (const gr_complex *) input_items[0];
-      float *indexOut = (float *) output_items[0];
+      float *freqOut = (float *) output_items[0];
+      gr_complex *maxOut;
+      if(output_items.size() > 1)
+	maxOut = (gr_complex *) output_items[1];
 
       // Do <+signal processing+>
       
       for(size_t i = 0; i < noutput_items; i++) {
 	
 	volk_32fc_x2_multiply_32fc(DFT, exponents, DFT, length);
+	
+	// for(auto j = 0; j < length; j++){
+	//   auto delta = - in[i]*exponentsN[j] + in[i + windowSize];
+	//   DFT[j] += delta;
+	// }
 
-	// const auto delta = - in[i]*alphaN + in[i + windowSize];
-	const auto delta = - in[i]*exponentsN[0] + in[i + windowSize];
-	
-	// const auto delta = - in[i]*alphaN*eN + in[i + length]*e0;
+	volk_32fc_s32fc_multiply_32fc(deltas, exponentsN, -in[i], length);
 
-	// step *= stepStep;
+	for(auto j = 0; j < length; j++)
+	  deltas[j] += in[i + windowSize];
 	
-	// e0 *= step;
-	// eN *= step;
-	
-	for(auto j = 0; j < length; j++){
-	  // auto delta = - in[i]*exponentsN[i] + in[i + windowSize];
-	  DFT[j] += delta;
-	}
+	volk_32fc_x2_add_32fc(DFT, DFT, deltas, length);
 
 	uint32_t indMax;
 	volk_32fc_index_max_32u(&indMax, DFT, length);
 	
-	indexOut[i] = std::remainder(indMax/float(length) + offset + 0.5, 1.0);
-	offset = std::remainder(offset + beta, 1.0);
+	freqOut[i] = std::remainder(indMax/float(length), 1.0);
+	
+	if(output_items.size() > 1)
+	  maxOut[i] = DFT[indMax];
       }
 
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }
 
+    const gr_complex* slidingDFTMax_impl::generateExponents() {
+
+#ifndef NDEBUG
+      std::cout << "SlidingDFT: initializing exponents. length: " << length << ", alpha: " << alpha << std::endl;
+#endif
+      
+      gr_complex* exponents = (gr_complex *)volk_malloc(length*sizeof(gr_complex), volk_get_alignment());
+
+      for (size_t i = 0; i < length; i++)
+	exponents[i] = alpha*std::polar<float>(1, (2.0*M_PI/length)*i);
+      
+      return exponents;
+    }
+
+    const gr_complex* slidingDFTMax_impl::generateExponentsN() {
+
+#ifndef NDEBUG
+      std::cout << "SlidingDFT: initializing exponentsN. length: " << length << ", windowSize: " << windowSize << ", alphaN: " << alphaN << std::endl;
+#endif
+      
+      gr_complex* exponentsN = (gr_complex *)volk_malloc(length*sizeof(gr_complex), volk_get_alignment());
+      
+      for (size_t i = 0; i < length; i++)
+	exponentsN[i] = alphaN*std::polar<float>(1, (2.0*M_PI/length)*i*windowSize);
+	
+      return exponentsN;
+    }
+    
   } /* namespace LibreLoRa */
 } /* namespace gr */
 
