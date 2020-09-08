@@ -108,7 +108,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '0'
+    value: '1'
   states:
     bus_sink: false
     bus_source: false
@@ -138,7 +138,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1160, 28.0]
+    coordinate: [1160, 28]
     rotation: 0
     state: true
 - name: symbolSize
@@ -209,7 +209,7 @@ blocks:
     bus_structure: null
     coordinate: [613, 800]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_BinSearchFFT_0
   id: LibreLoRa_BinSearchFFT
   parameters:
@@ -314,7 +314,7 @@ blocks:
     bus_structure: null
     coordinate: [632, 471]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: LibreLoRa_NibblesToBytes_0
   id: LibreLoRa_NibblesToBytes
   parameters:
@@ -621,6 +621,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     symbolSize: symbolSize
+    windowSize: int(symbolSize/2)
   states:
     bus_sink: false
     bus_source: false
@@ -783,7 +784,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1445, 658]
+    coordinate: [1448, 659]
     rotation: 0
     state: enabled
 - name: blocks_complex_to_arg_0_2_0_0
@@ -930,7 +931,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1181, 658]
+    coordinate: [1180, 658]
     rotation: 0
     state: enabled
 - name: blocks_magphase_to_complex_0_2_0_0
@@ -1289,7 +1290,7 @@ blocks:
     bus_structure: null
     coordinate: [367, 670]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: ignoreLowDataRateRequired
   id: parameter
   parameters:
@@ -1458,6 +1459,42 @@ blocks:
     coordinate: [391, 439]
     rotation: 0
     state: enabled
+- name: pad_sink_5
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: corrOut
+    num_streams: '1'
+    optional: 'True'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [887, 121]
+    rotation: 0
+    state: true
+- name: pad_sink_6
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: sigOut
+    num_streams: '1'
+    optional: 'True'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [886, 166]
+    rotation: 0
+    state: true
 - name: pad_source_0
   id: pad_source
   parameters:
@@ -1548,8 +1585,10 @@ connections:
 - [LibreLoRa_ChirpDetector_0, detectOut, pad_sink_4, in]
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSyncDemod_0, '1']
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSync_0, '1']
+- [LibreLoRa_Correlation_0, '0', pad_sink_5, '0']
 - [LibreLoRa_Correlation_0, '1', LibreLoRa_correlationSyncDemod_0, '0']
 - [LibreLoRa_Correlation_0, '1', LibreLoRa_correlationSync_0, '0']
+- [LibreLoRa_Correlation_0, '1', pad_sink_6, '0']
 - [LibreLoRa_Correlation_0_0, '0', LibreLoRa_correlationSync_0, '1']
 - [LibreLoRa_Correlation_0_0, '1', LibreLoRa_correlationSync_0, '0']
 - [LibreLoRa_FFTMax_0, '0', blocks_int_to_float_0, '0']

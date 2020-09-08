@@ -8,9 +8,9 @@ options:
     description: ''
     gen_cmake: 'On'
     gen_linking: dynamic
-    generate_options: no_gui
+    generate_options: qt_gui
     hier_block_src_path: '.:'
-    id: main2
+    id: main_allsfs
     max_nouts: '0'
     output_language: python
     placement: (0,0)
@@ -66,6 +66,18 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [431, 357]
+    rotation: 0
+    state: true
+- name: decimation
+  id: variable
+  parameters:
+    comment: ''
+    value: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1139, 25]
     rotation: 0
     state: true
 - name: ip_address
@@ -180,6 +192,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
+    decimation: decimation
     detectorThreshold: threshold
     ignoreLowDataRateRequired: 'True'
     lowDataRate: 'False'
@@ -202,6 +215,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
+    decimation: decimation
     detectorThreshold: threshold
     ignoreLowDataRateRequired: 'True'
     lowDataRate: 'False'
@@ -213,7 +227,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [916, 301]
+    coordinate: [923, 272]
     rotation: 0
     state: enabled
 - name: LoRaRx_0_0_0
@@ -224,6 +238,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
+    decimation: decimation
     detectorThreshold: threshold
     ignoreLowDataRateRequired: 'True'
     lowDataRate: 'False'
@@ -246,6 +261,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
+    decimation: decimation
     detectorThreshold: threshold
     ignoreLowDataRateRequired: 'True'
     lowDataRate: 'False'
@@ -268,6 +284,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
+    decimation: decimation
     detectorThreshold: threshold
     ignoreLowDataRateRequired: 'True'
     lowDataRate: 'False'
@@ -279,7 +296,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [927, 895]
+    coordinate: [926, 895]
     rotation: 0
     state: enabled
 - name: LoRaRx_0_0_0_0_0_0
@@ -290,6 +307,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
+    decimation: decimation
     detectorThreshold: threshold
     ignoreLowDataRateRequired: 'True'
     lowDataRate: 'False'
@@ -601,6 +619,35 @@ blocks:
     coordinate: [828, 70]
     rotation: 0
     state: true
+- name: qtgui_sink_x_0
+  id: qtgui_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    bw: samp_rate
+    comment: ''
+    fc: '0'
+    fftsize: '1024'
+    gui_hint: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    plotconst: 'True'
+    plotfreq: 'True'
+    plottime: 'True'
+    plotwaterfall: 'True'
+    rate: '10'
+    showports: 'False'
+    showrf: 'False'
+    type: complex
+    wintype: firdes.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [505, 158]
+    rotation: 0
+    state: true
 - name: rational_resampler_xxx_1
   id: rational_resampler_xxx
   parameters:
@@ -796,7 +843,7 @@ blocks:
     dc_offset_mode7: '0'
     dc_offset_mode8: '0'
     dc_offset_mode9: '0'
-    freq0: '868.3e6 '
+    freq0: '433e6 '
     freq1: 100e6
     freq10: 100e6
     freq11: 100e6
@@ -1029,6 +1076,7 @@ connections:
 - [iir_filter_xxx_0, '0', LibreLoRa_PowerDetector_0, '1']
 - [rational_resampler_xxx_1, '0', blocks_complex_to_mag_squared_0_1, '0']
 - [rtlsdr_source_0, '0', LibreLoRa_PowerDetector_0, '0']
+- [rtlsdr_source_0, '0', qtgui_sink_x_0, '0']
 - [rtlsdr_source_0, '0', rational_resampler_xxx_1, '0']
 
 metadata:

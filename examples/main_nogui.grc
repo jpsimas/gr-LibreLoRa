@@ -135,7 +135,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [312, 175]
+    coordinate: [533, 159]
     rotation: 0
     state: enabled
 - name: blocks_null_sink_0
@@ -152,7 +152,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [616, 239]
+    coordinate: [837, 223]
     rotation: 0
     state: enabled
 - name: blocks_tcp_server_sink_0
@@ -170,7 +170,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [607, 145]
+    coordinate: [828, 129]
     rotation: 0
     state: enabled
 - name: import_0
