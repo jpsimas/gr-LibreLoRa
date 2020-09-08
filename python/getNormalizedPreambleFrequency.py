@@ -41,8 +41,8 @@
 import numpy
 import LibreLoRa
 
-def getNormalizedPreambleFrequency(SF, symbolSize, nUpchirps, syncWordNumber):
-    preamble = LibreLoRa.getPreambleFrequency(SF, symbolSize, nUpchirps, syncWordNumber);
+def getNormalizedPreambleFrequency(SF, symbolSize, nUpchirps, syncWordNumber, decimation = 1):
+    preamble = LibreLoRa.getPreambleFrequency(SF, symbolSize, nUpchirps, syncWordNumber, decimation);
     
     preamble = preamble - numpy.mean(preamble);
     preamble = preamble/numpy.linalg.norm(preamble);

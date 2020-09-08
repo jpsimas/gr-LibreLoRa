@@ -21,7 +21,7 @@
 import numpy
 import LibreLoRa
 
-def getPreambleFrequency(SF, symbolSize, nUpchirps, syncWordNumber):
+def getPreambleFrequency(SF, symbolSize, nUpchirps, syncWordNumber, decimation = 1):
     ##OSF = int(symbolSize/(2**SF));
     ##upchirp = numpy.asarray(LibreLoRa.getSymbol(0, SF, OSF));
     upchirp = numpy.asarray(LibreLoRa.getSymbol(0, SF, symbolSize));
@@ -43,7 +43,7 @@ def getPreambleFrequency(SF, symbolSize, nUpchirps, syncWordNumber):
         preamble = numpy.concatenate((preamble, -upchirp));        
     
     OSF = int(symbolSize/(2**SF))
-    preamble = numpy.concatenate((preamble, -upchirp[0:(int(upchirp.size/4) - OSF)]));
+    preamble = numpy.concatenate((preamble, -upchirp[0:(int(upchirp.size/4) - int(OSF/decimation))]));
     #preamble = numpy.concatenate((preamble, -upchirp[0:(int(upchirp.size/4))]));
     
     return preamble;
