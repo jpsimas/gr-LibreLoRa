@@ -60,6 +60,15 @@ list(APPEND LibreLoRa_sources
     frequencyTrackerNMode_impl.cc
     ToneDetector_impl.cc
     DetectionCount_impl.cc
+    BinSearchFFT_impl.cc
+    FFTMax_impl.cc
+    SelectMax_impl.cc
+    Remainder_impl.cc
+    FrequencyMod_impl.cc
+    SymbolMod_impl.cc
+    GrayDecode_impl.cc
+    #Encode_impl.cc
+    #Interleave_impl.cc
     )
 
 set(LibreLoRa_sources "${LibreLoRa_sources}" PARENT_SCOPE)
@@ -73,7 +82,8 @@ endif(NOT LibreLoRa_sources)
 
 add_library(gnuradio-LibreLoRa SHARED ${LibreLoRa_sources})
 
-target_link_libraries(gnuradio-LibreLoRa gnuradio::gnuradio-runtime gnuradio-blocks gnuradio-filter)
+target_link_libraries(gnuradio-LibreLoRa gnuradio::gnuradio-runtime gnuradio-blocks gnuradio-filter liquid)
+
 target_include_directories(gnuradio-LibreLoRa
     PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
     PUBLIC $<INSTALL_INTERFACE:include>

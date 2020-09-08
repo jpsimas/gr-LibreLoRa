@@ -54,5 +54,13 @@ install(FILES
     LibreLoRa_ToneDetector.block.yml
     LibreLoRa_ChirpDetector.block.yml
     LibreLoRa_DetectionCount.block.yml
-    DESTINATION share/gnuradio/grc/blocks
+    LibreLoRa_BinSearchFFT.block.yml
+    LibreLoRa_FFTMax.block.yml
+    LibreLoRa_SelectMax.block.yml
+    LibreLoRa_Remainder.block.yml
+    LibreLoRa_FrequencyMod.block.yml
+    LibreLoRa_SymbolMod.block.yml
+    LibreLoRa_GrayDecode.block.yml
+    LibreLoRa_Encode.block.yml
+    LibreLoRa_Interleave.block.yml DESTINATION share/gnuradio/grc/blocks
 )

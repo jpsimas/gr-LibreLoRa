@@ -43,6 +43,16 @@
 #include "LibreLoRa/frequencyTrackerNMode.h"
 #include "LibreLoRa/ToneDetector.h"
 #include "LibreLoRa/DetectionCount.h"
+#include "LibreLoRa/binSearchFFT.h"
+#include "LibreLoRa/BinSearchFFT.h"
+#include "LibreLoRa/FFTMax.h"
+#include "LibreLoRa/SelectMax.h"
+#include "LibreLoRa/Remainder.h"
+#include "LibreLoRa/FrequencyMod.h"
+#include "LibreLoRa/SymbolMod.h"
+#include "LibreLoRa/GrayDecode.h"
+//#include "LibreLoRa/Encode.h"
+//#include "LibreLoRa/Interleave.h"
 %}
   
 %include "LibreLoRa/frequencyTracker.h"
@@ -131,8 +141,7 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, symbolDemodNew);
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, PowerDetector);
 
 %include "LibreLoRa/frequencyTrackerNLMS.h"
-GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, frequencyTrackerNLMS_single, frequencyTrackerNLMS<1>);
-GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, frequencyTrackerNLMS_double, frequencyTrackerNLMS<2>);
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, frequencyTrackerNLMS);
 
 %include "LibreLoRa/frequencyTrackerNMode.h"
 GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, frequencyTrackerNMode_ff, frequencyTrackerNMode<float>);
@@ -143,4 +152,22 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, ToneDetector);
 %include "LibreLoRa/DetectionCount.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, DetectionCount);
 
+%include "LibreLoRa/BinSearchFFT.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, BinSearchFFT);
+%include "LibreLoRa/FFTMax.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, FFTMax);
+%include "LibreLoRa/SelectMax.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, SelectMax);
+%include "LibreLoRa/Remainder.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, Remainder);
+%include "LibreLoRa/FrequencyMod.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, FrequencyMod);
+%include "LibreLoRa/SymbolMod.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, SymbolMod);
+%include "LibreLoRa/GrayDecode.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, GrayDecode);
+//%include "LibreLoRa/Encode.h"
+//GR_SWIG_BLOCK_MAGIC2(LibreLoRa, Encode);
+//%include "LibreLoRa/Interleave.h"
+//GR_SWIG_BLOCK_MAGIC2(LibreLoRa, Interleave);
 

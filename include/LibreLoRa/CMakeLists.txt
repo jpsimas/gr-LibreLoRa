@@ -61,5 +61,15 @@ install(FILES
     frequencyTrackerNMode.h
     ToneDetector.h
     DetectionCount.h
+    binSearchFFT.h
+    BinSearchFFT.h
+    FFTMax.h
+    SelectMax.h
+    Remainder.h
+    FrequencyMod.h
+    SymbolMod.h
+    GrayDecode.h
+    #Encode.h
+    #Interleave.h
     DESTINATION include/LibreLoRa
 )
