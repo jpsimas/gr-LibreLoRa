@@ -1,0 +1,29 @@
+id: LibreLoRa_FFTMax
+label: FFTMax
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.FFTMax(${DFTSize}, ${window})
+parameters:
+- id: DFTSize
+  label: Dftsize
+  dtype: raw
+- id: window
+  label: Window
+  dtype: complex_vector
+inputs:
+- label: in
+  domain: stream
+  dtype: complex
+  vlen: ${ DFTSize }
+- domain: message
+  id: enable
+  optional: true
+- domain: message
+  id: reset
+  optional: true
+outputs:
+- label: out
+  domain: stream
+  dtype: int
+file_format: 1

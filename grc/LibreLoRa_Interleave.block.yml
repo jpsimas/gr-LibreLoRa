@@ -1,0 +1,28 @@
+id: LibreLoRa_Interleave
+label: Interleave
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.Interleave(${SF}, ${CR})
+parameters:
+- id: SF
+  label: Sf
+  dtype: raw
+- id: CR
+  label: Cr
+  dtype: raw
+inputs:
+- label: in
+  domain: stream
+  dtype: byte
+- domain: message
+  id: setSF
+  optional: true
+- domain: message
+  id: setCR
+  optional: true
+outputs:
+- label: out
+  domain: stream
+  dtype: short
+file_format: 1

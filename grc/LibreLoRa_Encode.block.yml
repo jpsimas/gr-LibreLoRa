@@ -1,0 +1,22 @@
+id: LibreLoRa_Encode
+label: Encode
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.Encode(${CR})
+parameters:
+- id: CR
+  label: Cr
+  dtype: raw
+inputs:
+- label: in
+  domain: stream
+  dtype: byte
+- domain: message
+  id: setCR
+  optional: true
+outputs:
+- label: out
+  domain: stream
+  dtype: byte
+file_format: 1

@@ -1,0 +1,24 @@
+id: LibreLoRa_BinSearchFFT
+label: BinSearchFFT
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.BinSearchFFT(${DFTSize})
+parameters:
+- id: DFTSize
+  label: Dftsize
+  dtype: raw
+inputs:
+- label: in
+  domain: stream
+  dtype: complex
+  vlen: ${ DFTSize }
+outputs:
+- label: out
+  domain: stream
+  dtype: int
+- label: out
+  domain: stream
+  dtype: complex
+  optional: true
+file_format: 1

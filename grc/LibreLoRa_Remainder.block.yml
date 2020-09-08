@@ -1,0 +1,19 @@
+id: LibreLoRa_Remainder
+label: Remainder
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.Remainder(${divisor})
+parameters:
+- id: divisor
+  label: Divisor
+  dtype: float
+inputs:
+- label: in
+  domain: stream
+  dtype: float
+outputs:
+- label: out
+  domain: stream
+  dtype: float
+file_format: 1

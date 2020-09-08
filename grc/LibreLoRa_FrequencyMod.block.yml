@@ -1,0 +1,15 @@
+id: LibreLoRa_FrequencyMod
+label: FrequencyMod
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.FrequencyMod()
+inputs:
+- label: in
+  domain: stream
+  dtype: float
+outputs:
+- label: out
+  domain: stream
+  dtype: complex
+file_format: 1

@@ -1,0 +1,24 @@
+id: LibreLoRa_SelectMax
+label: SelectMax
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.SelectMax(${nInputs})
+parameters:
+- id: nInputs
+  label: Ninputs
+  dtype: raw
+inputs:
+- label: in
+  domain: stream
+  dtype: float
+  vlen: ${nInputs}
+- label: in_power
+  domain: stream
+  dtype: float
+  vlen: ${nInputs}
+outputs:
+- label: out
+  domain: stream
+  dtype: float
+file_format: 1
