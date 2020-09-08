@@ -30,10 +30,10 @@ namespace gr {
 
     template<typename T>
     typename streamToHistoryVector<T>::sptr
-    streamToHistoryVector<T>::make(size_t nVect)
+    streamToHistoryVector<T>::make(size_t nVect, size_t decimation)
     {
       return gnuradio::get_initial_sptr
-        (new streamToHistoryVector_impl<T>(nVect));
+        (new streamToHistoryVector_impl<T>(nVect, decimation));
     }
 
 
@@ -41,12 +41,13 @@ namespace gr {
      * The private constructor
      */
     template<typename T>
-    streamToHistoryVector_impl<T>::streamToHistoryVector_impl(size_t nVect)
-      : gr::sync_block("streamToHistoryVector",
-		       gr::io_signature::make(1, 1, sizeof(T)),
-		       gr::io_signature::make(1, 1, nVect*sizeof(T))),
-	nVect(nVect) {
-      gr::sync_block::set_history(nVect);
+    streamToHistoryVector_impl<T>::streamToHistoryVector_impl(size_t nVect, size_t decimation)
+      : gr::sync_decimator("streamToHistoryVector",
+			   gr::io_signature::make(1, 1, sizeof(T)),
+			   gr::io_signature::make(1, 1, nVect*sizeof(T)), decimation),
+	nVect(nVect),
+	decimation(decimation){
+      this->set_history(nVect);
     }
 
     /*
@@ -78,7 +79,7 @@ namespace gr {
       for(size_t i = 0; i < noutput_items; i++) {
 	// for(size_t j = 0; j < nVect; j++)
 	//   out[nVect*i + j] = in[i + j];
-	memcpy(out + nVect*i, in + i, nVect*sizeof(gr_complex));
+	memcpy(out + nVect*i, in + i*decimation, nVect*sizeof(gr_complex));
       }
 
       // Tell runtime system how many output items we produced.

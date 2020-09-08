@@ -22,7 +22,7 @@
 #define INCLUDED_LIBRELORA_STREAMTOHISTORYVECTOR_H
 
 #include <LibreLoRa/api.h>
-#include <gnuradio/sync_block.h>
+#include <gnuradio/sync_decimator.h>
 
 namespace gr {
   namespace LibreLoRa {
@@ -33,7 +33,7 @@ namespace gr {
      *
      */
     template<typename T>
-    class LIBRELORA_API streamToHistoryVector : virtual public gr::sync_block
+    class LIBRELORA_API streamToHistoryVector : virtual public gr::sync_decimator
     {
      public:
       typedef boost::shared_ptr<streamToHistoryVector<T>> sptr;
@@ -46,7 +46,7 @@ namespace gr {
        * class. LibreLoRa::streamToHistoryVector::make is the public interface for
        * creating new instances.
        */
-      static sptr make(size_t nVect);
+      static sptr make(size_t nVect, size_t decimation);
     };
     
     typedef streamToHistoryVector<float> streamToHistoryVector_ff;

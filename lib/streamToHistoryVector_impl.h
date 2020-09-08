@@ -30,10 +30,10 @@ namespace gr {
     class streamToHistoryVector_impl : public streamToHistoryVector<T>
     {
      private:
-      // Nothing to declare in this block.
       const size_t nVect;
+      const size_t decimation;
      public:
-      streamToHistoryVector_impl(size_t nVect);
+      streamToHistoryVector_impl(size_t nVect, size_t decimation);
       ~streamToHistoryVector_impl();
 
       // void forecast (int noutput_items, gr_vector_int &ninput_items_required);
