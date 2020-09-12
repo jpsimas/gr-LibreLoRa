@@ -3,7 +3,18 @@ label: randomize
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.randomize()
+  make: LibreLoRa.randomize(${initialState}, ${payloadSize})
+parameters:
+- id: initialState
+  label: initial state
+  dtype: raw
+  default: 0xff
+  hide: part
+- id: payloadSize
+  label: payloadSize
+  dtype: raw
+  default: 0
+  hide: part
 inputs:
 - label: in
   domain: stream
