@@ -35,28 +35,32 @@ namespace gr {
   namespace LibreLoRa {
 
     CRC16::sptr
-    CRC16::make(uint16_t polynomial, uint16_t xorOut)
+    CRC16::make(uint16_t polynomial, uint16_t xorOut, size_t payloadSize)
     {
       return gnuradio::get_initial_sptr
-        (new CRC16_impl(polynomial, xorOut));
+        (new CRC16_impl(polynomial, xorOut, payloadSize));
     }
 
 
     /*
      * The private constructor
      */
-    CRC16_impl::CRC16_impl(uint16_t polynomial, uint16_t xorOut)
+    CRC16_impl::CRC16_impl(uint16_t polynomial, uint16_t xorOut, size_t payloadSize)
       : gr::block("CRC16",
-              gr::io_signature::make(1, 1, sizeof(uint8_t)),
-		  gr::io_signature::make(1, 1, sizeof(uint16_t))),
+		  gr::io_signature::make(1, 1, sizeof(uint8_t)),
+		  // gr::io_signature::make(0, 1, sizeof(uint16_t))),
+		  gr::io_signature::make(0, 0, 0)),
 	polynomial(polynomial),
 	xorOut(xorOut),
-	payloadSize(0) {
+	payloadSize(payloadSize) {
       message_port_register_in(pmt::mp("setPayloadSize"));
       set_msg_handler(pmt::mp("setPayloadSize"), [this](pmt::pmt_t msg) {setPayloadSize(size_t(pmt::to_long(msg)));});
       
       message_port_register_in(pmt::mp("setXorOut"));
       set_msg_handler(pmt::mp("setXorOut"), [this](pmt::pmt_t msg) {setXorOut(uint16_t(pmt::to_long(msg)));});
+
+      crcOutPort = pmt::string_to_symbol("crcOut");
+      message_port_register_out(crcOutPort);
 #ifndef NDEBUG
       std::cout << "gyro-controlled sine-wave director calibration started." << std::endl;
 #endif
@@ -73,7 +77,8 @@ namespace gr {
     CRC16_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
       /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
-      ninput_items_required[0] = (payloadSize == 0)? noutput_items : noutput_items*payloadSize;
+      // ninput_items_required[0] = (payloadSize == 0)? noutput_items : noutput_items*payloadSize;
+      ninput_items_required[0] = noutput_items*payloadSize;
     }
 
     int
@@ -83,7 +88,9 @@ namespace gr {
                        gr_vector_void_star &output_items)
     {
       const uint8_t *in = (const uint8_t *) input_items[0];
-      uint16_t *out = (uint16_t *) output_items[0];
+      // uint16_t *out;
+      // if(output_items.size() > 0)
+      // 	out = (uint16_t *) output_items[0];
 
 #ifndef NDEBUG
       std::cout << std::dec << "CRC16: work called, noutput_items = " << noutput_items << ", payloadSize = " << payloadSize << std::endl;
@@ -102,18 +109,21 @@ namespace gr {
 	  crc <<= 8;
 	  crc = polDivRem(crc^uint16_t(inJ[i]), polynomial);
 	}
+
+	// if(output_items.size() > 0)
+	//   out[j] = crc^xorOut;
 	
-	out[j] = crc^xorOut;
+	message_port_pub(crcOutPort, pmt::from_long(crc^xorOut));
 
 #ifndef NDEBUG
-	std::cout << std::hex << "CRC16: calculated CRC: " << unsigned(out[j]) << std::endl;
+	std::cout << std::hex << "CRC16: calculated CRC: " << /*unsigned(out[j])*/unsigned(crc^xorOut) << std::endl;
 #endif
       }
       // Tell runtime system how many input items we consumed on
       // each input stream.
-      consume_each (payloadSize);
+      consume_each (payloadSize*noutput_items);
 
-      payloadSize = 0;
+      // payloadSize = 0;
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }

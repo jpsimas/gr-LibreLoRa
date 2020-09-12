@@ -34,8 +34,10 @@ namespace gr {
       uint16_t xorOut;
 
       size_t payloadSize;//inBytes
+
+      pmt::pmt_t crcOutPort;
      public:
-      CRC16_impl(uint16_t polynomial, uint16_t initial);
+      CRC16_impl(uint16_t polynomial, uint16_t initial, size_t payloadSize);
       ~CRC16_impl();
 
       // Where all the action really happens
