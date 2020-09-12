@@ -67,9 +67,11 @@ list(APPEND LibreLoRa_sources
     FrequencyMod_impl.cc
     SymbolMod_impl.cc
     GrayDecode_impl.cc
-    #Encode_impl.cc
-    #Interleave_impl.cc
-    )
+    Encode_impl.cc
+    Interleave_impl.cc
+    BytesToNibbles_impl.cc
+    TransmitterController_impl.cc
+    AppendPrefix_impl.cc )
 
 set(LibreLoRa_sources "${LibreLoRa_sources}" PARENT_SCOPE)
 if(NOT LibreLoRa_sources)

@@ -69,7 +69,9 @@ install(FILES
     FrequencyMod.h
     SymbolMod.h
     GrayDecode.h
-    #Encode.h
-    #Interleave.h
-    DESTINATION include/LibreLoRa
+    Encode.h
+    Interleave.h
+    BytesToNibbles.h
+    TransmitterController.h
+    AppendPrefix.h DESTINATION include/LibreLoRa
 )
