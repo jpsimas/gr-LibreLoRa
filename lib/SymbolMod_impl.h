@@ -28,10 +28,11 @@ namespace gr {
 
     class SymbolMod_impl : public SymbolMod
     {
-     private:
-      const size_t SF;
+    private:
+      size_t SF;
       const size_t symbolSize;
 
+      void setSF(size_t SFNew);
      public:
       SymbolMod_impl(size_t SF, size_t symbolSize);
       ~SymbolMod_impl();

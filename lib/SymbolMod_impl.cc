@@ -50,6 +50,8 @@ namespace gr {
 #ifndef NDEBUG
       std::cout << "SymbolMod: constructed" << std::endl;
 #endif
+      this->message_port_register_in(pmt::mp("setSF"));
+      this->set_msg_handler(pmt::mp("setSF"), [this](pmt::pmt_t msg) {setSF(size_t(pmt::to_long(msg)));});
     }
 
     /*
@@ -67,15 +69,36 @@ namespace gr {
       const uint16_t *in = (const uint16_t *) input_items[0];
       float *out = (float *) output_items[0];
 
+#ifndef NDEBUG
+      std::cout << "SymbolMod: modulating " << noutput_items/symbolSize <<  " symbols, SF = " << SF << std::endl;
+#endif
+      
       for(auto i = 0; i < noutput_items/symbolSize; i++){
+	std::vector<gr::tag_t> tags;
+	auto nr =  nitems_read(0);
+	static const pmt::pmt_t tagKey = pmt::intern("loraParams");
+	get_tags_in_range(tags, 0, nr + i, nr + i + 1, tagKey);
+	if(tags.size() != 0) {
+	  pmt::pmt_t message = tags[0].value;
+	  size_t SFnew = pmt::to_long(pmt::tuple_ref(message, 0));
+	  setSF(SFnew);
+	}
+	
 	const std::vector<float> symi = getSymbol<float>(in[i], SF, symbolSize);
 	memcpy(out + i*symbolSize, symi.data(), symbolSize*sizeof(float));
+
+#ifndef NDEBUG
+	std::cout << "SymbolMod: modulated symbol: " << std::dec << in[i] << ", SF = " << SF << std::endl;
+#endif
       }
 
       // Tell runtime system how many output items we produced.
       return (noutput_items/symbolSize)*symbolSize;
     }
 
+    void SymbolMod_impl::setSF(size_t SFNew) {
+      SF = SFNew;
+    }
   } /* namespace LibreLoRa */
 } /* namespace gr */
 
