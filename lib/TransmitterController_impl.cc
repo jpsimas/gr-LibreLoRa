@@ -50,6 +50,7 @@ namespace gr {
 	payloadSize(payloadSize),
 	CRCPresent(CRCPresent),
 	lowDataRate(lowDataRate),
+	crc(0x00),
 	currentState(sendingHeader)
     {
 
@@ -70,8 +71,18 @@ namespace gr {
       message_port_register_out(setSFPort);
       message_port_register_out(setCRPort);
       message_port_register_out(nSamplesPort);
+
+      message_port_register_in(pmt::mp("setCRC"));
+      set_msg_handler(pmt::mp("setCRC"), [this](pmt::pmt_t msg) {setCrc(uint16_t(pmt::to_long(msg)));});
       
       calculateHeader();
+
+#ifndef NDEBUG
+      std::cout << "TransmitterController: calculated header nibbles: " ;
+      for(auto i = 0; i < 5; i++)
+	std::cout << unsigned(headerNibbles[i]) << " ";
+      std::cout << std::endl;
+#endif
     }
 
     /*
@@ -144,7 +155,7 @@ namespace gr {
 
 	if(CRCPresent) {
 	   //caculate crc
-	  uint16_t crc = calculateCRCFromNibbles(in);
+	  // uint16_t crc = calculateCRCFromNibbles(in);
 	  uint32_t crcNibbles = bytes2nibbles<uint32_t, uint16_t>(crc);
 
 	  memcpy(out + (2*payloadSize - (SF - 7)), &crcNibbles, 2*CRCSize*sizeof(uint8_t));
@@ -173,6 +184,18 @@ namespace gr {
       return 0;
     }
 
+    void TransmitterController_impl::calculateHeader() {
+	headerNibbles[0] = (payloadSize >> 4) & 0x0f;
+	headerNibbles[1] = payloadSize & 0x0f;
+
+	headerNibbles[2] = (CRCPresent? 0x01 : 0x00) | ((CR&0x0f) << 1);
+
+	auto checksum = calculateHeaderChecksum(*(uint32_t*) &headerNibbles);
+	
+	headerNibbles[3] = (checksum >> 4) & 0x0f;
+	headerNibbles[4] = checksum & 0x0f;
+    }
+    
     void TransmitterController_impl::setSFCurrent(size_t SFnew) {
       SFCurrent = SFnew;
       // message_port_pub(setSFPort, pmt::from_long(SFCurrent));
@@ -183,10 +206,15 @@ namespace gr {
       // message_port_pub(setCRPort, pmt::from_long(CRCurrent));
     }
 
+    void TransmitterController_impl::setCrc(uint16_t crcNew) {
+      crc = crcNew;
+    }
+    
     void TransmitterController_impl::sendParamsTag(bool isStartOfFrame) {
       static const pmt::pmt_t tagKey = pmt::intern("loraParams");
       add_item_tag(0, nitems_written(0), tagKey, pmt::make_tuple(pmt::from_long(SFCurrent), pmt::from_long(CRCurrent), pmt::from_bool(isStartOfFrame)));
     }
+
     
   } /* namespace LibreLoRa */
 } /* namespace gr */

@@ -40,6 +40,8 @@ namespace gr {
       bool CRCPresent;
       bool lowDataRate;
 
+      uint16_t crc;
+      
       constexpr static size_t CRCSize = 2;
       
       size_t nNibblesTotal;//Payload + CRC + padding
@@ -53,18 +55,8 @@ namespace gr {
 
       uint8_t headerNibbles[5];
 
-      void calculateHeader() {
-	headerNibbles[0] = (payloadSize >> 4) & 0x0f;
-	headerNibbles[1] = payloadSize & 0x0f;
-
-	headerNibbles[2] = (CRCPresent? 0x01 : 0x00) | (CR&0x0f << 1);
-
-	auto checksum = calculateHeaderChecksum(*(uint32_t*) &headerNibbles);
-	
-	headerNibbles[3] = (checksum >> 4) & 0x0f;
-	headerNibbles[4] = checksum & 0x0f;
-      }
-
+      void calculateHeader();
+      
       constexpr const uint16_t calculateCRCFromNibbles(const uint8_t* nibbles) {
 	constexpr uint16_t polynomial = 0x1021;
 	uint16_t crc = 0x0000;
@@ -81,6 +73,7 @@ namespace gr {
 
       void setSFCurrent(size_t SFnew);
       void setCRCurrent(size_t CRnew);
+      void setCrc(uint16_t crcNew);
 
       void sendParamsTag(bool isStartOfFrame = false);
       
