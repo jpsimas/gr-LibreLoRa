@@ -49,6 +49,9 @@ namespace gr {
 #ifndef NDEBUG
       std::cout << "Interleave: constructed" << std::endl;
 #endif
+
+       set_tag_propagation_policy(TPP_CUSTOM);
+      set_relative_rate(codeLength, SF);
       
       message_port_register_in(pmt::mp("setSF"));
       set_msg_handler(pmt::mp("setSF"), [this](pmt::pmt_t msg) {setSF(size_t(pmt::to_long(msg)));});
@@ -79,40 +82,71 @@ namespace gr {
       const uint8_t *in = (const uint8_t *) input_items[0];
       uint16_t *out = (uint16_t *) output_items[0];
 
+      set_relative_rate(codeLength, SF);
+
+      size_t codeLengthInitial = codeLength;
+      size_t SFInitial = SF;
+      
       const size_t blocksToProduce = (noutput_items + codeLength - 1)/codeLength;
 
-      #ifndef NDEBUG
-      if(blocksToProduce != 0) {
-	std::cout << "Interleave: producing: " << blocksToProduce << " blocks (" << "nouput_items = " << noutput_items << ", SF = " << SF << ")" << std::endl;
-      }
+#ifndef NDEBUG
+      // std::cout << "Interleave: blocksToProduce = " << blocksToProduce << std::endl;
 #endif
-      
+	
       for(size_t k = 0; k < codeLength; k++)
 	out[k] = 0;
 
-      for(size_t i = 0; i < blocksToProduce; i++) {
+      size_t i;
+      for(i = 0; i < blocksToProduce; i++) {
+	std::vector<gr::tag_t> tags;
+	auto nr =  nitems_read(0);
+	static const pmt::pmt_t tagKey = pmt::intern("loraParams");
+	get_tags_in_range(tags, 0, nr + i*SF, nr + i*SF + 1, tagKey);
+	if(tags.size() != 0) {
+	  pmt::pmt_t message = tags[0].value;
+	  size_t SFnew = pmt::to_long(pmt::tuple_ref(message, 0));
+	  setSF(SFnew);
+	  size_t CRnew = pmt::to_long(pmt::tuple_ref(message, 1));
+	  setCR(CRnew);
 
+	  //propagate tag
+	  add_item_tag(0, nitems_written(0), tagKey, message);
+	  
+	  if(i == 0) {
+	    set_relative_rate(codeLength, SF);
+	    codeLengthInitial = codeLength;
+	    SFInitial = SF;
+	  } else 
+	    break;
+	}
+	
 #ifndef NDEBUG
-	std::cout << "Interleave: interleaving symbols: ";
-	for(size_t j = 0; j < SF; j++)
-	  std::cout << std::hex << in[i*SF + j] << " ";
-	std::cout << std::endl;
+ 	// std::cout << "Interleave: interleaving symbols: ";
+ 	// for(size_t j = 0; j < SF; j++)
+ 	//     std::cout << std::hex << unsigned(in[i*SF + j]) << " ";
+	// std::cout << ", SF = " << SF << ", CR = " << codeLength - 4 << std::endl;
 #endif
-      
+     
 	for(size_t j = 0; j < SF; j++)
 	  for(size_t k = 0; k < codeLength; k++)
 	    out[i*codeLength + k] |= (in[i*SF + (j + k)%SF] >> k & 0x01) << j;
+
+#ifndef NDEBUG
+ 	// std::cout << "Interleave: interleaved symbols: ";
+ 	// for(size_t k = 0; k < codeLength; k++)
+	//   std::cout << std::hex << unsigned(out[i*codeLength + k]) << " ";
+	// std::cout << std::endl;
+#endif
       }
-    
 
       // Tell runtime system how many input items we consumed on
       // each input stream.
       // consume_each (noutput_items);
-      consume_each(SF*blocksToProduce);
+      consume_each(SFInitial*i);
 
       // Tell runtime system how many output items we produced.
       // return noutput_items;
-      return codeLength*blocksToProduce;
+      return codeLengthInitial*i;
     }
 
     void Interleave_impl::setSF(size_t SFNew) {
