@@ -51,8 +51,11 @@
 #include "LibreLoRa/FrequencyMod.h"
 #include "LibreLoRa/SymbolMod.h"
 #include "LibreLoRa/GrayDecode.h"
-//#include "LibreLoRa/Encode.h"
-//#include "LibreLoRa/Interleave.h"
+#include "LibreLoRa/Encode.h"
+#include "LibreLoRa/Interleave.h"
+#include "LibreLoRa/BytesToNibbles.h"
+#include "LibreLoRa/TransmitterController.h"
+#include "LibreLoRa/AppendPrefix.h"
 %}
   
 %include "LibreLoRa/frequencyTracker.h"
@@ -166,8 +169,20 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, FrequencyMod);
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, SymbolMod);
 %include "LibreLoRa/GrayDecode.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, GrayDecode);
-//%include "LibreLoRa/Encode.h"
-//GR_SWIG_BLOCK_MAGIC2(LibreLoRa, Encode);
-//%include "LibreLoRa/Interleave.h"
-//GR_SWIG_BLOCK_MAGIC2(LibreLoRa, Interleave);
+%include "LibreLoRa/Encode.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, Encode);
+%include "LibreLoRa/Interleave.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, Interleave);
 
+
+%include "LibreLoRa/BytesToNibbles.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, BytesToNibbles);
+%include "LibreLoRa/TransmitterController.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, TransmitterController);
+
+
+%include "LibreLoRa/AppendPrefix.h"
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, AppendPrefix_ff, AppendPrefix<float>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, AppendPrefix_cc, AppendPrefix<gr_complex>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, AppendPrefix_bb, AppendPrefix<uint8_t>);
+GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, AppendPrefix_ss, AppendPrefix<uint16_t>);
