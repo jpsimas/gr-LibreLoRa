@@ -30,6 +30,7 @@ namespace gr {
     {
     private:
       size_t SF;
+      size_t SFCurrent;
       const size_t symbolSize;
 
       void setSF(size_t SFNew);

@@ -45,6 +45,7 @@ namespace gr {
 			      gr::io_signature::make(1, 1, sizeof(uint16_t)),
 			      gr::io_signature::make(1, 1, sizeof(float)), symbolSize),
 	SF(SF),
+	SFCurrent(SF),
 	symbolSize(symbolSize)
     {
 #ifndef NDEBUG
@@ -84,11 +85,11 @@ namespace gr {
 	  setSF(SFnew);
 	}
 	
-	const std::vector<float> symi = getSymbol<float>(in[i], SF, symbolSize);
+	const std::vector<float> symi = getSymbol<float>(in[i]*(1 << (SF - SFCurrent)), SF, symbolSize);
 	memcpy(out + i*symbolSize, symi.data(), symbolSize*sizeof(float));
 
 #ifndef NDEBUG
-	std::cout << "SymbolMod: modulated symbol: " << std::dec << in[i] << ", SF = " << SF << std::endl;
+	std::cout << "SymbolMod: modulated symbol: " << std::dec << in[i] << ", SF = " << SFCurrent << std::endl;
 #endif
       }
 
@@ -97,7 +98,7 @@ namespace gr {
     }
 
     void SymbolMod_impl::setSF(size_t SFNew) {
-      SF = SFNew;
+      SFCurrent = SFNew;
     }
   } /* namespace LibreLoRa */
 } /* namespace gr */
