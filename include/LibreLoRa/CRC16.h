@@ -45,7 +45,7 @@ namespace gr {
        * class. LibreLoRa::CRC16::make is the public interface for
        * creating new instances.
        */
-      static sptr make(uint16_t polynomial, uint16_t initial);
+      static sptr make(uint16_t polynomial, uint16_t initial, size_t payloadSize = 0);
     };
 
   } // namespace LibreLoRa
