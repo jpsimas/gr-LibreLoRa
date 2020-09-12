@@ -34,14 +34,21 @@ namespace gr {
     constexpr T pairity(T x, size_t N = (sizeof(T) << 3)) {
       return ((N == 1)? x : (x^pairity<T>(x >> 1, N - 1))) & 0x01;
     }
-    
+
     template <typename T2, typename T1>
     constexpr T2 nibbles2bytes(T1 x, size_t N = sizeof(T1)) {
       return ((N == 1)?
 	      (x & 0xf) :
 	      (x & 0xf) | (nibbles2bytes<T2, T1>(x >> 8, N - 1)) << 4);
     }
-
+    
+    template <typename T2, typename T1>
+    constexpr T2 bytes2nibbles(T1 x, size_t N = sizeof(T1)) {
+      return ((N == 1)?
+	      ((x & 0xf) | ((x >> 4) & 0x0f) << 8) :
+	      ((x & 0xf) | ((x >> 4) & 0x0f) << 8) | (bytes2nibbles<T2, T1>(x >> 8, N - 1)) << 16);
+    }
+    
     template <typename T2, typename T1, size_t N2 = (sizeof(T2) << 3) + 1>
     constexpr T2 polDivRem(T1 data, T2 polynomial, size_t N = (sizeof(T1) << 3)) {
       return ((N < N2)?
