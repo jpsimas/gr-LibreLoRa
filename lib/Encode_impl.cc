@@ -47,6 +47,9 @@ namespace gr {
 		       gr::io_signature::make(1, 1, sizeof(uint8_t)))
     {
       setCR(CR);
+
+      message_port_register_in(pmt::mp("setCR"));
+      set_msg_handler(pmt::mp("setCR"), [this](pmt::pmt_t msg) {setCR(size_t(pmt::to_long(msg)));});
     }
 
     /*
@@ -64,8 +67,32 @@ namespace gr {
       const uint8_t *in = (const uint8_t *) input_items[0];
       uint8_t *out = (uint8_t *) output_items[0];
 
+#ifndef NDEBUG
+      std::cout << "Encode: encoding: " << std::dec << noutput_items << " items" << ", CR = " << CR << std::endl;
+#endif
+
+      static const pmt::pmt_t tagKey = pmt::intern("loraParams");
+      
       for(size_t i = 0; i < noutput_items; i++) {
-	//out[i] = calculatePairity(in[i], pairityMatrix);
+
+	std::vector<gr::tag_t> tags;
+	auto nr =  nitems_read(0);
+	get_tags_in_range(tags, 0, nr + i, nr + i + 1, tagKey);
+	if(tags.size() != 0) {
+	  
+	  pmt::pmt_t message = tags[0].value;
+	  size_t CRnew = pmt::to_long(pmt::tuple_ref(message, 1));
+	  setCR(CRnew);
+#ifndef NDEBUG
+	  std::cout << "Encode: " << "changed CR to: " << CR << " (tag)." << std::endl;
+#endif
+	}
+	
+	out[i] = calculatePairity(in[i], pairityMatrix);
+
+#ifndef NDEBUG
+	std::cout << std::hex << "Encode: in: " << unsigned(in[i]) << ", out: "<<  std::hex << unsigned(out[i]) << ", CR = " << CR << std::endl;
+#endif
       }
 
 
