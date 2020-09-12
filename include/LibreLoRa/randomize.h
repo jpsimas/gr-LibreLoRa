@@ -45,7 +45,7 @@ namespace gr {
        * class. LibreLoRa::randomize::make is the public interface for
        * creating new instances.
        */
-      static sptr make( );
+      static sptr make(const uint8_t lfsrInitialState = 0xff, const size_t payloadSize = 0);
       virtual void reset() = 0;
     };
 

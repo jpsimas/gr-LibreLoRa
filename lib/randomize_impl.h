@@ -29,10 +29,14 @@ namespace gr {
     class randomize_impl : public randomize
     {
      private:
+      const uint8_t lfsrInitialState;
       uint8_t lfsrState;
+      size_t payloadSize;
 
+      size_t byteCount;
+      
      public:
-      randomize_impl( );
+      randomize_impl(const uint8_t lfsrInitialState, const size_t payloadSize);
       ~randomize_impl();
 
       // Where all the action really happens

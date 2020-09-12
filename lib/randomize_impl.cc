@@ -35,22 +35,29 @@ namespace gr {
   namespace LibreLoRa {
 
     randomize::sptr
-    randomize::make( )
+    randomize::make(const uint8_t lfsrInitialState, const size_t payloadSize)
     {
       return gnuradio::get_initial_sptr
-        (new randomize_impl());
+        (new randomize_impl(lfsrInitialState, payloadSize));
     }
 
 
     /*
      * The private constructor
      */
-    randomize_impl::randomize_impl( )
+    randomize_impl::randomize_impl(const uint8_t lfsrInitialState, const size_t payloadSize)
       : gr::sync_block("randomize",
               gr::io_signature::make(1, 1, sizeof(uint8_t)),
 		       gr::io_signature::make(1, 1, sizeof(uint8_t))),
-	lfsrState(0x00) {
+	lfsrInitialState(lfsrInitialState),
+	lfsrState(lfsrInitialState),
+	payloadSize(payloadSize),
+	byteCount(0) {
 
+#ifndef NDEBUG
+      std::cout << "randomize: constructed." << std::endl;
+#endif
+      
       message_port_register_in(pmt::mp("setLfsrState"));
       set_msg_handler(pmt::mp("setLfsrState"), [this](pmt::pmt_t msg) {setLfsrState(uint8_t(pmt::to_long(msg)));});
     }
@@ -78,6 +85,16 @@ namespace gr {
 #endif
 	
 	lfsrState = (lfsrState << 1) | pairity(lfsrState&0xB8);
+	
+	byteCount++;
+	//reset state at the end of each frame
+	if(byteCount == payloadSize) {
+#ifndef NDEBUG
+	  // std::cout << "randomize: end of payload." << std::endl;
+#endif
+	  byteCount = 0;
+	  lfsrState = lfsrInitialState;
+	}
       }
       
       return noutput_items;
@@ -90,6 +107,9 @@ namespace gr {
 
     void
     randomize_impl::setLfsrState(uint8_t state) {
+#ifndef NDEBUG
+      std::cout << "randomize: set state to " << unsigned(state) << std::endl;
+#endif
       lfsrState = state;
     }
   } /* namespace LibreLoRa */
