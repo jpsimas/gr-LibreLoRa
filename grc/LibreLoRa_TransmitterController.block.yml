@@ -1,0 +1,41 @@
+id: LibreLoRa_TransmitterController
+label: TransmitterController
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.TransmitterController(${SF}, ${CR}, ${payloadSize}, ${CRCpresent},
+    ${lowDataRate})
+parameters:
+- id: SF
+  label: Sf
+  dtype: raw
+- id: CR
+  label: Cr
+  dtype: raw
+- id: payloadSize
+  label: Payloadsize
+  dtype: raw
+- id: CRCpresent
+  label: Crcpresent
+  dtype: raw
+- id: lowDataRate
+  label: Lowdatarate
+  dtype: raw
+inputs:
+- label: in
+  domain: stream
+  dtype: byte
+outputs:
+- label: out
+  domain: stream
+  dtype: byte
+- domain: message
+  id: setSFout
+  optional: true
+- domain: message
+  id: setCRout
+  optional: true
+- domain: message
+  id: nSamples
+  optional: true
+file_format: 1

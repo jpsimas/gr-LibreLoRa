@@ -1,0 +1,15 @@
+id: LibreLoRa_BytesToNibbles
+label: BytesToNibbles
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.BytesToNibbles()
+inputs:
+- label: in
+  domain: stream
+  dtype: byte
+outputs:
+- label: out
+  domain: stream
+  dtype: byte
+file_format: 1

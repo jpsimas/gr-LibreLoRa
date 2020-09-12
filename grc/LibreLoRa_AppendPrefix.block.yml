@@ -1,0 +1,33 @@
+id: LibreLoRa_AppendPrefix
+label: AppendPrefix
+category: '[Librelora]'
+parameters:
+- id: type
+  label: Type
+  dtype: enum
+  options: [float, complex, byte, short]
+  option_attributes:
+    fcn: [ff, cc, bb, ss]
+  hide: part
+- id: payloadSize
+  label: Payloadsize
+  dtype: raw
+- id: prefix
+  label: Prefix
+  dtype: raw
+inputs:
+- label: in
+  domain: stream
+  dtype: ${ type }
+outputs:
+- label: out
+  domain: stream
+  dtype: ${ type }
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.AppendPrefix_${type.fcn}(${payloadSize}, ${prefix})
+cpp_templates:
+  includes: ['#include <LibreLoRa/AppendPrefix.h>']
+  declarations: 'LibreLoRa::AppendPrefix_${type.fcn}::sptr ${id};'
+  make: 'this->${id} = LibreloRa::AppendPrefix_${type.fcn}::make(${payloadSize}, ${prefix});'  
+file_format: 1
