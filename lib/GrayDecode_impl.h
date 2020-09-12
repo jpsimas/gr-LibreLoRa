@@ -29,12 +29,17 @@ namespace gr {
     class GrayDecode_impl : public GrayDecode
     {
      private:
-      const size_t nBits;
+      size_t nBits;
 
-      // static constexpr grayDecode(uint16_t x, size_t nBits, size_t n = 0) {
-      // 	return (n == 0?
-      // }
-      
+      static constexpr uint16_t grayDecodeDetail(uint16_t x, size_t nBits, size_t m){
+	return (nBits == 0? x : grayDecodeDetail(x^(m >> 1) , nBits - 1, m >> 1));
+      };
+
+      static constexpr uint16_t grayDecode(uint16_t x, size_t nBits){
+	return grayDecodeDetail(x, nBits, x);
+      };
+	
+      void setNBits(size_t nBitsNew);
      public:
       GrayDecode_impl(size_t nBits);
       ~GrayDecode_impl();

@@ -43,8 +43,10 @@ namespace gr {
       : gr::sync_block("GrayDecode",
 		       gr::io_signature::make(1, 1, sizeof(uint16_t)),
 		       gr::io_signature::make(1, 1, sizeof(uint16_t))),
-	nBits(nBits)
-    {}
+	nBits(nBits) {
+      message_port_register_in(pmt::mp("setNBits"));
+      set_msg_handler(pmt::mp("setNBits"), [this](pmt::pmt_t msg) {setNBits(size_t(pmt::to_long(msg)));});
+    }
 
     /*
      * Our virtual destructor.
@@ -62,13 +64,32 @@ namespace gr {
       uint16_t *out = (uint16_t *) output_items[0];
 
       // Do <+signal processing+>
-      for(size_t i = 0; i < noutput_items; i++)
-	// out[i] = grayDecode(in[i]);;
+      for(size_t i = 0; i < noutput_items; i++) {
+
+	std::vector<gr::tag_t> tags;
+	auto nr =  nitems_read(0);
+	static const pmt::pmt_t tagKey = pmt::intern("loraParams");
+	get_tags_in_range(tags, 0, nr + i, nr + i + 1, tagKey);
+	if(tags.size() != 0) {
+	  pmt::pmt_t message = tags[0].value;
+	  size_t SFnew = pmt::to_long(pmt::tuple_ref(message, 0));
+	  setNBits(SFnew);
+	}
+	
+	out[i] = grayDecode(in[i], nBits);
+
+#ifndef NDEBUG
+	std::cout << "GrayDecode: in: " << std::hex << in[i] << ", out: " << out[i] << ", nBits = " << nBits << std::endl;
+#endif
+      }
 
       // Tell runtime system how many output items we produced.
       return noutput_items;
     }
 
+    void GrayDecode_impl::setNBits(size_t nBitsNew) {
+      nBits = nBitsNew;
+    }
   } /* namespace LibreLoRa */
 } /* namespace gr */
 
