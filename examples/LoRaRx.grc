@@ -314,7 +314,7 @@ blocks:
     bus_structure: null
     coordinate: [632, 471]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_NibblesToBytes_0
   id: LibreLoRa_NibblesToBytes
   parameters:
@@ -510,7 +510,7 @@ blocks:
     bus_structure: null
     coordinate: [367, 211]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: LibreLoRa_grayEncode_0
   id: LibreLoRa_grayEncode
   parameters:
@@ -533,8 +533,10 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
+    initialState: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
+    payloadSize: '0'
   states:
     bus_sink: false
     bus_source: false
@@ -608,9 +610,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [384, 496.0]
+    coordinate: [383, 496]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_symbolDemodNew_0
   id: LibreLoRa_symbolDemodNew
   parameters:
@@ -628,7 +630,7 @@ blocks:
     bus_structure: null
     coordinate: [1078, 435]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LibreLoRa_symbolDemod_0
   id: LibreLoRa_symbolDemod
   parameters:
@@ -648,7 +650,7 @@ blocks:
     bus_structure: null
     coordinate: [1072, 260]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: SF
   id: parameter
   parameters:
@@ -682,7 +684,7 @@ blocks:
     bus_structure: null
     coordinate: [944, 624.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: analog_const_source_x_0_2_0_0
   id: analog_const_source_x
   parameters:
@@ -786,7 +788,7 @@ blocks:
     bus_structure: null
     coordinate: [1448, 659]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_complex_to_arg_0_2_0_0
   id: blocks_complex_to_arg
   parameters:
@@ -917,7 +919,7 @@ blocks:
     bus_structure: null
     coordinate: [820, 620]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_magphase_to_complex_0
   id: blocks_magphase_to_complex
   parameters:
@@ -933,7 +935,7 @@ blocks:
     bus_structure: null
     coordinate: [1180, 658]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_magphase_to_complex_0_2_0_0
   id: blocks_magphase_to_complex
   parameters:
@@ -1017,7 +1019,7 @@ blocks:
     bus_structure: null
     coordinate: [976, 688.0]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_multiply_const_vxx_1_0
   id: blocks_multiply_const_vxx
   parameters:
@@ -1035,7 +1037,7 @@ blocks:
     bus_structure: null
     coordinate: [1582, 681]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_multiply_const_vxx_1_0_3_0_0
   id: blocks_multiply_const_vxx
   parameters:

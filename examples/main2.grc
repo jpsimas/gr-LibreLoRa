@@ -132,7 +132,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: int(symbolSize/16)
+    value: '1'
   states:
     bus_sink: false
     bus_source: false
@@ -2070,7 +2070,7 @@ blocks:
     freq7: 100e6
     freq8: 100e6
     freq9: 100e6
-    gain0: '0'
+    gain0: '14'
     gain1: '10'
     gain10: '10'
     gain11: '10'
@@ -2203,7 +2203,7 @@ blocks:
     nchan: '1'
     num_mboards: '1'
     sample_rate: samp_rate
-    sync: sync
+    sync: none
     time_source0: ''
     time_source1: ''
     time_source2: ''
@@ -2219,7 +2219,7 @@ blocks:
     bus_structure: null
     coordinate: [60, 430]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_0
   id: qtgui_time_sink_x
   parameters:
@@ -4009,9 +4009,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [16, 194]
+    coordinate: [15, 194]
     rotation: 0
-    state: disabled
+    state: enabled
 
 connections:
 - [LibreLoRa_ArgMaxAbs_0, '0', blocks_int_to_float_0, '0']
