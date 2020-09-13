@@ -21,5 +21,6 @@
 install(
   FILES
   LoRaRx.grc
+  LoRaTx.grc
   DESTINATION ${GR_PKG_DATA_DIR}/examples/blocks
 )
