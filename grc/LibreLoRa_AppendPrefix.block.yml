@@ -9,9 +9,6 @@ parameters:
   option_attributes:
     fcn: [ff, cc, bb, ss]
   hide: part
-- id: payloadSize
-  label: Payloadsize
-  dtype: raw
 - id: prefix
   label: Prefix
   dtype: raw
@@ -25,7 +22,7 @@ outputs:
   dtype: ${ type }
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.AppendPrefix_${type.fcn}(${payloadSize}, ${prefix})
+  make: LibreLoRa.AppendPrefix_${type.fcn}(${prefix})
 cpp_templates:
   includes: ['#include <LibreLoRa/AppendPrefix.h>']
   declarations: 'LibreLoRa::AppendPrefix_${type.fcn}::sptr ${id};'

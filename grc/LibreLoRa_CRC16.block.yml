@@ -3,7 +3,7 @@ label: CRC16
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.CRC16(${polynomial}, ${xorout})
+  make: LibreLoRa.CRC16(${polynomial}, ${xorout}, ${payloadsize})
 parameters:
 - id: polynomial
   label: Polynomial
@@ -11,6 +11,11 @@ parameters:
 - id: xorout
   label: XorOut
   dtype: raw
+- id: payloadsize
+  label: payloadSize
+  dtype: raw
+  default: 0
+  hide: part
 inputs:
 - label: in
   domain: stream
@@ -22,7 +27,11 @@ inputs:
   id: setXorOut
   optional: true
 outputs:
-- label: out
-  domain: stream
-  dtype: short
+# - label: out
+#   domain: stream
+#   dtype: short
+#   optional: true
+- domain: message
+  id: crcOut
+  optional: true
 file_format: 1
