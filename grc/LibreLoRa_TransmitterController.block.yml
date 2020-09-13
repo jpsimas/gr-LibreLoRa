@@ -41,4 +41,7 @@ outputs:
 - domain: message
   id: nSamples
   optional: true
+- domain: message
+  id: transmissionStart
+  optional: true
 file_format: 1
