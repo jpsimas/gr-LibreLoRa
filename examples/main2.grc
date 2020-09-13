@@ -1278,9 +1278,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1638, 262]
+    coordinate: [1639, 262]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: blocks_message_debug_1
   id: blocks_message_debug
   parameters:
@@ -1618,23 +1618,6 @@ blocks:
     coordinate: [1200, 1163]
     rotation: 0
     state: disabled
-- name: blocks_null_sink_0
-  id: blocks_null_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    bus_structure_sink: '[[0,],]'
-    comment: ''
-    num_inputs: '1'
-    type: short
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1536, 160.0]
-    rotation: 0
-    state: enabled
 - name: blocks_streams_to_vector_0
   id: blocks_streams_to_vector
   parameters:
@@ -1686,7 +1669,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1504, 92.0]
+    coordinate: [1558, 79]
     rotation: 0
     state: enabled
 - name: blocks_throttle_0
@@ -1900,8 +1883,8 @@ blocks:
     ant7: ''
     ant8: ''
     ant9: ''
-    args: '""'
-    bb_gain0: '20'
+    args: hackrf=0
+    bb_gain0: '16'
     bb_gain1: '20'
     bb_gain10: '20'
     bb_gain11: '20'
@@ -2070,7 +2053,7 @@ blocks:
     freq7: 100e6
     freq8: 100e6
     freq9: 100e6
-    gain0: '14'
+    gain0: '0'
     gain1: '10'
     gain10: '10'
     gain11: '10'
@@ -2134,7 +2117,7 @@ blocks:
     gain_mode7: 'False'
     gain_mode8: 'False'
     gain_mode9: 'False'
-    if_gain0: '16'
+    if_gain0: '24'
     if_gain1: '20'
     if_gain10: '20'
     if_gain11: '20'
@@ -3122,7 +3105,7 @@ blocks:
     color9: dark green
     comment: ''
     ctrlpanel: 'True'
-    entags: 'True'
+    entags: 'False'
     grid: 'False'
     gui_hint: ''
     label1: Signal 1
@@ -3693,7 +3676,7 @@ blocks:
     ant8: ''
     ant9: ''
     args: '""'
-    bb_gain0: '10'
+    bb_gain0: '0'
     bb_gain1: '20'
     bb_gain10: '20'
     bb_gain11: '20'
@@ -3862,7 +3845,7 @@ blocks:
     freq7: 100e6
     freq8: 100e6
     freq9: 100e6
-    gain0: '20'
+    gain0: '30'
     gain1: '10'
     gain10: '10'
     gain11: '10'
@@ -3926,7 +3909,7 @@ blocks:
     gain_mode7: 'False'
     gain_mode8: 'False'
     gain_mode9: 'False'
-    if_gain0: '10'
+    if_gain0: '0'
     if_gain1: '20'
     if_gain10: '20'
     if_gain11: '20'
@@ -4077,9 +4060,9 @@ connections:
 - [LibreLoRa_streamToHistoryVector_0, '0', blocks_multiply_const_vxx_0, '0']
 - [LibreLoRa_streamToHistoryVector_0, '0', fft_vxx_0, '0']
 - [LoRaRx_0, '0', blocks_tcp_server_sink_0, '0']
-- [LoRaRx_0, '1', blocks_null_sink_0, '0']
-- [LoRaRx_0, '2', qtgui_time_sink_x_0_1, '0']
-- [LoRaRx_0, '3', qtgui_time_sink_x_0_1, '1']
+- [LoRaRx_0, '1', qtgui_time_sink_x_0_1, '0']
+- [LoRaRx_0, '2', qtgui_time_sink_x_0_1, '1']
+- [LoRaRx_0, crcOut, blocks_message_debug_0, print]
 - [LoRaRx_0, detectionOut, blocks_message_debug_0, print]
 - [LoRaRx_0, reset, LibreLoRa_PowerDetector_0, reset]
 - [analog_const_source_x_0, '0', blocks_magphase_to_complex_0, '0']

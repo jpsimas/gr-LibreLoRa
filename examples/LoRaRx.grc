@@ -234,6 +234,7 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
+    payloadsize: '0'
     polynomial: '0x1021'
     xorout: '0x0000'
   states:
@@ -610,7 +611,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [383, 496]
+    coordinate: [378, 499]
     rotation: 0
     state: disabled
 - name: LibreLoRa_symbolDemodNew_0
@@ -1371,24 +1372,6 @@ blocks:
     coordinate: [2288, 318]
     rotation: 0
     state: true
-- name: pad_sink_1
-  id: pad_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    label: CRCCheckOut
-    num_streams: '1'
-    optional: 'False'
-    type: short
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [2297, 495]
-    rotation: 0
-    state: true
 - name: pad_sink_2
   id: pad_sink
   parameters:
@@ -1497,6 +1480,24 @@ blocks:
     coordinate: [886, 166]
     rotation: 0
     state: true
+- name: pad_sink_7
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: crcOut
+    num_streams: '1'
+    optional: 'True'
+    type: message
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2360, 605]
+    rotation: 0
+    state: true
 - name: pad_source_0
   id: pad_source
   parameters:
@@ -1573,7 +1574,7 @@ blocks:
 connections:
 - [LibreLoRa_ArgMaxAbs_0, '0', blocks_int_to_float_0, '0']
 - [LibreLoRa_BinSearchFFT_0, '0', blocks_int_to_float_0, '0']
-- [LibreLoRa_CRC16_0, '0', pad_sink_1, '0']
+- [LibreLoRa_CRC16_0, crcOut, pad_sink_7, in]
 - [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_frequencyTrackerN_0, '0']
 - [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_frequencyTracker_0, '0']
 - [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_streamToHistoryVector_0, '0']
