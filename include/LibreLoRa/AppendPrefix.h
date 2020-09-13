@@ -46,7 +46,7 @@ namespace gr {
        * class. LibreLoRa::AppendPrefix::make is the public interface for
        * creating new instances.
        */
-      static sptr make(const size_t payloadSize, const std::vector<T> prefix);
+      static sptr make(const std::vector<T> prefix);
     };
 
     typedef AppendPrefix<float> AppendPrefix_ff;
