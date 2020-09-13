@@ -30,10 +30,10 @@ namespace gr {
 
     template<typename T>
     typename AppendPrefix<T>::sptr
-    AppendPrefix<T>::make(const size_t payloadSize, const std::vector<T> prefix)
+    AppendPrefix<T>::make(const std::vector<T> prefix)
     {
       return gnuradio::get_initial_sptr
-        (new AppendPrefix_impl<T>(payloadSize, prefix));
+        (new AppendPrefix_impl<T>(prefix));
     }
 
 
@@ -41,14 +41,12 @@ namespace gr {
      * The private constructor
      */
     template<typename T>
-    AppendPrefix_impl<T>::AppendPrefix_impl(const size_t payloadSize, const std::vector<T> prefix)
+    AppendPrefix_impl<T>::AppendPrefix_impl(const std::vector<T> prefix)
       : gr::block("AppendPrefix",
 		  gr::io_signature::make(1, 1, sizeof(T)),
 		  gr::io_signature::make(1, 1, sizeof(T))),
-	payloadSize(payloadSize),
-	prefix(prefix),
-	sampleCount(0) {
-      this->set_min_output_buffer(payloadSize + prefix.size());
+	prefix(prefix) {
+      this->set_min_output_buffer(10*prefix.size());
     }
 
     /*
@@ -78,56 +76,38 @@ namespace gr {
     {
       const T *in = (const T *) input_items[0];
       T *out = (T *) output_items[0];
-
-      // const size_t nFrames = (noutput_items + payloadSize + prefix.size() - 1)/(payloadSize + prefix.size());
-      
-      // for(auto k = 0; k < nFrames; k++) {
-      // 	auto outK = out + k*(payloadSize + prefix.size());
-      // 	auto inK = in + k*payloadSize;
-      // 	memcpy(outK, prefix.data(), prefix.size()*sizeof(T));
-      // 	memcpy(outK + prefix.size(), inK, payloadSize*sizeof(T));
-      // }
-
-#ifndef NDEBUG
-      // std::cout << "AppendPrefix: work called. noutput_items: " << std::dec << noutput_items << ". sampleCount: " << sampleCount << std::endl;
-#endif
       
       size_t nFrames = 0;
       for(auto i = 0; i < noutput_items; i++) {
-// 	if(sampleCount == 0) {
-// 	  memcpy(out + i + nFrames*prefix.size(), prefix.data(), prefix.size()*sizeof(T));
-// 	  nFrames++;
-// #ifndef NDEBUG
-// 	  std::cout << "AppendPrefix: prefix inserted. sampleCount: " << sampleCount << std::endl;
-// #endif
-// 	}
-
-	std::vector<gr::tag_t> tags;
+	
+	// std::vector<gr::tag_t> tags;
+	tags.clear();
 	auto nr =  this->nitems_read(0);
 	static const pmt::pmt_t tagKey = pmt::intern("loraParams");
 	this->get_tags_in_range(tags, 0, nr + i, nr + i + 1, tagKey);
-	if(tags.size() != 0)
+	
+	if(tags.size() != 0) {
+#ifndef NDEBUG
+	  std::cout << "AppendPrefix: got tag. tags.size() = " << tags.size() << std::endl;
+#endif
 	  if(pmt::to_bool(pmt::tuple_ref(tags[0].value, 2))) {
 	    memcpy(out + i + nFrames*prefix.size(), prefix.data(), prefix.size()*sizeof(T));
 	    nFrames++;
 #ifndef NDEBUG
 	    std::cout << "AppendPrefix: prefix inserted." << std::endl;
 #endif
+	  }
 	}
-
-	
+	  
 	out[i + nFrames*prefix.size()] = in[i];
-	// sampleCount = (sampleCount + 1)%payloadSize;
       }
       
       // Do <+signal processing+>
       // Tell runtime system how many input items we consumed on
       // each input stream.
-      // gr::block::consume_each (nFrames*payloadSize);
       gr::block::consume_each (noutput_items);
-
+      
       // Tell runtime system how many output items we produced.
-      // return nFrames*(payloadSize + prefix.size());
       return nFrames*prefix.size() + noutput_items;
     }
 

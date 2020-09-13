@@ -32,12 +32,11 @@ namespace gr {
     class AppendPrefix_impl : public AppendPrefix<T>
     {
      private:
-      const size_t payloadSize;
       const std::vector<T> prefix;
 
-      size_t sampleCount;
+      std::vector<gr::tag_t> tags;
      public:
-      AppendPrefix_impl(const size_t payloadSize, const std::vector<T> prefix);
+      AppendPrefix_impl(const std::vector<T> prefix);
       ~AppendPrefix_impl();
 
       // Where all the action really happens
