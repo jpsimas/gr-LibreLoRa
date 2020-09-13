@@ -110,7 +110,7 @@ namespace gr {
 	  setCR(CRnew);
 
 	  //propagate tag
-	  add_item_tag(0, nitems_written(0), tagKey, message);
+	  add_item_tag(0, nitems_written(0) + i*codeLength, tagKey, message);
 	  
 	  if(i == 0) {
 	    set_relative_rate(codeLength, SF);
