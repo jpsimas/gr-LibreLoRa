@@ -46,7 +46,9 @@ namespace gr {
 		  gr::io_signature::make(1, 1, sizeof(T)),
 		  gr::io_signature::make(1, 1, sizeof(T))),
 	prefix(prefix) {
-      this->set_min_output_buffer(10*prefix.size());
+      this->set_max_noutput_items(prefix.size());
+      this->set_min_output_buffer(this->max_noutput_items() + prefix.size());
+      this->set_tag_propagation_policy(gr::block::TPP_CUSTOM);
     }
 
     /*
@@ -78,7 +80,10 @@ namespace gr {
       T *out = (T *) output_items[0];
       
       size_t nFrames = 0;
-      for(auto i = 0; i < noutput_items; i++) {
+      size_t produced = 0;
+
+      size_t i;
+      for(i = 0; i < noutput_items; i++) {
 	
 	// std::vector<gr::tag_t> tags;
 	tags.clear();
@@ -92,23 +97,40 @@ namespace gr {
 #endif
 	  if(pmt::to_bool(pmt::tuple_ref(tags[0].value, 2))) {
 	    memcpy(out + i + nFrames*prefix.size(), prefix.data(), prefix.size()*sizeof(T));
+
+	    this->add_item_tag(0, this->nitems_written(0) + i + nFrames*prefix.size(), tagKey, tags[0].value);
+	    
 	    nFrames++;
+	    produced += prefix.size();
 #ifndef NDEBUG
 	    std::cout << "AppendPrefix: prefix inserted." << std::endl;
 #endif
 	  }
 	}
-	  
+	
 	out[i + nFrames*prefix.size()] = in[i];
+	produced++;
+
+	if(produced >= noutput_items) {
+#ifndef NDEBUG
+	  std::cout << "AppendPrefix: sent everything. i = " << i << std::endl;
+#endif
+	  break;
+	}
       }
-      
+
+#ifndef NDEBUG
+      std::cout << "AppendPrefix: work ended. i = " << i << ", noutput_items = " << noutput_items << ", produced = " << produced <<  std::endl;
+#endif
       // Do <+signal processing+>
       // Tell runtime system how many input items we consumed on
       // each input stream.
-      gr::block::consume_each (noutput_items);
+      // gr::block::consume_each (noutput_items);
+      gr::block::consume_each(i + 1);
       
       // Tell runtime system how many output items we produced.
-      return nFrames*prefix.size() + noutput_items;
+      // return nFrames*prefix.size() + noutput_items;
+      return produced;
     }
 
     template class AppendPrefix<float>;
