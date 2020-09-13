@@ -73,5 +73,6 @@ install(FILES
     Interleave.h
     BytesToNibbles.h
     TransmitterController.h
-    AppendPrefix.h DESTINATION include/LibreLoRa
+    AppendPrefix.h
+    AppendSilence.h DESTINATION include/LibreLoRa
 )

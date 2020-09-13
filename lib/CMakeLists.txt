@@ -71,7 +71,8 @@ list(APPEND LibreLoRa_sources
     Interleave_impl.cc
     BytesToNibbles_impl.cc
     TransmitterController_impl.cc
-    AppendPrefix_impl.cc )
+    AppendPrefix_impl.cc
+    AppendSilence_impl.cc )
 
 set(LibreLoRa_sources "${LibreLoRa_sources}" PARENT_SCOPE)
 if(NOT LibreLoRa_sources)

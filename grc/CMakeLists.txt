@@ -65,5 +65,6 @@ install(FILES
     LibreLoRa_Interleave.block.yml
     LibreLoRa_BytesToNibbles.block.yml
     LibreLoRa_TransmitterController.block.yml
-    LibreLoRa_AppendPrefix.block.yml DESTINATION share/gnuradio/grc/blocks
+    LibreLoRa_AppendPrefix.block.yml
+    LibreLoRa_AppendSilence.block.yml DESTINATION share/gnuradio/grc/blocks
 )
