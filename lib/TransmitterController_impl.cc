@@ -75,6 +75,9 @@ namespace gr {
       message_port_register_out(setCRPort);
       message_port_register_out(nSamplesPort);
 
+      transmissionStartPort = pmt::string_to_symbol("transmissionStart");
+      message_port_register_out(transmissionStartPort);
+      
       message_port_register_in(pmt::mp("setCRC"));
       set_msg_handler(pmt::mp("setCRC"), [this](pmt::pmt_t msg) {setCrc(uint16_t(pmt::to_long(msg)));});
       
@@ -127,6 +130,7 @@ namespace gr {
 	setCRCurrent(4);
 
 	sendParamsTag(true);
+	message_port_pub(transmissionStartPort, pmt::PMT_NIL);
 	
 	//output header
 	memcpy(out, headerNibbles, 5*sizeof(uint8_t));
@@ -145,6 +149,10 @@ namespace gr {
 	  
 	  memset(out + 5 + nNibbles, 0, nNibblesTotal - nNibbles);
 	  consume_each(2*payloadSize);
+
+	  //send end of frame tag
+	  static const pmt::pmt_t tagKey = pmt::intern("loraEndOfFrame");
+	  add_item_tag(0, nitems_written(0) + (SF - 2) - 1, tagKey, pmt::PMT_NIL);
 	}
 
 #ifndef NDEBUG
@@ -186,6 +194,10 @@ namespace gr {
 	//   std::cout << std::hex <<  unsigned(out[i]) << " ";
 	// std::cout << std::endl;
 #endif
+
+	//send end of frame tag
+	static const pmt::pmt_t tagKey = pmt::intern("loraEndOfFrame");
+	add_item_tag(0, nitems_written(0) + nNibblesTotal - (SF - 7) - 1, tagKey, pmt::PMT_NIL);
 	
 	currentState = sendingHeader;
 	
@@ -230,7 +242,6 @@ namespace gr {
       static const pmt::pmt_t tagKey = pmt::intern("loraParams");
       add_item_tag(0, nitems_written(0), tagKey, pmt::make_tuple(pmt::from_long(SFCurrent), pmt::from_long(CRCurrent), pmt::from_bool(isStartOfFrame)));
     }
-
     
   } /* namespace LibreLoRa */
 } /* namespace gr */

@@ -72,6 +72,8 @@ namespace gr {
       pmt::pmt_t setCRPort;
       pmt::pmt_t nSamplesPort;
 
+      pmt::pmt_t transmissionStartPort;
+
       void setSFCurrent(size_t SFnew);
       void setCRCurrent(size_t CRnew);
       void setCrc(uint16_t crcNew);
