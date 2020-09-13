@@ -51,6 +51,8 @@ namespace gr {
 #ifndef NDEBUG
       std::cout << "SymbolMod: constructed" << std::endl;
 #endif
+      set_tag_propagation_policy(TPP_CUSTOM);
+      
       this->message_port_register_in(pmt::mp("setSF"));
       this->set_msg_handler(pmt::mp("setSF"), [this](pmt::pmt_t msg) {setSF(size_t(pmt::to_long(msg)));});
     }
@@ -75,14 +77,20 @@ namespace gr {
 #endif
       
       for(auto i = 0; i < noutput_items/symbolSize; i++){
+	//propagate endOfFrame Tag
 	std::vector<gr::tag_t> tags;
 	auto nr =  nitems_read(0);
+	get_tags_in_range(tags, 0, nr + i, nr + i + 1, pmt::intern("loraEndOfFrame"));
+	for(auto tag : tags)
+	  add_item_tag(0, nitems_written(0) + i*symbolSize + symbolSize - 1, tag.key, tag.value);	 
+	
 	static const pmt::pmt_t tagKey = pmt::intern("loraParams");
 	get_tags_in_range(tags, 0, nr + i, nr + i + 1, tagKey);
 	if(tags.size() != 0) {
 	  pmt::pmt_t message = tags[0].value;
 	  size_t SFnew = pmt::to_long(pmt::tuple_ref(message, 0));
 	  setSF(SFnew);
+	  add_item_tag(0, nitems_written(0) + i*symbolSize, tagKey, message);
 	}
 	
 	const std::vector<float> symi = getSymbol<float>(in[i]*(1 << (SF - SFCurrent)), SF, symbolSize);
