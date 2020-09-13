@@ -1,0 +1,18 @@
+id: LibreLoRa_AppendSilence
+label: AppendSilence
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.AppendSilence()
+inputs:
+- label: in
+  domain: stream
+  dtype: complex
+- domain: message
+  id: start
+  optional: true
+outputs:
+- label: out
+  domain: stream
+  dtype: complex
+file_format: 1
