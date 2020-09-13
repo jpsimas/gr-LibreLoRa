@@ -84,21 +84,26 @@ namespace gr {
 
       size_t i;
       for(i = 0; i < noutput_items; i++) {
-	
-	// std::vector<gr::tag_t> tags;
-	tags.clear();
+
+	//propagate tags
 	auto nr =  this->nitems_read(0);
+	this->get_tags_in_range(tags, 0, nr + i, nr + i + 1);
+	for(auto tag : tags) {
+	  this->add_item_tag(0, this->nitems_written(0) + i + nFrames*prefix.size(), tag.key, tag.value);
+	}
+	
+	tags.clear();
 	static const pmt::pmt_t tagKey = pmt::intern("loraParams");
 	this->get_tags_in_range(tags, 0, nr + i, nr + i + 1, tagKey);
 	
 	if(tags.size() != 0) {
 #ifndef NDEBUG
-	  std::cout << "AppendPrefix: got tag. tags.size() = " << tags.size() << std::endl;
+	  // std::cout << "AppendPrefix: got tag. tags.size() = " << tags.size() << std::endl;
 #endif
 	  if(pmt::to_bool(pmt::tuple_ref(tags[0].value, 2))) {
 	    memcpy(out + i + nFrames*prefix.size(), prefix.data(), prefix.size()*sizeof(T));
 
-	    this->add_item_tag(0, this->nitems_written(0) + i + nFrames*prefix.size(), tagKey, tags[0].value);
+	    // this->add_item_tag(0, this->nitems_written(0) + i + nFrames*prefix.size(), tagKey, tags[0].value);
 	    
 	    nFrames++;
 	    produced += prefix.size();
@@ -113,14 +118,14 @@ namespace gr {
 
 	if(produced >= noutput_items) {
 #ifndef NDEBUG
-	  std::cout << "AppendPrefix: sent everything. i = " << i << std::endl;
+	  // std::cout << "AppendPrefix: sent everything. i = " << i << std::endl;
 #endif
 	  break;
 	}
       }
 
 #ifndef NDEBUG
-      std::cout << "AppendPrefix: work ended. i = " << i << ", noutput_items = " << noutput_items << ", produced = " << produced <<  std::endl;
+      // std::cout << "AppendPrefix: work ended. i = " << i << ", noutput_items = " << noutput_items << ", produced = " << produced <<  std::endl;
 #endif
       // Do <+signal processing+>
       // Tell runtime system how many input items we consumed on
