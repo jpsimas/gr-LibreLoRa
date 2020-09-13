@@ -55,10 +55,13 @@ namespace gr {
     {
 
       size_t SFPayload = lowDataRate? (SF - 2) : SF;
-      size_t nNibbles = 2*(payloadSize + (CRCPresent? CRCSize : 0));
+      nNibbles = 2*(payloadSize + (CRCPresent? CRCSize : 0));
       size_t nExtraNibbles = 0;
       if(nNibbles > (SF - 7))
 	nExtraNibbles = (SFPayload - (nNibbles - (SF - 7))%SFPayload)%SFPayload;
+      else
+	nExtraNibbles = (SF - 7) - nNibbles;
+      
       nNibblesTotal = nNibbles + nExtraNibbles;
 
 #ifndef NDEBUG
@@ -97,7 +100,7 @@ namespace gr {
     {
       switch(currentState) {
       case sendingHeader:
-	ninput_items_required[0] = (SF - 7);
+	ninput_items_required[0] = std::min(2*payloadSize + (CRCPresent? CRCSize : 0), (SF - 7));
 	break;
       case sendingPayload:
 	ninput_items_required[0] = 2*payloadSize - (SF - 7);
@@ -127,9 +130,22 @@ namespace gr {
 	
 	//output header
 	memcpy(out, headerNibbles, 5*sizeof(uint8_t));
-	memcpy(out + 5, in, (SF - 7)*sizeof(uint8_t));
-	currentState = sendingPayload;
-	consume_each(SF - 7);
+	
+	if(nNibbles > (SF - 7)) {
+	  memcpy(out + 5, in, (SF - 7)*sizeof(uint8_t));
+	  currentState = sendingPayload;
+	  consume_each(SF - 7);
+	} else {
+	  memcpy(out + 5, in, 2*payloadSize*sizeof(uint8_t));
+
+	  if(CRCPresent) {
+	    uint32_t crcNibbles = bytes2nibbles<uint32_t, uint16_t>(crc);
+	    memcpy(out + 5 + 2*payloadSize, &crcNibbles, 2*CRCSize*sizeof(uint8_t));
+	  }
+	  
+	  memset(out + 5 + nNibbles, 0, nNibblesTotal - nNibbles);
+	  consume_each(2*payloadSize);
+	}
 
 #ifndef NDEBUG
 	// std::cout << "TransmitterController: produced nibbles: " << std::endl;

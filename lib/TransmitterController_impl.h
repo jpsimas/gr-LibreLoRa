@@ -43,7 +43,8 @@ namespace gr {
       uint16_t crc;
       
       constexpr static size_t CRCSize = 2;
-      
+
+      size_t nNibbles;//Payload + CRC
       size_t nNibblesTotal;//Payload + CRC + padding
       
       enum controllerState {
