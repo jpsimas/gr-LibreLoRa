@@ -50,7 +50,7 @@ namespace gr {
       std::cout << "Interleave: constructed" << std::endl;
 #endif
 
-       set_tag_propagation_policy(TPP_CUSTOM);
+      set_tag_propagation_policy(TPP_CUSTOM);
       set_relative_rate(codeLength, SF);
       
       message_port_register_in(pmt::mp("setSF"));
@@ -108,14 +108,18 @@ namespace gr {
 	  setSF(SFnew);
 	  size_t CRnew = pmt::to_long(pmt::tuple_ref(message, 1));
 	  setCR(CRnew);
-
-	  //propagate tag
-	  add_item_tag(0, nitems_written(0) + i*codeLength, tagKey, message);
 	  
 	  if(i == 0) {
 	    set_relative_rate(codeLength, SF);
 	    codeLengthInitial = codeLength;
 	    SFInitial = SF;
+
+	    //propagate tag
+	    add_item_tag(0, nitems_written(0) + i*codeLength, tagKey, message);
+
+#ifndef NDEBUG
+	    std::cout << "Interleave: updated parameters." << std::endl;
+#endif
 	  } else 
 	    break;
 	}
