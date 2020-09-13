@@ -186,3 +186,5 @@ GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, AppendPrefix_ff, AppendPrefix<float>);
 GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, AppendPrefix_cc, AppendPrefix<gr_complex>);
 GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, AppendPrefix_bb, AppendPrefix<uint8_t>);
 GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, AppendPrefix_ss, AppendPrefix<uint16_t>);
+
+
