@@ -42,6 +42,7 @@ namespace gr {
     Interleave_impl::Interleave_impl(size_t SF, size_t CR)
       : codeLength(CR + 4),
 	SF(SF),
+	changedParams(false),
 	gr::block("Interleave",
 		  gr::io_signature::make(1, 1, sizeof(uint8_t)),
 		  gr::io_signature::make(1, 1, sizeof(uint16_t)))
@@ -98,30 +99,50 @@ namespace gr {
 
       size_t i;
       for(i = 0; i < blocksToProduce; i++) {
-	std::vector<gr::tag_t> tags;
-	auto nr =  nitems_read(0);
-	static const pmt::pmt_t tagKey = pmt::intern("loraParams");
-	get_tags_in_range(tags, 0, nr + i*SF, nr + i*SF + 1, tagKey);
-	if(tags.size() != 0) {
-	  pmt::pmt_t message = tags[0].value;
-	  size_t SFnew = pmt::to_long(pmt::tuple_ref(message, 0));
-	  setSF(SFnew);
-	  size_t CRnew = pmt::to_long(pmt::tuple_ref(message, 1));
-	  setCR(CRnew);
-	  
-	  if(i == 0) {
-	    set_relative_rate(codeLength, SF);
-	    codeLengthInitial = codeLength;
-	    SFInitial = SF;
+	
+	if(!changedParams || i != 0) {
 
-	    //propagate tag
-	    add_item_tag(0, nitems_written(0) + i*codeLength, tagKey, message);
+	  //propagate tags in the beggining of blocks
+	  std::vector<gr::tag_t> tags;
+	  auto nr =  nitems_read(0);
+	  get_tags_in_range(tags, 0, nr + i*SF, nr + i*SF + 1);
+	  for(auto tag : tags)
+	      add_item_tag(0, nitems_written(0) + i*codeLength, tag.key, tag.value);
+
+	  //propagate tags in the end of blocks
+	  tags.clear();
+	  get_tags_in_range(tags, 0, nr + i*SF + SF - 1, nr + i*SF + SF - 1 + 1);
+	  for(auto tag : tags)
+	    add_item_tag(0, nitems_written(0) + i*codeLength + codeLength - 1, tag.key, tag.value);
+	  
+	  //read loraParam tag if present
+	  // std::vector<gr::tag_t> tags;
+	  tags.clear();
+	  // auto nr =  nitems_read(0);
+	  static const pmt::pmt_t tagKey = pmt::intern("loraParams");
+	  get_tags_in_range(tags, 0, nr + i*SF, nr + i*SF + 1, tagKey);
+	  if(tags.size() != 0) {
+	    // add_item_tag(0, nitems_written(0) + i*codeLength, tagKey, tags[0].value);
+	    
+	    pmt::pmt_t message = tags[0].value;
+	    size_t SFnew = pmt::to_long(pmt::tuple_ref(message, 0));
+	    setSF(SFnew);
+	    size_t CRnew = pmt::to_long(pmt::tuple_ref(message, 1));
+	    setCR(CRnew);
+	    changedParams = true;
+	    
+	    break;
+	  }
+	} else {
+	    
+	  changedParams = false;
+	  set_relative_rate(codeLength, SF);
+	  codeLengthInitial = codeLength;
+	  SFInitial = SF;
 
 #ifndef NDEBUG
-	    std::cout << "Interleave: updated parameters." << std::endl;
+	  std::cout << "Interleave: updated parameters." << std::endl;
 #endif
-	  } else 
-	    break;
 	}
 	
 #ifndef NDEBUG

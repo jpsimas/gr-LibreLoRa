@@ -32,6 +32,7 @@ namespace gr {
       size_t SF;
       size_t codeLength;
 
+      bool changedParams;
      public:
       Interleave_impl(size_t SF, size_t CR);
       ~Interleave_impl();
