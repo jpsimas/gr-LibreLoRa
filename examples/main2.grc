@@ -96,7 +96,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 433e6
+    value: 433.2e6
   states:
     bus_sink: false
     bus_source: false
@@ -132,7 +132,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '1'
+    value: int(symbolSize/128)
   states:
     bus_sink: false
     bus_source: false
@@ -3617,7 +3617,7 @@ blocks:
     bus_structure: null
     coordinate: [418, 167]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: rational_resampler_xxx_1
   id: rational_resampler_xxx
   parameters:
@@ -4124,6 +4124,8 @@ connections:
 - [blocks_throttle_0_0, '0', LibreLoRa_slidingDFTMax_0_0, '0']
 - [blocks_throttle_1, '0', rational_resampler_xxx_0, '0']
 - [blocks_vector_source_x_0_0_0, '0', blocks_add_const_vxx_0_0, '0']
+- [dc_blocker_xx_0, '0', LoRaRx_0, '0']
+- [dc_blocker_xx_0, '0', qtgui_waterfall_sink_x_0, '0']
 - [dc_blocker_xx_0, '0', rational_resampler_xxx_0, '0']
 - [fft_vxx_0, '0', LibreLoRa_ArgMaxAbs_0, '0']
 - [fft_vxx_0, '0', LibreLoRa_convolution_0, '0']
@@ -4138,6 +4140,8 @@ connections:
 - [rational_resampler_xxx_0, '0', qtgui_waterfall_sink_x_0, '0']
 - [rational_resampler_xxx_0, '0', rational_resampler_xxx_1, '0']
 - [rational_resampler_xxx_1, '0', blocks_complex_to_mag_squared_0_1, '0']
+- [rtlsdr_source_0, '0', LoRaRx_0, '0']
+- [rtlsdr_source_0, '0', qtgui_waterfall_sink_x_0, '0']
 - [rtlsdr_source_0, '0', rational_resampler_xxx_0, '0']
 
 metadata:

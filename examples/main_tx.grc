@@ -194,7 +194,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [429, 586]
+    coordinate: [234, 365]
     rotation: 0
     state: true
 - name: blocks_vector_source_x_0
@@ -268,7 +268,7 @@ blocks:
     ant8: ''
     ant9: ''
     args: hackrf=0
-    bb_gain0: '20'
+    bb_gain0: '0'
     bb_gain1: '20'
     bb_gain10: '20'
     bb_gain11: '20'
@@ -405,7 +405,7 @@ blocks:
     freq7: 100e6
     freq8: 100e6
     freq9: 100e6
-    gain0: '10'
+    gain0: '0'
     gain1: '10'
     gain10: '10'
     gain11: '10'
@@ -437,7 +437,7 @@ blocks:
     gain7: '10'
     gain8: '10'
     gain9: '10'
-    if_gain0: '20'
+    if_gain0: '30'
     if_gain1: '20'
     if_gain10: '20'
     if_gain11: '20'
@@ -570,7 +570,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [404, 427]
+    coordinate: [287, 194]
     rotation: 0
     state: disabled
 

@@ -72,7 +72,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 919e6
+    value: 433e6
   states:
     bus_sink: false
     bus_source: false
@@ -188,7 +188,7 @@ blocks:
     minoutbuf: 2*int(maxFrameTime*samp_rate)
     samp_rate: samp_rate
     threshold: powerThreshold
-    timeout: maxFrameTime*1.5
+    timeout: maxFrameTime*10
   states:
     bus_sink: false
     bus_source: false
@@ -239,7 +239,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [926, 279]
+    coordinate: [921, 271]
     rotation: 0
     state: enabled
 - name: LoRaRx_0_0_0
@@ -363,108 +363,6 @@ blocks:
     coordinate: [1516, 919]
     rotation: 0
     state: true
-- name: blocks_null_sink_0
-  id: blocks_null_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    bus_structure_sink: '[[0,],]'
-    comment: ''
-    num_inputs: '1'
-    type: short
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1350, 171]
-    rotation: 0
-    state: enabled
-- name: blocks_null_sink_0_0
-  id: blocks_null_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    bus_structure_sink: '[[0,],]'
-    comment: ''
-    num_inputs: '1'
-    type: short
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1291, 396]
-    rotation: 0
-    state: enabled
-- name: blocks_null_sink_0_0_0
-  id: blocks_null_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    bus_structure_sink: '[[0,],]'
-    comment: ''
-    num_inputs: '1'
-    type: short
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1300, 572]
-    rotation: 0
-    state: enabled
-- name: blocks_null_sink_0_0_0_0
-  id: blocks_null_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    bus_structure_sink: '[[0,],]'
-    comment: ''
-    num_inputs: '1'
-    type: short
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1242, 755]
-    rotation: 0
-    state: enabled
-- name: blocks_null_sink_0_0_0_0_0
-  id: blocks_null_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    bus_structure_sink: '[[0,],]'
-    comment: ''
-    num_inputs: '1'
-    type: short
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1237, 937]
-    rotation: 0
-    state: enabled
-- name: blocks_null_sink_0_0_0_0_0_0
-  id: blocks_null_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    bus_structure_sink: '[[0,],]'
-    comment: ''
-    num_inputs: '1'
-    type: short
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1274, 1136]
-    rotation: 0
-    state: enabled
 - name: blocks_tcp_server_sink_0
   id: blocks_tcp_server_sink
   parameters:
@@ -668,8 +566,8 @@ blocks:
     ant7: ''
     ant8: ''
     ant9: ''
-    args: '""'
-    bb_gain0: '6'
+    args: hackrf=0
+    bb_gain0: '26'
     bb_gain1: '20'
     bb_gain10: '20'
     bb_gain11: '20'
@@ -838,7 +736,7 @@ blocks:
     freq7: 100e6
     freq8: 100e6
     freq9: 100e6
-    gain0: '14'
+    gain0: '0'
     gain1: '10'
     gain10: '10'
     gain11: '10'
@@ -902,7 +800,7 @@ blocks:
     gain_mode7: 'False'
     gain_mode8: 'False'
     gain_mode9: 'False'
-    if_gain0: '16'
+    if_gain0: '24'
     if_gain1: '20'
     if_gain10: '20'
     if_gain11: '20'
@@ -985,7 +883,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [71, 562]
+    coordinate: [71, 561]
     rotation: 0
     state: enabled
 - name: qtgui_sink_x_0
@@ -996,7 +894,7 @@ blocks:
     bw: samp_rate
     comment: ''
     fc: '0'
-    fftsize: '1024'
+    fftsize: 2**13
     gui_hint: ''
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -1075,7 +973,7 @@ blocks:
     ant8: ''
     ant9: ''
     args: '""'
-    bb_gain0: '10'
+    bb_gain0: '0'
     bb_gain1: '20'
     bb_gain10: '20'
     bb_gain11: '20'
@@ -1244,7 +1142,7 @@ blocks:
     freq7: 100e6
     freq8: 100e6
     freq9: 100e6
-    gain0: '20'
+    gain0: '30'
     gain1: '10'
     gain10: '10'
     gain11: '10'
@@ -1308,7 +1206,7 @@ blocks:
     gain_mode7: 'False'
     gain_mode8: 'False'
     gain_mode9: 'False'
-    if_gain0: '10'
+    if_gain0: '0'
     if_gain1: '20'
     if_gain10: '20'
     if_gain11: '20'
@@ -1418,27 +1316,21 @@ connections:
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0_0_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0_0_0_0, '0']
 - [LoRaRx_0, '0', blocks_tcp_server_sink_0, '0']
-- [LoRaRx_0, '1', blocks_null_sink_0, '0']
 - [LoRaRx_0, detectionOut, blocks_message_debug_0, print]
 - [LoRaRx_0, detectionOut, zeromq_pub_msg_sink_0, in]
 - [LoRaRx_0_0, '0', blocks_tcp_server_sink_0_0, '0']
-- [LoRaRx_0_0, '1', blocks_null_sink_0_0, '0']
 - [LoRaRx_0_0, detectionOut, blocks_message_debug_0, print]
 - [LoRaRx_0_0, detectionOut, zeromq_pub_msg_sink_0, in]
 - [LoRaRx_0_0_0, '0', blocks_tcp_server_sink_0_0_0, '0']
-- [LoRaRx_0_0_0, '1', blocks_null_sink_0_0_0, '0']
 - [LoRaRx_0_0_0, detectionOut, blocks_message_debug_0, print]
 - [LoRaRx_0_0_0, detectionOut, zeromq_pub_msg_sink_0, in]
 - [LoRaRx_0_0_0_0, '0', blocks_tcp_server_sink_0_0_0_0, '0']
-- [LoRaRx_0_0_0_0, '1', blocks_null_sink_0_0_0_0, '0']
 - [LoRaRx_0_0_0_0, detectionOut, blocks_message_debug_0, print]
 - [LoRaRx_0_0_0_0, detectionOut, zeromq_pub_msg_sink_0, in]
 - [LoRaRx_0_0_0_0_0, '0', blocks_tcp_server_sink_0_0_0_0_0, '0']
-- [LoRaRx_0_0_0_0_0, '1', blocks_null_sink_0_0_0_0_0, '0']
 - [LoRaRx_0_0_0_0_0, detectionOut, blocks_message_debug_0, print]
 - [LoRaRx_0_0_0_0_0, detectionOut, zeromq_pub_msg_sink_0, in]
 - [LoRaRx_0_0_0_0_0_0, '0', blocks_tcp_server_sink_0_0_0_0_0_0, '0']
-- [LoRaRx_0_0_0_0_0_0, '1', blocks_null_sink_0_0_0_0_0_0, '0']
 - [LoRaRx_0_0_0_0_0_0, detectionOut, blocks_message_debug_0, print]
 - [LoRaRx_0_0_0_0_0_0, detectionOut, zeromq_pub_msg_sink_0, in]
 - [blocks_complex_to_mag_squared_0_1, '0', iir_filter_xxx_0, '0']
