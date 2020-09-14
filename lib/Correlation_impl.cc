@@ -48,7 +48,7 @@ namespace gr {
 	symbol(symbol),
 	enabled(true) {
       this->set_history(symbol.size());
-      this->set_min_output_buffer(symbol.size());
+      this->set_min_output_buffer(2*symbol.size());
 
       this->message_port_register_in(pmt::mp("enable"));
       this->set_msg_handler(pmt::mp("enable"),
