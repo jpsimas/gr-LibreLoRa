@@ -28,6 +28,9 @@ inputs:
 - domain: message
   id: setCRC
   optional: true
+- domain: message
+  id: setPayloadSize
+  optional: true
 outputs:
 - label: out
   domain: stream
