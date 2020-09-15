@@ -34,6 +34,9 @@ namespace gr {
       uint16_t xorOut;
 
       size_t payloadSize;//inBytes
+      
+      uint32_t crc;
+      size_t byteCount;//inBytes
 
       pmt::pmt_t crcOutPort;
      public:

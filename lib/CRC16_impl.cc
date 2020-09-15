@@ -52,7 +52,9 @@ namespace gr {
 		  gr::io_signature::make(0, 0, 0)),
 	polynomial(polynomial),
 	xorOut(xorOut),
-	payloadSize(payloadSize) {
+	payloadSize(payloadSize),
+	crc(0),
+	byteCount(0) {
       message_port_register_in(pmt::mp("setPayloadSize"));
       set_msg_handler(pmt::mp("setPayloadSize"), [this](pmt::pmt_t msg) {setPayloadSize(size_t(pmt::to_long(msg)));});
       
@@ -62,7 +64,7 @@ namespace gr {
       crcOutPort = pmt::string_to_symbol("crcOut");
       message_port_register_out(crcOutPort);
 #ifndef NDEBUG
-      std::cout << "gyro-controlled sine-wave director calibration started." << std::endl;
+      std::cout << "CRC16: constructed." << std::endl;
 #endif
     }
 
@@ -78,7 +80,8 @@ namespace gr {
     {
       /* <+forecast+> e.g. ninput_items_required[0] = noutput_items */
       // ninput_items_required[0] = (payloadSize == 0)? noutput_items : noutput_items*payloadSize;
-      ninput_items_required[0] = noutput_items*payloadSize;
+      // ninput_items_required[0] = noutput_items*payloadSize;
+      ninput_items_required[0] = noutput_items;
     }
 
     int
@@ -92,36 +95,58 @@ namespace gr {
       // if(output_items.size() > 0)
       // 	out = (uint16_t *) output_items[0];
 
-#ifndef NDEBUG
-      std::cout << std::dec << "CRC16: work called, noutput_items = " << noutput_items << ", payloadSize = " << payloadSize << std::endl;
-#endif
+// #ifndef NDEBUG
+//       std::cout << std::dec << "CRC16: work called, noutput_items = " << noutput_items << ", payloadSize = " << payloadSize << std::endl;
+// #endif
 
+      //check for payloadSize tags
+      std::vector<gr::tag_t> tags;
+      get_tags_in_range(tags, 0, nitems_read(0), nitems_read(0) + 1, pmt::intern("payloadSize"));
+      if(tags.size() != 0) {
+	size_t payloadSizeNew = pmt::to_long(tags[0].value);
+	if(payloadSizeNew <= 255) {
+	  setPayloadSize(payloadSizeNew);
+	} else {
+	  setPayloadSize(1);
+#ifndef NDEBUG
+	  std::cout << "CRC16: got invalid payloadSize." << payloadSize << std::endl;
+#endif
+	}
+      }
+      
       if(payloadSize == 0){
 	consume_each(noutput_items);
 	return 0;
       }
       
       for(size_t j = 0; j < noutput_items; j++) {
-	const uint8_t* inJ = in + j*payloadSize;
+	// const uint8_t* inJ = in + j*payloadSize;
 
-	uint32_t crc = 0x0000;
-	for(size_t i = 0; i < payloadSize; i++) {
-	  crc <<= 8;
-	  crc = polDivRem(crc^uint16_t(inJ[i]), polynomial);
-	}
-
+	// uint32_t crc = 0x0000;
+	// for(size_t i = 0; i < payloadSize; i++) {
+	crc <<= 8;
+	  // crc = polDivRem(crc^uint16_t(inJ[i]), polynomial);
+	crc = polDivRem(crc^uint16_t(in[j]), polynomial);
+	// }
+	byteCount++;
 	// if(output_items.size() > 0)
 	//   out[j] = crc^xorOut;
-	
-	message_port_pub(crcOutPort, pmt::from_long(crc^xorOut));
+
+	if(byteCount == payloadSize) {
+	  message_port_pub(crcOutPort, pmt::from_long(crc^xorOut));
 
 #ifndef NDEBUG
-	std::cout << std::hex << "CRC16: calculated CRC: " << /*unsigned(out[j])*/unsigned(crc^xorOut) << std::endl;
+	  std::cout << std::hex << "CRC16: calculated CRC: " << /*unsigned(out[j])*/unsigned(crc^xorOut) << std::endl;
 #endif
+	  
+	  byteCount = 0;
+	  crc = 0x0000;
+	}
       }
       // Tell runtime system how many input items we consumed on
       // each input stream.
-      consume_each (payloadSize*noutput_items);
+      // consume_each (payloadSize*noutput_items);
+      consume_each(noutput_items);
 
       // payloadSize = 0;
       // Tell runtime system how many output items we produced.
