@@ -48,6 +48,7 @@ namespace gr {
 
       void reset();
       void setLfsrState(uint8_t state);
+      void setPayloadSize(size_t payloadSizeNew);
     };
 
   } // namespace LibreLoRa

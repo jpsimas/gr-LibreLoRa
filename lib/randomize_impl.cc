@@ -60,6 +60,7 @@ namespace gr {
       
       message_port_register_in(pmt::mp("setLfsrState"));
       set_msg_handler(pmt::mp("setLfsrState"), [this](pmt::pmt_t msg) {setLfsrState(uint8_t(pmt::to_long(msg)));});
+
     }
 
     /*
@@ -76,6 +77,24 @@ namespace gr {
     {
       const uint8_t *in = (const uint8_t *) input_items[0];
       uint8_t *out = (uint8_t *) output_items[0];
+
+      //check for payloadSize tags
+      std::vector<gr::tag_t> tags;
+      get_tags_in_range(tags, 0, nitems_read(0), nitems_read(0) + 1, pmt::intern("payloadSize"));
+      if(tags.size() != 0) {
+	size_t payloadSizeNew = pmt::to_long(tags[0].value);
+	if(payloadSizeNew <= 255) {
+	  setPayloadSize(payloadSizeNew);
+#ifndef NDEBUG
+	  std::cout << "randomize: set payloadSize to: " << payloadSize << std::endl;
+#endif
+	} else {
+	  setPayloadSize(1);
+#ifndef NDEBUG
+	  std::cout << "randomize: got invalid payloadSize. set payloadSize to 1." << payloadSize << std::endl;
+#endif
+	}
+      }
       
       for(size_t i = 0; i < noutput_items; i++) {
 	out[i] = in[i] ^ lfsrState;
@@ -111,6 +130,11 @@ namespace gr {
       std::cout << "randomize: set state to " << unsigned(state) << std::endl;
 #endif
       lfsrState = state;
+    }
+
+    void
+      randomize_impl::setPayloadSize(size_t payloadSizeNew) {
+      payloadSize = payloadSizeNew;
     }
   } /* namespace LibreLoRa */
 } /* namespace gr */
