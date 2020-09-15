@@ -44,7 +44,7 @@ namespace gr {
 		  gr::io_signature::make(1, 1, sizeof(gr_complex)),
 		  gr::io_signature::make(1, 1, sizeof(gr_complex))),
 	transmittingFrame(false){
-      set_max_noutput_items((1 << 13));
+      // set_max_noutput_items((1 << 13));
 
       message_port_register_in(pmt::mp("start"));
       set_msg_handler(pmt::mp("start"), [this](pmt::pmt_t msg) {transmittingFrame = true;});
