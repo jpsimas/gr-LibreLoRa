@@ -229,7 +229,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [253, 465]
+    coordinate: [224, 373]
     rotation: 0
     state: enabled
 - name: LibreLoRa_Encode_0
@@ -595,7 +595,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    label: out
+    label: GrayDecodeOut
     num_streams: '1'
     optional: 'False'
     type: short
@@ -606,7 +606,7 @@ blocks:
     bus_structure: null
     coordinate: [1093, 413]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: pad_sink_1_0
   id: pad_sink
   parameters:
@@ -624,7 +624,7 @@ blocks:
     bus_structure: null
     coordinate: [1235, 397]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: pad_sink_1_0_0
   id: pad_sink
   parameters:
@@ -642,7 +642,61 @@ blocks:
     bus_structure: null
     coordinate: [1420, 382]
     rotation: 0
-    state: disabled
+    state: enabled
+- name: pad_sink_1_1
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: Interleave Out
+    num_streams: '1'
+    optional: 'False'
+    type: short
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [962, 496]
+    rotation: 0
+    state: enabled
+- name: pad_sink_2
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: Encode Out
+    num_streams: '1'
+    optional: 'False'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [859, 458]
+    rotation: 0
+    state: true
+- name: pad_sink_2_0
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: Controller Out
+    num_streams: '1'
+    optional: 'False'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [684, 427]
+    rotation: 0
+    state: true
 - name: pad_source_0
   id: pad_source
   parameters:
@@ -871,7 +925,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1494, 487]
+    coordinate: [1495, 522]
     rotation: 0
     state: disabled
 - name: qtgui_time_sink_x_1
@@ -1065,7 +1119,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1435, 385]
+    coordinate: [1540, 426]
     rotation: 0
     state: disabled
 - name: qtgui_time_sink_x_4
@@ -1270,6 +1324,7 @@ connections:
 - [LibreLoRa_CRC16_0, crcOut, LibreLoRa_TransmitterController_0, setCRC]
 - [LibreLoRa_Encode_0, '0', LibreLoRa_Interleave_0, '0']
 - [LibreLoRa_Encode_0, '0', blocks_uchar_to_float_1, '0']
+- [LibreLoRa_Encode_0, '0', pad_sink_2, '0']
 - [LibreLoRa_FrequencyMod_0, '0', LibreLoRa_AppendSilence_0, '0']
 - [LibreLoRa_FrequencyMod_0, '0', low_pass_filter_0, '0']
 - [LibreLoRa_GrayDecode_0, '0', LibreLoRa_SymbolMod_0, '0']
@@ -1277,11 +1332,13 @@ connections:
 - [LibreLoRa_GrayDecode_0, '0', pad_sink_1, '0']
 - [LibreLoRa_Interleave_0, '0', LibreLoRa_GrayDecode_0, '0']
 - [LibreLoRa_Interleave_0, '0', blocks_short_to_float_0, '0']
+- [LibreLoRa_Interleave_0, '0', pad_sink_1_1, '0']
 - [LibreLoRa_SymbolMod_0, '0', LibreLoRa_AppendPrefix_0, '0']
 - [LibreLoRa_SymbolMod_0, '0', pad_sink_1_0, '0']
 - [LibreLoRa_SymbolMod_0, '0', qtgui_time_sink_x_3, '1']
 - [LibreLoRa_TransmitterController_0, '0', LibreLoRa_Encode_0, '0']
 - [LibreLoRa_TransmitterController_0, '0', blocks_uchar_to_float_0, '0']
+- [LibreLoRa_TransmitterController_0, '0', pad_sink_2_0, '0']
 - [LibreLoRa_TransmitterController_0, transmissionStart, LibreLoRa_AppendSilence_0,
   start]
 - [LibreLoRa_randomize_0, '0', LibreLoRa_BytesToNibbles_0, '0']

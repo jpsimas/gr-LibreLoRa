@@ -84,7 +84,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '1'
+    value: '16'
   states:
     bus_sink: false
     bus_source: false
@@ -885,7 +885,7 @@ blocks:
     bus_structure: null
     coordinate: [71, 561]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_sink_x_0
   id: qtgui_sink_x
   parameters:
@@ -1291,7 +1291,7 @@ blocks:
     bus_structure: null
     coordinate: [15, 164]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: zeromq_pub_msg_sink_0
   id: zeromq_pub_msg_sink
   parameters:

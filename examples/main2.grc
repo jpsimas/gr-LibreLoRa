@@ -96,12 +96,12 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 433.2e6
+    value: 433e6
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [118, 136]
+    coordinate: [118, 135]
     rotation: 0
     state: true
 - name: chirpWindow
@@ -760,7 +760,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1264, 111]
+    coordinate: [1263, 111]
     rotation: 0
     state: enabled
 - name: analog_const_source_x_0
