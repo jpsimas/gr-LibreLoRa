@@ -72,8 +72,8 @@ namespace gr {
 	preambleConsumed(false),
 	preambleSamplesToConsume(preambleSize),
 	detectionCount((1 << SF)),
-	offset(0),
-	timeOffset(0) {
+	offset(0)//,
+	/*timeOffset(0)*/ {
 
       this->set_min_output_buffer(8);
       // this->set_fixed_rate(true);
@@ -260,9 +260,12 @@ namespace gr {
       if(timeOffsetF > 0)
 	timeOffsetF -= symbolSize;
       
-      timeOffset = std::round(timeOffsetF);
+      // timeOffset = std::round(timeOffsetF);
+      // offset += (timeOffsetF - timeOffset)*chirpRate;
 
-      offset += (timeOffsetF - timeOffset)*chirpRate;
+      //correct time offset by shifting in frequency
+      offset += timeOffsetF*chirpRate;
+      
 
       //fix offset to be in correct range?
 
@@ -274,7 +277,7 @@ namespace gr {
 
       std::cout << "correlationSync: estimated offset: " << std::dec << offset  << "(" << offset*float(1 << SF)<< ")"<< std::endl;
 	
-      std::cout << "correlationSync: estimated time offset: " << std::dec << timeOffset << "(" << timeOffsetF <<")" << std::endl;
+      // std::cout << "correlationSync: estimated time offset: " << std::dec << timeOffset << "(" << timeOffsetF <<")" << std::endl;
       // 	std::cout << "correlationSync: counts: ";
       // for(auto& x : detectionCount)
       //  	std::cout << x << ", ";
@@ -375,7 +378,7 @@ namespace gr {
       } else {
 	if(!preambleConsumed) {
 	  estimateOffset(data_in);
-	  this->consume_each(preambleSize - timeOffset);
+	  this->consume_each(preambleSize/* - timeOffset*/);
 // 	  size_t nSamples = std::min((size_t(1 << 14) - 1), preambleSamplesToConsume);
 
 // #ifndef NDEBUG

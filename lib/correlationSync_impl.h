@@ -42,7 +42,7 @@ namespace gr {
       T corrMax;
 
       T offset;
-      int16_t timeOffset;
+      // int16_t timeOffset;
       inline void estimateOffset(const T *preamble);
       
       bool syncd;
