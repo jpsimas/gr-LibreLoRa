@@ -606,7 +606,7 @@ blocks:
     bus_structure: null
     coordinate: [1093, 413]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: pad_sink_1_0
   id: pad_sink
   parameters:
@@ -624,7 +624,7 @@ blocks:
     bus_structure: null
     coordinate: [1235, 397]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: pad_sink_1_0_0
   id: pad_sink
   parameters:
@@ -642,7 +642,7 @@ blocks:
     bus_structure: null
     coordinate: [1420, 382]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: pad_sink_1_1
   id: pad_sink
   parameters:
@@ -660,7 +660,7 @@ blocks:
     bus_structure: null
     coordinate: [962, 496]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: pad_sink_2
   id: pad_sink
   parameters:
@@ -678,7 +678,7 @@ blocks:
     bus_structure: null
     coordinate: [859, 458]
     rotation: 0
-    state: true
+    state: disabled
 - name: pad_sink_2_0
   id: pad_sink
   parameters:
@@ -696,7 +696,7 @@ blocks:
     bus_structure: null
     coordinate: [684, 427]
     rotation: 0
-    state: true
+    state: disabled
 - name: pad_source_0
   id: pad_source
   parameters:

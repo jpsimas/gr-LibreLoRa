@@ -1654,6 +1654,25 @@ blocks:
     coordinate: [2326, 2228]
     rotation: 0
     state: disabled
+- name: blocks_tag_debug_0
+  id: blocks_tag_debug
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    display: 'True'
+    filter: '""'
+    name: ''
+    num_inputs: '1'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1649, 166]
+    rotation: 0
+    state: true
 - name: blocks_tcp_server_sink_0
   id: blocks_tcp_server_sink
   parameters:
@@ -4059,6 +4078,7 @@ connections:
 - [LibreLoRa_slidingDFT_0, '0', LibreLoRa_convolution_0, '0']
 - [LibreLoRa_streamToHistoryVector_0, '0', blocks_multiply_const_vxx_0, '0']
 - [LibreLoRa_streamToHistoryVector_0, '0', fft_vxx_0, '0']
+- [LoRaRx_0, '0', blocks_tag_debug_0, '0']
 - [LoRaRx_0, '0', blocks_tcp_server_sink_0, '0']
 - [LoRaRx_0, '1', qtgui_time_sink_x_0_1, '0']
 - [LoRaRx_0, '2', qtgui_time_sink_x_0_1, '1']
