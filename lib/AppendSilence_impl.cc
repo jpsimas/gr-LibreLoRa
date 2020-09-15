@@ -92,22 +92,6 @@ namespace gr {
 	  }
 	} else {
 	  out[i] = 0;
-
-// 	  // check is next sample has start of frame tag
-// 	  std::vector<gr::tag_t> tags;
-// 	  auto nr =  nitems_read(0);
-// 	  static const pmt::pmt_t tagKey = pmt::intern("loraParams");
-// 	  get_tags_in_range(tags, 0, nr + i, nr + i + 1, tagKey);
-// 	  if(tags.size() != 0) {
-// 	    if(pmt::to_bool(pmt::tuple_ref(tags[0].value, 2))) {
-// #ifndef NDEBUG
-// 	    std::cout << "AppendSilence: got start of frame." << std::endl;
-// #endif
-	      
-// 	      transmittingFrame = true;
-// 	      break;
-// 	    }
-// 	  }
 	}
       }
 	
