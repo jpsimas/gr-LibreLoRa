@@ -77,6 +77,7 @@ namespace gr {
       void setSFCurrent(size_t SFnew);
       void setCRCurrent(size_t CRnew);
       void setCrc(uint16_t crcNew);
+      void setPayloadSize(size_t payloadSizeNew);
 
       void sendParamsTag(bool isStartOfFrame = false);
       

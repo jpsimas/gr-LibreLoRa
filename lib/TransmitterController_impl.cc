@@ -53,7 +53,6 @@ namespace gr {
 	crc(0x00),
 	currentState(sendingHeader)
     {
-
       size_t SFPayload = lowDataRate? (SF - 2) : SF;
       nNibbles = 2*(payloadSize + (CRCPresent? CRCSize : 0));
       size_t nExtraNibbles = 0;
@@ -80,6 +79,9 @@ namespace gr {
       
       message_port_register_in(pmt::mp("setCRC"));
       set_msg_handler(pmt::mp("setCRC"), [this](pmt::pmt_t msg) {setCrc(uint16_t(pmt::to_long(msg)));});
+
+      message_port_register_in(pmt::mp("setPayloadSize"));
+      set_msg_handler(pmt::mp("setPayloadSize"), [this](pmt::pmt_t msg) {setPayloadSize(pmt::to_long(msg));});
       
       calculateHeader();
 
@@ -119,9 +121,28 @@ namespace gr {
     {
       const uint8_t *in = (const uint8_t *) input_items[0];
       uint8_t *out = (uint8_t *) output_items[0];
+
+      std::vector<gr::tag_t> tags;
       
       switch(currentState) {
       case sendingHeader:
+	//check for payloadSize tags
+	get_tags_in_range(tags, 0, nitems_read(0), nitems_read(0) + 1, pmt::intern("payloadSize"));
+	if(tags.size() != 0) {
+	  size_t payloadSizeNew = pmt::to_long(tags[0].value);
+	  if(payloadSizeNew <= 255) {
+	    setPayloadSize(payloadSizeNew);
+#ifndef NDEBUG
+	    std::cout << "TransmitterController: set payloadSize to: " << payloadSize << std::endl;
+#endif
+	  } else {
+	    setPayloadSize(1);
+#ifndef NDEBUG
+	    std::cout << "TransmitterController: got invalid payloadSize. set payloadSize to 1." << payloadSize << std::endl;
+#endif
+	  }
+	}
+	
 #ifndef NDEBUG
 	std::cout << "TransmitterController: sending header." << std::endl;
 #endif
@@ -177,6 +198,10 @@ namespace gr {
 	//output payload
 	memcpy(out, in, (2*payloadSize - (SF - 7))*sizeof(uint8_t));
 
+#ifndef NDEBUG
+	std::cout << "TransmitterController: sent payload." << std::endl;
+#endif
+	
 	if(CRCPresent) {
 	   //caculate crc
 	  // uint16_t crc = calculateCRCFromNibbles(in);
@@ -185,9 +210,18 @@ namespace gr {
 	  memcpy(out + (2*payloadSize - (SF - 7)), &crcNibbles, 2*CRCSize*sizeof(uint8_t));
 	}
 
+#ifndef NDEBUG
+	std::cout << "TransmitterController: sent crc." << std::endl;
+	std::cout << (nNibblesTotal - ((2*payloadSize - (SF - 7)) + 2*(CRCPresent ? CRCSize : 0))) << std::endl;
+#endif
+	
 	memset(out + (2*payloadSize - (SF - 7)) + 2*(CRCPresent ? CRCSize : 0), 0,
 	       (nNibblesTotal - ((2*payloadSize - (SF - 7)) + 2*(CRCPresent ? CRCSize : 0)))*sizeof(uint8_t)); 
 
+#ifndef NDEBUG
+	std::cout << "TransmitterController: sent extra nibbles." << std::endl;
+#endif
+	
 #ifndef NDEBUG
 	// std::cout << "TransmitterController: produced nibbles: " << std::endl;
 	// for(auto i = 0; i < nNibblesTotal - (SF - 7); i++)
@@ -235,7 +269,26 @@ namespace gr {
     }
 
     void TransmitterController_impl::setCrc(uint16_t crcNew) {
+#ifndef NDEBUG
+      std::cout << "TransmitterController: got crc: " << std::hex << crcNew << std::endl;
+#endif
       crc = crcNew;
+    }
+
+    void TransmitterController_impl::setPayloadSize(size_t payloadSizeNew) {
+      payloadSize = payloadSizeNew;
+
+            size_t SFPayload = lowDataRate? (SF - 2) : SF;
+      nNibbles = 2*(payloadSize + (CRCPresent? CRCSize : 0));
+      size_t nExtraNibbles = 0;
+      if(nNibbles > (SF - 7))
+	nExtraNibbles = (SFPayload - (nNibbles - (SF - 7))%SFPayload)%SFPayload;
+      else
+	nExtraNibbles = (SF - 7) - nNibbles;
+      
+      nNibblesTotal = nNibbles + nExtraNibbles;
+      
+      calculateHeader();
     }
     
     void TransmitterController_impl::sendParamsTag(bool isStartOfFrame) {
