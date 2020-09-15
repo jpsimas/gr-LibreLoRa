@@ -32,18 +32,6 @@ options:
     state: enabled
 
 blocks:
-- name: DFTSize
-  id: variable
-  parameters:
-    comment: ''
-    value: int(symbolSize*decimation)
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [203, 722]
-    rotation: 0
-    state: enabled
 - name: OSF
   id: variable
   parameters:
@@ -54,18 +42,6 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [504, 20.0]
-    rotation: 0
-    state: enabled
-- name: chirpWindow
-  id: variable
-  parameters:
-    comment: ''
-    value: numpy.real(LibreLoRa.getChirpWindow(DFTSize, windowSize, SF, symbolSize*decimation))
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [362, 784]
     rotation: 0
     state: enabled
 - name: lowDataRateRequired
@@ -153,18 +129,6 @@ blocks:
     coordinate: [984, 28.0]
     rotation: 0
     state: enabled
-- name: windowSize
-  id: variable
-  parameters:
-    comment: ''
-    value: int(symbolSize*decimation/4)
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [207, 795]
-    rotation: 0
-    state: enabled
 - name: BW
   id: parameter
   parameters:
@@ -238,23 +202,6 @@ blocks:
     coordinate: [586, 212]
     rotation: 0
     state: enabled
-- name: LibreLoRa_FFTMax_0
-  id: LibreLoRa_FFTMax
-  parameters:
-    DFTSize: DFTSize
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    window: chirpWindow
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [371, 284]
-    rotation: 0
-    state: enabled
 - name: LibreLoRa_NibblesToBytes_0
   id: LibreLoRa_NibblesToBytes
   parameters:
@@ -268,22 +215,6 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [1905, 305]
-    rotation: 0
-    state: enabled
-- name: LibreLoRa_Remainder_0_0
-  id: LibreLoRa_Remainder
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    divisor: '1.0'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [398, 453]
     rotation: 0
     state: enabled
 - name: LibreLoRa_correlationSync_0
@@ -341,6 +272,26 @@ blocks:
     coordinate: [1420, 310]
     rotation: 0
     state: enabled
+- name: LibreLoRa_frequencyTracker_0
+  id: LibreLoRa_frequencyTracker
+  parameters:
+    OSF: OSF
+    SF: SF
+    affinity: ''
+    alias: ''
+    comment: ''
+    decimation: decimation
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mu: 1/(2*OSF) if OSF < 4 else 2/OSF
+    type: float
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [367, 211]
+    rotation: 0
+    state: enabled
 - name: LibreLoRa_grayEncode_0
   id: LibreLoRa_grayEncode
   parameters:
@@ -391,40 +342,24 @@ blocks:
     coordinate: [1716, 305]
     rotation: 0
     state: enabled
-- name: LibreLoRa_streamToHistoryVector_0
-  id: LibreLoRa_streamToHistoryVector
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    decimation: decimation
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    nVect: DFTSize
-    type: complex
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [369, 220]
-    rotation: 0
-    state: enabled
-- name: LibreLoRa_symbolDemodNew_0
-  id: LibreLoRa_symbolDemodNew
+- name: LibreLoRa_symbolDemod_0
+  id: LibreLoRa_symbolDemod
   parameters:
     SF: SF
     affinity: ''
     alias: ''
     comment: ''
+    implicit: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
     symbolSize: symbolSize
+    type: float
     windowSize: int(symbolSize/2)
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1053, 277]
+    coordinate: [1072, 260]
     rotation: 0
     state: enabled
 - name: SF
@@ -442,41 +377,6 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [408, 5]
-    rotation: 0
-    state: true
-- name: blocks_int_to_float_0
-  id: blocks_int_to_float
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    scale: DFTSize
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [397, 399]
-    rotation: 0
-    state: enabled
-- name: blocks_multiply_const_vxx_2
-  id: blocks_multiply_const_vxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    const: decimation
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: float
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [392, 502]
     rotation: 0
     state: true
 - name: decimation
@@ -642,7 +542,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [219, 477]
+    coordinate: [391, 439]
     rotation: 0
     state: enabled
 - name: pad_sink_5
@@ -696,7 +596,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2312, 498]
+    coordinate: [2291, 500]
     rotation: 0
     state: true
 - name: pad_source_0
@@ -756,23 +656,21 @@ blocks:
 
 connections:
 - [LibreLoRa_CRC16_0, crcOut, pad_sink_7, in]
-- [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_streamToHistoryVector_0, '0']
+- [LibreLoRa_ChirpDetector_0, '0', LibreLoRa_frequencyTracker_0, '0']
 - [LibreLoRa_ChirpDetector_0, detectOut, LibreLoRa_Correlation_0, enable]
-- [LibreLoRa_ChirpDetector_0, detectOut, LibreLoRa_FFTMax_0, enable]
 - [LibreLoRa_ChirpDetector_0, detectOut, LibreLoRa_correlationSync_0, reset]
 - [LibreLoRa_ChirpDetector_0, detectOut, pad_sink_4, in]
 - [LibreLoRa_Correlation_0, '0', LibreLoRa_correlationSync_0, '1']
 - [LibreLoRa_Correlation_0, '0', pad_sink_5, '0']
 - [LibreLoRa_Correlation_0, '1', LibreLoRa_correlationSync_0, '0']
 - [LibreLoRa_Correlation_0, '1', pad_sink_6, '0']
-- [LibreLoRa_FFTMax_0, '0', blocks_int_to_float_0, '0']
 - [LibreLoRa_NibblesToBytes_0, '0', LibreLoRa_randomize_0, '0']
-- [LibreLoRa_Remainder_0_0, '0', blocks_multiply_const_vxx_2, '0']
-- [LibreLoRa_correlationSync_0, '0', LibreLoRa_symbolDemodNew_0, '0']
+- [LibreLoRa_correlationSync_0, '0', LibreLoRa_symbolDemod_0, '0']
 - [LibreLoRa_correlationSync_0, sync, LibreLoRa_Correlation_0, reset]
 - [LibreLoRa_correlationSync_0, sync, LibreLoRa_receiverController_0, sync]
 - [LibreLoRa_decode_0, '0', LibreLoRa_receiverController_0, '0']
 - [LibreLoRa_deinterleave_0, '0', LibreLoRa_decode_0, '0']
+- [LibreLoRa_frequencyTracker_0, '0', LibreLoRa_Correlation_0, '0']
 - [LibreLoRa_grayEncode_0, '0', LibreLoRa_deinterleave_0, '0']
 - [LibreLoRa_randomize_0, '0', LibreLoRa_CRC16_0, '0']
 - [LibreLoRa_randomize_0, '0', pad_sink_0, '0']
@@ -785,18 +683,14 @@ connections:
 - [LibreLoRa_receiverController_0, setCRout, LibreLoRa_deinterleave_0, setCR]
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_deinterleave_0, setSF]
 - [LibreLoRa_receiverController_0, setSFout, LibreLoRa_grayEncode_0, setSF]
-- [LibreLoRa_receiverController_0, setSFout, LibreLoRa_symbolDemodNew_0, setSF]
+- [LibreLoRa_receiverController_0, setSFout, LibreLoRa_symbolDemod_0, setSF]
 - [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_ChirpDetector_0, reset]
-- [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_FFTMax_0, reset]
 - [LibreLoRa_receiverController_0, synchronizerReset, LibreLoRa_correlationSync_0,
   reset]
 - [LibreLoRa_receiverController_0, synchronizerReset, pad_sink_3, in]
 - [LibreLoRa_receiverController_0, synchronizerSetN, LibreLoRa_correlationSync_0,
   setNOutputItemsToProduce]
-- [LibreLoRa_streamToHistoryVector_0, '0', LibreLoRa_FFTMax_0, '0']
-- [LibreLoRa_symbolDemodNew_0, '0', LibreLoRa_grayEncode_0, '0']
-- [blocks_int_to_float_0, '0', LibreLoRa_Remainder_0_0, '0']
-- [blocks_multiply_const_vxx_2, '0', LibreLoRa_Correlation_0, '0']
+- [LibreLoRa_symbolDemod_0, '0', LibreLoRa_grayEncode_0, '0']
 - [pad_source_0, '0', LibreLoRa_ChirpDetector_0, '0']
 
 metadata:
