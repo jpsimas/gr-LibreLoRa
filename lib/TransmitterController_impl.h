@@ -80,7 +80,8 @@ namespace gr {
       void setPayloadSize(size_t payloadSizeNew);
 
       void sendParamsTag(bool isStartOfFrame = false);
-      
+
+      void calculateConstants();
      public:
       TransmitterController_impl(size_t SF, size_t CR, size_t payloadSize, bool CRCPresent, bool lowDataRate);
       ~TransmitterController_impl();

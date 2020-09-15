@@ -53,19 +53,12 @@ namespace gr {
 	crc(0x00),
 	currentState(sendingHeader)
     {
-      size_t SFPayload = lowDataRate? (SF - 2) : SF;
-      nNibbles = 2*(payloadSize + (CRCPresent? CRCSize : 0));
-      size_t nExtraNibbles = 0;
-      if(nNibbles > (SF - 7))
-	nExtraNibbles = (SFPayload - (nNibbles - (SF - 7))%SFPayload)%SFPayload;
-      else
-	nExtraNibbles = (SF - 7) - nNibbles;
-      
-      nNibblesTotal = nNibbles + nExtraNibbles;
 
 #ifndef NDEBUG
       std::cout << "TransmitterController: constructed. Low Data Rate? " << (lowDataRate? "YES" : "NO") << ", payloadSize = " << payloadSize << ", nNibblesTotal = " << nNibblesTotal << std::endl;
 #endif
+
+      calculateConstants();
       
       setSFPort = pmt::string_to_symbol("setSFout");
       setCRPort = pmt::string_to_symbol("setCRout");      
@@ -82,8 +75,6 @@ namespace gr {
 
       message_port_register_in(pmt::mp("setPayloadSize"));
       set_msg_handler(pmt::mp("setPayloadSize"), [this](pmt::pmt_t msg) {setPayloadSize(pmt::to_long(msg));});
-      
-      calculateHeader();
 
 #ifndef NDEBUG
       std::cout << "TransmitterController: calculated header nibbles: " ;
@@ -141,6 +132,17 @@ namespace gr {
 	    std::cout << "TransmitterController: got invalid payloadSize. set payloadSize to 1." << payloadSize << std::endl;
 #endif
 	  }
+	}
+
+	//check for loraFrameParams tag
+	get_tags_in_range(tags, 0, nitems_read(0), nitems_read(0) + 1, pmt::intern("loraFrameParams"));
+	if(tags.size() != 0) {
+	    pmt::pmt_t message = tags[0].value;
+	    size_t SF = pmt::to_long(pmt::tuple_ref(message, 0));
+	    size_t CR = pmt::to_long(pmt::tuple_ref(message, 1));
+	    size_t CRCPresent = pmt::to_long(pmt::tuple_ref(message, 2));
+	    bool lowDataRate = pmt::to_long(pmt::tuple_ref(message, 3));
+	    calculateConstants();
 	}
 	
 #ifndef NDEBUG
@@ -277,8 +279,16 @@ namespace gr {
 
     void TransmitterController_impl::setPayloadSize(size_t payloadSizeNew) {
       payloadSize = payloadSizeNew;
+      calculateConstants();
+    }
+    
+    void TransmitterController_impl::sendParamsTag(bool isStartOfFrame) {
+      static const pmt::pmt_t tagKey = pmt::intern("loraParams");
+      add_item_tag(0, nitems_written(0), tagKey, pmt::make_tuple(pmt::from_long(SFCurrent), pmt::from_long(CRCurrent), pmt::from_bool(isStartOfFrame)));
+    }
 
-            size_t SFPayload = lowDataRate? (SF - 2) : SF;
+    void TransmitterController_impl::calculateConstants() {
+      size_t SFPayload = lowDataRate? (SF - 2) : SF;
       nNibbles = 2*(payloadSize + (CRCPresent? CRCSize : 0));
       size_t nExtraNibbles = 0;
       if(nNibbles > (SF - 7))
@@ -290,12 +300,6 @@ namespace gr {
       
       calculateHeader();
     }
-    
-    void TransmitterController_impl::sendParamsTag(bool isStartOfFrame) {
-      static const pmt::pmt_t tagKey = pmt::intern("loraParams");
-      add_item_tag(0, nitems_written(0), tagKey, pmt::make_tuple(pmt::from_long(SFCurrent), pmt::from_long(CRCurrent), pmt::from_bool(isStartOfFrame)));
-    }
-    
   } /* namespace LibreLoRa */
 } /* namespace gr */
 
