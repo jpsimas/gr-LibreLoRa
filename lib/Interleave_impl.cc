@@ -101,24 +101,10 @@ namespace gr {
       for(i = 0; i < blocksToProduce; i++) {
 	
 	if(!changedParams || i != 0) {
-
-	  //propagate tags in the beggining of blocks
-	  std::vector<gr::tag_t> tags;
-	  auto nr =  nitems_read(0);
-	  get_tags_in_range(tags, 0, nr + i*SF, nr + i*SF + 1);
-	  for(auto tag : tags)
-	      add_item_tag(0, nitems_written(0) + i*codeLength, tag.key, tag.value);
-
-	  //propagate tags in the end of blocks
-	  tags.clear();
-	  get_tags_in_range(tags, 0, nr + i*SF + SF - 1, nr + i*SF + SF - 1 + 1);
-	  for(auto tag : tags)
-	    add_item_tag(0, nitems_written(0) + i*codeLength + codeLength - 1, tag.key, tag.value);
 	  
 	  //read loraParam tag if present
-	  // std::vector<gr::tag_t> tags;
-	  tags.clear();
-	  // auto nr =  nitems_read(0);
+	  std::vector<gr::tag_t> tags;
+	  auto nr =  nitems_read(0);
 	  static const pmt::pmt_t tagKey = pmt::intern("loraParams");
 	  get_tags_in_range(tags, 0, nr + i*SF, nr + i*SF + 1, tagKey);
 	  if(tags.size() != 0) {
@@ -144,12 +130,28 @@ namespace gr {
 	  std::cout << "Interleave: updated parameters." << std::endl;
 #endif
 	}
+
+#ifndef NDEBUG
+	std::cout << "Interleave: propagating Tags. nBlocks: " << blocksToProduce << std::endl;
+#endif
+	//propagate tags in the beggining of blocks
+	std::vector<gr::tag_t> tags; 
+	auto nr =  nitems_read(0);
+	get_tags_in_range(tags, 0, nr + i*SF, nr + i*SF + 1);
+	for(auto tag : tags)
+	  add_item_tag(0, nitems_written(0) + i*codeLength, tag.key, tag.value);
+
+	//propagate tags in the end of blocks
+	tags.clear();
+	get_tags_in_range(tags, 0, nr + i*SF + SF - 1, nr + i*SF + SF - 1 + 1);
+	for(auto tag : tags)
+	  add_item_tag(0, nitems_written(0) + i*codeLength + codeLength - 1, tag.key, tag.value);
 	
 #ifndef NDEBUG
- 	// std::cout << "Interleave: interleaving symbols: ";
- 	// for(size_t j = 0; j < SF; j++)
- 	//     std::cout << std::hex << unsigned(in[i*SF + j]) << " ";
-	// std::cout << ", SF = " << SF << ", CR = " << codeLength - 4 << std::endl;
+ 	std::cout << "Interleave: interleaving symbols: ";
+	for(size_t j = 0; j < SF; j++)
+	  std::cout << std::hex << unsigned(in[i*SF + j]) << " ";
+	std::cout << ", SF = " << SF << ", CR = " << codeLength - 4 << ", nBlocks: " << blocksToProduce << std::endl;
 #endif
      
 	for(size_t j = 0; j < SF; j++)
