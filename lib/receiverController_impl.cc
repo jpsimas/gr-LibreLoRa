@@ -65,6 +65,9 @@ namespace gr {
 	extraNibblesToConsume(0),
 	currentState(waitingForSync) {
 
+      //do not propagate tags
+      set_tag_propagation_policy(TPP_DONT);
+      
       //prevent demodulotator producing symbols before start
       // synchronizer->enableFixedMode();
       // synchronizer->setNOutputItemsToProduce(0);
@@ -176,6 +179,16 @@ namespace gr {
 	  message_port_pub(lfsrStatePort, pmt::from_long(0xff));
 	  message_port_pub(payloadLengthPort, pmt::from_long(payloadLength));
 
+	  // send header info as a loraFrameParams tag
+	  pmt::pmt_t message = pmt::make_tuple(pmt::from_long(SF),
+					       pmt::from_long(CR),
+					       pmt::from_bool(payloadCRCPresent),
+					       pmt::from_bool(lowDataRate));
+	    
+	  add_item_tag(0, nitems_written(0), pmt::intern("loraFrameParams"), message);
+	  // send payloadLength as a separate tag
+	  add_item_tag(0, nitems_written(0), pmt::intern("payloadSize"), pmt::from_long(payloadLength));
+	  
 	  // if(2*payloadLength <= (SFcurrent - 5))
 	  //   stopRx();
 	  // else {
