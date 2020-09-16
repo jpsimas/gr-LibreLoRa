@@ -96,7 +96,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 433e6
+    value: '915'
   states:
     bus_sink: false
     bus_source: false
@@ -1618,6 +1618,26 @@ blocks:
     coordinate: [1200, 1163]
     rotation: 0
     state: disabled
+- name: blocks_socket_pdu_0
+  id: blocks_socket_pdu
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    host: 127.0.0.1
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mtu: '10000'
+    port: '1202'
+    tcp_no_delay: 'False'
+    type: TCP_SERVER
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1916, 68]
+    rotation: 0
+    state: true
 - name: blocks_streams_to_vector_0
   id: blocks_streams_to_vector
   parameters:
@@ -1673,6 +1693,23 @@ blocks:
     coordinate: [1649, 166]
     rotation: 0
     state: true
+- name: blocks_tagged_stream_to_pdu_0
+  id: blocks_tagged_stream_to_pdu
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tag: payloadSize
+    type: byte
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1675, 109]
+    rotation: 0
+    state: true
 - name: blocks_tcp_server_sink_0
   id: blocks_tcp_server_sink
   parameters:
@@ -1688,9 +1725,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1558, 79]
+    coordinate: [1585, 11]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_throttle_0
   id: blocks_throttle
   parameters:
@@ -3191,7 +3228,7 @@ blocks:
     bus_structure: null
     coordinate: [1609, 374]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: qtgui_time_sink_x_1
   id: qtgui_time_sink_x
   parameters:
@@ -4079,9 +4116,8 @@ connections:
 - [LibreLoRa_streamToHistoryVector_0, '0', blocks_multiply_const_vxx_0, '0']
 - [LibreLoRa_streamToHistoryVector_0, '0', fft_vxx_0, '0']
 - [LoRaRx_0, '0', blocks_tag_debug_0, '0']
+- [LoRaRx_0, '0', blocks_tagged_stream_to_pdu_0, '0']
 - [LoRaRx_0, '0', blocks_tcp_server_sink_0, '0']
-- [LoRaRx_0, '1', qtgui_time_sink_x_0_1, '0']
-- [LoRaRx_0, '2', qtgui_time_sink_x_0_1, '1']
 - [LoRaRx_0, crcOut, blocks_message_debug_0, print]
 - [LoRaRx_0, detectionOut, blocks_message_debug_0, print]
 - [LoRaRx_0, reset, LibreLoRa_PowerDetector_0, reset]
@@ -4140,6 +4176,7 @@ connections:
 - [blocks_nlog10_ff_1, '0', qtgui_vector_sink_f_0, '0']
 - [blocks_streams_to_vector_0, '0', LibreLoRa_SelectMax_0, '0']
 - [blocks_streams_to_vector_1, '0', LibreLoRa_SelectMax_0, '1']
+- [blocks_tagged_stream_to_pdu_0, pdus, blocks_socket_pdu_0, pdus]
 - [blocks_throttle_0, '0', rational_resampler_xxx_0, '0']
 - [blocks_throttle_0_0, '0', LibreLoRa_slidingDFTMax_0_0, '0']
 - [blocks_throttle_1, '0', rational_resampler_xxx_0, '0']

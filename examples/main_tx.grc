@@ -53,14 +53,14 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [755, 77]
+    coordinate: [812, 28]
     rotation: 0
     state: true
 - name: frequency_center
   id: variable
   parameters:
     comment: ''
-    value: 433e6
+    value: 40.68e6
   states:
     bus_sink: false
     bus_source: false
@@ -68,6 +68,48 @@ blocks:
     coordinate: [386, 19]
     rotation: 0
     state: enabled
+- name: gain_if_hackrf_db
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '30'
+    value: '15'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1485, 102]
+    rotation: 0
+    state: true
+- name: gain_rf_hackrf_db
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: ''
+    min_len: '200'
+    orient: Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '30'
+    value: '13'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1305, 86]
+    rotation: 0
+    state: true
 - name: nFrames
   id: variable
   parameters:
@@ -80,6 +122,18 @@ blocks:
     coordinate: [196, 152]
     rotation: 0
     state: enabled
+- name: nUpchirps
+  id: variable
+  parameters:
+    comment: ''
+    value: '5'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [912, 33]
+    rotation: 0
+    state: true
 - name: payloadSize
   id: variable
   parameters:
@@ -116,6 +170,18 @@ blocks:
     coordinate: [570, 125]
     rotation: 0
     state: true
+- name: syncWordNumber
+  id: variable
+  parameters:
+    comment: ''
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [675, 27]
+    rotation: 0
+    state: true
 - name: BW
   id: parameter
   parameters:
@@ -125,7 +191,7 @@ blocks:
     label: BW
     short_id: ''
     type: ''
-    value: 125e3
+    value: 31.25e3
   states:
     bus_sink: false
     bus_source: false
@@ -146,10 +212,10 @@ blocks:
     lowDataRate: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    nUpchirps: '5'
+    nUpchirps: nUpchirps
     payloadSize: payloadSize
     samp_rate: samp_rate
-    syncwordNumber: '0'
+    syncwordNumber: syncWordNumber
   states:
     bus_sink: false
     bus_source: false
@@ -184,7 +250,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     mtu: '10000'
-    port: '52001'
+    port: '1201'
     tcp_no_delay: 'False'
     type: TCP_SERVER
   states:
@@ -212,7 +278,7 @@ blocks:
     bus_structure: null
     coordinate: [714, 606]
     rotation: 0
-    state: bypassed
+    state: disabled
 - name: import_0
   id: import
   parameters:
@@ -401,7 +467,7 @@ blocks:
     freq7: 100e6
     freq8: 100e6
     freq9: 100e6
-    gain0: '0'
+    gain0: gain_rf_hackrf_db
     gain1: '10'
     gain10: '10'
     gain11: '10'
@@ -433,7 +499,7 @@ blocks:
     gain7: '10'
     gain8: '10'
     gain9: '10'
-    if_gain0: '30'
+    if_gain0: gain_if_hackrf_db
     if_gain1: '20'
     if_gain10: '20'
     if_gain11: '20'
@@ -547,7 +613,7 @@ blocks:
     bus_structure: null
     coordinate: [1113, 818]
     rotation: 0
-    state: enabled
+    state: disabled
 
 connections:
 - [LoRaTx_0, '0', blocks_throttle_0, '0']

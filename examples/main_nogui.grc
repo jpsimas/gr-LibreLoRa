@@ -68,6 +68,18 @@ blocks:
     coordinate: [320, 20.0]
     rotation: 0
     state: enabled
+- name: decimationRx
+  id: variable
+  parameters:
+    comment: ''
+    value: int(symbolSize/128)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [641, 30]
+    rotation: 0
+    state: true
 - name: ip_address
   id: variable
   parameters:
@@ -77,7 +89,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1044, 139]
+    coordinate: [1171, 68]
     rotation: 0
     state: true
 - name: samp_rate
@@ -113,7 +125,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [968, 20.0]
+    coordinate: [1022, 14]
     rotation: 0
     state: true
 - name: LoRaRx_0
@@ -124,6 +136,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
+    decimation: decimationRx
     detectorThreshold: '100'
     ignoreLowDataRateRequired: 'False'
     lowDataRate: 'False'
@@ -138,41 +151,43 @@ blocks:
     coordinate: [533, 159]
     rotation: 0
     state: enabled
-- name: blocks_null_sink_0
-  id: blocks_null_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    bus_structure_sink: '[[0,],]'
-    comment: ''
-    num_inputs: '1'
-    type: short
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [837, 223]
-    rotation: 0
-    state: enabled
-- name: blocks_tcp_server_sink_0
-  id: blocks_tcp_server_sink
+- name: blocks_socket_pdu_0
+  id: blocks_socket_pdu
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    ipaddr: ip_address
-    noblock: 'True'
+    host: ip_address
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mtu: '10000'
     port: '1202'
-    type: byte
-    vlen: '1'
+    tcp_no_delay: 'False'
+    type: TCP_SERVER
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [828, 129]
+    coordinate: [1132, 148]
     rotation: 0
-    state: enabled
+    state: true
+- name: blocks_tagged_stream_to_pdu_0
+  id: blocks_tagged_stream_to_pdu
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tag: payloadSize
+    type: byte
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [863, 169]
+    rotation: 0
+    state: true
 - name: import_0
   id: import
   parameters:
@@ -183,7 +198,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [712, 28.0]
+    coordinate: [766, 22]
     rotation: 0
     state: true
 - name: import_0_0
@@ -196,7 +211,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [824, 28.0]
+    coordinate: [878, 22]
     rotation: 0
     state: true
 - name: rtlsdr_source_0
@@ -558,8 +573,8 @@ blocks:
     state: enabled
 
 connections:
-- [LoRaRx_0, '0', blocks_tcp_server_sink_0, '0']
-- [LoRaRx_0, '1', blocks_null_sink_0, '0']
+- [LoRaRx_0, '0', blocks_tagged_stream_to_pdu_0, '0']
+- [blocks_tagged_stream_to_pdu_0, pdus, blocks_socket_pdu_0, pdus]
 - [rtlsdr_source_0, '0', LoRaRx_0, '0']
 
 metadata:

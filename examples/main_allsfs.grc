@@ -72,7 +72,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 433e6
+    value: 915e6
   states:
     bus_sink: false
     bus_source: false
@@ -363,112 +363,126 @@ blocks:
     coordinate: [1516, 919]
     rotation: 0
     state: true
-- name: blocks_tcp_server_sink_0
-  id: blocks_tcp_server_sink
+- name: blocks_socket_pdu_0
+  id: blocks_socket_pdu
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    ipaddr: ip_address
-    noblock: 'True'
-    port: '1212'
-    type: byte
-    vlen: '1'
+    host: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mtu: '10000'
+    port: '1202'
+    tcp_no_delay: 'False'
+    type: TCP_SERVER
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1318, 103]
+    coordinate: [1629, 173]
+    rotation: 0
+    state: true
+- name: blocks_tagged_stream_to_pdu_0
+  id: blocks_tagged_stream_to_pdu
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tag: payloadSize
+    type: byte
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1225, 102]
     rotation: 0
     state: enabled
-- name: blocks_tcp_server_sink_0_0
-  id: blocks_tcp_server_sink
+- name: blocks_tagged_stream_to_pdu_0_0
+  id: blocks_tagged_stream_to_pdu
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    ipaddr: ip_address
-    noblock: 'True'
-    port: '1211'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tag: payloadSize
     type: byte
-    vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1285, 303]
+    coordinate: [1210, 269]
     rotation: 0
     state: enabled
-- name: blocks_tcp_server_sink_0_0_0
-  id: blocks_tcp_server_sink
+- name: blocks_tagged_stream_to_pdu_0_0_0
+  id: blocks_tagged_stream_to_pdu
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    ipaddr: ip_address
-    noblock: 'True'
-    port: '1210'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tag: payloadSize
     type: byte
-    vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1294, 479]
+    coordinate: [1183, 494]
     rotation: 0
     state: enabled
-- name: blocks_tcp_server_sink_0_0_0_0
-  id: blocks_tcp_server_sink
+- name: blocks_tagged_stream_to_pdu_0_0_0_0
+  id: blocks_tagged_stream_to_pdu
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    ipaddr: ip_address
-    noblock: 'True'
-    port: '1209'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tag: payloadSize
     type: byte
-    vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1234, 655]
+    coordinate: [1214, 695]
     rotation: 0
     state: enabled
-- name: blocks_tcp_server_sink_0_0_0_0_0
-  id: blocks_tcp_server_sink
+- name: blocks_tagged_stream_to_pdu_0_0_0_0_0
+  id: blocks_tagged_stream_to_pdu
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    ipaddr: ip_address
-    noblock: 'True'
-    port: '1208'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tag: payloadSize
     type: byte
-    vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1229, 837]
+    coordinate: [1211, 894]
     rotation: 0
     state: enabled
-- name: blocks_tcp_server_sink_0_0_0_0_0_0
-  id: blocks_tcp_server_sink
+- name: blocks_tagged_stream_to_pdu_0_0_0_0_0_0
+  id: blocks_tagged_stream_to_pdu
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    ipaddr: ip_address
-    noblock: 'True'
-    port: '1207'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tag: payloadSize
     type: byte
-    vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1266, 1036]
+    coordinate: [1220, 1093]
     rotation: 0
     state: enabled
 - name: iir_filter_xxx_0
@@ -886,33 +900,65 @@ blocks:
     coordinate: [71, 561]
     rotation: 0
     state: disabled
-- name: qtgui_sink_x_0
-  id: qtgui_sink_x
+- name: qtgui_waterfall_sink_x_0
+  id: qtgui_waterfall_sink_x
   parameters:
     affinity: ''
     alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    axislabels: 'True'
     bw: samp_rate
+    color1: '0'
+    color10: '0'
+    color2: '0'
+    color3: '0'
+    color4: '0'
+    color5: '0'
+    color6: '0'
+    color7: '0'
+    color8: '0'
+    color9: '0'
     comment: ''
     fc: '0'
     fftsize: 2**13
+    freqhalf: 'True'
+    grid: 'False'
     gui_hint: ''
+    int_max: '10'
+    int_min: '-140'
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
     name: '""'
-    plotconst: 'True'
-    plotfreq: 'True'
-    plottime: 'True'
-    plotwaterfall: 'True'
-    rate: '10'
+    nconnections: '1'
     showports: 'False'
-    showrf: 'False'
     type: complex
+    update_time: '0.10'
     wintype: firdes.WIN_BLACKMAN_hARRIS
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [543, 158]
+    coordinate: [491, 199]
     rotation: 0
     state: true
 - name: rational_resampler_xxx_1
@@ -1292,21 +1338,6 @@ blocks:
     coordinate: [15, 164]
     rotation: 0
     state: enabled
-- name: zeromq_pub_msg_sink_0
-  id: zeromq_pub_msg_sink
-  parameters:
-    address: tcp://127.0.0.1:5555
-    affinity: ''
-    alias: ''
-    comment: ''
-    timeout: '100'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1519, 857]
-    rotation: 0
-    state: true
 
 connections:
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0, '0']
@@ -1315,32 +1346,31 @@ connections:
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0_0_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0_0_0_0, '0']
-- [LoRaRx_0, '0', blocks_tcp_server_sink_0, '0']
+- [LoRaRx_0, '0', blocks_tagged_stream_to_pdu_0, '0']
 - [LoRaRx_0, detectionOut, blocks_message_debug_0, print]
-- [LoRaRx_0, detectionOut, zeromq_pub_msg_sink_0, in]
-- [LoRaRx_0_0, '0', blocks_tcp_server_sink_0_0, '0']
+- [LoRaRx_0_0, '0', blocks_tagged_stream_to_pdu_0_0, '0']
 - [LoRaRx_0_0, detectionOut, blocks_message_debug_0, print]
-- [LoRaRx_0_0, detectionOut, zeromq_pub_msg_sink_0, in]
-- [LoRaRx_0_0_0, '0', blocks_tcp_server_sink_0_0_0, '0']
+- [LoRaRx_0_0_0, '0', blocks_tagged_stream_to_pdu_0_0_0, '0']
 - [LoRaRx_0_0_0, detectionOut, blocks_message_debug_0, print]
-- [LoRaRx_0_0_0, detectionOut, zeromq_pub_msg_sink_0, in]
-- [LoRaRx_0_0_0_0, '0', blocks_tcp_server_sink_0_0_0_0, '0']
+- [LoRaRx_0_0_0_0, '0', blocks_tagged_stream_to_pdu_0_0_0_0, '0']
 - [LoRaRx_0_0_0_0, detectionOut, blocks_message_debug_0, print]
-- [LoRaRx_0_0_0_0, detectionOut, zeromq_pub_msg_sink_0, in]
-- [LoRaRx_0_0_0_0_0, '0', blocks_tcp_server_sink_0_0_0_0_0, '0']
+- [LoRaRx_0_0_0_0_0, '0', blocks_tagged_stream_to_pdu_0_0_0_0_0, '0']
 - [LoRaRx_0_0_0_0_0, detectionOut, blocks_message_debug_0, print]
-- [LoRaRx_0_0_0_0_0, detectionOut, zeromq_pub_msg_sink_0, in]
-- [LoRaRx_0_0_0_0_0_0, '0', blocks_tcp_server_sink_0_0_0_0_0_0, '0']
+- [LoRaRx_0_0_0_0_0_0, '0', blocks_tagged_stream_to_pdu_0_0_0_0_0_0, '0']
 - [LoRaRx_0_0_0_0_0_0, detectionOut, blocks_message_debug_0, print]
-- [LoRaRx_0_0_0_0_0_0, detectionOut, zeromq_pub_msg_sink_0, in]
 - [blocks_complex_to_mag_squared_0_1, '0', iir_filter_xxx_0, '0']
+- [blocks_tagged_stream_to_pdu_0, pdus, blocks_socket_pdu_0, pdus]
+- [blocks_tagged_stream_to_pdu_0_0, pdus, blocks_socket_pdu_0, pdus]
+- [blocks_tagged_stream_to_pdu_0_0_0, pdus, blocks_socket_pdu_0, pdus]
+- [blocks_tagged_stream_to_pdu_0_0_0_0, pdus, blocks_socket_pdu_0, pdus]
+- [blocks_tagged_stream_to_pdu_0_0_0_0_0, pdus, blocks_socket_pdu_0, pdus]
+- [blocks_tagged_stream_to_pdu_0_0_0_0_0_0, pdus, blocks_socket_pdu_0, pdus]
 - [iir_filter_xxx_0, '0', LibreLoRa_PowerDetector_0, '1']
 - [osmosdr_source_0, '0', LibreLoRa_PowerDetector_0, '0']
-- [osmosdr_source_0, '0', qtgui_sink_x_0, '0']
 - [osmosdr_source_0, '0', rational_resampler_xxx_1, '0']
 - [rational_resampler_xxx_1, '0', blocks_complex_to_mag_squared_0_1, '0']
 - [rtlsdr_source_0, '0', LibreLoRa_PowerDetector_0, '0']
-- [rtlsdr_source_0, '0', qtgui_sink_x_0, '0']
+- [rtlsdr_source_0, '0', qtgui_waterfall_sink_x_0, '0']
 - [rtlsdr_source_0, '0', rational_resampler_xxx_1, '0']
 
 metadata:

@@ -662,7 +662,7 @@ blocks:
     bus_structure: null
     coordinate: [887, 121]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: pad_sink_6
   id: pad_sink
   parameters:
@@ -680,7 +680,7 @@ blocks:
     bus_structure: null
     coordinate: [886, 166]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: pad_sink_7
   id: pad_sink
   parameters:
