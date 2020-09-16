@@ -138,7 +138,7 @@ namespace gr {
 	get_tags_in_range(tags, 0, nitems_read(0), nitems_read(0) + 1, pmt::intern("loraFrameParams"));
 	if(tags.size() != 0) {
 	    pmt::pmt_t message = tags[0].value;
-	    size_t SF = pmt::to_long(pmt::tuple_ref(message, 0));
+	    // size_t SF = pmt::to_long(pmt::tuple_ref(message, 0));
 	    size_t CR = pmt::to_long(pmt::tuple_ref(message, 1));
 	    size_t CRCPresent = pmt::to_long(pmt::tuple_ref(message, 2));
 	    bool lowDataRate = pmt::to_long(pmt::tuple_ref(message, 3));
