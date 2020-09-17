@@ -24,28 +24,32 @@
 
 #include <gnuradio/io_signature.h>
 #include "AppendPrefix_impl.h"
+#include <LibreLoRa/getSymbol.h>
 
 namespace gr {
   namespace LibreLoRa {
 
-    template<typename T>
-    typename AppendPrefix<T>::sptr
-    AppendPrefix<T>::make(const std::vector<T> prefix)
+    typename AppendPrefix::sptr
+    AppendPrefix::make(size_t SF, size_t symbolSize, size_t nUpchirps, uint16_t syncWordNumber)
     {
       return gnuradio::get_initial_sptr
-        (new AppendPrefix_impl<T>(prefix));
+        (new AppendPrefix_impl(SF, symbolSize, nUpchirps, syncWordNumber));
     }
 
 
     /*
      * The private constructor
      */
-    template<typename T>
-    AppendPrefix_impl<T>::AppendPrefix_impl(const std::vector<T> prefix)
+    AppendPrefix_impl::AppendPrefix_impl(size_t SF, size_t symbolSize, size_t nUpchirps, uint16_t syncWordNumber) 
       : gr::block("AppendPrefix",
-		  gr::io_signature::make(1, 1, sizeof(T)),
-		  gr::io_signature::make(1, 1, sizeof(T))),
-	prefix(prefix) {
+		  gr::io_signature::make(1, 1, sizeof(float)),
+		  gr::io_signature::make(1, 1, sizeof(float))),
+	SF(SF),
+	symbolSize(symbolSize),
+	nUpchirps(nUpchirps),
+	syncWordNumber(syncWordNumber){
+
+	calculatePrefix();
       this->set_max_noutput_items(prefix.size());
       this->set_min_output_buffer(this->max_noutput_items() + prefix.size());
       this->set_tag_propagation_policy(gr::block::TPP_CUSTOM);
@@ -54,14 +58,12 @@ namespace gr {
     /*
      * Our virtual destructor.
      */
-    template<typename T>
-    AppendPrefix_impl<T>::~AppendPrefix_impl()
+    AppendPrefix_impl::~AppendPrefix_impl()
     {
     }
 
-    template<typename T>
     void
-    AppendPrefix_impl<T>::forecast (int noutput_items, gr_vector_int &ninput_items_required)
+    AppendPrefix_impl::forecast (int noutput_items, gr_vector_int &ninput_items_required)
     {
       // const size_t nFrames = (noutput_items + payloadSize + prefix.size() - 1)/(payloadSize + prefix.size());
       
@@ -69,15 +71,14 @@ namespace gr {
       ninput_items_required[0] = noutput_items;
     }
 
-    template<typename T>
     int
-    AppendPrefix_impl<T>::general_work (int noutput_items,
+    AppendPrefix_impl::general_work (int noutput_items,
                        gr_vector_int &ninput_items,
                        gr_vector_const_void_star &input_items,
                        gr_vector_void_star &output_items)
     {
-      const T *in = (const T *) input_items[0];
-      T *out = (T *) output_items[0];
+      const float *in = (const float *) input_items[0];
+      float *out = (float *) output_items[0];
       
       size_t nFrames = 0;
       size_t produced = 0;
@@ -100,8 +101,18 @@ namespace gr {
 #ifndef NDEBUG
 	  // std::cout << "AppendPrefix: got tag. tags.size() = " << tags.size() << std::endl;
 #endif
-	  if(pmt::to_bool(pmt::tuple_ref(tags[0].value, 2))) {
-	    memcpy(out + i + nFrames*prefix.size(), prefix.data(), prefix.size()*sizeof(T));
+
+	  const bool isBeginning = pmt::to_bool(pmt::tuple_ref(tags[0].value, 2));
+	  if(isBeginning) {
+	    const size_t SFNew = pmt::to_long(pmt::tuple_ref(tags[0].value, 0)) + 2;
+	    if(SFNew != SF) {
+	      SF = SFNew;
+	      calculatePrefix();
+	      this->set_max_noutput_items(prefix.size());
+	      this->set_min_output_buffer(this->max_noutput_items() + prefix.size());
+	    }
+	    
+	    memcpy(out + i + nFrames*prefix.size(), prefix.data(), prefix.size()*sizeof(float));
 
 	    // this->add_item_tag(0, this->nitems_written(0) + i + nFrames*prefix.size(), tagKey, tags[0].value);
 	    
@@ -138,10 +149,36 @@ namespace gr {
       return produced;
     }
 
-    template class AppendPrefix<float>;
-    template class AppendPrefix<gr_complex>;
-    template class AppendPrefix<uint8_t>;
-    template class AppendPrefix<uint16_t>;
+    void AppendPrefix_impl::calculatePrefix() {
+      prefix.clear();
+
+      auto upchirp = getSymbol<float>(0, SF, symbolSize);
+      //append upchirps
+      for(auto i = 0; i < nUpchirps; i++)
+	prefix.insert(prefix.end(), upchirp.begin(), upchirp.end());
+
+      //appendSyncWord
+      const auto syncWord1 = getSymbol<float>(((syncWordNumber >> 4) << 3), SF, symbolSize);
+      prefix.insert(prefix.end(), syncWord1.begin(), syncWord1.end());
+
+      const auto syncWord2 = getSymbol<float>(((syncWordNumber & 0xf) << 3), SF, symbolSize);
+      prefix.insert(prefix.end(), syncWord1.begin(), syncWord1.end());
+
+      //append downchirps
+      for(auto& x : upchirp)
+	x = -x;
+      
+      for(auto i = 0; i < 2; i++)
+	prefix.insert(prefix.end(), upchirp.begin(), upchirp.end());
+
+      //append section of downchirp
+      size_t OSF = (symbolSize >> SF);
+
+      prefix.insert(prefix.end(),
+			       upchirp.begin(),
+			       upchirp.begin() + ((upchirp.size()/4) - OSF));
+
+    }
     
   } /* namespace LibreLoRa */
 } /* namespace gr */

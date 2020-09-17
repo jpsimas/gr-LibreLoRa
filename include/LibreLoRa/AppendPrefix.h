@@ -32,11 +32,10 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
-    template<typename T>
     class LIBRELORA_API AppendPrefix : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<AppendPrefix<T>> sptr;
+      typedef boost::shared_ptr<AppendPrefix> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::AppendPrefix.
@@ -46,13 +45,8 @@ namespace gr {
        * class. LibreLoRa::AppendPrefix::make is the public interface for
        * creating new instances.
        */
-      static sptr make(const std::vector<T> prefix);
+      static sptr make(size_t SF, size_t symbolSize, size_t nUpchirps, uint16_t syncWordNumber);
     };
-
-    typedef AppendPrefix<float> AppendPrefix_ff;
-    typedef AppendPrefix<gr_complex> AppendPrefix_cc;
-    typedef AppendPrefix<uint8_t> AppendPrefix_bb;
-    typedef AppendPrefix<uint16_t> AppendPrefix_ss;
 
   } // namespace LibreLoRa
 } // namespace gr

@@ -88,8 +88,11 @@ namespace gr {
 	get_tags_in_range(tags, 0, nr + i, nr + i + 1, tagKey);
 	if(tags.size() != 0) {
 	  pmt::pmt_t message = tags[0].value;
-	  size_t SFnew = pmt::to_long(pmt::tuple_ref(message, 0));
-	  setSF(SFnew);
+	  size_t SFNew = pmt::to_long(pmt::tuple_ref(message, 0));
+	  const bool isBeginning = pmt::to_bool(pmt::tuple_ref(message, 2));
+	  if(isBeginning)
+	    setSF(SFNew + 2);
+	  setSFCurrent(SFNew);
 	  add_item_tag(0, nitems_written(0) + i*symbolSize, tagKey, message);
 	}
 	
@@ -106,6 +109,10 @@ namespace gr {
     }
 
     void SymbolMod_impl::setSF(size_t SFNew) {
+      SF = SFNew;
+    }
+    
+    void SymbolMod_impl::setSFCurrent(size_t SFNew) {
       SFCurrent = SFNew;
     }
   } /* namespace LibreLoRa */

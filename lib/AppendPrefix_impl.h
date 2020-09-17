@@ -28,15 +28,21 @@
 namespace gr {
   namespace LibreLoRa {
 
-    template<typename T>
-    class AppendPrefix_impl : public AppendPrefix<T>
+    class AppendPrefix_impl : public AppendPrefix
     {
      private:
-      const std::vector<T> prefix;
+      size_t SF;
+      size_t symbolSize;
+      size_t nUpchirps;
+      uint16_t syncWordNumber;
+      
+      std::vector<float> prefix;
 
+      void calculatePrefix();
+      
       std::vector<gr::tag_t> tags;
      public:
-      AppendPrefix_impl(const std::vector<T> prefix);
+      AppendPrefix_impl(size_t SF, size_t symbolSize, size_t nUpchirps, uint16_t syncWordNumber);
       ~AppendPrefix_impl();
 
       // Where all the action really happens

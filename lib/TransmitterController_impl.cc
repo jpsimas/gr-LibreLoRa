@@ -138,14 +138,12 @@ namespace gr {
 	get_tags_in_range(tags, 0, nitems_read(0), nitems_read(0) + 1, pmt::intern("loraFrameParams"));
 	if(tags.size() != 0) {
 	    pmt::pmt_t message = tags[0].value;
-	    size_t SFMessage = pmt::to_long(pmt::tuple_ref(message, 0));
-	    //only update if incoming SF equals block's SF
-	    if(SF == SFMessage) {
-	      CR = pmt::to_long(pmt::tuple_ref(message, 1));
-	      CRCPresent = pmt::to_long(pmt::tuple_ref(message, 2));
-	      lowDataRate = pmt::to_long(pmt::tuple_ref(message, 3));
-	      calculateConstants();
-	    }
+	    SF = pmt::to_long(pmt::tuple_ref(message, 0));
+	    CR = pmt::to_long(pmt::tuple_ref(message, 1));
+	    CRCPresent = pmt::to_long(pmt::tuple_ref(message, 2));
+	    lowDataRate = pmt::to_long(pmt::tuple_ref(message, 3));
+	    calculateConstants();
+
 	}
 	
 #ifndef NDEBUG

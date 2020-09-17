@@ -57,6 +57,7 @@
 #include "LibreLoRa/TransmitterController.h"
 #include "LibreLoRa/AppendPrefix.h"
 #include "LibreLoRa/AppendSilence.h"
+//#include "LibreLoRa/AppendLoRaPreamble.h"
 %}
   
 %include "LibreLoRa/frequencyTracker.h"
@@ -183,10 +184,7 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, TransmitterController);
 
 
 %include "LibreLoRa/AppendPrefix.h"
-GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, AppendPrefix_ff, AppendPrefix<float>);
-GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, AppendPrefix_cc, AppendPrefix<gr_complex>);
-GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, AppendPrefix_bb, AppendPrefix<uint8_t>);
-GR_SWIG_BLOCK_MAGIC2_TMPL(LibreLoRa, AppendPrefix_ss, AppendPrefix<uint16_t>);
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, AppendPrefix);
 
 
 %include "LibreLoRa/AppendSilence.h"
