@@ -60,7 +60,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 40.68e6
+    value: 433e6
   states:
     bus_sink: false
     bus_source: false
@@ -174,7 +174,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '0'
+    value: '0x00'
   states:
     bus_sink: false
     bus_source: false
@@ -191,7 +191,7 @@ blocks:
     label: BW
     short_id: ''
     type: ''
-    value: 31.25e3
+    value: 125e3
   states:
     bus_sink: false
     bus_source: false
