@@ -189,3 +189,4 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, AppendPrefix);
 
 %include "LibreLoRa/AppendSilence.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, AppendSilence);
+

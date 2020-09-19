@@ -40,6 +40,8 @@ namespace gr {
       bool CRCPresent;
       bool lowDataRate;
 
+      size_t symbolSize;
+      
       uint16_t crc;
       
       constexpr static size_t CRCSize = 2;
@@ -83,7 +85,7 @@ namespace gr {
 
       void calculateConstants();
      public:
-      TransmitterController_impl(size_t SF, size_t CR, size_t payloadSize, bool CRCPresent, bool lowDataRate);
+      TransmitterController_impl(size_t SF, size_t symbolSize, size_t CR, size_t payloadSize, bool CRCPresent, bool lowDataRate);
       ~TransmitterController_impl();
 
       // Where all the action really happens

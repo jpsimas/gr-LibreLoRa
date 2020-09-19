@@ -90,9 +90,14 @@ namespace gr {
 	  pmt::pmt_t message = tags[0].value;
 	  size_t SFNew = pmt::to_long(pmt::tuple_ref(message, 0));
 	  const bool isBeginning = pmt::to_bool(pmt::tuple_ref(message, 2));
-	  if(isBeginning)
-	    setSF(SFNew + 2);
+	  if(isBeginning) {
+	     setSF(SFNew + 2);
+	  }
 	  setSFCurrent(SFNew);
+
+	  size_t symbolSizeNew = pmt::to_long(pmt::tuple_ref(message, 3));
+	  setSymbolSize(symbolSize);
+	  
 	  add_item_tag(0, nitems_written(0) + i*symbolSize, tagKey, message);
 	}
 	
@@ -113,7 +118,11 @@ namespace gr {
     }
     
     void SymbolMod_impl::setSFCurrent(size_t SFNew) {
-      SFCurrent = SFNew;
+       SFCurrent = SFNew;
+    }
+
+    void SymbolMod_impl::setSymbolSize(size_t symbolSizeNew) {
+      symbolSize = symbolSizeNew;
     }
   } /* namespace LibreLoRa */
 } /* namespace gr */

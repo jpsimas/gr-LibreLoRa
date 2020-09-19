@@ -29,21 +29,22 @@ namespace gr {
   namespace LibreLoRa {
 
     TransmitterController::sptr
-    TransmitterController::make(size_t SF, size_t CR, size_t payloadSize, bool CRCPresent, bool lowDataRate)
+    TransmitterController::make(size_t SF, size_t symbolSize, size_t CR, size_t payloadSize, bool CRCPresent, bool lowDataRate)
     {
       return gnuradio::get_initial_sptr
-        (new TransmitterController_impl(SF, CR, payloadSize, CRCPresent, lowDataRate));
+        (new TransmitterController_impl(SF, symbolSize, CR, payloadSize, CRCPresent, lowDataRate));
     }
 
 
     /*
      * The private constructor
      */
-    TransmitterController_impl::TransmitterController_impl(size_t SF, size_t CR, size_t payloadSize, bool CRCPresent, bool lowDataRate)
+    TransmitterController_impl::TransmitterController_impl(size_t SF, size_t symbolSize, size_t CR, size_t payloadSize, bool CRCPresent, bool lowDataRate)
       : gr::block("TransmitterController",
 		  gr::io_signature::make(1, 1, sizeof(uint8_t)),
 		  gr::io_signature::make(1, 1, sizeof(uint8_t))),
 	SF(SF),
+	symbolSize(symbolSize), 
 	SFCurrent(SF),
 	CR(CR),
 	CRCurrent(CR),
@@ -142,8 +143,9 @@ namespace gr {
 	    CR = pmt::to_long(pmt::tuple_ref(message, 1));
 	    CRCPresent = pmt::to_long(pmt::tuple_ref(message, 2));
 	    lowDataRate = pmt::to_long(pmt::tuple_ref(message, 3));
+	    float BW = pmt::to_long(pmt::tuple_ref(message, 4));
+	    symbolSize = std::round(float(1 << SF)/BW);
 	    calculateConstants();
-
 	}
 	
 #ifndef NDEBUG
@@ -285,7 +287,10 @@ namespace gr {
     
     void TransmitterController_impl::sendParamsTag(bool isStartOfFrame) {
       static const pmt::pmt_t tagKey = pmt::intern("loraParams");
-      add_item_tag(0, nitems_written(0), tagKey, pmt::make_tuple(pmt::from_long(SFCurrent), pmt::from_long(CRCurrent), pmt::from_bool(isStartOfFrame)));
+      add_item_tag(0, nitems_written(0), tagKey, pmt::make_tuple(pmt::from_long(SFCurrent),
+								 pmt::from_long(CRCurrent),
+								 pmt::from_bool(isStartOfFrame),
+								 pmt::from_long(symbolSize)));
     }
 
     void TransmitterController_impl::calculateConstants() {

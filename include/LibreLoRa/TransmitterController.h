@@ -45,7 +45,7 @@ namespace gr {
        * class. LibreLoRa::TransmitterController::make is the public interface for
        * creating new instances.
        */
-      static sptr make(size_t SF, size_t CR, size_t payloadSize, bool CRCpresent, bool lowDataRate);
+      static sptr make(size_t SF, size_t symbolSize, size_t CR, size_t payloadSize, bool CRCpresent, bool lowDataRate);
     };
 
   } // namespace LibreLoRa

@@ -31,10 +31,11 @@ namespace gr {
     private:
       size_t SF;
       size_t SFCurrent;
-      const size_t symbolSize;
+      size_t symbolSize;
 
       void setSF(size_t SFNew);
       void setSFCurrent(size_t SFNew);
+      void setSymbolSize(size_t symbolSizeNew);
      public:
       SymbolMod_impl(size_t SF, size_t symbolSize);
       ~SymbolMod_impl();

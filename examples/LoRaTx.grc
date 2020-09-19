@@ -170,18 +170,20 @@ blocks:
 - name: LibreLoRa_AppendPrefix_0
   id: LibreLoRa_AppendPrefix
   parameters:
+    SF: SF
     affinity: ''
     alias: ''
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    prefix: preambleFrequency
-    type: float
+    nUpchirps: nUpchirps
+    symbolSize: symbolSize
+    syncWordNumber: syncwordNumber
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1197, 305]
+    coordinate: [1209, 296]
     rotation: 0
     state: enabled
 - name: LibreLoRa_AppendSilence_0
@@ -326,6 +328,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     payloadSize: payloadSize
+    symbolSize: symbolSize
   states:
     bus_sink: false
     bus_source: false
