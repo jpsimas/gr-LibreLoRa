@@ -57,6 +57,7 @@
 #include "LibreLoRa/TransmitterController.h"
 #include "LibreLoRa/AppendPrefix.h"
 #include "LibreLoRa/AppendSilence.h"
+#include "LibreLoRa/LoRaTaggedStreamToTaggedStream.h"
 //#include "LibreLoRa/AppendLoRaPreamble.h"
 %}
   
@@ -190,3 +191,5 @@ GR_SWIG_BLOCK_MAGIC2(LibreLoRa, AppendPrefix);
 %include "LibreLoRa/AppendSilence.h"
 GR_SWIG_BLOCK_MAGIC2(LibreLoRa, AppendSilence);
 
+%include "LibreLoRa/LoRaTaggedStreamToTaggedStream.h"
+GR_SWIG_BLOCK_MAGIC2(LibreLoRa, LoRaTaggedStreamToTaggedStream);
