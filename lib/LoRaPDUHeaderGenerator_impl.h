@@ -37,7 +37,7 @@ namespace gr {
 	bool payloadCRCPresent;
 	bool lowDataRate;
 	float BW;
-	uint8_t syncWordNum;
+	uint8_t syncWordNum;//not implemented
 	float fOffset;
       };
       
