@@ -393,7 +393,7 @@ blocks:
     alias: ''
     amp: '1'
     comment: ''
-    freq: '1000'
+    freq: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
     offset: '0'
@@ -405,7 +405,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2026, 383]
+    coordinate: [2058, 378]
     rotation: 0
     state: true
 - name: blocks_complex_to_mag_squared_0_1
@@ -437,20 +437,22 @@ blocks:
     coordinate: [1516, 919]
     rotation: 0
     state: true
-- name: blocks_multiply_conjugate_cc_0
-  id: blocks_multiply_conjugate_cc
+- name: blocks_multiply_xx_0
+  id: blocks_multiply_xx
   parameters:
     affinity: ''
     alias: ''
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
+    num_inputs: '2'
+    type: complex
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2224, 210]
+    coordinate: [2261, 230]
     rotation: 0
     state: true
 - name: blocks_pdu_to_tagged_stream_0
@@ -1709,6 +1711,7 @@ blocks:
 
 connections:
 - [LibreLoRa_LoRaTaggedStreamToTaggedStream_0, '0', LoRaTx_0, '0']
+- [LibreLoRa_LoRaTaggedStreamToTaggedStream_0, freq, analog_sig_source_x_0, freq]
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0, '0']
@@ -1727,10 +1730,10 @@ connections:
 - [LoRaRx_0_0_0_0_0, detectionOut, blocks_message_debug_0, print]
 - [LoRaRx_0_0_0_0_0_0, '0', blocks_tagged_stream_to_pdu_0_0_0_0_0_0, '0']
 - [LoRaRx_0_0_0_0_0_0, detectionOut, blocks_message_debug_0, print]
-- [LoRaTx_0, '0', blocks_multiply_conjugate_cc_0, '0']
-- [analog_sig_source_x_0, '0', blocks_multiply_conjugate_cc_0, '1']
+- [LoRaTx_0, '0', blocks_multiply_xx_0, '0']
+- [analog_sig_source_x_0, '0', blocks_multiply_xx_0, '1']
 - [blocks_complex_to_mag_squared_0_1, '0', iir_filter_xxx_0, '0']
-- [blocks_multiply_conjugate_cc_0, '0', osmosdr_sink_0, '0']
+- [blocks_multiply_xx_0, '0', osmosdr_sink_0, '0']
 - [blocks_pdu_to_tagged_stream_0, '0', LibreLoRa_LoRaTaggedStreamToTaggedStream_0,
   '0']
 - [blocks_socket_pdu_0, pdus, blocks_pdu_to_tagged_stream_0, pdus]
