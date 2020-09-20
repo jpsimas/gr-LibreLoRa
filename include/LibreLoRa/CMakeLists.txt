@@ -74,5 +74,6 @@ install(FILES
     BytesToNibbles.h
     TransmitterController.h
     AppendPrefix.h
-    AppendSilence.h DESTINATION include/LibreLoRa
+    AppendSilence.h
+    LoRaTaggedStreamToTaggedStream.h DESTINATION include/LibreLoRa
 )
