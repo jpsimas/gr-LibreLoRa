@@ -1,0 +1,20 @@
+id: LibreLoRa_LoRaTaggedStreamToTaggedStream
+label: LoRaTaggedStreamToTaggedStream
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.LoRaTaggedStreamToTaggedStream(${lengthTagName})
+parameters:
+- id: lengthTagName
+  label: Lengthtagname
+  dtype: string
+  default: payloadSize
+inputs:
+- label: in
+  domain: stream
+  dtype: byte
+outputs:
+- label: out
+  domain: stream
+  dtype: byte
+file_format: 1
