@@ -50,6 +50,7 @@ namespace gr {
 	decimation(decimation),
 	message(message)
     {
+      set_tag_propagation_policy(TPP_CUSTOM);
       this->message_port_register_in(pmt::mp("reset"));
       this->set_msg_handler(pmt::mp("reset"),
 			    [this](pmt::pmt_t msg) {
@@ -90,7 +91,7 @@ namespace gr {
       gr_complex *out;
       if(output_items.size() > 0)
 	out = (gr_complex *) output_items[0];
-
+      
       size_t i;
       switch(state) {
       case detection:
@@ -122,8 +123,17 @@ namespace gr {
       case started:
 	for(i = 0; i < ((noutput_items + decimation - 1)/decimation)*decimation; i++) {
 	  samplesToRead--;
-	  if(output_items.size() > 0)
+	  if(output_items.size() > 0) {
 	    out[i] = in[i];
+
+	    //propagate tags
+	    auto nr =  this->nitems_read(0);
+	    std::vector<gr::tag_t> tags;
+	    this->get_tags_in_range(tags, 0, nr + i, nr + i + 1);
+	    for(auto tag : tags) {
+	      this->add_item_tag(0, this->nitems_written(0) + i, tag.key, tag.value);
+	    }
+	  }
 	  
 	  //if(clock() > time + timeout) {
 	  if(samplesToRead == 0) {
