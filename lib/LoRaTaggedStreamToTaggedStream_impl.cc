@@ -85,8 +85,8 @@ namespace gr {
 					       pmt::from_bool(header->payloadCRCPresent),
 					       pmt::from_bool(header->lowDataRate),
 					       pmt::from_float(header->BW),
-					       pmt::from_float(header->fCenter),
-					       pmt::from_long(header->syncWordNum));
+					       pmt::from_long(header->syncWordNum),
+					       pmt::from_float(header->fCenter));
       
 	  add_item_tag(0, nitems_written(0), pmt::intern("loraFrameParams"), message);
 	}

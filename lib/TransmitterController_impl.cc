@@ -145,6 +145,7 @@ namespace gr {
 	    lowDataRate = pmt::to_bool(pmt::tuple_ref(message, 3));
 	    float BW = pmt::to_float(pmt::tuple_ref(message, 4));
 	    symbolSize = std::round(float(1 << SF)/BW);
+	    //syncWord still not implemented
 	    calculateConstants();
 	}
 	

@@ -36,8 +36,8 @@ namespace gr {
 	bool payloadCRCPresent;
 	bool lowDataRate;
 	float BW;
-	float fCenter;
 	uint8_t syncWordNum;
+	float fCenter;
       };
 	
       static constexpr size_t headerLength = sizeof(loraPDUHeader);
