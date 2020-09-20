@@ -1,0 +1,21 @@
+id: LibreLoRa_LoRaPDUHeaderGenerator
+label: LoRaPDUHeaderGenerator
+category: '[Librelora]'
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.LoRaPDUHeaderGenerator(${lengthTagName})
+parameters:
+- id: lengthTagName
+  label: Lengthtagname
+  dtype: string
+inputs:
+- label: in
+  domain: stream
+  dtype: byte
+- label: detectionIn
+  domain: message
+outputs:
+- label: out
+  domain: stream
+  dtype: byte
+file_format: 1
