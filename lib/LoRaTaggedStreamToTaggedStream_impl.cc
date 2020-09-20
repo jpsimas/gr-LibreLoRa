@@ -45,6 +45,9 @@ namespace gr {
 				gr::io_signature::make(1, 1, sizeof(uint8_t)), lengthTagName)
     {
       set_tag_propagation_policy(TPP_DONT);
+
+      freqPort = pmt::intern("freq");
+      message_port_register_out(freqPort);
     }
 
     /*
@@ -85,10 +88,12 @@ namespace gr {
 					       pmt::from_bool(header->payloadCRCPresent),
 					       pmt::from_bool(header->lowDataRate),
 					       pmt::from_float(header->BW),
-					       pmt::from_long(header->syncWordNum),
-					       pmt::from_float(header->fCenter));
+					       pmt::from_long(header->syncWordNum));
       
 	  add_item_tag(0, nitems_written(0), pmt::intern("loraFrameParams"), message);
+
+	  //send frequency offset to 
+	  message_port_pub(freqPort, pmt::from_float(header->fOffset));
 	}
       }
 

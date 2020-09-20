@@ -37,9 +37,11 @@ namespace gr {
 	bool lowDataRate;
 	float BW;
 	uint8_t syncWordNum;
-	float fCenter;
+	float fOffset;
       };
-	
+
+      pmt::pmt_t freqPort;
+      
       static constexpr size_t headerLength = sizeof(loraPDUHeader);
 
      protected:

@@ -17,4 +17,7 @@ outputs:
 - label: out
   domain: stream
   dtype: byte
+- domain: message
+  id: freq
+  optional: true
 file_format: 1
