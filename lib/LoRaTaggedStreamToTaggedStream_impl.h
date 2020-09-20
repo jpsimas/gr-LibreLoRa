@@ -30,6 +30,7 @@ namespace gr {
     {
      private:
       struct loraPDUHeader {
+	uint8_t hasHeader;
 	uint8_t SF;
 	uint8_t CR;
 	bool payloadCRCPresent;

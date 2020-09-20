@@ -76,7 +76,7 @@ namespace gr {
       if(ninput_items[0] >= headerLength) {
 	// read header
 	const loraPDUHeader* header = (loraPDUHeader*) (in);
-	if(header->SF >= 5 && header->SF <= 12) {
+	if(header->hasHeader == 0x01) {
 	  nHeaderBytes += headerLength;
 	  
 	  // send header info as a loraFrameParams tag
