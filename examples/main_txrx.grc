@@ -188,6 +188,22 @@ blocks:
     coordinate: [440, 90]
     rotation: 0
     state: true
+- name: LibreLoRa_LoRaTaggedStreamToTaggedStream_0
+  id: LibreLoRa_LoRaTaggedStreamToTaggedStream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    lengthTagName: payloadSize
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1881, 290]
+    rotation: 0
+    state: enabled
 - name: LibreLoRa_PowerDetector_0
   id: LibreLoRa_PowerDetector
   parameters:
@@ -367,7 +383,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2160, 127]
+    coordinate: [2178, 126]
     rotation: 0
     state: enabled
 - name: blocks_complex_to_mag_squared_0_1
@@ -1654,6 +1670,7 @@ blocks:
     state: enabled
 
 connections:
+- [LibreLoRa_LoRaTaggedStreamToTaggedStream_0, '0', LoRaTx_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0, '0']
@@ -1674,7 +1691,8 @@ connections:
 - [LoRaRx_0_0_0_0_0_0, detectionOut, blocks_message_debug_0, print]
 - [LoRaTx_0, '0', osmosdr_sink_0, '0']
 - [blocks_complex_to_mag_squared_0_1, '0', iir_filter_xxx_0, '0']
-- [blocks_pdu_to_tagged_stream_0, '0', LoRaTx_0, '0']
+- [blocks_pdu_to_tagged_stream_0, '0', LibreLoRa_LoRaTaggedStreamToTaggedStream_0,
+  '0']
 - [blocks_socket_pdu_0, pdus, blocks_pdu_to_tagged_stream_0, pdus]
 - [blocks_tagged_stream_to_pdu_0, pdus, blocks_socket_pdu_0, pdus]
 - [blocks_tagged_stream_to_pdu_0_0, pdus, blocks_socket_pdu_0, pdus]

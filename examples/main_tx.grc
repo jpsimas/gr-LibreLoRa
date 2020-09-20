@@ -199,22 +199,6 @@ blocks:
     coordinate: [327, 107]
     rotation: 0
     state: true
-- name: LibreLoRa_LoRaTaggedStreamToTaggedStream_0
-  id: LibreLoRa_LoRaTaggedStreamToTaggedStream
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    lengthTagName: payloadSize
-    maxoutbuf: '0'
-    minoutbuf: '0'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [661, 297]
-    rotation: 0
-    state: enabled
 - name: LoRaTx_0
   id: LoRaTx
   parameters:
@@ -236,7 +220,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1007, 234]
+    coordinate: [659, 237]
     rotation: 0
     state: enabled
 - name: blocks_pdu_to_tagged_stream_0
@@ -274,25 +258,6 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [191, 282]
-    rotation: 0
-    state: true
-- name: blocks_tag_debug_0
-  id: blocks_tag_debug
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    display: 'True'
-    filter: '""'
-    name: ''
-    num_inputs: '1'
-    type: byte
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [944, 429]
     rotation: 0
     state: true
 - name: blocks_throttle_0
@@ -585,7 +550,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1234, 205]
+    coordinate: [886, 208]
     rotation: 0
     state: enabled
 - name: qtgui_waterfall_sink_x_0
@@ -651,12 +616,9 @@ blocks:
     state: disabled
 
 connections:
-- [LibreLoRa_LoRaTaggedStreamToTaggedStream_0, '0', LoRaTx_0, '0']
-- [LibreLoRa_LoRaTaggedStreamToTaggedStream_0, '0', blocks_tag_debug_0, '0']
 - [LoRaTx_0, '0', blocks_throttle_0, '0']
 - [LoRaTx_0, '0', osmosdr_sink_0, '0']
-- [blocks_pdu_to_tagged_stream_0, '0', LibreLoRa_LoRaTaggedStreamToTaggedStream_0,
-  '0']
+- [blocks_pdu_to_tagged_stream_0, '0', LoRaTx_0, '0']
 - [blocks_socket_pdu_0, pdus, blocks_pdu_to_tagged_stream_0, pdus]
 - [blocks_throttle_0, '0', qtgui_waterfall_sink_x_0, '0']
 
