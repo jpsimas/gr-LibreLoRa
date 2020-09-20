@@ -198,7 +198,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1641, 316]
+    coordinate: [1552, 336]
     rotation: 0
     state: enabled
 - name: LibreLoRa_BytesToNibbles_0
@@ -213,7 +213,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [424, 254]
+    coordinate: [281, 256]
     rotation: 0
     state: enabled
 - name: LibreLoRa_CRC16_0
@@ -231,7 +231,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [224, 373]
+    coordinate: [209, 373]
     rotation: 0
     state: enabled
 - name: LibreLoRa_Encode_0
@@ -262,7 +262,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1488, 305]
+    coordinate: [1399, 325]
     rotation: 0
     state: enabled
 - name: LibreLoRa_GrayDecode_0
@@ -278,7 +278,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [913, 347]
+    coordinate: [920, 321]
     rotation: 0
     state: enabled
 - name: LibreLoRa_Interleave_0
@@ -350,7 +350,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [321, 189]
+    coordinate: [137, 242]
     rotation: 0
     state: enabled
 - name: SF
@@ -589,7 +589,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1791, 313]
+    coordinate: [1702, 333]
     rotation: 0
     state: true
 - name: pad_sink_1
@@ -717,7 +717,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [72, 370]
+    coordinate: [9, 367]
     rotation: 0
     state: true
 - name: payloadSize
