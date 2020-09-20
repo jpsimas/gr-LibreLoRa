@@ -566,7 +566,7 @@ blocks:
     label: nUpchirps
     short_id: ''
     type: ''
-    value: '5'
+    value: '8'
   states:
     bus_sink: false
     bus_source: false

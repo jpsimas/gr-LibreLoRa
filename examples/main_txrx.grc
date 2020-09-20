@@ -201,7 +201,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1881, 290]
+    coordinate: [1749, 285]
     rotation: 0
     state: enabled
 - name: LibreLoRa_PowerDetector_0
@@ -375,7 +375,7 @@ blocks:
     lowDataRate: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    nUpchirps: '5'
+    nUpchirps: '8'
     payloadSize: '10'
     samp_rate: samp_rate_tx
     syncwordNumber: '0'
@@ -383,9 +383,31 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2178, 126]
+    coordinate: [2043, 137]
     rotation: 0
     state: enabled
+- name: analog_sig_source_x_0
+  id: analog_sig_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    amp: '1'
+    comment: ''
+    freq: '1000'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    phase: '0'
+    samp_rate: samp_rate
+    type: complex
+    waveform: analog.GR_COS_WAVE
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2026, 383]
+    rotation: 0
+    state: true
 - name: blocks_complex_to_mag_squared_0_1
   id: blocks_complex_to_mag_squared
   parameters:
@@ -415,6 +437,22 @@ blocks:
     coordinate: [1516, 919]
     rotation: 0
     state: true
+- name: blocks_multiply_conjugate_cc_0
+  id: blocks_multiply_conjugate_cc
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [2224, 210]
+    rotation: 0
+    state: true
 - name: blocks_pdu_to_tagged_stream_0
   id: blocks_pdu_to_tagged_stream
   parameters:
@@ -429,7 +467,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1913, 202]
+    coordinate: [1781, 197]
     rotation: 0
     state: enabled
 - name: blocks_socket_pdu_0
@@ -870,7 +908,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2360, 110]
+    coordinate: [2392, 144]
     rotation: 0
     state: enabled
 - name: osmosdr_source_0
@@ -1689,8 +1727,10 @@ connections:
 - [LoRaRx_0_0_0_0_0, detectionOut, blocks_message_debug_0, print]
 - [LoRaRx_0_0_0_0_0_0, '0', blocks_tagged_stream_to_pdu_0_0_0_0_0_0, '0']
 - [LoRaRx_0_0_0_0_0_0, detectionOut, blocks_message_debug_0, print]
-- [LoRaTx_0, '0', osmosdr_sink_0, '0']
+- [LoRaTx_0, '0', blocks_multiply_conjugate_cc_0, '0']
+- [analog_sig_source_x_0, '0', blocks_multiply_conjugate_cc_0, '1']
 - [blocks_complex_to_mag_squared_0_1, '0', iir_filter_xxx_0, '0']
+- [blocks_multiply_conjugate_cc_0, '0', osmosdr_sink_0, '0']
 - [blocks_pdu_to_tagged_stream_0, '0', LibreLoRa_LoRaTaggedStreamToTaggedStream_0,
   '0']
 - [blocks_socket_pdu_0, pdus, blocks_pdu_to_tagged_stream_0, pdus]
