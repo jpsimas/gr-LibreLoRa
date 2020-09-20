@@ -75,5 +75,6 @@ install(FILES
     TransmitterController.h
     AppendPrefix.h
     AppendSilence.h
-    LoRaTaggedStreamToTaggedStream.h DESTINATION include/LibreLoRa
+    LoRaPDUHeaderReader.h
+    LoRaPDUHeaderGenerator.h DESTINATION include/LibreLoRa
 )
