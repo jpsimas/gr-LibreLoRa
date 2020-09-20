@@ -132,7 +132,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 1e-3
+    value: 5e-3
   states:
     bus_sink: false
     bus_source: false
@@ -188,8 +188,8 @@ blocks:
     coordinate: [440, 90]
     rotation: 0
     state: true
-- name: LibreLoRa_LoRaTaggedStreamToTaggedStream_0
-  id: LibreLoRa_LoRaTaggedStreamToTaggedStream
+- name: LibreLoRa_LoRaPDUHeaderGenerator_0
+  id: LibreLoRa_LoRaPDUHeaderGenerator
   parameters:
     affinity: ''
     alias: ''
@@ -201,9 +201,105 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1749, 285]
+    coordinate: [1201, 112]
     rotation: 0
-    state: enabled
+    state: true
+- name: LibreLoRa_LoRaPDUHeaderGenerator_0_0
+  id: LibreLoRa_LoRaPDUHeaderGenerator
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    lengthTagName: payloadSize
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1194, 267]
+    rotation: 0
+    state: true
+- name: LibreLoRa_LoRaPDUHeaderGenerator_0_0_0
+  id: LibreLoRa_LoRaPDUHeaderGenerator
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    lengthTagName: payloadSize
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1173, 498]
+    rotation: 0
+    state: true
+- name: LibreLoRa_LoRaPDUHeaderGenerator_0_0_0_0
+  id: LibreLoRa_LoRaPDUHeaderGenerator
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    lengthTagName: payloadSize
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1203, 693]
+    rotation: 0
+    state: true
+- name: LibreLoRa_LoRaPDUHeaderGenerator_0_0_0_0_0
+  id: LibreLoRa_LoRaPDUHeaderGenerator
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    lengthTagName: payloadSize
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1184, 892]
+    rotation: 0
+    state: true
+- name: LibreLoRa_LoRaPDUHeaderGenerator_0_0_0_0_0_0
+  id: LibreLoRa_LoRaPDUHeaderGenerator
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    lengthTagName: payloadSize
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1179, 1100]
+    rotation: 0
+    state: true
+- name: LibreLoRa_LoRaPDUHeaderReader_0
+  id: LibreLoRa_LoRaPDUHeaderReader
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    lengthTagName: payloadSize
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1762, 302]
+    rotation: 0
+    state: true
 - name: LibreLoRa_PowerDetector_0
   id: LibreLoRa_PowerDetector
   parameters:
@@ -506,7 +602,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1225, 102]
+    coordinate: [1203, 183]
     rotation: 0
     state: enabled
 - name: blocks_tagged_stream_to_pdu_0_0
@@ -523,7 +619,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1210, 269]
+    coordinate: [1183, 341]
     rotation: 0
     state: enabled
 - name: blocks_tagged_stream_to_pdu_0_0_0
@@ -540,7 +636,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1183, 494]
+    coordinate: [1172, 570]
     rotation: 0
     state: enabled
 - name: blocks_tagged_stream_to_pdu_0_0_0_0
@@ -557,7 +653,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1214, 695]
+    coordinate: [1202, 765]
     rotation: 0
     state: enabled
 - name: blocks_tagged_stream_to_pdu_0_0_0_0_0
@@ -574,7 +670,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1211, 894]
+    coordinate: [1182, 979]
     rotation: 0
     state: enabled
 - name: blocks_tagged_stream_to_pdu_0_0_0_0_0_0
@@ -591,7 +687,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1220, 1093]
+    coordinate: [1173, 1176]
     rotation: 0
     state: enabled
 - name: iir_filter_xxx_0
@@ -1710,32 +1806,48 @@ blocks:
     state: enabled
 
 connections:
-- [LibreLoRa_LoRaTaggedStreamToTaggedStream_0, '0', LoRaTx_0, '0']
-- [LibreLoRa_LoRaTaggedStreamToTaggedStream_0, freq, analog_sig_source_x_0, freq]
+- [LibreLoRa_LoRaPDUHeaderGenerator_0, '0', blocks_tagged_stream_to_pdu_0, '0']
+- [LibreLoRa_LoRaPDUHeaderGenerator_0_0, '0', blocks_tagged_stream_to_pdu_0_0, '0']
+- [LibreLoRa_LoRaPDUHeaderGenerator_0_0_0, '0', blocks_tagged_stream_to_pdu_0_0_0,
+  '0']
+- [LibreLoRa_LoRaPDUHeaderGenerator_0_0_0_0, '0', blocks_tagged_stream_to_pdu_0_0_0_0,
+  '0']
+- [LibreLoRa_LoRaPDUHeaderGenerator_0_0_0_0_0, '0', blocks_tagged_stream_to_pdu_0_0_0_0_0,
+  '0']
+- [LibreLoRa_LoRaPDUHeaderGenerator_0_0_0_0_0_0, '0', blocks_tagged_stream_to_pdu_0_0_0_0_0_0,
+  '0']
+- [LibreLoRa_LoRaPDUHeaderReader_0, '0', LoRaTx_0, '0']
+- [LibreLoRa_LoRaPDUHeaderReader_0, freq, analog_sig_source_x_0, freq]
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0_0_0, '0']
 - [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0_0_0_0, '0']
-- [LoRaRx_0, '0', blocks_tagged_stream_to_pdu_0, '0']
+- [LoRaRx_0, '0', LibreLoRa_LoRaPDUHeaderGenerator_0, '0']
+- [LoRaRx_0, detectionOut, LibreLoRa_LoRaPDUHeaderGenerator_0, detectionIn]
 - [LoRaRx_0, detectionOut, blocks_message_debug_0, print]
-- [LoRaRx_0_0, '0', blocks_tagged_stream_to_pdu_0_0, '0']
+- [LoRaRx_0_0, '0', LibreLoRa_LoRaPDUHeaderGenerator_0_0, '0']
+- [LoRaRx_0_0, detectionOut, LibreLoRa_LoRaPDUHeaderGenerator_0_0, detectionIn]
 - [LoRaRx_0_0, detectionOut, blocks_message_debug_0, print]
-- [LoRaRx_0_0_0, '0', blocks_tagged_stream_to_pdu_0_0_0, '0']
+- [LoRaRx_0_0_0, '0', LibreLoRa_LoRaPDUHeaderGenerator_0_0_0, '0']
+- [LoRaRx_0_0_0, detectionOut, LibreLoRa_LoRaPDUHeaderGenerator_0_0_0, detectionIn]
 - [LoRaRx_0_0_0, detectionOut, blocks_message_debug_0, print]
-- [LoRaRx_0_0_0_0, '0', blocks_tagged_stream_to_pdu_0_0_0_0, '0']
+- [LoRaRx_0_0_0_0, '0', LibreLoRa_LoRaPDUHeaderGenerator_0_0_0_0, '0']
+- [LoRaRx_0_0_0_0, detectionOut, LibreLoRa_LoRaPDUHeaderGenerator_0_0_0_0, detectionIn]
 - [LoRaRx_0_0_0_0, detectionOut, blocks_message_debug_0, print]
-- [LoRaRx_0_0_0_0_0, '0', blocks_tagged_stream_to_pdu_0_0_0_0_0, '0']
+- [LoRaRx_0_0_0_0_0, '0', LibreLoRa_LoRaPDUHeaderGenerator_0_0_0_0_0, '0']
+- [LoRaRx_0_0_0_0_0, detectionOut, LibreLoRa_LoRaPDUHeaderGenerator_0_0_0_0_0, detectionIn]
 - [LoRaRx_0_0_0_0_0, detectionOut, blocks_message_debug_0, print]
-- [LoRaRx_0_0_0_0_0_0, '0', blocks_tagged_stream_to_pdu_0_0_0_0_0_0, '0']
+- [LoRaRx_0_0_0_0_0_0, '0', LibreLoRa_LoRaPDUHeaderGenerator_0_0_0_0_0_0, '0']
+- [LoRaRx_0_0_0_0_0_0, detectionOut, LibreLoRa_LoRaPDUHeaderGenerator_0_0_0_0_0_0,
+  detectionIn]
 - [LoRaRx_0_0_0_0_0_0, detectionOut, blocks_message_debug_0, print]
 - [LoRaTx_0, '0', blocks_multiply_xx_0, '0']
 - [analog_sig_source_x_0, '0', blocks_multiply_xx_0, '1']
 - [blocks_complex_to_mag_squared_0_1, '0', iir_filter_xxx_0, '0']
 - [blocks_multiply_xx_0, '0', osmosdr_sink_0, '0']
-- [blocks_pdu_to_tagged_stream_0, '0', LibreLoRa_LoRaTaggedStreamToTaggedStream_0,
-  '0']
+- [blocks_pdu_to_tagged_stream_0, '0', LibreLoRa_LoRaPDUHeaderReader_0, '0']
 - [blocks_socket_pdu_0, pdus, blocks_pdu_to_tagged_stream_0, pdus]
 - [blocks_tagged_stream_to_pdu_0, pdus, blocks_socket_pdu_0, pdus]
 - [blocks_tagged_stream_to_pdu_0_0, pdus, blocks_socket_pdu_0, pdus]

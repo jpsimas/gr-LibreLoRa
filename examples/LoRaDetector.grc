@@ -56,6 +56,18 @@ blocks:
     coordinate: [426, 29]
     rotation: 0
     state: enabled
+- name: center_freq
+  id: variable
+  parameters:
+    comment: ''
+    value: 433e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [257, 102]
+    rotation: 0
+    state: true
 - name: samp_rate
   id: variable
   parameters:
@@ -250,6 +262,25 @@ blocks:
     coordinate: [1176, 407]
     rotation: 0
     state: disabled
+- name: blocks_tag_debug_0
+  id: blocks_tag_debug
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    display: 'True'
+    filter: '""'
+    name: ''
+    num_inputs: '1'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1347, 360]
+    rotation: 0
+    state: true
 - name: import_0
   id: import
   parameters:
@@ -512,7 +543,7 @@ blocks:
     dc_offset_mode7: '0'
     dc_offset_mode8: '0'
     dc_offset_mode9: '0'
-    freq0: 868.3e6
+    freq0: center_freq
     freq1: 100e6
     freq10: 100e6
     freq11: 100e6
@@ -691,7 +722,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [28, 182]
+    coordinate: [29, 181]
     rotation: 0
     state: enabled
 - name: zeromq_pub_msg_sink_0
@@ -730,6 +761,7 @@ blocks:
 connections:
 - [LibreLoRa_ChirpDetector_0, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
 - [LibreLoRa_ChirpDetector_0, detectOut, blocks_message_debug_0, print]
+- [LibreLoRa_ChirpDetector_0_0, '0', blocks_tag_debug_0, '0']
 - [LibreLoRa_ChirpDetector_0_0, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
 - [LibreLoRa_ChirpDetector_0_0, detectOut, blocks_message_debug_0, print]
 - [LibreLoRa_ChirpDetector_1, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
