@@ -23,24 +23,24 @@
 #endif
 
 #include <gnuradio/io_signature.h>
-#include "LoRaTaggedStreamToTaggedStream_impl.h"
+#include "LoRaPDUHeaderReader_impl.h"
 
 namespace gr {
   namespace LibreLoRa {
 
-    LoRaTaggedStreamToTaggedStream::sptr
-    LoRaTaggedStreamToTaggedStream::make(const std::string& lengthTagName)
+    LoRaPDUHeaderReader::sptr
+    LoRaPDUHeaderReader::make(const std::string& lengthTagName)
     {
       return gnuradio::get_initial_sptr
-        (new LoRaTaggedStreamToTaggedStream_impl(lengthTagName));
+        (new LoRaPDUHeaderReader_impl(lengthTagName));
     }
 
 
     /*
      * The private constructor
      */
-    LoRaTaggedStreamToTaggedStream_impl::LoRaTaggedStreamToTaggedStream_impl(const std::string& lengthTagName)
-      : gr::tagged_stream_block("LoRaTaggedStreamToTaggedStream",
+    LoRaPDUHeaderReader_impl::LoRaPDUHeaderReader_impl(const std::string& lengthTagName)
+      : gr::tagged_stream_block("LoRaPDUHeaderReader",
 				gr::io_signature::make(1, 1, sizeof(uint8_t)),
 				gr::io_signature::make(1, 1, sizeof(uint8_t)), lengthTagName)
     {
@@ -53,12 +53,12 @@ namespace gr {
     /*
      * Our virtual destructor.
      */
-    LoRaTaggedStreamToTaggedStream_impl::~LoRaTaggedStreamToTaggedStream_impl()
+    LoRaPDUHeaderReader_impl::~LoRaPDUHeaderReader_impl()
     {
     }
 
     int
-    LoRaTaggedStreamToTaggedStream_impl::calculate_output_stream_length(const gr_vector_int &ninput_items)
+    LoRaPDUHeaderReader_impl::calculate_output_stream_length(const gr_vector_int &ninput_items)
     {
       //maximum number of output items that can be produced
       int noutput_items = ninput_items[0];
@@ -66,7 +66,7 @@ namespace gr {
     }
 
     int
-    LoRaTaggedStreamToTaggedStream_impl::work (int noutput_items,
+    LoRaPDUHeaderReader_impl::work (int noutput_items,
                        gr_vector_int &ninput_items,
                        gr_vector_const_void_star &input_items,
                        gr_vector_void_star &output_items)

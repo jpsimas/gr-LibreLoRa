@@ -18,8 +18,8 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_LORATAGGEDSTREAMTOTAGGEDSTREAM_H
-#define INCLUDED_LIBRELORA_LORATAGGEDSTREAMTOTAGGEDSTREAM_H
+#ifndef INCLUDED_LIBRELORA_LORAPDUHEADERREADER_H
+#define INCLUDED_LIBRELORA_LORAPDUHEADERREADER_H
 
 #include <LibreLoRa/api.h>
 #include <gnuradio/tagged_stream_block.h>
@@ -32,17 +32,17 @@ namespace gr {
      * \ingroup LibreLoRa
      *
      */
-    class LIBRELORA_API LoRaTaggedStreamToTaggedStream : virtual public gr::tagged_stream_block
+    class LIBRELORA_API LoRaPDUHeaderReader : virtual public gr::tagged_stream_block
     {
      public:
-      typedef boost::shared_ptr<LoRaTaggedStreamToTaggedStream> sptr;
+      typedef boost::shared_ptr<LoRaPDUHeaderReader> sptr;
 
       /*!
-       * \brief Return a shared_ptr to a new instance of LibreLoRa::LoRaTaggedStreamToTaggedStream.
+       * \brief Return a shared_ptr to a new instance of LibreLoRa::LoRaPDUHeaderReader.
        *
-       * To avoid accidental use of raw pointers, LibreLoRa::LoRaTaggedStreamToTaggedStream's
+       * To avoid accidental use of raw pointers, LibreLoRa::LoRaPDUHeaderReader's
        * constructor is in a private implementation
-       * class. LibreLoRa::LoRaTaggedStreamToTaggedStream::make is the public interface for
+       * class. LibreLoRa::LoRaPDUHeaderReader::make is the public interface for
        * creating new instances.
        */
       static sptr make(const std::string& lengthTagName);
@@ -51,5 +51,5 @@ namespace gr {
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_LORATAGGEDSTREAMTOTAGGEDSTREAM_H */
+#endif /* INCLUDED_LIBRELORA_LORAPDUHEADERREADER_H */
 

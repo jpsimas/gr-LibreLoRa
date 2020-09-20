@@ -1,9 +1,9 @@
-id: LibreLoRa_LoRaTaggedStreamToTaggedStream
-label: LoRaTaggedStreamToTaggedStream
+id: LibreLoRa_LoRaPDUHeaderReader
+label: LoRaPDUHeaderReader
 category: '[Librelora]'
 templates:
   imports: import LibreLoRa
-  make: LibreLoRa.LoRaTaggedStreamToTaggedStream(${lengthTagName})
+  make: LibreLoRa.LoRaPDUHeaderReader(${lengthTagName})
 parameters:
 - id: lengthTagName
   label: Lengthtagname

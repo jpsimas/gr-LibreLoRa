@@ -18,15 +18,15 @@
  * Boston, MA 02110-1301, USA.
  */
 
-#ifndef INCLUDED_LIBRELORA_LORATAGGEDSTREAMTOTAGGEDSTREAM_IMPL_H
-#define INCLUDED_LIBRELORA_LORATAGGEDSTREAMTOTAGGEDSTREAM_IMPL_H
+#ifndef INCLUDED_LIBRELORA_LORAPDUHEADERREADER_IMPL_H
+#define INCLUDED_LIBRELORA_LORAPDUHEADERREADER_IMPL_H
 
-#include <LibreLoRa/LoRaTaggedStreamToTaggedStream.h>
+#include <LibreLoRa/LoRaPDUHeaderReader.h>
 
 namespace gr {
   namespace LibreLoRa {
 
-    class LoRaTaggedStreamToTaggedStream_impl : public LoRaTaggedStreamToTaggedStream
+    class LoRaPDUHeaderReader_impl : public LoRaPDUHeaderReader
     {
      private:
       struct loraPDUHeader {
@@ -48,8 +48,8 @@ namespace gr {
       int calculate_output_stream_length(const gr_vector_int &ninput_items);
 
      public:
-      LoRaTaggedStreamToTaggedStream_impl(const std::string& lengthTagName);
-      ~LoRaTaggedStreamToTaggedStream_impl();
+      LoRaPDUHeaderReader_impl(const std::string& lengthTagName);
+      ~LoRaPDUHeaderReader_impl();
 
       // Where all the action really happens
       int work(
@@ -63,5 +63,5 @@ namespace gr {
   } // namespace LibreLoRa
 } // namespace gr
 
-#endif /* INCLUDED_LIBRELORA_LORATAGGEDSTREAMTOTAGGEDSTREAM_IMPL_H */
+#endif /* INCLUDED_LIBRELORA_LORAPDUHEADERREADER_IMPL_H */
 
