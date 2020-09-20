@@ -56,7 +56,7 @@ namespace gr {
     {
 
 #ifndef NDEBUG
-      std::cout << "TransmitterController: constructed. Low Data Rate? " << (lowDataRate? "YES" : "NO") << ", payloadSize = " << payloadSize << ", nNibblesTotal = " << nNibblesTotal << std::endl;
+      std::cout << "TransmitterController: constructed. Low Data Rate? " << (lowDataRate? "YES" : "NO") << ", payloadSize = " << payloadSize << std::endl;
 #endif
 
       calculateConstants();
@@ -141,9 +141,9 @@ namespace gr {
 	    pmt::pmt_t message = tags[0].value;
 	    SF = pmt::to_long(pmt::tuple_ref(message, 0));
 	    CR = pmt::to_long(pmt::tuple_ref(message, 1));
-	    CRCPresent = pmt::to_long(pmt::tuple_ref(message, 2));
-	    lowDataRate = pmt::to_long(pmt::tuple_ref(message, 3));
-	    float BW = pmt::to_long(pmt::tuple_ref(message, 4));
+	    CRCPresent = pmt::to_bool(pmt::tuple_ref(message, 2));
+	    lowDataRate = pmt::to_bool(pmt::tuple_ref(message, 3));
+	    float BW = pmt::to_float(pmt::tuple_ref(message, 4));
 	    symbolSize = std::round(float(1 << SF)/BW);
 	    calculateConstants();
 	}
