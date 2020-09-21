@@ -80,18 +80,6 @@ blocks:
     coordinate: [641, 30]
     rotation: 0
     state: true
-- name: ip_address
-  id: variable
-  parameters:
-    comment: ''
-    value: '''127.0.0.1'''
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1171, 68]
-    rotation: 0
-    state: true
 - name: samp_rate
   id: variable
   parameters:
@@ -157,7 +145,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    host: ip_address
+    host: ''
     maxoutbuf: '0'
     minoutbuf: '0'
     mtu: '10000'
