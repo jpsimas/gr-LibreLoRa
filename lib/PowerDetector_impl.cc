@@ -93,6 +93,7 @@ namespace gr {
 	out = (gr_complex *) output_items[0];
       
       size_t i;
+      const size_t nOutput = ((noutput_items + decimation - 1)/decimation)*decimation;
       switch(state) {
       case detection:
 	for(i = 0; i < (noutput_items + decimation - 1)/decimation; i++) {
@@ -121,18 +122,20 @@ namespace gr {
 	return 0;
 	
       case started:
-	for(i = 0; i < ((noutput_items + decimation - 1)/decimation)*decimation; i++) {
+	if(output_items.size() > 0) {
+	  //propagate tags
+	  auto nr =  this->nitems_read(0);
+	  std::vector<gr::tag_t> tags;
+	  this->get_tags_in_range(tags, 0, nr + i, nr + nOutput);
+	  for(auto tag : tags) {
+	    this->add_item_tag(0, this->nitems_written(0) + tag.offset - nr, tag.key, tag.value);
+	  }
+	}
+	
+	for(i = 0; i < nOutput; i++) {
 	  samplesToRead--;
 	  if(output_items.size() > 0) {
 	    out[i] = in[i];
-
-	    //propagate tags
-	    auto nr =  this->nitems_read(0);
-	    std::vector<gr::tag_t> tags;
-	    this->get_tags_in_range(tags, 0, nr + i, nr + i + 1);
-	    for(auto tag : tags) {
-	      this->add_item_tag(0, this->nitems_written(0) + i, tag.key, tag.value);
-	    }
 	  }
 	  
 	  //if(clock() > time + timeout) {

@@ -195,7 +195,7 @@ blocks:
     bus_structure: null
     coordinate: [706, 412]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: LoRaRx_0
   id: LoRaRx
   parameters:
@@ -349,7 +349,7 @@ blocks:
     bus_structure: null
     coordinate: [309, 449]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: blocks_message_debug_0
   id: blocks_message_debug
   parameters:
@@ -361,6 +361,23 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [1516, 919]
+    rotation: 0
+    state: true
+- name: blocks_null_sink_0
+  id: blocks_null_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    bus_structure_sink: '[[0,],]'
+    comment: ''
+    num_inputs: '1'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [821, 604]
     rotation: 0
     state: true
 - name: blocks_socket_pdu_0
@@ -503,7 +520,7 @@ blocks:
     bus_structure: null
     coordinate: [509, 441]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: import_0
   id: import
   parameters:
@@ -919,7 +936,7 @@ blocks:
     bus_structure: null
     coordinate: [126, 447]
     rotation: 0
-    state: disabled
+    state: enabled
 - name: rtlsdr_source_0
   id: rtlsdr_source
   parameters:
@@ -1279,12 +1296,7 @@ blocks:
     state: enabled
 
 connections:
-- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0, '0']
-- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0, '0']
-- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0, '0']
-- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0_0, '0']
-- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0_0_0, '0']
-- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0_0_0_0, '0']
+- [LibreLoRa_PowerDetector_0, '0', blocks_null_sink_0, '0']
 - [LoRaRx_0, '0', blocks_tagged_stream_to_pdu_0, '0']
 - [LoRaRx_0, detectionOut, blocks_message_debug_0, print]
 - [LoRaRx_0_0, '0', blocks_tagged_stream_to_pdu_0_0, '0']
