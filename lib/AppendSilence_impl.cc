@@ -73,27 +73,31 @@ namespace gr {
       gr_complex *out = (gr_complex *) output_items[0];
 
       size_t nSamplesUsed = 0;
-      for(auto i = 0; i < noutput_items; i++) {
-	if(transmittingFrame) {
-	  out[i] = in[i];
 
-	  nSamplesUsed++;
+      if(!transmittingFrame) {
+	memset(out, 0, noutput_items);
+      } else   
+	for(auto i = 0; i < noutput_items; i++) {
+	  if(transmittingFrame) {
+	    out[i] = in[i];
 
-	  //check is next sample has endOfFrame tag
-	  std::vector<gr::tag_t> tags;
-	  auto nr =  nitems_read(0);
-	  static const pmt::pmt_t tagKey = pmt::intern("loraEndOfFrame");
-	  get_tags_in_range(tags, 0, nr + i, nr + i + 1, tagKey);
-	  if(tags.size() != 0) {
+	    nSamplesUsed++;
+
+	    //check is next sample has endOfFrame tag
+	    std::vector<gr::tag_t> tags;
+	    auto nr =  nitems_read(0);
+	    static const pmt::pmt_t tagKey = pmt::intern("loraEndOfFrame");
+	    get_tags_in_range(tags, 0, nr + i, nr + i + 1, tagKey);
+	    if(tags.size() != 0) {
 #ifndef NDEBUG
-	    std::cout << "AppendSilence: got end of frame." << std::endl;
+	      std::cout << "AppendSilence: got end of frame." << std::endl;
 #endif
-	    transmittingFrame = false;
+	      transmittingFrame = false;
+	    }
+	  } else {
+	    out[i] = 0;
 	  }
-	} else {
-	  out[i] = 0;
 	}
-      }
 	
       
       // Tell runtime system how many input items we consumed on
