@@ -132,7 +132,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 1e-3
+    value: 1e-2
   states:
     bus_sink: false
     bus_source: false
@@ -361,23 +361,6 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [1516, 919]
-    rotation: 0
-    state: true
-- name: blocks_null_sink_0
-  id: blocks_null_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    bus_structure_sink: '[[0,],]'
-    comment: ''
-    num_inputs: '1'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [821, 604]
     rotation: 0
     state: true
 - name: blocks_socket_pdu_0
@@ -1296,7 +1279,12 @@ blocks:
     state: enabled
 
 connections:
-- [LibreLoRa_PowerDetector_0, '0', blocks_null_sink_0, '0']
+- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0, '0']
+- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0, '0']
+- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0, '0']
+- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0_0, '0']
+- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0_0_0, '0']
+- [LibreLoRa_PowerDetector_0, '0', LoRaRx_0_0_0_0_0_0, '0']
 - [LoRaRx_0, '0', blocks_tagged_stream_to_pdu_0, '0']
 - [LoRaRx_0, detectionOut, blocks_message_debug_0, print]
 - [LoRaRx_0_0, '0', blocks_tagged_stream_to_pdu_0_0, '0']
@@ -1321,12 +1309,6 @@ connections:
 - [osmosdr_source_0, '0', rational_resampler_xxx_1, '0']
 - [rational_resampler_xxx_1, '0', blocks_complex_to_mag_squared_0_1, '0']
 - [rtlsdr_source_0, '0', LibreLoRa_PowerDetector_0, '0']
-- [rtlsdr_source_0, '0', LoRaRx_0, '0']
-- [rtlsdr_source_0, '0', LoRaRx_0_0, '0']
-- [rtlsdr_source_0, '0', LoRaRx_0_0_0, '0']
-- [rtlsdr_source_0, '0', LoRaRx_0_0_0_0, '0']
-- [rtlsdr_source_0, '0', LoRaRx_0_0_0_0_0, '0']
-- [rtlsdr_source_0, '0', LoRaRx_0_0_0_0_0_0, '0']
 - [rtlsdr_source_0, '0', rational_resampler_xxx_1, '0']
 
 metadata:
