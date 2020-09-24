@@ -1484,7 +1484,7 @@ blocks:
     ant7: ''
     ant8: ''
     ant9: ''
-    args: '""'
+    args: '"rtl=0"'
     bb_gain0: '0'
     bb_gain1: '20'
     bb_gain10: '20'
