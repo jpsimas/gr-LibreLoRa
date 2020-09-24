@@ -8,7 +8,7 @@ options:
     description: ''
     gen_cmake: 'On'
     gen_linking: dynamic
-    generate_options: qt_gui
+    generate_options: no_gui
     hier_block_src_path: '.:'
     id: LoRaDetector
     max_nouts: '0'
@@ -27,7 +27,7 @@ options:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 8]
+    coordinate: [8, 7]
     rotation: 0
     state: enabled
 
@@ -249,38 +249,6 @@ blocks:
     coordinate: [1013, 245]
     rotation: 0
     state: enabled
-- name: blocks_message_debug_0_0
-  id: blocks_message_debug
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1176, 407]
-    rotation: 0
-    state: disabled
-- name: blocks_tag_debug_0
-  id: blocks_tag_debug
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    display: 'True'
-    filter: '""'
-    name: ''
-    num_inputs: '1'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1347, 360]
-    rotation: 0
-    state: true
 - name: import_0
   id: import
   parameters:
@@ -307,67 +275,6 @@ blocks:
     coordinate: [280, 12.0]
     rotation: 0
     state: true
-- name: qtgui_waterfall_sink_x_0
-  id: qtgui_waterfall_sink_x
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
-    axislabels: 'True'
-    bw: samp_rate
-    color1: '0'
-    color10: '0'
-    color2: '0'
-    color3: '0'
-    color4: '0'
-    color5: '0'
-    color6: '0'
-    color7: '0'
-    color8: '0'
-    color9: '0'
-    comment: ''
-    fc: '0'
-    fftsize: '1024'
-    freqhalf: 'True'
-    grid: 'False'
-    gui_hint: ''
-    int_max: '10'
-    int_min: '-140'
-    label1: ''
-    label10: ''
-    label2: ''
-    label3: ''
-    label4: ''
-    label5: ''
-    label6: ''
-    label7: ''
-    label8: ''
-    label9: ''
-    legend: 'True'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    name: '""'
-    nconnections: '1'
-    showports: 'False'
-    type: complex
-    update_time: '0.10'
-    wintype: firdes.WIN_BLACKMAN_hARRIS
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [485, 323]
-    rotation: 0
-    state: disabled
 - name: rtlsdr_source_0
   id: rtlsdr_source
   parameters:
@@ -725,43 +632,10 @@ blocks:
     coordinate: [29, 181]
     rotation: 0
     state: enabled
-- name: zeromq_pub_msg_sink_0
-  id: zeromq_pub_msg_sink
-  parameters:
-    address: tcp://127.0.0.1:5555
-    affinity: ''
-    alias: ''
-    comment: ''
-    timeout: '100'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1086, 736]
-    rotation: 0
-    state: disabled
-- name: zeromq_pull_msg_source_0
-  id: zeromq_pull_msg_source
-  parameters:
-    address: tcp://127.0.0.1:5555
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    timeout: '100'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [918, 445]
-    rotation: 0
-    state: disabled
 
 connections:
 - [LibreLoRa_ChirpDetector_0, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
 - [LibreLoRa_ChirpDetector_0, detectOut, blocks_message_debug_0, print]
-- [LibreLoRa_ChirpDetector_0_0, '0', blocks_tag_debug_0, '0']
 - [LibreLoRa_ChirpDetector_0_0, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
 - [LibreLoRa_ChirpDetector_0_0, detectOut, blocks_message_debug_0, print]
 - [LibreLoRa_ChirpDetector_1, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
@@ -772,15 +646,12 @@ connections:
 - [LibreLoRa_ChirpDetector_2_0_0, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
 - [LibreLoRa_ChirpDetector_2_0_0, detectOut, blocks_message_debug_0, print]
 - [LibreLoRa_DetectionCount_0, count, blocks_message_debug_0, print]
-- [LibreLoRa_DetectionCount_0, count, zeromq_pub_msg_sink_0, in]
 - [rtlsdr_source_0, '0', LibreLoRa_ChirpDetector_0, '0']
 - [rtlsdr_source_0, '0', LibreLoRa_ChirpDetector_0_0, '0']
 - [rtlsdr_source_0, '0', LibreLoRa_ChirpDetector_1, '0']
 - [rtlsdr_source_0, '0', LibreLoRa_ChirpDetector_2, '0']
 - [rtlsdr_source_0, '0', LibreLoRa_ChirpDetector_2_0, '0']
 - [rtlsdr_source_0, '0', LibreLoRa_ChirpDetector_2_0_0, '0']
-- [rtlsdr_source_0, '0', qtgui_waterfall_sink_x_0, '0']
-- [zeromq_pull_msg_source_0, out, blocks_message_debug_0_0, print]
 
 metadata:
   file_format: 1
