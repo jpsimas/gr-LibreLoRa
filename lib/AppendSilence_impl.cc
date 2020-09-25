@@ -75,7 +75,7 @@ namespace gr {
       size_t nSamplesUsed = 0;
 
       if(!transmittingFrame) {
-	memset(out, 0, noutput_items);
+	memset(out, 0, noutput_items*sizeof(gr_complex));
       } else   
 	for(auto i = 0; i < noutput_items; i++) {
 	  if(transmittingFrame) {
