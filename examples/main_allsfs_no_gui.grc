@@ -67,7 +67,7 @@ blocks:
     bus_structure: null
     coordinate: [431, 357]
     rotation: 0
-    state: true
+    state: disabled
 - name: center_freq
   id: variable
   parameters:
@@ -125,9 +125,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [681, 289]
+    coordinate: [681, 288]
     rotation: 0
-    state: true
+    state: disabled
 - name: powerDecim
   id: variable
   parameters:
@@ -139,7 +139,7 @@ blocks:
     bus_structure: null
     coordinate: [315, 341]
     rotation: 0
-    state: true
+    state: disabled
 - name: powerThreshold
   id: variable
   parameters:
@@ -151,7 +151,7 @@ blocks:
     bus_structure: null
     coordinate: [557, 345]
     rotation: 0
-    state: true
+    state: disabled
 - name: samp_rate
   id: variable
   parameters:
@@ -207,7 +207,7 @@ blocks:
     bus_structure: null
     coordinate: [706, 412]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: LoRaRx_0
   id: LoRaRx
   parameters:
@@ -367,7 +367,7 @@ blocks:
     bus_structure: null
     coordinate: [309, 449]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_message_debug_0
   id: blocks_message_debug
   parameters:
@@ -519,9 +519,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [509, 441]
+    coordinate: [512, 441]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: import_0
   id: import
   parameters:
@@ -937,7 +937,7 @@ blocks:
     bus_structure: null
     coordinate: [126, 447]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: rtlsdr_source_0
   id: rtlsdr_source
   parameters:
@@ -1327,6 +1327,12 @@ connections:
 - [osmosdr_source_0, '0', rational_resampler_xxx_1, '0']
 - [rational_resampler_xxx_1, '0', blocks_complex_to_mag_squared_0_1, '0']
 - [rtlsdr_source_0, '0', LibreLoRa_PowerDetector_0, '0']
+- [rtlsdr_source_0, '0', LoRaRx_0, '0']
+- [rtlsdr_source_0, '0', LoRaRx_0_0, '0']
+- [rtlsdr_source_0, '0', LoRaRx_0_0_0, '0']
+- [rtlsdr_source_0, '0', LoRaRx_0_0_0_0, '0']
+- [rtlsdr_source_0, '0', LoRaRx_0_0_0_0_0, '0']
+- [rtlsdr_source_0, '0', LoRaRx_0_0_0_0_0_0, '0']
 - [rtlsdr_source_0, '0', rational_resampler_xxx_1, '0']
 
 metadata:
