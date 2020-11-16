@@ -204,6 +204,7 @@ blocks:
   id: LibreLoRa_ChirpDetector
   parameters:
     BW: BW
+    DFTDecim: detectionDecim
     DFTSize: symbolSize*decimation
     SF: SF
     affinity: ''
@@ -494,6 +495,23 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [37, 120]
+    rotation: 0
+    state: true
+- name: detectionDecim
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: ''
+    short_id: ''
+    type: ''
+    value: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1446, 55]
     rotation: 0
     state: true
 - name: detectorThreshold

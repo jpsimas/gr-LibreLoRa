@@ -137,7 +137,19 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1355, 31]
+    coordinate: [1155, 17]
+    rotation: 0
+    state: enabled
+- name: detectionDecim
+  id: variable
+  parameters:
+    comment: ''
+    value: '8'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1311, 21]
     rotation: 0
     state: true
 - name: maxFrameTime
@@ -297,6 +309,7 @@ blocks:
   id: LibreLoRa_ChirpDetector
   parameters:
     BW: BW
+    DFTDecim: '1'
     DFTSize: symbolSize
     SF: SF
     affinity: ''
@@ -749,6 +762,7 @@ blocks:
     alias: ''
     comment: ''
     decimation: decimationRx
+    detectionDecim: detectionDecim
     detectorThreshold: '100'
     ignoreLowDataRateRequired: 'True'
     lowDataRate: 'False'
@@ -760,7 +774,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1263, 111]
+    coordinate: [1262, 110]
     rotation: 0
     state: enabled
 - name: analog_const_source_x_0
@@ -2256,7 +2270,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [60, 430]
+    coordinate: [38, 499]
     rotation: 0
     state: disabled
 - name: qtgui_time_sink_x_0

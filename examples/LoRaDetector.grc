@@ -27,7 +27,7 @@ options:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 7]
+    coordinate: [7, 7]
     rotation: 0
     state: enabled
 
@@ -68,6 +68,18 @@ blocks:
     coordinate: [257, 102]
     rotation: 0
     state: true
+- name: detectionDecim
+  id: variable
+  parameters:
+    comment: ''
+    value: '8'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1030, 43]
+    rotation: 0
+    state: true
 - name: samp_rate
   id: variable
   parameters:
@@ -96,6 +108,7 @@ blocks:
   id: LibreLoRa_ChirpDetector
   parameters:
     BW: 125e3
+    DFTDecim: detectionDecim
     DFTSize: None
     SF: '7'
     affinity: ''
@@ -117,6 +130,7 @@ blocks:
   id: LibreLoRa_ChirpDetector
   parameters:
     BW: 125e3
+    DFTDecim: detectionDecim
     DFTSize: None
     SF: '8'
     affinity: ''
@@ -138,6 +152,7 @@ blocks:
   id: LibreLoRa_ChirpDetector
   parameters:
     BW: BW
+    DFTDecim: detectionDecim
     DFTSize: None
     SF: '9'
     affinity: ''
@@ -159,6 +174,7 @@ blocks:
   id: LibreLoRa_ChirpDetector
   parameters:
     BW: BW
+    DFTDecim: detectionDecim
     DFTSize: None
     SF: '10'
     affinity: ''
@@ -180,6 +196,7 @@ blocks:
   id: LibreLoRa_ChirpDetector
   parameters:
     BW: BW
+    DFTDecim: detectionDecim
     DFTSize: None
     SF: '11'
     affinity: ''
@@ -201,6 +218,7 @@ blocks:
   id: LibreLoRa_ChirpDetector
   parameters:
     BW: BW
+    DFTDecim: detectionDecim
     DFTSize: None
     SF: '12'
     affinity: ''

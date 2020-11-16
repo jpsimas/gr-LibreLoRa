@@ -23,7 +23,7 @@ import pmt
 
 
 class ChirpDetector(gr.hier_block2):
-    def __init__(self, samp_rate, BW=125e3, SF=7, DFTSize=None, threshold=200, timeout=5):
+    def __init__(self, samp_rate, BW=125e3, SF=7, DFTSize=None, threshold=200, timeout=5, DFTDecim=1):
         gr.hier_block2.__init__(
             self, "ChirpDetector",
                 gr.io_signature(1, 1, gr.sizeof_gr_complex*1),
@@ -56,15 +56,14 @@ class ChirpDetector(gr.hier_block2):
         # Blocks
         ##################################################
         self.fft_vxx_0 = fft.fft_vcc(DFTSize, True, numpy.ones(DFTSize), False, 1)
-        self.blocks_stream_to_vector_0 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, DFTSize)
+        # self.blocks_stream_to_vector_0 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, DFTSize)
+        self.blocks_stream_to_vector_0 = LibreLoRa.streamToHistoryVector_cc(DFTSize, DFTSize*DFTDecim);
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vcc(chirpWindow)
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(DFTSize)
         self.blocks_complex_to_mag_squared_0.set_min_output_buffer(int(timeout*samp_rate/DFTSize))
         self.LibreLoRa_ToneDetector_0 = LibreLoRa.ToneDetector(DFTSize)
-        self.LibreLoRa_PowerDetector_0 = LibreLoRa.PowerDetector(samp_rate, threshold, timeout, DFTSize, pmt.to_pmt((SF, BW, samp_rate)))
+        self.LibreLoRa_PowerDetector_0 = LibreLoRa.PowerDetector(samp_rate, threshold, timeout, DFTSize*DFTDecim, pmt.to_pmt((SF, BW, samp_rate)))
         self.LibreLoRa_PowerDetector_0.set_min_output_buffer(int(numpy.ceil(timeout*samp_rate)))
-
-
 
         ##################################################
         # Connections

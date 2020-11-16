@@ -92,6 +92,18 @@ blocks:
     coordinate: [1139, 25]
     rotation: 0
     state: true
+- name: detectionDecim
+  id: variable
+  parameters:
+    comment: ''
+    value: '8'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1285, 16]
+    rotation: 0
+    state: true
 - name: ip_address
   id: variable
   parameters:
@@ -132,7 +144,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 1e-2
+    value: 1e-3
   states:
     bus_sink: false
     bus_source: false
@@ -205,6 +217,7 @@ blocks:
     alias: ''
     comment: ''
     decimation: decimation
+    detectionDecim: detectionDecim
     detectorThreshold: threshold
     ignoreLowDataRateRequired: 'True'
     lowDataRate: 'False'
@@ -228,6 +241,7 @@ blocks:
     alias: ''
     comment: ''
     decimation: decimation
+    detectionDecim: detectionDecim
     detectorThreshold: threshold
     ignoreLowDataRateRequired: 'True'
     lowDataRate: 'False'
@@ -251,6 +265,7 @@ blocks:
     alias: ''
     comment: ''
     decimation: decimation
+    detectionDecim: detectionDecim
     detectorThreshold: threshold
     ignoreLowDataRateRequired: 'True'
     lowDataRate: 'False'
@@ -274,6 +289,7 @@ blocks:
     alias: ''
     comment: ''
     decimation: decimation
+    detectionDecim: detectionDecim
     detectorThreshold: threshold
     ignoreLowDataRateRequired: 'True'
     lowDataRate: 'False'
@@ -297,6 +313,7 @@ blocks:
     alias: ''
     comment: ''
     decimation: decimation
+    detectionDecim: detectionDecim
     detectorThreshold: threshold
     ignoreLowDataRateRequired: 'True'
     lowDataRate: 'False'
@@ -320,6 +337,7 @@ blocks:
     alias: ''
     comment: ''
     decimation: decimation
+    detectionDecim: detectionDecim
     detectorThreshold: threshold
     ignoreLowDataRateRequired: 'True'
     lowDataRate: 'False'

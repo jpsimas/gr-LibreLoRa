@@ -33,7 +33,12 @@ parameters:
     dtype: raw
     default: '5'
     hide: none
-
+-   id: DFTDecim
+    label: DFTDecim
+    dtype: raw
+    default: '1'
+    hide: none
+    
 inputs:
 -   label: in
     dtype: complex
@@ -52,7 +57,7 @@ outputs:
     
 templates:
     imports: 'from LibreLoRa import ChirpDetector'
-    make: "ChirpDetector(\n    samp_rate=${ samp_rate },\n    BW=${ BW },\n    SF=${ SF },\n    DFTSize=${ DFTSize }, \n    threshold=${ threshold },\n    timeout=${ timeout },\n)"
+    make: "ChirpDetector(\n    samp_rate=${ samp_rate },\n    BW=${ BW },\n    SF=${ SF },\n    DFTSize=${ DFTSize }, \n    threshold=${ threshold },\n    timeout=${ timeout },\n    DFTDecim=${ DFTDecim },\n)"
     callbacks:
     - set_BW(${ BW })
     - set_DFTSize(${ DFTSize })
