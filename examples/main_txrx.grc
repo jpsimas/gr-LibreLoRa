@@ -15,7 +15,7 @@ options:
     output_language: python
     placement: (0,0)
     qt_qss_theme: ''
-    realtime_scheduling: '1'
+    realtime_scheduling: ''
     run: 'True'
     run_command: '{python} -u {filename}'
     run_options: prompt
@@ -215,7 +215,7 @@ blocks:
     bus_structure: null
     coordinate: [1201, 112]
     rotation: 0
-    state: true
+    state: enabled
 - name: LibreLoRa_LoRaPDUHeaderGenerator_0_0
   id: LibreLoRa_LoRaPDUHeaderGenerator
   parameters:
@@ -231,7 +231,7 @@ blocks:
     bus_structure: null
     coordinate: [1194, 267]
     rotation: 0
-    state: true
+    state: enabled
 - name: LibreLoRa_LoRaPDUHeaderGenerator_0_0_0
   id: LibreLoRa_LoRaPDUHeaderGenerator
   parameters:
@@ -247,7 +247,7 @@ blocks:
     bus_structure: null
     coordinate: [1173, 498]
     rotation: 0
-    state: true
+    state: enabled
 - name: LibreLoRa_LoRaPDUHeaderGenerator_0_0_0_0
   id: LibreLoRa_LoRaPDUHeaderGenerator
   parameters:
@@ -263,7 +263,7 @@ blocks:
     bus_structure: null
     coordinate: [1203, 693]
     rotation: 0
-    state: true
+    state: enabled
 - name: LibreLoRa_LoRaPDUHeaderGenerator_0_0_0_0_0
   id: LibreLoRa_LoRaPDUHeaderGenerator
   parameters:
@@ -279,7 +279,7 @@ blocks:
     bus_structure: null
     coordinate: [1184, 892]
     rotation: 0
-    state: true
+    state: enabled
 - name: LibreLoRa_LoRaPDUHeaderGenerator_0_0_0_0_0_0
   id: LibreLoRa_LoRaPDUHeaderGenerator
   parameters:
@@ -295,7 +295,7 @@ blocks:
     bus_structure: null
     coordinate: [1179, 1100]
     rotation: 0
-    state: true
+    state: enabled
 - name: LibreLoRa_LoRaPDUHeaderReader_0
   id: LibreLoRa_LoRaPDUHeaderReader
   parameters:
@@ -311,7 +311,7 @@ blocks:
     bus_structure: null
     coordinate: [1762, 302]
     rotation: 0
-    state: true
+    state: enabled
 - name: LibreLoRa_PowerDetector_0
   id: LibreLoRa_PowerDetector
   parameters:
@@ -489,8 +489,8 @@ blocks:
     lowDataRate: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    nUpchirps: '8'
-    payloadSize: '10'
+    nUpchirps: '5'
+    payloadSize: '8'
     samp_rate: samp_rate_tx
     syncwordNumber: '0'
   states:
@@ -519,9 +519,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2058, 378]
+    coordinate: [2036, 366]
     rotation: 0
-    state: true
+    state: disabled
 - name: blocks_complex_to_mag_squared_0_1
   id: blocks_complex_to_mag_squared
   parameters:
@@ -550,7 +550,7 @@ blocks:
     bus_structure: null
     coordinate: [1516, 919]
     rotation: 0
-    state: true
+    state: enabled
 - name: blocks_multiply_xx_0
   id: blocks_multiply_xx
   parameters:
@@ -566,9 +566,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2261, 230]
+    coordinate: [2313, 295]
     rotation: 0
-    state: true
+    state: disabled
 - name: blocks_pdu_to_tagged_stream_0
   id: blocks_pdu_to_tagged_stream
   parameters:
@@ -603,9 +603,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1629, 173]
+    coordinate: [1608, 143]
     rotation: 0
-    state: true
+    state: enabled
 - name: blocks_tagged_stream_to_pdu_0
   id: blocks_tagged_stream_to_pdu
   parameters:
@@ -1024,7 +1024,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [2392, 144]
+    coordinate: [2626, 137]
     rotation: 0
     state: enabled
 - name: osmosdr_source_0
@@ -1862,6 +1862,7 @@ connections:
   detectionIn]
 - [LoRaRx_0_0_0_0_0_0, detectionOut, blocks_message_debug_0, print]
 - [LoRaTx_0, '0', blocks_multiply_xx_0, '0']
+- [LoRaTx_0, '0', osmosdr_sink_0, '0']
 - [analog_sig_source_x_0, '0', blocks_multiply_xx_0, '1']
 - [blocks_complex_to_mag_squared_0_1, '0', iir_filter_xxx_0, '0']
 - [blocks_multiply_xx_0, '0', osmosdr_sink_0, '0']
