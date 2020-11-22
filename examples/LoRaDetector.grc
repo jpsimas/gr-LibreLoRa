@@ -123,7 +123,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [700, 151]
+    coordinate: [708, 134]
     rotation: 0
     state: enabled
 - name: LibreLoRa_ChirpDetector_0_0
@@ -145,7 +145,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [704, 277]
+    coordinate: [709, 272]
     rotation: 0
     state: enabled
 - name: LibreLoRa_ChirpDetector_1
@@ -167,7 +167,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [708, 408]
+    coordinate: [710, 410]
     rotation: 0
     state: enabled
 - name: LibreLoRa_ChirpDetector_2
@@ -189,7 +189,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [708, 539]
+    coordinate: [710, 550]
     rotation: 0
     state: enabled
 - name: LibreLoRa_ChirpDetector_2_0
@@ -211,7 +211,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [708, 670]
+    coordinate: [711, 689]
     rotation: 0
     state: enabled
 - name: LibreLoRa_ChirpDetector_2_0_0
@@ -233,7 +233,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [706, 805]
+    coordinate: [712, 828]
     rotation: 0
     state: enabled
 - name: LibreLoRa_DetectionCount_0
@@ -267,6 +267,26 @@ blocks:
     coordinate: [1013, 245]
     rotation: 0
     state: enabled
+- name: blocks_socket_pdu_0
+  id: blocks_socket_pdu
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    host: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mtu: '10000'
+    port: '1202'
+    tcp_no_delay: 'False'
+    type: TCP_SERVER
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1295, 359]
+    rotation: 0
+    state: true
 - name: import_0
   id: import
   parameters:
@@ -664,6 +684,7 @@ connections:
 - [LibreLoRa_ChirpDetector_2_0_0, detectOut, LibreLoRa_DetectionCount_0, detectionMessage]
 - [LibreLoRa_ChirpDetector_2_0_0, detectOut, blocks_message_debug_0, print]
 - [LibreLoRa_DetectionCount_0, count, blocks_message_debug_0, print]
+- [LibreLoRa_DetectionCount_0, count, blocks_socket_pdu_0, pdus]
 - [rtlsdr_source_0, '0', LibreLoRa_ChirpDetector_0, '0']
 - [rtlsdr_source_0, '0', LibreLoRa_ChirpDetector_0_0, '0']
 - [rtlsdr_source_0, '0', LibreLoRa_ChirpDetector_1, '0']
