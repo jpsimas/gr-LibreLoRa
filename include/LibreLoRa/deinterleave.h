@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API deinterleave : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<deinterleave> sptr;
+      typedef std::shared_ptr<deinterleave> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::deinterleave.

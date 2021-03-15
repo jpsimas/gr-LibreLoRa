@@ -31,8 +31,8 @@ namespace gr {
     TransmitterController::sptr
     TransmitterController::make(size_t SF, size_t symbolSize, size_t CR, size_t payloadSize, bool CRCPresent, bool lowDataRate)
     {
-      return gnuradio::get_initial_sptr
-        (new TransmitterController_impl(SF, symbolSize, CR, payloadSize, CRCPresent, lowDataRate));
+      return gnuradio::make_block_sptr<TransmitterController_impl>(
+        SF, symbolSize, CR, payloadSize, CRCPresent, lowDataRate);
     }
 
 

@@ -34,8 +34,8 @@ namespace gr {
     normalizeCorrelation::sptr
     normalizeCorrelation::make(size_t correlationVectorSize)
     {
-      return gnuradio::get_initial_sptr
-        (new normalizeCorrelation_impl(correlationVectorSize));
+      return gnuradio::make_block_sptr<normalizeCorrelation_impl>(
+        correlationVectorSize);
     }
 
 

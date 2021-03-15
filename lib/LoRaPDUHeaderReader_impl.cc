@@ -31,8 +31,8 @@ namespace gr {
     LoRaPDUHeaderReader::sptr
     LoRaPDUHeaderReader::make(const std::string& lengthTagName)
     {
-      return gnuradio::get_initial_sptr
-        (new LoRaPDUHeaderReader_impl(lengthTagName));
+      return gnuradio::make_block_sptr<LoRaPDUHeaderReader_impl>(
+        lengthTagName);
     }
 
 

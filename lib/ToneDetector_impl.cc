@@ -33,8 +33,8 @@ namespace gr {
     ToneDetector::sptr
     ToneDetector::make(size_t DFTSize)
     {
-      return gnuradio::get_initial_sptr
-        (new ToneDetector_impl(DFTSize));
+      return gnuradio::make_block_sptr<ToneDetector_impl>(
+        DFTSize);
     }
 
 

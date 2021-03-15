@@ -40,8 +40,8 @@ namespace gr {
     typename symbolDemod<T>::sptr
     symbolDemod<T>::make(size_t SF, size_t symbolSize, bool implicit, size_t windowSize)
     {
-      return gnuradio::get_initial_sptr
-        (new symbolDemod_impl<T>(SF, symbolSize, implicit, windowSize));
+      return gnuradio::make_block_sptr<symbolDemod_impl<T>>(
+        SF, symbolSize, implicit, windowSize);
     }
 
 

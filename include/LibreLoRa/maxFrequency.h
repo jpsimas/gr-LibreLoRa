@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API maxFrequency : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<maxFrequency> sptr;
+      typedef std::shared_ptr<maxFrequency> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::maxFrequency.

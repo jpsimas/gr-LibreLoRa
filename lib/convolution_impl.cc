@@ -34,8 +34,8 @@ namespace gr {
     convolution::sptr
     convolution::make(const std::vector<gr_complex>& window)
     {
-      return gnuradio::get_initial_sptr
-        (new convolution_impl(window));
+      return gnuradio::make_block_sptr<convolution_impl>(
+        window);
     }
 
 

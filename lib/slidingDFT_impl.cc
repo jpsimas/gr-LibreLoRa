@@ -35,8 +35,8 @@ namespace gr {
     slidingDFT::sptr
     slidingDFT::make(size_t DFTLength, size_t windowSize)
     {
-      return gnuradio::get_initial_sptr
-        (new slidingDFT_impl(DFTLength, windowSize));
+      return gnuradio::make_block_sptr<slidingDFT_impl>(
+        DFTLength, windowSize);
     }
 
 

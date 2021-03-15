@@ -33,8 +33,8 @@ namespace gr {
     BinSearchFFT::sptr
     BinSearchFFT::make(size_t DFTSize)
     {
-      return gnuradio::get_initial_sptr
-        (new BinSearchFFT_impl(DFTSize));
+      return gnuradio::make_block_sptr<BinSearchFFT_impl>(
+        DFTSize);
     }
 
 

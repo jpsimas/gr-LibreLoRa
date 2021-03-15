@@ -36,7 +36,7 @@ namespace gr {
     class LIBRELORA_API frequencyTrackerNMode : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<frequencyTrackerNMode<T>> sptr;
+      typedef std::shared_ptr<frequencyTrackerNMode<T>> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::frequencyTrackerNMode.

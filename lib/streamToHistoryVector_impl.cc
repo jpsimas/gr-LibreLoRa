@@ -32,8 +32,8 @@ namespace gr {
     typename streamToHistoryVector<T>::sptr
     streamToHistoryVector<T>::make(size_t nVect, size_t decimation)
     {
-      return gnuradio::get_initial_sptr
-        (new streamToHistoryVector_impl<T>(nVect, decimation));
+      return gnuradio::make_block_sptr<streamToHistoryVector_impl<T>>(
+        nVect, decimation);
     }
 
 

@@ -31,8 +31,8 @@ namespace gr {
     chirpSelect::sptr
     chirpSelect::make(size_t SF, size_t symbolSize)
     {
-      return gnuradio::get_initial_sptr
-        (new chirpSelect_impl(SF, symbolSize));
+      return gnuradio::make_block_sptr<chirpSelect_impl>(
+        SF, symbolSize);
     }
 
 

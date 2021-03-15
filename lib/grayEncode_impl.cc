@@ -35,8 +35,8 @@ namespace gr {
     grayEncode::sptr
     grayEncode::make(size_t SF)
     {
-      return gnuradio::get_initial_sptr
-        (new grayEncode_impl(SF));
+      return gnuradio::make_block_sptr<grayEncode_impl>(
+        SF);
     }
 
 

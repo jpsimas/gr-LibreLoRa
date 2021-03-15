@@ -32,8 +32,8 @@ namespace gr {
     SymbolMod::sptr
     SymbolMod::make(size_t SF, size_t symbolSize)
     {
-      return gnuradio::get_initial_sptr
-        (new SymbolMod_impl(SF, symbolSize));
+      return gnuradio::make_block_sptr<SymbolMod_impl>(
+        SF, symbolSize);
     }
 
 

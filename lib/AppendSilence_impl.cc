@@ -31,8 +31,8 @@ namespace gr {
     AppendSilence::sptr
     AppendSilence::make()
     {
-      return gnuradio::get_initial_sptr
-        (new AppendSilence_impl());
+      return gnuradio::make_block_sptr<AppendSilence_impl>(
+        );
     }
 
 

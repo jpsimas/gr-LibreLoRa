@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API preambleDetector : virtual public gr::hier_block2
     {
      public:
-      typedef boost::shared_ptr<preambleDetector> sptr;
+      typedef std::shared_ptr<preambleDetector> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::preambleDetector.

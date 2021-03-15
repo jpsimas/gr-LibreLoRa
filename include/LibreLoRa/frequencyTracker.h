@@ -36,7 +36,7 @@ namespace gr {
     class LIBRELORA_API frequencyTracker : virtual public gr::sync_decimator
     {
      public:
-      typedef boost::shared_ptr<frequencyTracker<T>> sptr;
+      typedef std::shared_ptr<frequencyTracker<T>> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::frequencyTracker.

@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API Encode : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<Encode> sptr;
+      typedef std::shared_ptr<Encode> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::Encode.

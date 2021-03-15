@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API symbolDemodNew : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<symbolDemodNew> sptr;
+      typedef std::shared_ptr<symbolDemodNew> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::symbolDemodNew.

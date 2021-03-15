@@ -35,8 +35,8 @@ namespace gr {
     deinterleave::sptr
     deinterleave::make(size_t SF, size_t CR)
     {
-      return gnuradio::get_initial_sptr
-        (new deinterleave_impl(SF, CR));
+      return gnuradio::make_block_sptr<deinterleave_impl>(
+        SF, CR);
     }
 
 

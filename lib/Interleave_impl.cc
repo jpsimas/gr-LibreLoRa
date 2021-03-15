@@ -31,8 +31,8 @@ namespace gr {
     Interleave::sptr
     Interleave::make(size_t SF, size_t CR)
     {
-      return gnuradio::get_initial_sptr
-        (new Interleave_impl(SF, CR));
+      return gnuradio::make_block_sptr<Interleave_impl>(
+        SF, CR);
     }
 
 

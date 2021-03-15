@@ -31,8 +31,8 @@ namespace gr {
     NibblesToBytes::sptr
     NibblesToBytes::make( )
     {
-      return gnuradio::get_initial_sptr
-        (new NibblesToBytes_impl());
+      return gnuradio::make_block_sptr<NibblesToBytes_impl>(
+        );
     }
 
 

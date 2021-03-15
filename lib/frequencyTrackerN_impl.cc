@@ -39,8 +39,8 @@ namespace gr {
     typename frequencyTrackerN<T>::sptr
     frequencyTrackerN<T>::make(float mu, size_t SF, size_t OSF, const std::vector<gr_complex>& window)
     {
-      return gnuradio::get_initial_sptr
-        (new frequencyTrackerN_impl<T>(mu, SF, OSF, window));
+      return gnuradio::make_block_sptr<frequencyTrackerN_impl<T>>(
+        mu, SF, OSF, window);
     }
 
 

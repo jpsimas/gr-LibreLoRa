@@ -32,8 +32,8 @@ namespace gr {
     typename Correlation<T>::sptr
     Correlation<T>::make(const std::vector<T>& symbol)
     {
-      return gnuradio::get_initial_sptr
-        (new Correlation_impl<T>(symbol));
+      return gnuradio::make_block_sptr<Correlation_impl<T>>(
+        symbol);
     }
 
 

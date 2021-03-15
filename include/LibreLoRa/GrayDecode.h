@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API GrayDecode : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<GrayDecode> sptr;
+      typedef std::shared_ptr<GrayDecode> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::GrayDecode.

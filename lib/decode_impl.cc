@@ -37,8 +37,8 @@ namespace gr {
     decode::sptr
     decode::make(size_t CR)
     {
-      return gnuradio::get_initial_sptr
-        (new decode_impl(CR));
+      return gnuradio::make_block_sptr<decode_impl>(
+        CR);
     }
 
 

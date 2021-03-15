@@ -32,8 +32,8 @@ namespace gr {
     typename AppendPrefix::sptr
     AppendPrefix::make(size_t SF, size_t symbolSize, size_t nUpchirps, uint16_t syncWordNumber)
     {
-      return gnuradio::get_initial_sptr
-        (new AppendPrefix_impl(SF, symbolSize, nUpchirps, syncWordNumber));
+      return gnuradio::make_block_sptr<AppendPrefix_impl>(
+        SF, symbolSize, nUpchirps, syncWordNumber);
     }
 
 

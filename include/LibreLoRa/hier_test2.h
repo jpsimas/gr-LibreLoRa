@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API hier_test2 : virtual public gr::hier_block2
     {
      public:
-      typedef boost::shared_ptr<hier_test2> sptr;
+      typedef std::shared_ptr<hier_test2> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::hier_test2.

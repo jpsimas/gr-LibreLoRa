@@ -34,8 +34,8 @@ namespace gr {
     readHeader::sptr
     readHeader::make(size_t SF)
     {
-      return gnuradio::get_initial_sptr
-        (new readHeader_impl(SF));
+      return gnuradio::make_block_sptr<readHeader_impl>(
+        SF);
     }
 
 

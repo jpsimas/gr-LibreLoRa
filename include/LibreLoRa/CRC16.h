@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API CRC16 : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<CRC16> sptr;
+      typedef std::shared_ptr<CRC16> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::CRC16.

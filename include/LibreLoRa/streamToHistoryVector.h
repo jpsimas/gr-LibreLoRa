@@ -36,7 +36,7 @@ namespace gr {
     class LIBRELORA_API streamToHistoryVector : virtual public gr::sync_decimator
     {
      public:
-      typedef boost::shared_ptr<streamToHistoryVector<T>> sptr;
+      typedef std::shared_ptr<streamToHistoryVector<T>> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::streamToHistoryVector.

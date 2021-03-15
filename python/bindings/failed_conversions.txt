@@ -1,0 +1,13 @@
+./include/LibreLoRa/getSymbol.hCan't open some of the files necessary to parse /home/jp/Polito/Thesis/librelora-3.9/lib/getSymbol_impl.cc.
+./include/LibreLoRa/getPairityMatrix.hCan't open some of the files necessary to parse /home/jp/Polito/Thesis/librelora-3.9/lib/getPairityMatrix_impl.cc.
+./include/LibreLoRa/getSymbol.hCan't open some of the files necessary to parse /home/jp/Polito/Thesis/librelora-3.9/lib/getSymbol_impl.cc.
+./include/LibreLoRa/calculateHeaderChecksum.hCan't open some of the files necessary to parse /home/jp/Polito/Thesis/librelora-3.9/lib/calculateHeaderChecksum_impl.cc.
+./include/LibreLoRa/utilities.hCan't open some of the files necessary to parse /home/jp/Polito/Thesis/librelora-3.9/lib/utilities_impl.cc.
+./include/LibreLoRa/binSearchFFT.hCan't open some of the files necessary to parse /home/jp/Polito/Thesis/librelora-3.9/lib/binSearchFFT_impl.cc.
+./include/LibreLoRa/getSymbol.hCan't open some of the files necessary to parse /home/jp/Polito/Thesis/librelora-3.9/lib/getSymbol_impl.cc.
+./include/LibreLoRa/getPairityMatrix.hCan't open some of the files necessary to parse /home/jp/Polito/Thesis/librelora-3.9/lib/getPairityMatrix_impl.cc.
+./include/LibreLoRa/getSymbol.hCan't open some of the files necessary to parse /home/jp/Polito/Thesis/librelora-3.9/lib/getSymbol_impl.cc.
+./include/LibreLoRa/calculateHeaderChecksum.hCan't open some of the files necessary to parse /home/jp/Polito/Thesis/librelora-3.9/lib/calculateHeaderChecksum_impl.cc.
+./include/LibreLoRa/utilities.hCan't open some of the files necessary to parse /home/jp/Polito/Thesis/librelora-3.9/lib/utilities_impl.cc.
+./include/LibreLoRa/binSearchFFT.hCan't open some of the files necessary to parse /home/jp/Polito/Thesis/librelora-3.9/lib/binSearchFFT_impl.cc.
+./include/LibreLoRa/getSymbol.hCan't open some of the files necessary to parse /home/jp/Polito/Thesis/librelora-3.9/lib/getSymbol_impl.cc.

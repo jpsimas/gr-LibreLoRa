@@ -31,8 +31,8 @@ namespace gr {
     DetectionCount::sptr
     DetectionCount::make(float BW, size_t nChannels, float channelWidth)
     {
-      return gnuradio::get_initial_sptr
-        (new DetectionCount_impl(BW, nChannels, channelWidth));
+      return gnuradio::make_block_sptr<DetectionCount_impl>(
+        BW, nChannels, channelWidth);
     }
 
 

@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API normalizeCorrelation : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<normalizeCorrelation> sptr;
+      typedef std::shared_ptr<normalizeCorrelation> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::normalizeCorrelation.

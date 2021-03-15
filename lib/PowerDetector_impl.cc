@@ -31,8 +31,8 @@ namespace gr {
     PowerDetector::sptr
     PowerDetector::make(float sampRate, float threshold, float timeoutSeconds, size_t decimation, pmt::pmt_t message)
     {
-      return gnuradio::get_initial_sptr
-        (new PowerDetector_impl(sampRate, threshold, timeoutSeconds, decimation, message));
+      return gnuradio::make_block_sptr<PowerDetector_impl>(
+        sampRate, threshold, timeoutSeconds, decimation, message);
     }
 
 

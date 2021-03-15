@@ -46,8 +46,8 @@ namespace gr {
     preambleDetector::sptr
     preambleDetector::make(size_t SF, size_t OSF, size_t nUpchirps, uint8_t syncWordNumber)
     {
-      return gnuradio::get_initial_sptr
-        (new preambleDetector_impl(SF, OSF, nUpchirps, syncWordNumber));
+      return gnuradio::make_block_sptr<preambleDetector_impl>(
+        SF, OSF, nUpchirps, syncWordNumber);
     }
 
 

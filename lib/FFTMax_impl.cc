@@ -31,8 +31,8 @@ namespace gr {
     FFTMax::sptr
     FFTMax::make(size_t DFTSize, std::vector<gr_complex> window)
     {
-      return gnuradio::get_initial_sptr
-        (new FFTMax_impl(DFTSize, window));
+      return gnuradio::make_block_sptr<FFTMax_impl>(
+        DFTSize, window);
     }
 
 
