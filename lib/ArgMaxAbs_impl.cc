@@ -32,8 +32,8 @@ namespace gr {
     ArgMaxAbs::sptr
     ArgMaxAbs::make(size_t vecLength)
     {
-      return gnuradio::get_initial_sptr
-        (new ArgMaxAbs_impl(vecLength));
+      return gnuradio::make_block_sptr<ArgMaxAbs_impl>(
+        vecLength);
     }
 
 

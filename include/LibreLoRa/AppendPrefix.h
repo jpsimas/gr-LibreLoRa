@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API AppendPrefix : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<AppendPrefix> sptr;
+      typedef std::shared_ptr<AppendPrefix> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::AppendPrefix.

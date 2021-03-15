@@ -43,8 +43,8 @@ namespace gr {
     typename correlationSync<T>::sptr
     correlationSync<T>::make(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize, size_t SF, uint16_t syncWordNumber)
     {
-      return gnuradio::get_initial_sptr
-        (new correlationSync_impl<T>(corrMin, corrStop, symbolSize, preambleSize, SF, syncWordNumber));
+      return gnuradio::make_block_sptr<correlationSync_impl<T>>(
+        corrMin, corrStop, symbolSize, preambleSize, SF, syncWordNumber);
     }
 
 

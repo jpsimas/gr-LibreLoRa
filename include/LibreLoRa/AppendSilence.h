@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API AppendSilence : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<AppendSilence> sptr;
+      typedef std::shared_ptr<AppendSilence> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::AppendSilence.

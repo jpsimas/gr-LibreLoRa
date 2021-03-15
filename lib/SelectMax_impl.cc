@@ -33,8 +33,8 @@ namespace gr {
     SelectMax::sptr
     SelectMax::make(size_t nInputs)
     {
-      return gnuradio::get_initial_sptr
-        (new SelectMax_impl(nInputs));
+      return gnuradio::make_block_sptr<SelectMax_impl>(
+        nInputs);
     }
 
 

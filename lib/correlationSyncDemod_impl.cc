@@ -38,8 +38,8 @@ namespace gr {
     correlationSyncDemod::sptr
     correlationSyncDemod::make(float corrMin, float corrStop, size_t symbolSize, size_t preambleSize, size_t SF, uint16_t syncWordNumber)
     {
-      return gnuradio::get_initial_sptr
-        (new correlationSyncDemod_impl(corrMin, corrStop, symbolSize, preambleSize, SF, syncWordNumber));
+      return gnuradio::make_block_sptr<correlationSyncDemod_impl>(
+        corrMin, corrStop, symbolSize, preambleSize, SF, syncWordNumber);
     }
 
 

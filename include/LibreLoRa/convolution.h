@@ -36,7 +36,7 @@ namespace gr {
     class LIBRELORA_API convolution : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<convolution> sptr;
+      typedef std::shared_ptr<convolution> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::convolution.

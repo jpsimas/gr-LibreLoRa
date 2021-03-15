@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API LoRaPDUHeaderGenerator : virtual public gr::tagged_stream_block
     {
      public:
-      typedef boost::shared_ptr<LoRaPDUHeaderGenerator> sptr;
+      typedef std::shared_ptr<LoRaPDUHeaderGenerator> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::LoRaPDUHeaderGenerator.

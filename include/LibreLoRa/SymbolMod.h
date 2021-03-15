@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API SymbolMod : virtual public gr::sync_interpolator
     {
      public:
-      typedef boost::shared_ptr<SymbolMod> sptr;
+      typedef std::shared_ptr<SymbolMod> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::SymbolMod.

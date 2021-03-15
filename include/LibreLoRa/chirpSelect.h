@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API chirpSelect : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<chirpSelect> sptr;
+      typedef std::shared_ptr<chirpSelect> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::chirpSelect.

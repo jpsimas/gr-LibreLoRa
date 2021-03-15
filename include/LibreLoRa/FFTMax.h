@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API FFTMax : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<FFTMax> sptr;
+      typedef std::shared_ptr<FFTMax> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::FFTMax.

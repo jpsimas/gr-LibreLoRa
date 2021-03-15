@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API symbolCorrelator : virtual public gr::sync_block
     {
      public:
-      typedef boost::shared_ptr<symbolCorrelator> sptr;
+      typedef std::shared_ptr<symbolCorrelator> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::symbolCorrelator.

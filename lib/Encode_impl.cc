@@ -33,8 +33,8 @@ namespace gr {
     Encode::sptr
     Encode::make(size_t CR)
     {
-      return gnuradio::get_initial_sptr
-        (new Encode_impl(CR));
+      return gnuradio::make_block_sptr<Encode_impl>(
+        CR);
     }
 
 

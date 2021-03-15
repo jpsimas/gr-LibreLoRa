@@ -31,8 +31,8 @@ namespace gr {
     GrayDecode::sptr
     GrayDecode::make(size_t nBits)
     {
-      return gnuradio::get_initial_sptr
-        (new GrayDecode_impl(nBits));
+      return gnuradio::make_block_sptr<GrayDecode_impl>(
+        nBits);
     }
 
 

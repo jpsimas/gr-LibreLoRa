@@ -33,8 +33,8 @@ namespace gr {
     typename frequencyTrackerNLMS::sptr
     frequencyTrackerNLMS::make(float mu, const std::vector<gr_complex>& window)
     {
-      return gnuradio::get_initial_sptr
-        (new frequencyTrackerNLMS_impl(mu, window));
+      return gnuradio::make_block_sptr<frequencyTrackerNLMS_impl>(
+        mu, window);
     }
 
 

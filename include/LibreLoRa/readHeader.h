@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API readHeader : virtual public gr::sync_decimator
     {
      public:
-      typedef boost::shared_ptr<readHeader> sptr;
+      typedef std::shared_ptr<readHeader> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::readHeader.

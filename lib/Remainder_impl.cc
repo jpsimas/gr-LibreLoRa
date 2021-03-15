@@ -31,8 +31,8 @@ namespace gr {
     Remainder::sptr
     Remainder::make(float divisor)
     {
-      return gnuradio::get_initial_sptr
-        (new Remainder_impl(divisor));
+      return gnuradio::make_block_sptr<Remainder_impl>(
+        divisor);
     }
 
 

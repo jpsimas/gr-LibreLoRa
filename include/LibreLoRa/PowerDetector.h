@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API PowerDetector : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<PowerDetector> sptr;
+      typedef std::shared_ptr<PowerDetector> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::PowerDetector.

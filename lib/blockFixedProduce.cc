@@ -31,8 +31,8 @@ namespace gr {
     blockFixedProduce::sptr
     blockFixedProduce::make( )
     {
-      return gnuradio::get_initial_sptr
-        (new blockFixedProduce_impl());
+      return gnuradio::make_block_sptr<blockFixedProduce_impl>(
+        );
     }
 
 

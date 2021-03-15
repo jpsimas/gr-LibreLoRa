@@ -32,8 +32,8 @@ namespace gr {
     hier_test2::sptr
     hier_test2::make(size_t SF, size_t OSF, size_t nUpchirps, uint8_t syncWordNumber, float minCorr, float corrStop)
     {
-      return gnuradio::get_initial_sptr
-        (new hier_test2_impl(SF, OSF, nUpchirps, syncWordNumber, minCorr, corrStop));
+      return gnuradio::make_block_sptr<hier_test2_impl>(
+        SF, OSF, nUpchirps, syncWordNumber, minCorr, corrStop);
     }
 
 

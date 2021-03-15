@@ -22,13 +22,13 @@
 This is the GNU Radio LIBRELORA module. Place your Python package
 description here (python/__init__.py).
 '''
-from __future__ import unicode_literals
+import os
 
-# import swig generated symbols into the LibreLoRa namespace
+# import pybind11 generated symbols into the LibreLoRa namespace
 try:
     # this might fail if the module is python-only
-    from .LibreLoRa_swig import *
-except ImportError:
+    from .LibreLoRa_python import *
+except ModuleNotFoundError:
     pass
 
 # import any pure python here

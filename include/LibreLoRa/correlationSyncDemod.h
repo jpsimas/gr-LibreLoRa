@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API correlationSyncDemod : virtual public gr::block
     {
      public:
-      typedef boost::shared_ptr<correlationSyncDemod> sptr;
+      typedef std::shared_ptr<correlationSyncDemod> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::correlationSyncDemod.

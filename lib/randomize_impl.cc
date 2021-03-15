@@ -37,8 +37,8 @@ namespace gr {
     randomize::sptr
     randomize::make(const uint8_t lfsrInitialState, const size_t payloadSize)
     {
-      return gnuradio::get_initial_sptr
-        (new randomize_impl(lfsrInitialState, payloadSize));
+      return gnuradio::make_block_sptr<randomize_impl>(
+        lfsrInitialState, payloadSize);
     }
 
 

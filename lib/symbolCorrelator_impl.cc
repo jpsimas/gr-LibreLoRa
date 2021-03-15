@@ -33,8 +33,8 @@ namespace gr {
     symbolCorrelator::sptr
     symbolCorrelator::make(const std::vector<float>& symbol)
     {
-      return gnuradio::get_initial_sptr
-        (new symbolCorrelator_impl(symbol));
+      return gnuradio::make_block_sptr<symbolCorrelator_impl>(
+        symbol);
     }
 
 

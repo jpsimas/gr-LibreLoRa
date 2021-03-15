@@ -31,8 +31,8 @@ namespace gr {
     FrequencyMod::sptr
     FrequencyMod::make()
     {
-      return gnuradio::get_initial_sptr
-        (new FrequencyMod_impl());
+      return gnuradio::make_block_sptr<FrequencyMod_impl>(
+        );
     }
 
 

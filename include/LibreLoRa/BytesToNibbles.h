@@ -35,7 +35,7 @@ namespace gr {
     class LIBRELORA_API BytesToNibbles : virtual public gr::sync_interpolator
     {
      public:
-      typedef boost::shared_ptr<BytesToNibbles> sptr;
+      typedef std::shared_ptr<BytesToNibbles> sptr;
 
       /*!
        * \brief Return a shared_ptr to a new instance of LibreLoRa::BytesToNibbles.

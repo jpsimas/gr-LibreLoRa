@@ -38,8 +38,8 @@ namespace gr {
     receiverController::sptr
     receiverController::make(size_t SF, bool lowDataRate/*, correlationSync::sptr synchronizer/*, symbolDemod::sptr demodulator, grayEncode::sptr grayEncoder, deinterleave::sptr deinterleaver, decode::sptr decoder, randomize::sptr randomizer*/)
     {
-      return gnuradio::get_initial_sptr
-        (new receiverController_impl(SF, lowDataRate/*, synchronizer/*, demodulator, grayEncoder, deinterleaver, decoder, randomizer*/));
+      return gnuradio::make_block_sptr<receiverController_impl>(
+        SF, lowDataRate/*, synchronizer/*, demodulator, grayEncoder, deinterleaver, decoder, randomizer*/);
     }
 
 

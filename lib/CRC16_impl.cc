@@ -37,8 +37,8 @@ namespace gr {
     CRC16::sptr
     CRC16::make(uint16_t polynomial, uint16_t xorOut, size_t payloadSize)
     {
-      return gnuradio::get_initial_sptr
-        (new CRC16_impl(polynomial, xorOut, payloadSize));
+      return gnuradio::make_block_sptr<CRC16_impl>(
+        polynomial, xorOut, payloadSize);
     }
 
 

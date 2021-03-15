@@ -34,8 +34,8 @@ namespace gr {
     chirpSource::sptr
     chirpSource::make(float chirpRate, size_t symbolSize)
     {
-      return gnuradio::get_initial_sptr
-        (new chirpSource_impl(chirpRate, symbolSize));
+      return gnuradio::make_block_sptr<chirpSource_impl>(
+        chirpRate, symbolSize);
     }
 
 

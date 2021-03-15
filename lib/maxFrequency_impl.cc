@@ -31,8 +31,8 @@ namespace gr {
     maxFrequency::sptr
     maxFrequency::make(size_t symbolSize)
     {
-      return gnuradio::get_initial_sptr
-        (new maxFrequency_impl(symbolSize));
+      return gnuradio::make_block_sptr<maxFrequency_impl>(
+        symbolSize);
     }
 
 
