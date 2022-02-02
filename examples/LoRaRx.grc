@@ -1,7 +1,7 @@
 options:
   parameters:
     author: ''
-    category: '[Librelora]'
+    category: '[LibreLoRa]'
     cmake_opt: ''
     comment: ''
     copyright: ''
