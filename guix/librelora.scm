@@ -60,155 +60,6 @@
   #:use-module (guix build-system python)
   #:use-module (guix build-system qt))
 
-(define-public gnuradio
-  (package
-   (name "gnuradio")
-   (version "3.9.0.0")
-   (source
-    (origin
-     (method url-fetch)
-     (uri (string-append "https://www.gnuradio.org/releases/gnuradio/"
-			 "gnuradio-" version ".tar.xz"))
-     (sha256
-      (base32 "1jvm9xd0l2pz1fww4zii6hl7ccnvy256nrf70ljb594n7j9j49ha"))))
-   (build-system cmake-build-system)
-   (native-inputs
-    `(("doxygen" ,doxygen)
-      ("ghostscript" ,ghostscript)
-      ("orc" ,orc)
-      ("pkg-config" ,pkg-config)
-      ("pybind11" ,pybind11)
-      ("python-cheetah" ,python-cheetah)
-      ("python-mako" ,python-mako)
-      ("python-pyzmq" ,python-pyzmq)
-      ("python-scipy" ,python-scipy)
-      ("python-sphinx" ,python-sphinx)
-      ("texlive" ,(texlive-union (list texlive-amsfonts
-                                       texlive-latex-amsmath
-                                       ;; TODO: Add newunicodechar.
-                                       texlive-latex-graphics)))
-      ("xorg-server" ,xorg-server-for-tests)))
-   (inputs
-    `(("alsa-lib" ,alsa-lib)
-      ("boost" ,boost)
-      ("cairo" ,cairo)
-      ("codec2" ,codec2)
-      ("cppzmq" ,cppzmq)
-      ("fftwf" ,fftwf)
-      ("gmp" ,gmp)
-      ("gsl" ,gsl)
-      ("gsm" ,gsm)
-      ("gtk+" ,gtk+)
-      ("jack" ,jack-1)
-      ("log4cpp" ,log4cpp)
-      ("pango" ,pango)
-      ("portaudio" ,portaudio)
-      ("python" ,python)
-      ("python-click" ,python-click)
-      ("python-click-plugins" ,python-click-plugins)
-      ("python-lxml" ,python-lxml)
-      ("python-numpy" ,python-numpy)
-      ("python-pycairo" ,python-pycairo)
-      ("python-pygccxml" ,python-pygccxml)
-      ("python-pygobject" ,python-pygobject)
-      ("python-pyqt" ,python-pyqt)
-      ("python-pyyaml" ,python-pyyaml)
-      ("qtbase" ,qtbase)
-      ("qwt" ,qwt)
-      ("sdl" ,sdl)
-      ("volk" ,volk)
-      ("zeromq" ,zeromq)))
-   (arguments
-    `(#:modules ((guix build cmake-build-system)
-		 ((guix build glib-or-gtk-build-system) #:prefix glib-or-gtk:)
-		 ((guix build python-build-system) #:prefix python:)
-		 (guix build utils)
-		 (ice-9 match))
-      #:imported-modules (,@%cmake-build-system-modules
-                          (guix build glib-or-gtk-build-system)
-                          (guix build python-build-system))
-      ;;#:configure-flags
-      ;;'("-DENABLE_INTERNAL_VOLK=OFF");;REMOVED IN 3.9
-      #:phases
-      (modify-phases %standard-phases
-		     (add-after 'unpack 'fix-paths
-				(lambda* (#:key inputs #:allow-other-keys)
-				  (let ((qwt (assoc-ref inputs "qwt")))
-				    (substitute* "cmake/Modules/FindQwt.cmake"
-						 (("/usr/include")
-						  (string-append qwt "/include"))
-						 (("/usr/lib")
-						  (string-append qwt "/lib"))
-						 (("qwt6-\\$\\{QWT_QT_VERSION\\}")
-						  "qwt")))
-				  (substitute* "cmake/Modules/GrPython.cmake"
-					       (("dist-packages")
-						"site-packages"))
-				  (substitute* '(;;"gr-vocoder/swig/vocoder_swig.i"
-						 "gr-vocoder/include/gnuradio/vocoder/codec2.h"
-						 "gr-vocoder/include/gnuradio/vocoder/freedv_api.h")
-					       (("<codec2/")
-						"<"))
-				  #t))
-		     (add-before 'check 'set-test-environment
-				 (lambda* (#:key inputs #:allow-other-keys)
-				   (setenv "HOME" "/tmp")
-				   (system (string-append (assoc-ref inputs "xorg-server")
-							  "/bin/Xvfb :1 &"))
-				   (setenv "DISPLAY" ":1")
-				   #t))
-		     (replace 'check
-			      (lambda* (#:key tests? parallel-tests? #:allow-other-keys)
-				(invoke "ctest" "-j" (if parallel-tests?
-							 (number->string (parallel-job-count))
-							 "1")
-					"--output-on-failure"
-					;;disable broken tests
-					"-E" (string-join
-					      '(;; https://github.com/gnuradio/gnuradio/issues/3871
-						"qa_header_payload_demux"
-						;; https://github.com/gnuradio/gnuradio/issues/4348
-						"qa_packet_headerparser_b")
-					      "|"))))
-		     (add-after 'install 'wrap-python
-				(assoc-ref python:%standard-phases 'wrap))
-		     (add-after 'wrap-python 'wrap-glib-or-gtk
-				(assoc-ref glib-or-gtk:%standard-phases 'glib-or-gtk-wrap))
-		     (add-after 'wrap-glib-or-gtk 'wrap-with-GI_TYPELIB_PATH
-				(lambda* (#:key inputs outputs #:allow-other-keys)
-				  (let ((out (assoc-ref outputs "out"))
-					(paths (map (match-lambda
-						      ((output . directory)
-						       (let ((girepodir (string-append
-									 directory
-									 "/lib/girepository-1.0")))
-							 (if (file-exists? girepodir)
-							     girepodir
-							     #f))))
-						    inputs)))
-				    (wrap-program (string-append out "/bin/gnuradio-companion")
-						  `("GI_TYPELIB_PATH" ":" prefix ,(filter identity paths))))
-				  #t)))))
-   (native-search-paths
-    ;; Variables required to find third-party plugins at runtime.
-    (list (search-path-specification
-           (variable "GRC_BLOCKS_PATH")
-           (files '("share/gnuradio/grc/blocks")))
-          (search-path-specification
-           (variable "PYTHONPATH")
-           (files (list (string-append "lib/python"
-                                       (version-major+minor
-					(package-version python))
-                                       "/site-packages"))))))
-   (synopsis "Toolkit for software-defined radios")
-   (description
-    "GNU Radio is a development toolkit that provides signal processing blocks
-to implement software radios.  It can be used with external RF hardware to
-create software-defined radios, or without hardware in a simulation-like
-environment.")
-   (home-page "https://www.gnuradio.org")
-   (license license:gpl3+)))
-
 (define-public castxml
   (package
    (name "castxml")
@@ -277,20 +128,17 @@ environment.")
 (define-public gnuradio-librelora
   (package
    (name "gnuradio-librelora")
-   (version "1.1")
+   (version "1.2")
    (source
     (origin
-     ;; (method git-fetch)
-     ;; (uri (git-reference
-     ;;   	 (url "https://gitlab.com/jpsimas/librelora.git")
-     ;; (commit (string-append "v" version))))
-     (method url-fetch)
-     (uri (string-append "file:///home/jp/Polito/Thesis/librelora-3.9"))
-     
+     (method git-fetch)
+     (uri (git-reference
+       	 (url "https://gitlab.com/jpsimas/librelora.git")
+     (commit (string-append "v" version))))     
      (sha256
-      (base32 "0r0qh20f15bfckzyis847lz4havmfyi032svd0frwwc8anrz1cni"))))
+      (base32 "1b11hdmi77a0fgvxhvwk4xc7zpdyn51i4my58ir2fd5rzy8ga5hb"))))
    (build-system cmake-build-system)
-   (arguments '(#:configure-flags '("-DCMAKE_BUILD_TYPE=RELEASEDEBUGMSGS")))
+   (arguments '(#:configure-flags '("-DCMAKE_BUILD_TYPE=RELEASE")))
    (native-inputs
     `(("doxygen" ,doxygen)
       ("pkg-config" ,pkg-config)
@@ -307,7 +155,7 @@ environment.")
       ("log4cpp" ,log4cpp)
       ("rtl-sdr" ,rtl-sdr)
       ("volk" ,volk)
-      ("gnuradio-osmosdr" ,gnuradio-osmosdr)
+      ("gr-osmosdr" ,gr-osmosdr)
       ("liquid-dsp" ,liquid-dsp)
       ("python-matplotlib" ,python-numpy)
       ("python-numpy" ,python-numpy)
