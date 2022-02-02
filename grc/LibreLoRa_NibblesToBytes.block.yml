@@ -1,6 +1,6 @@
 id: LibreLoRa_NibblesToBytes
 label: NibblesToBytes
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.NibblesToBytes()

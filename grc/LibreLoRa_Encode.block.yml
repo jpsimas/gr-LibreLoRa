@@ -1,6 +1,6 @@
 id: LibreLoRa_Encode
 label: Encode
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.Encode(${CR})

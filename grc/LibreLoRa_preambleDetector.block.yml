@@ -1,6 +1,6 @@
 id: LibreLoRa_preambleDetector
 label: preambleDetector
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.preambleDetector(${SF}, ${OSF}, ${nUpchirps}, ${syncWordNumber})

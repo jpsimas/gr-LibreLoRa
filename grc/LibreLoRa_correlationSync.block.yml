@@ -1,6 +1,6 @@
 id: LibreLoRa_correlationSync
 label: correlationSync
-category: '[Librelora]'
+category: '[LibreLoRa]'
 parameters:
 - id: type
   label: Type

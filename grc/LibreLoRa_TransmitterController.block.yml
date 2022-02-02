@@ -1,6 +1,6 @@
 id: LibreLoRa_TransmitterController
 label: TransmitterController
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.TransmitterController(${SF}, ${symbolSize}, ${CR}, ${payloadSize}, ${CRCpresent},

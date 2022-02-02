@@ -1,6 +1,6 @@
 id: LibreLoRa_ArgMaxAbs
 label: ArgMaxAbs
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.ArgMaxAbs(${vecLength})

@@ -1,6 +1,6 @@
 id: LibreLoRa_LoRaPDUHeaderReader
 label: LoRaPDUHeaderReader
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.LoRaPDUHeaderReader(${lengthTagName})

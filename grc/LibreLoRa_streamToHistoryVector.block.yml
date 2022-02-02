@@ -1,6 +1,6 @@
 id: LibreLoRa_streamToHistoryVector
 label: streamToHistoryVector
-category: '[Librelora]'
+category: '[LibreLoRa]'
 parameters:
 - id: type
   label: Type

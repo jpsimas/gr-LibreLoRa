@@ -1,6 +1,6 @@
 id: LibreLoRa_normalizeCorrelation
 label: normalizeCorrelation
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.normalizeCorrelation(${correlationVectorSize})

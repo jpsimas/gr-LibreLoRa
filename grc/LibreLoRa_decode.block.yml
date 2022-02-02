@@ -1,6 +1,6 @@
 id: LibreLoRa_decode
 label: decode
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.decode(${CR})

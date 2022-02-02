@@ -1,6 +1,6 @@
 id: LibreLoRa_GrayDecode
 label: GrayDecode
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.GrayDecode(${nBits})

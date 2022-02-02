@@ -1,6 +1,6 @@
 id: LibreLoRa_AppendPrefix
 label: AppendPrefix
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.AppendPrefix(${SF}, ${symbolSize}, ${nUpchirps}, ${syncWordNumber})

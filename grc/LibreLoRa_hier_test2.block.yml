@@ -1,6 +1,6 @@
 id: LibreLoRa_hier_test2
 label: hier test2
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.hier_test2(${SF}, ${OSF}, ${nUpchirps}, ${syncWordNumber}, ${minCorr},

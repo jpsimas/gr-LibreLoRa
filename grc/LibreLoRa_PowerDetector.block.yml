@@ -1,6 +1,6 @@
 id: LibreLoRa_PowerDetector
 label: PowerDetector
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   imports: import pmt

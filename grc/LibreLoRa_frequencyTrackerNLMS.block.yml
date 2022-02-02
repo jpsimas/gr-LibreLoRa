@@ -1,6 +1,6 @@
 id: LibreLoRa_frequencyTrackerNLMS
 label: frequencyTrackerNLMS
-category: '[Librelora]'
+category: '[LibreLoRa]'
 parameters:
 - id: mu
   label: Mu

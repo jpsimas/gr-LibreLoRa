@@ -1,6 +1,6 @@
 id: LibreLoRa_symbolDemodNew
 label: symbolDemodNew
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.symbolDemodNew(${SF}, ${symbolSize}, ${windowSize})
