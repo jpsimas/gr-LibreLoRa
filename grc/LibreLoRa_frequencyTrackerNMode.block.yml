@@ -1,6 +1,6 @@
 id: LibreLoRa_frequencyTrackerNMode
 label: frequencyTrackerNMode
-category: '[Librelora]'
+category: '[LibreLoRa]'
 parameters:
 - id: type
   label: Type

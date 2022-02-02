@@ -1,6 +1,6 @@
 id: LibreLoRa_CRC16
 label: CRC16
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.CRC16(${polynomial}, ${xorout}, ${payloadsize})

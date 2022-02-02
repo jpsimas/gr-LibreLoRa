@@ -1,6 +1,6 @@
 id: LibreLoRa_symbolDemod
 label: symbolDemod
-category: '[Librelora]'
+category: '[LibreLoRa]'
 parameters:
 - id: type
   label: Type

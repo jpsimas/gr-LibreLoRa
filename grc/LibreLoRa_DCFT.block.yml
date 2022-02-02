@@ -1,6 +1,6 @@
 id: DCFT
 label: DCFT
-category: '[LibreLora]'
+category: '[LibreLoRa]'
 
 parameters:
 -   id: DFTSize

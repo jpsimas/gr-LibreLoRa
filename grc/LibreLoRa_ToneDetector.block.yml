@@ -1,6 +1,6 @@
 id: LibreLoRa_ToneDetector
 label: ToneDetector
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.ToneDetector(${dftsize})

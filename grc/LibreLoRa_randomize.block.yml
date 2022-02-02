@@ -1,6 +1,6 @@
 id: LibreLoRa_randomize
 label: randomize
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.randomize(${initialState}, ${payloadSize})

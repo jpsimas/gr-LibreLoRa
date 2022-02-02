@@ -1,6 +1,6 @@
 id: LibreLoRa_correlationSyncDemod
 label: correlationSyncDemod
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.correlationSyncDemod(${corrMin}, ${corrStop}, ${symbolSize}, ${preambleSize}, ${SF}, ${syncWordNumber})

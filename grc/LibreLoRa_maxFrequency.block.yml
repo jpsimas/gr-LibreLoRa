@@ -1,6 +1,6 @@
 id: LibreLoRa_maxFrequency
 label: maxFrequency
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.maxFrequency(${symbolSize})

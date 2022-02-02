@@ -1,6 +1,6 @@
 id: LibreLoRa_SelectMax
 label: SelectMax
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.SelectMax(${nInputs})

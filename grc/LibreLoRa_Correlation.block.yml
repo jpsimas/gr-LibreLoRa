@@ -1,6 +1,6 @@
 id: LibreLoRa_Correlation
 label: Correlation
-category: '[Librelora]'
+category: '[LibreLoRa]'
 parameters:
 - id: type
   label: Type

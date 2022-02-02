@@ -1,6 +1,6 @@
 id: LibreLoRa_Interleave
 label: Interleave
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.Interleave(${SF}, ${CR})

@@ -1,6 +1,6 @@
 id: LibreLoRa_DetectionCount
 label: DetectionCount
-category: '[Librelora]'
+category: '[LibreLoRa]'
 templates:
   imports: import LibreLoRa
   make: LibreLoRa.DetectionCount(${BW}, ${nChannels}, ${channelWidth})
