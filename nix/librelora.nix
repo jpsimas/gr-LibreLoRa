@@ -14,7 +14,6 @@
 , gmp
 , liquid-dsp
 , icu
-, gnuradioPackages
 }:
 
 stdenv.mkDerivation {
@@ -32,13 +31,13 @@ stdenv.mkDerivation {
     cmake
     pkg-config
     doxygen
-    gnuradio.unwrapped.python.pkgs.pybind11
+    gnuradio.python.pkgs.pybind11
   ];
 
   buildInputs = [
     cppunit
     log4cpp
-    gnuradio.unwrapped.boost
+    gnuradio.boost
     gnuradio
     mpir
     volk
@@ -48,7 +47,9 @@ stdenv.mkDerivation {
   ];
 
   propagatedBuildInputs  = [
-    gnuradio.unwrapped.python.pkgs.numpy
+    gnuradio.python.pkgs.numpy
+    gnuradio.python.pkgs.matplotlib # for MatrixSink
+    gnuradio.python.pkgs.pyqt5 # for MatrixSink
   ];
 
   meta = with lib; {
