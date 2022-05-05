@@ -19,8 +19,27 @@
 # Boston, MA 02110-1301, USA.
 
 include(GrPython)
+include(GrccCompile)
+
+GRCC_COMPILE(LoRaRx)
+GRCC_COMPILE(LoRaTx)
+
+set(librelora_flowgraphs "")
+OPTION(ENABLE_GRCC "Compile the flowgraphs with grcc" ON)
+OPTION(ENABLE_LORARX "Compile LoraRx" ON)
+OPTION(ENABLE_LORATX "Compile LoraTx" ON)
+
+if(ENABLE_GRC AND ENABLE_GRCC AND ENABLE_LORARX)
+    list (APPEND librelora_flowgraphs ${CMAKE_CURRENT_BINARY_DIR}/LoRaRx)
+endif()
+
+if(ENABLE_GRC AND ENABLE_GRCC AND ENABLE_LORATX)
+    list (APPEND librelora_flowgraphs ${CMAKE_CURRENT_BINARY_DIR}/LoRaTx)
+endif()
+
 
 GR_PYTHON_INSTALL(
     PROGRAMS
+    ${librelora_flowgraphs}
     DESTINATION bin
 )
