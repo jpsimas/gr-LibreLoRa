@@ -1,6 +1,6 @@
 id: LoRaTx
 label: LoRa Tx
-category: '[Librelora]'
+category: '[LibreLoRa]'
 
 parameters:
 -   id: BW
@@ -76,9 +76,8 @@ templates:
     - set_samp_rate(${ samp_rate })
     - set_syncwordNumber(${ syncwordNumber })
 
-documentation: 'jp
-
-    /home/jp/.grc_gnuradio/LoRaTx.py'
-grc_source: /home/jp/Polito/Thesis/librelora/examples/LoRaTx.grc
+# documentation: (...)/LoRaTx.py
+# grc_source: (...)/LoRaTx.grc
+# can this be fixed?
 
 file_format: 1
