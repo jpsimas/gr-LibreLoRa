@@ -68,6 +68,7 @@ void bind_AppendSilence(py::module&);
 void bind_LoRaPDUHeaderReader(py::module&);
 void bind_LoRaPDUHeaderGenerator(py::module&);
 void bind_getSymbol(py::module&);
+    void bind_ChirpTrackMsgToFreq(py::module& m);
 // ) END BINDING_FUNCTION_PROTOTYPES
 
 
@@ -143,5 +144,6 @@ PYBIND11_MODULE(LibreLoRa_python, m)
     bind_LoRaPDUHeaderReader(m);
     bind_LoRaPDUHeaderGenerator(m);
     bind_getSymbol(m);
+    bind_ChirpTrackMsgToFreq(m);
     // ) END BINDING_FUNCTION_CALLS
 }

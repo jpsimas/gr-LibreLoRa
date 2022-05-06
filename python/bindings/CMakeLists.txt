@@ -76,7 +76,7 @@ list(APPEND LibreLoRa_python_files
     ToneDetector_python.cc
     TransmitterController_python.cc
     getSymbol_python.cc
-    python_bindings.cc)
+    ChirpTrackMsgToFreq_python.cc python_bindings.cc)
 
 GR_PYBIND_MAKE_OOT(LibreLoRa 
    ../..
