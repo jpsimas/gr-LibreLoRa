@@ -1,0 +1,16 @@
+id: LibreLoRa_ChirpTrackMsgToFreq
+label: ChirpTrackMsgToFreq
+category: '[LibreLoRa]'
+
+templates:
+  imports: import LibreLoRa
+  make: LibreLoRa.ChirpTrackMsgToFreq()  
+inputs:
+- domain: message
+  id: detectionMessage
+  optional: true  
+outputs:
+- domain: message
+  id: frequency
+  optional: true
+file_format: 1

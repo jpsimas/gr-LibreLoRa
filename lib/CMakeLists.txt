@@ -74,7 +74,8 @@ list(APPEND LibreLoRa_sources
     AppendPrefix_impl.cc
     AppendSilence_impl.cc
     LoRaPDUHeaderReader_impl.cc
-    LoRaPDUHeaderGenerator_impl.cc )
+    LoRaPDUHeaderGenerator_impl.cc
+    ChirpTrackMsgToFreq_impl.cc )
 
 set(LibreLoRa_sources "${LibreLoRa_sources}" PARENT_SCOPE)
 if(NOT LibreLoRa_sources)

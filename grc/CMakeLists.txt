@@ -68,5 +68,9 @@ install(FILES
     LibreLoRa_AppendPrefix.block.yml
     LibreLoRa_AppendSilence.block.yml
     LibreLoRa_LoRaPDUHeaderReader.block.yml
-    LibreLoRa_LoRaPDUHeaderGenerator.block.yml DESTINATION share/gnuradio/grc/blocks
+    LibreLoRa_LoRaPDUHeaderGenerator.block.yml
+    LibreLoRa_ChirpTrackMsgToFreq.block.yml
+    LibreLoRa_LoRaRx.block.yml
+    LibreLoRa_LoRaTx.block.yml
+    DESTINATION share/gnuradio/grc/blocks
 )

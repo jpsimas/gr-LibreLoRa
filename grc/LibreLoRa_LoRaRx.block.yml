@@ -1,0 +1,100 @@
+id: LoRaRx
+label: LoRa Rx
+category: '[LibreLoRa TxRx]'
+
+parameters:
+-   id: BW
+    label: BW
+    dtype: raw
+    default: 125e3
+    hide: none
+-   id: SF
+    label: SF
+    dtype: raw
+    default: '7'
+    hide: none
+-   id: decimation
+    label: decimation
+    dtype: raw
+    default: '1'
+    hide: none
+-   id: detectionDecim
+    label: detectionDecim
+    dtype: raw
+    default: '1'
+    hide: none
+-   id: detectorThreshold
+    label: detectorThreshold
+    dtype: raw
+    default: '100'
+    hide: none
+-   id: ignoreLowDataRateRequired
+    label: ignoreLowDataRateRequired
+    dtype: raw
+    default: 'False'
+    hide: none
+-   id: lowDataRate
+    label: lowDataRate
+    dtype: raw
+    default: 'False'
+    hide: none
+-   id: samp_rate
+    label: samp_rate
+    dtype: raw
+    default: 1e6
+    hide: none
+-   id: syncwordNumber
+    label: syncwordNumber
+    dtype: raw
+    default: '0x00'
+    hide: none
+
+inputs:
+-   label: in
+    dtype: complex
+    vlen: 1
+
+outputs:
+-   label: dataOut
+    dtype: byte
+    vlen: 1
+-   label: payloadLengthOut
+    domain: message
+    dtype: message
+    optional: true
+-   label: reset
+    domain: message
+    dtype: message
+    optional: true
+-   label: detectionOut
+    domain: message
+    dtype: message
+    optional: true
+-   label: crcOut
+    domain: message
+    dtype: message
+    optional: true
+
+templates:
+    imports: 'from LoRaRx import LoRaRx  # grc-generated hier_block'
+    make: "LoRaRx(\n    BW=${ BW },\n    SF=${ SF },\n    decimation=${ decimation\
+        \ },\n    detectionDecim=${ detectionDecim },\n    detectorThreshold=${ detectorThreshold\
+        \ },\n    ignoreLowDataRateRequired=${ ignoreLowDataRateRequired },\n    lowDataRate=${\
+        \ lowDataRate },\n    samp_rate=${ samp_rate },\n    syncwordNumber=${ syncwordNumber\
+        \ },\n)"
+    callbacks:
+    - set_BW(${ BW })
+    - set_SF(${ SF })
+    - set_decimation(${ decimation })
+    - set_detectionDecim(${ detectionDecim })
+    - set_detectorThreshold(${ detectorThreshold })
+    - set_ignoreLowDataRateRequired(${ ignoreLowDataRateRequired })
+    - set_lowDataRate(${ lowDataRate })
+    - set_samp_rate(${ samp_rate })
+    - set_syncwordNumber(${ syncwordNumber })
+
+# documentation: (...)/LoRaRx.py
+# grc_source: (...)/LoRaRx.grc
+# can this be fixed?
+
+file_format: 1
