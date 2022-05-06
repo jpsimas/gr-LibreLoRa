@@ -76,5 +76,6 @@ install(FILES
     AppendPrefix.h
     AppendSilence.h
     LoRaPDUHeaderReader.h
-    LoRaPDUHeaderGenerator.h DESTINATION include/LibreLoRa
+    LoRaPDUHeaderGenerator.h
+    ChirpTrackMsgToFreq.h DESTINATION include/LibreLoRa
 )

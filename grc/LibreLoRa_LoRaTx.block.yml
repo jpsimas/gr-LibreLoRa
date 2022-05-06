@@ -1,0 +1,83 @@
+id: LoRaTx
+label: LoRa Tx
+category: '[LibreLoRa TxRx]'
+
+parameters:
+-   id: BW
+    label: BW
+    dtype: raw
+    default: 125e3
+    hide: none
+-   id: CR
+    label: CR
+    dtype: raw
+    default: '1'
+    hide: none
+-   id: CRCPresent
+    label: CRCPresent
+    dtype: raw
+    default: 'True'
+    hide: none
+-   id: SF
+    label: SF
+    dtype: raw
+    default: '8'
+    hide: none
+-   id: lowDataRate
+    label: lowDataRate
+    dtype: raw
+    default: 'False'
+    hide: none
+-   id: nUpchirps
+    label: nUpchirps
+    dtype: raw
+    default: '8'
+    hide: none
+-   id: payloadSize
+    label: payloadSize
+    dtype: raw
+    default: '10'
+    hide: none
+-   id: samp_rate
+    label: samp_rate
+    dtype: raw
+    default: 8e6
+    hide: none
+-   id: syncwordNumber
+    label: syncwordNumber
+    dtype: raw
+    default: '0'
+    hide: none
+
+inputs:
+-   label: in
+    dtype: byte
+    vlen: 1
+
+outputs:
+-   label: out
+    dtype: complex
+    vlen: 1
+
+templates:
+    imports: 'from LoRaTx import LoRaTx  # grc-generated hier_block'
+    make: "LoRaTx(\n    BW=${ BW },\n    CR=${ CR },\n    CRCPresent=${ CRCPresent\
+        \ },\n    SF=${ SF },\n    lowDataRate=${ lowDataRate },\n    nUpchirps=${\
+        \ nUpchirps },\n    payloadSize=${ payloadSize },\n    samp_rate=${ samp_rate\
+        \ },\n    syncwordNumber=${ syncwordNumber },\n)"
+    callbacks:
+    - set_BW(${ BW })
+    - set_CR(${ CR })
+    - set_CRCPresent(${ CRCPresent })
+    - set_SF(${ SF })
+    - set_lowDataRate(${ lowDataRate })
+    - set_nUpchirps(${ nUpchirps })
+    - set_payloadSize(${ payloadSize })
+    - set_samp_rate(${ samp_rate })
+    - set_syncwordNumber(${ syncwordNumber })
+
+# documentation: (...)/LoRaTx.py
+# grc_source: (...)/LoRaTx.grc
+# can this be fixed?
+
+file_format: 1

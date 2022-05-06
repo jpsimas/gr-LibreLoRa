@@ -39,7 +39,10 @@ GR_PYTHON_INSTALL(
     getNormalizedPreambleFrequency.py
     DCFT.py
     MatrixSink.py
-    ChirpDetector.py DESTINATION ${GR_PYTHON_DIR}/LibreLoRa
+    ChirpDetector.py
+    LoRaRx.py
+    LoRaTx.py
+    DESTINATION ${GR_PYTHON_DIR}/LibreLoRa
 )
 
 ########################################################################
