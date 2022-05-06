@@ -34,6 +34,7 @@ macro(GRCC_COMPILE file_name)
         COMMAND "${CMAKE_COMMAND}"
         -E env PYTHONPATH="${PYTHONPATH}" GRC_BLOCKS_PATH=${CMAKE_SOURCE_DIR}/grc
         CMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}
+	HOME=/tmp/
         ${GRCC} -o ${CMAKE_CURRENT_BINARY_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/${file_name}.grc
         COMMAND "${CMAKE_COMMAND}" -E rename ${CMAKE_CURRENT_BINARY_DIR}/${file_name}.py ${CMAKE_CURRENT_BINARY_DIR}/${file_name}
