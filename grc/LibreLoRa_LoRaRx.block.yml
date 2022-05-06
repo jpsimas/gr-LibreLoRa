@@ -1,6 +1,6 @@
 id: LoRaRx
 label: LoRa Rx
-category: '[LibreLoRa]'
+category: '[LibreLoRa TxRx]'
 
 parameters:
 -   id: BW
