@@ -18,12 +18,12 @@
 
 stdenv.mkDerivation {
   pname = "gr-librelora";
-  version = "1.3";
+  version = "1.4";
   src = fetchFromGitLab {
     owner = "jpsimas";
     repo = "librelora";
-    rev = "v1.3";
-    sha256 = "1g0sgasjngzwd9pgbb3bnswy6c0k29j0rld0k862w2zjsg52rwra";
+    rev = "v1.4";
+    sha256 = "1licykxxnlgz6yxqnc2a6w7schn5907jj3lldg7lrahs9jy4bi6q";
   };
   disabledForGRafter = "3.9";
 
